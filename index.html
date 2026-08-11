@@ -54,8 +54,32 @@
     padding-left:   env(safe-area-inset-left, 0px);
     padding-right:  env(safe-area-inset-right, 0px);
   }
-  /* Contenedor de los CVs con scroll horizontal en pantallas estrechas */
-  #contenedor-cvs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  /* Escala el CV para que quepa en pantalla de móvil de un vistazo.
+     El CV tiene 900px de ancho. En móvil de ~390px → escala 390/900 ≈ 0.43
+     Usamos transform:scale con transform-origin top center para que se vea
+     desde arriba, manteniendo todas las proporciones y diseño originales. */
+  #contenedor-cvs {
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+  }
+  #hoja-cv, #hoja-cv-premium {
+    transform-origin: top center;
+  }
+  @media (max-width: 960px) {
+    #contenedor-cvs {
+      /* El contenedor ocupa el ancho real de pantalla */
+      width: 100%;
+      /* Altura = alto del CV escalado, para que el layout fluya correctamente */
+      overflow: hidden;
+    }
+    #hoja-cv, #hoja-cv-premium {
+      /* Calculamos la escala: ancho viewport / 900px */
+      /* En JS se aplica la escala exacta según el ancho real del móvil */
+      transform: scale(var(--cv-escala, 0.43));
+      margin-bottom: calc((var(--cv-escala, 0.43) - 1) * 100%);
+    }
+  }
   /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
   #modal-anuncio > div, #modal-pago > div {
     max-height: 90dvh; /* dvh = dynamic viewport height, correcto en móvil */
@@ -499,7 +523,10 @@
         <div class="visor-camara">
           <video id="video-camara" autoplay playsinline muted></video>
           <img id="foto-capturada" class="hidden" alt="Foto capturada">
-          <svg id="icono-sin-camara" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--musgo)" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <svg id="icono-sin-camara" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--musgo)" stroke-width="1.5">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
         </div>
       </div>
 
@@ -671,23 +698,23 @@
 
     <!-- ===== ZONA BÁSICO: gratis + 0,99€ (visible cuando tab=basico) ===== -->
     <div id="zona-descarga-basico">
-      <div class="border-t mb-6" style="border-color:var(--linea)"></div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="border-t mb-4" style="border-color:var(--linea)"></div>
+      <div class="grid grid-cols-2 gap-3">
 
         <!-- Opción A: Descarga gratuita con anuncio -->
-        <div class="rounded-2xl border-2 p-5 flex flex-col gap-3 text-center" style="border-color:var(--linea); background:white">
-          <p class="font-display text-lg font-bold" style="color:var(--tinta)" data-i18n="descarga_gratis_titulo">Descarga gratuita</p>
-          <p class="text-sm" style="color:#6B6354" data-i18n="descarga_gratis_sub">Ver un vídeo corto de 15 segundos</p>
-          <button id="btn-descargar-gratis" class="mt-auto w-full py-4 rounded-full text-base font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="descarga_gratis_btn">
+        <div class="rounded-2xl border-2 p-3 flex flex-col gap-2 text-center" style="border-color:var(--linea); background:white">
+          <p class="font-display text-sm font-bold" style="color:var(--tinta)" data-i18n="descarga_gratis_titulo">Descarga gratuita</p>
+          <p class="text-xs" style="color:#6B6354" data-i18n="descarga_gratis_sub">Ver un vídeo de 15 s</p>
+          <button id="btn-descargar-gratis" class="mt-auto w-full py-3 rounded-full text-sm font-bold border-2 transition" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="descarga_gratis_btn">
             Ver anuncio y descargar
           </button>
         </div>
 
         <!-- Opción B: 0,99€ sin esperas -->
-        <div class="rounded-2xl border-2 p-5 flex flex-col gap-3 text-center" style="border-color:var(--linea); background:white">
-          <p class="font-display text-lg font-bold" style="color:var(--tinta)" data-i18n="descarga_basico_titulo">Sin anuncios</p>
-          <p class="text-sm" style="color:#6B6354" data-i18n="descarga_basico_sub">Descarga inmediata · Sin esperas</p>
-          <button id="btn-descargar-premium" class="mt-auto w-full py-4 rounded-full text-base font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="descarga_basico_btn">
+        <div class="rounded-2xl border-2 p-3 flex flex-col gap-2 text-center" style="border-color:var(--linea); background:white">
+          <p class="font-display text-sm font-bold" style="color:var(--tinta)" data-i18n="descarga_basico_titulo">Sin anuncios</p>
+          <p class="text-xs" style="color:#6B6354" data-i18n="descarga_basico_sub">Descarga inmediata</p>
+          <button id="btn-descargar-premium" class="mt-auto w-full py-3 rounded-full text-sm font-bold border-2 transition" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="descarga_basico_btn">
             Descargar por 0,99 €
           </button>
         </div>
@@ -1895,11 +1922,10 @@ function escaparHTML(texto){
 function limpiarTextoIA(texto){
   if (!texto) return "";
   let s = String(texto).trim();
-  // Eliminar viñetas al inicio: *, •, -, –, —
-  s = s.replace(/^\s*[•\*\-–—]\s*/, "");
-  // Eliminar markdown de negrita **texto** o *texto* que la IA a veces devuelve
-  s = s.replace(/\*\*([^*]+)\*\*/g, "$1");
-  s = s.replace(/\*([^*]+)\*/g, "$1");
+  s = s.replace(/^\s*[•\*\-–—]\s*/, "");   // viñetas al inicio
+  s = s.replace(/\s*\*+\s*$/, "");           // asteriscos al final
+  s = s.replace(/\*\*([^*]+)\*\*/g, "$1");  // **negrita**
+  s = s.replace(/\*([^*]+)\*/g, "$1");       // *cursiva*
   return s.trim();
 }
 
@@ -2089,6 +2115,7 @@ function pintarCV(resultado){
   // Aseguramos que los botones de descarga y el resto de la interfaz
   // muestren el idioma actualmente seleccionado por el usuario
   aplicarTextos();
+  aplicarEscalaCV();
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -2312,6 +2339,7 @@ function cambiarTab(modelo){
 
     tabPremium.style.cssText = "background:var(--ambar);color:white;border-color:var(--ambar)";
     tabBasico.style.cssText  = "background:white;color:var(--tinta);border-color:var(--linea)";
+    setTimeout(aplicarEscalaCV, 50);
 
   } else {
     hojaPremium.classList.add("cv-oculto");
@@ -2321,6 +2349,7 @@ function cambiarTab(modelo){
 
     tabBasico.style.cssText  = "background:var(--musgo);color:white;border-color:var(--musgo)";
     tabPremium.style.cssText = "background:white;color:var(--tinta);border-color:var(--linea)";
+    setTimeout(aplicarEscalaCV, 50);
   }
 }
 
@@ -2668,6 +2697,26 @@ btnCancelarPago.addEventListener("click", () => {
 });
 
 // ---------- 13. Inicialización ----------
+
+// Escala dinámica del CV: calcula qué factor aplicar para que el CV de 900px
+// quepa en el ancho real de la pantalla, con un pequeño margen lateral.
+function aplicarEscalaCV(){
+  const anchoDisponible = Math.min(window.innerWidth, 960) - 24; // 12px margen a cada lado
+  const escala = Math.min(anchoDisponible / 900, 1); // nunca mayor que 1 (no agrandar en escritorio)
+  document.documentElement.style.setProperty('--cv-escala', escala.toFixed(4));
+
+  // Ajustar la altura del contenedor para que el layout no deje espacio vacío
+  // (transform:scale no afecta al layout nativo, hay que compensarlo manualmente)
+  ['hoja-cv', 'hoja-cv-premium'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && !el.classList.contains('cv-oculto')){
+      const altoReal = el.scrollHeight * escala;
+      document.getElementById('contenedor-cvs').style.height = altoReal + 'px';
+    }
+  });
+}
+
+window.addEventListener('resize', aplicarEscalaCV);
 document.documentElement.lang = idiomaActual;
 document.documentElement.dir = IDIOMAS[idiomaActual].dir;
 aplicarTextos();
