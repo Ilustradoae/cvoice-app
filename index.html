@@ -1583,61 +1583,67 @@ function iniciarEscucha(boton){
     reconocimiento.interimResults = true;
     reconocimiento.maxAlternatives = 1;
 
-    // textoFinalSesion acumula solo los resultados FINALES de esta sesión concreta
-    // (no de sesiones previas, que ya están en _textoAcumulado)
-    let textoFinalSesion = "";
+    // En Android WebView, reusar el mismo objeto SpeechRecognition tras reinicio
+    // causa que resultIndex se resetee a 0 pero los resultados anteriores sigan
+    // en evento.results, duplicando el texto. La solución: crear un objeto nuevo
+    // en cada sesión. También desactivamos interimResults en Android WebView
+    // porque causa duplicaciones al reiniciar.
+    const esAndroidWebView = /wv/.test(navigator.userAgent) || /Android/.test(navigator.userAgent);
 
-    reconocimiento.onstart = () => {
-      // Al arrancar cada sesión (inicial o tras reinicio por pausa) reseteamos
-      // el acumulado de la sesión actual para no duplicar texto
-      textoFinalSesion = "";
-    };
+    function crearSesionReconocimiento(){
+      const rec = new SpeechRec();
+      rec.lang = IDIOMAS[idiomaActual].lang;
+      rec.continuous = false; // En Android WebView, continuous=false es más estable
+      rec.interimResults = !esAndroidWebView; // Sin interim en Android para evitar duplicados
+      rec.maxAlternatives = 1;
 
-    reconocimiento.onresult = (evento) => {
-      // Procesamos solo desde resultIndex para evitar reprocesar resultados
-      // anteriores que ya fueron marcados como finales en esta misma sesión
-      let nuevoParcial = "";
-      for (let i = evento.resultIndex; i < evento.results.length; i++){
-        const fragmento = evento.results[i][0].transcript;
-        if (evento.results[i].isFinal){
-          textoFinalSesion += fragmento + " ";
-        } else {
-          nuevoParcial += fragmento;
+      rec.onresult = (evento) => {
+        let nuevoParcial = "";
+        // Iterar desde 0 — en cada sesión nueva solo hay resultados de esta sesión
+        for (let i = 0; i < evento.results.length; i++){
+          const fragmento = evento.results[i][0].transcript;
+          if (evento.results[i].isFinal){
+            // Guardamos inmediatamente en _textoAcumulado para que el siguiente
+            // onresult no reprocese este fragmento
+            if (!_textoAcumulado.endsWith(fragmento.trim() + " ")){
+              _textoAcumulado += fragmento.trim() + " ";
+            }
+          } else {
+            nuevoParcial += fragmento;
+          }
         }
-      }
-      // Vista en tiempo real: base persistente + final de esta sesión + parcial actual
-      caja.value = (_textoAcumulado + textoFinalSesion + nuevoParcial).trim();
-    };
+        caja.value = (_textoAcumulado + nuevoParcial).trim();
+      };
 
-    reconocimiento.onerror = (ev) => {
-      // "no-speech" y "audio-capture" son errores recuperables en pausas largas;
-      // solo apagamos el micro en errores graves o si fue manual
-      if (ev.error === "no-speech" || ev.error === "audio-capture") return;
-      _micManual = true;
-      detenerEscucha();
-    };
-
-    reconocimiento.onend = () => {
-      if (_micManual){
-        // El usuario apagó el micro o hubo un error grave: paramos de verdad
-        _limpiarVisualMic();
-        reconocimiento = null;
-        micEscuchandoEl = null;
-        return;
-      }
-      // Pausa detectada por la API (comportamiento normal en Chrome/Android):
-      // acumulamos lo hablado hasta ahora y reiniciamos para seguir escuchando
-      _textoAcumulado = caja.value ? caja.value.trim() + " " : _textoAcumulado;
-      try {
-        reconocimiento.start(); // reinicio inmediato — onstart reseteará textoFinalSesion
-      } catch(e){
-        // Si no se puede reiniciar (ej. error de hardware), paramos limpiamente
+      rec.onerror = (ev) => {
+        if (ev.error === "no-speech" || ev.error === "audio-capture") return;
         _micManual = true;
-        _limpiarVisualMic();
-        reconocimiento = null;
-        micEscuchandoEl = null;
-      }
-    };
+        detenerEscucha();
+      };
+
+      rec.onend = () => {
+        if (_micManual){
+          _limpiarVisualMic();
+          reconocimiento = null;
+          micEscuchandoEl = null;
+          return;
+        }
+        // Reiniciar con un objeto NUEVO para evitar la duplicación en Android WebView
+        try {
+          reconocimiento = crearSesionReconocimiento();
+          reconocimiento.start();
+        } catch(e){
+          _micManual = true;
+          _limpiarVisualMic();
+          reconocimiento = null;
+          micEscuchandoEl = null;
+        }
+      };
+
+      return rec;
+    }
+
+    reconocimiento = crearSesionReconocimiento();
 
     reconocimiento.start();
     boton.classList.add("escuchando");
@@ -2701,17 +2707,26 @@ btnCancelarPago.addEventListener("click", () => {
 // Escala dinámica del CV: calcula qué factor aplicar para que el CV de 900px
 // quepa en el ancho real de la pantalla, con un pequeño margen lateral.
 function aplicarEscalaCV(){
-  const anchoDisponible = Math.min(window.innerWidth, 960) - 24; // 12px margen a cada lado
-  const escala = Math.min(anchoDisponible / 900, 1); // nunca mayor que 1 (no agrandar en escritorio)
+  if (window.innerWidth >= 960) {
+    // Escritorio: sin escala
+    document.documentElement.style.setProperty('--cv-escala', '1');
+    const cont = document.getElementById('contenedor-cvs');
+    if (cont) cont.style.height = '';
+    return;
+  }
+  // Móvil: escalar para que el CV quepa en pantalla con margen lateral mínimo
+  // Usamos el 92% del ancho disponible para tener un pequeño margen a cada lado
+  const anchoDisponible = window.innerWidth * 0.92;
+  const escala = Math.min(anchoDisponible / 900, 1);
   document.documentElement.style.setProperty('--cv-escala', escala.toFixed(4));
 
-  // Ajustar la altura del contenedor para que el layout no deje espacio vacío
-  // (transform:scale no afecta al layout nativo, hay que compensarlo manualmente)
+  // Ajustar altura del contenedor para compensar el colapso que produce transform:scale
   ['hoja-cv', 'hoja-cv-premium'].forEach(id => {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('cv-oculto')){
       const altoReal = el.scrollHeight * escala;
-      document.getElementById('contenedor-cvs').style.height = altoReal + 'px';
+      const cont = document.getElementById('contenedor-cvs');
+      if (cont) cont.style.height = altoReal + 'px';
     }
   });
 }
