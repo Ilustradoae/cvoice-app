@@ -260,38 +260,39 @@
   .prem-compl-lista li{ position: relative; }
   .prem-compl-lista li::before{ content: "–"; position: absolute; left: -1rem; color: #94a3b8; }
   /* ============================================================
-     DISEÑO PREMIUM 2 — MINIMALISTA (blanco/negro, líneas finas)
+     DISEÑO PREMIUM 2 — EDITORIAL (foto grande, etiquetas laterales)
   ============================================================ */
   #hoja-cv-prem2{
     font-family: 'Inter', system-ui, sans-serif;
-    display: grid; grid-template-columns: 1fr 1.5fr;
+    display: flex; flex-direction: column;
     width: 900px; max-width: 100%; margin: 0 auto;
-    background: #fff; overflow: hidden; border-radius: 1rem;
-    align-items: stretch;
+    background: #fff; overflow: hidden; border-radius: 1rem; color: #1a1a1a;
   }
-  .p2-izq{ background: #FAFAF9; border-right: 1px solid #e5e5e5; padding: 2.5rem 1.75rem; display: flex; flex-direction: column; gap: 0; }
-  .p2-avatar{ width: 7rem; height: 7rem; border-radius: 50%; border: 2px solid #1a1a1a; background: #f0f0f0; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto 1.5rem; }
+  .p2-head{ display: flex; align-items: center; gap: 2rem; padding: 2.5rem 2.5rem 1.5rem; }
+  .p2-avatar{ width: 9rem; height: 9rem; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f0f0f0; border: 2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
   .p2-avatar img{ width:100%; height:100%; object-fit:cover; }
-  .p2-nombre{ font-size: 1.1rem; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: .5rem; font-family: 'Source Serif 4', Georgia, serif; }
-  .p2-sec-izq{ font-size: .6rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #1a1a1a; border-bottom: 1.5px solid #1a1a1a; padding-bottom: .25rem; margin: 1.25rem 0 .6rem; }
-  .p2-label{ font-size: .6rem; color: #888; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .1rem; }
-  .p2-valor{ font-size: .78rem; color: #1a1a1a; margin-bottom: .5rem; word-break: break-word; }
-  .p2-der{ background: #fff; padding: 2.5rem 2.25rem; display: flex; flex-direction: column; }
-  .p2-top{ border-bottom: 2px solid #1a1a1a; padding-bottom: .75rem; margin-bottom: 1.5rem; }
-  .p2-sub{ font-size: .65rem; letter-spacing: .18em; text-transform: uppercase; color: #888; margin-bottom: .2rem; }
-  .p2-sec-der{ font-size: .6rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #1a1a1a; margin: 1.25rem 0 .5rem; }
-  .p2-puesto{ font-size: .95rem; font-weight: 700; color: #1a1a1a; font-family: 'Source Serif 4', Georgia, serif; }
-  .p2-fecha{ font-size: .65rem; color: #888; float: right; margin-top: .2rem; }
-  .p2-empresa{ font-size: .78rem; color: #555; font-style: italic; margin: .15rem 0 .4rem; clear: both; }
-  .p2-desc{ list-style: none; padding-left: .8rem; font-size: .78rem; color: #444; line-height: 1.6; }
-  .p2-desc li{ position: relative; margin-bottom: .25rem; }
-  .p2-desc li::before{ content: "—"; position: absolute; left: -.8rem; color: #888; }
-  .p2-estudio{ font-size: .92rem; font-weight: 600; color: #1a1a1a; }
-  .p2-centro{ font-size: .78rem; color: #555; margin: .1rem 0 .5rem; }
-  .p2-compl-sec{ font-size: .58rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #888; margin: .75rem 0 .35rem; }
-  .p2-compl{ list-style: none; padding-left: .8rem; font-size: .76rem; color: #555; line-height: 1.6; }
-  .p2-compl li{ position: relative; }
-  .p2-compl li::before{ content: "–"; position: absolute; left: -.8rem; color: #aaa; }
+  .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: 2.4rem; font-weight: 700; color: #1a1a1a; line-height: 1.1; }
+  .p2-cargo{ font-size: .8rem; color: #666; letter-spacing: .08em; text-transform: uppercase; margin-top: .4rem; }
+  .p2-contactband{ display: flex; align-items: center; border-top: 2px solid #1a1a1a; border-bottom: 2px solid #1a1a1a; padding: .65rem 2.5rem; }
+  .p2-citem{ display: flex; align-items: center; gap: .4rem; font-size: .75rem; color: #333; flex: 1; }
+  .p2-csep{ width: 1px; height: 1rem; background: #ccc; margin: 0 .75rem; flex-shrink:0; }
+  .p2-body{ padding: 0 2.5rem 2rem; }
+  .p2-row{ display: grid; grid-template-columns: 7.5rem 1fr; gap: 1.5rem; padding: 1.1rem 0; border-bottom: 1px solid #e8e8e8; }
+  .p2-row:last-child{ border-bottom: none; }
+  .p2-etiqueta{ font-size: .58rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #1a1a1a; padding-top: .2rem; }
+  .p2-contenido{ display: flex; flex-direction: column; gap: .75rem; }
+  .p2-estudio-anio{ font-size: .72rem; font-weight: 700; color: #1a1a1a; letter-spacing: .04em; margin-bottom:.1rem; }
+  .p2-estudio-titulo{ font-size: .88rem; font-weight: 700; color: #1a1a1a; text-transform: uppercase; letter-spacing: .03em; }
+  .p2-estudio-centro{ font-size: .8rem; color: #666; }
+  .p2-exp-item{ margin-bottom: .75rem; }
+  .p2-exp-item:last-child{ margin-bottom: 0; }
+  .p2-exp-fechas{ font-size: .72rem; font-weight: 700; color: #1a1a1a; text-transform: uppercase; letter-spacing: .04em; }
+  .p2-exp-empresa{ font-size: .8rem; font-weight: 600; color: #1a1a1a; text-transform: uppercase; letter-spacing: .03em; margin-bottom:.25rem; }
+  .p2-exp-funciones{ list-style: disc; padding-left: 1.1rem; margin: .2rem 0 0; }
+  .p2-exp-funciones li{ font-size: .78rem; color: #333; line-height: 1.55; margin-bottom: .1rem; }
+  .p2-idioma-item{ font-size: .82rem; color: #333; margin-bottom: .2rem; }
+  .p2-idioma-nivel{ color: #888; font-size: .78rem; }
+  .p2-otro-item{ font-size: .82rem; color: #333; }
 
   /* ============================================================
      DISEÑO PREMIUM 3 — ÁMBAR MODERNO (acento dorado/ámbar)
@@ -328,16 +329,16 @@
   .p3-compl li::before{ content: "–"; position: absolute; left: -.85rem; color: #C4874A; }
 
   /* ============================================================
-     DISEÑO PREMIUM 4 — AZUL MARINO CORPORATIVO
+     DISEÑO PREMIUM 4 — AZUL MARINO CORPORATIVO (una columna)
   ============================================================ */
   #hoja-cv-prem4{
     font-family: 'Inter', system-ui, sans-serif;
-    display: grid; grid-template-columns: 1fr 1.5fr;
+    display: flex;
+    flex-direction: column;
     width: 900px; max-width: 100%; margin: 0 auto;
     background: #fff; overflow: hidden; border-radius: 1rem;
-    align-items: stretch;
   }
-  .p4-header{ grid-column: 1 / -1; background: #1B3A5C; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1.25rem; border-bottom: 4px solid #2D6A9F; }
+  .p4-header{ background: #1B3A5C; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1.25rem; border-bottom: 4px solid #2D6A9F; }
   .p4-avatar{ width: 5.5rem; height: 5.5rem; border-radius: .6rem; border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: 1.4rem; font-weight: 700; color: #93B5D4; }
   .p4-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p4-hinfo{ flex: 1; }
@@ -345,11 +346,9 @@
   .p4-sub{ font-size: .65rem; color: #93B5D4; text-transform: uppercase; letter-spacing: .12em; margin-top: .25rem; }
   .p4-contacts{ display: flex; flex-wrap: wrap; gap: .25rem .75rem; margin-top: .5rem; }
   .p4-c{ font-size: .65rem; color: #7A9FBF; }
-  .p4-izq{ background: #F5F9FC; padding: 1.75rem; border-right: 1px solid #E0EBF5; display: flex; flex-direction: column; }
-  .p4-sec{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin: 1rem 0 .4rem; }
-  .p4-item{ font-size: .78rem; color: #333; margin-bottom: .3rem; }
-  .p4-der{ background: #fff; padding: 1.75rem 2rem; display: flex; flex-direction: column; }
-  .p4-sec-der{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #2D6A9F; margin: 1rem 0 .5rem; }
+  /* Cuerpo: una sola columna */
+  .p4-body{ background: #fff; padding: 1.75rem 2rem; display: flex; flex-direction: column; gap: 0; }
+  .p4-sec-der{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #2D6A9F; margin: 1.25rem 0 .5rem; }
   .p4-puesto{ font-size: .95rem; font-weight: 700; color: #1a1a1a; }
   .p4-fecha{ font-size: .62rem; background: #E8F0F8; color: #2D6A9F; padding: .15rem .45rem; border-radius: .25rem; float: right; font-weight: 600; }
   .p4-empresa{ font-size: .78rem; color: #777; font-style: italic; margin: .1rem 0 .4rem; clear: both; }
@@ -358,17 +357,21 @@
   .p4-desc li::before{ content: "–"; position: absolute; left: -.85rem; color: #2D6A9F; font-weight: 700; }
   .p4-estudio{ font-size: .92rem; font-weight: 600; color: #1a1a1a; }
   .p4-centro{ font-size: .78rem; color: #777; margin: .1rem 0 .5rem; }
+  /* Idiomas/otros datos: al final, en banda gris clara */
+  .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: 1rem 2rem; }
+  .p4-sec{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin-bottom: .4rem; }
+  .p4-item{ font-size: .78rem; color: #333; display: inline; }
+  .p4-item + .p4-item::before{ content: " · "; color: #2D6A9F; }
   .p4-compl-sec{ font-size: .58rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #888; margin: .75rem 0 .35rem; }
   .p4-compl{ list-style: none; padding-left: .85rem; font-size: .76rem; color: #555; line-height: 1.6; }
   .p4-compl li{ position: relative; }
   .p4-compl li::before{ content: "–"; position: absolute; left: -.85rem; color: #2D6A9F; }
-  /* ============================================================ */
-    font-family:'Source Serif 4', Georgia, serif;
-    color: var(--cv-tinta);
+  /* ===== MODELO BÁSICO — Minimalista (blanco/negro, líneas finas) ===== */
+  #hoja-cv{
+    font-family:'Inter', system-ui, sans-serif;
+    color: #1a1a1a;
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    /* stretch: ambas columnas tienen la misma altura (la del más alto),
-       el fondo de la columna izquierda cubre hasta abajo sin hueco vacío */
+    grid-template-columns: 1fr 1.8fr;
     align-items: stretch;
     background: #fff;
     overflow: hidden;
@@ -378,17 +381,16 @@
     border-radius: 1rem;
   }
   .cv-col-izquierda{
-    background: var(--cv-lateral-fondo);
-    border-right: 1px solid var(--cv-lateral-borde);
-    padding: 2.5rem 1.75rem;
+    background: #FAFAF9;
+    border-right: 1px solid #e5e5e5;
+    padding: 2rem 1.5rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     gap: 0;
   }
   .cv-col-derecha{
     background: #fff;
-    padding: 2.5rem 2.25rem;
+    padding: 2rem 2rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -396,33 +398,32 @@
   }
 
   .cv-avatar{
-    width:8.5rem; height:8.5rem; border-radius:50%; overflow:hidden;
-    border:3px solid #fff; box-shadow:0 0 0 1px var(--cv-lateral-borde);
-    margin:0 auto 1.5rem; background:#E7E2D8;
+    width:7.5rem; height:7.5rem; border-radius:50%; overflow:hidden;
+    border:2px solid #1a1a1a;
+    margin:0 auto 1.25rem; background:#f0f0f0;
     display:flex; align-items:center; justify-content:center;
   }
   .cv-avatar img{ width:100%; height:100%; object-fit:cover; }
 
   .cv-nombre{
-    font-family:'Jost', sans-serif; font-weight:700; letter-spacing:.03em;
-    font-size:1.5rem; line-height:1.25; text-transform:uppercase; text-align:center;
-    color: var(--cv-tinta);
+    font-family:'Source Serif 4', Georgia, serif; font-weight:700;
+    font-size:1.15rem; line-height:1.25; text-align:center;
+    color: #1a1a1a; margin-bottom:.5rem;
   }
 
-  .cv-lateral-seccion{ margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--cv-lateral-borde); }
+  .cv-lateral-seccion{ margin-top: 1.25rem; padding-top: 1rem; border-top: 1.5px solid #1a1a1a; }
   .cv-lateral-titulo{
-    font-family:'Jost', sans-serif; font-weight:600; font-size:.72rem; letter-spacing:.14em;
-    text-transform:uppercase; color: var(--cv-acento); margin-bottom:.6rem;
-    border-bottom:1px solid var(--cv-lateral-borde); padding-bottom:.4rem;
+    font-family:'Inter', sans-serif; font-weight:700; font-size:.58rem; letter-spacing:.18em;
+    text-transform:uppercase; color: #1a1a1a; margin-bottom:.5rem;
   }
   .cv-lateral-dato .cv-etiqueta{
     display: block;
-    font-size: .68rem;
+    font-size: .58rem;
     text-transform: uppercase;
-    letter-spacing: .06em;
-    color: var(--cv-acento);
+    letter-spacing: .1em;
+    color: #888;
     margin-bottom: .1rem;
-    font-family: 'Jost', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
   }
 
@@ -431,25 +432,25 @@
   .cv-lateral-dato .cv-etiqueta{ display:block; font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom:.1rem; }
 
   .cv-derecha-titulo{
-    font-family:'Jost', sans-serif; font-weight:600; font-size:.82rem; letter-spacing:.12em;
-    text-transform:uppercase; color: var(--cv-tinta); margin-bottom:.9rem;
+    font-family:'Inter', sans-serif; font-weight:700; font-size:.6rem; letter-spacing:.18em;
+    text-transform:uppercase; color: #1a1a1a; margin-bottom:.75rem;
     display:flex; align-items:center; gap:.6rem;
+    border-bottom: 1.5px solid #1a1a1a; padding-bottom: .3rem;
   }
-  .cv-derecha-titulo::after{ content:""; flex:1; height:1px; background: var(--cv-linea); }
+  .cv-derecha-titulo::after{ display:none; }
 
-  .cv-bloque{ margin-bottom: 2.2rem; }
+  .cv-bloque{ margin-bottom: 1.75rem; }
   .cv-bloque:last-child{ margin-bottom: 0; }
-  .cv-bloque:last-child{ margin-bottom:0; }
-  .cv-bloque-contenido{ font-size:1.04rem; line-height:1.8; }
-  .cv-bloque-contenido p{ margin-bottom:.55rem; }
+  .cv-bloque-contenido{ font-size:.88rem; line-height:1.65; }
+  .cv-bloque-contenido p{ margin-bottom:.45rem; }
   .cv-bloque-contenido ul{ list-style:none; padding:0; margin:0; }
   .cv-bloque-contenido li{
-    position:relative; padding-left:1.05rem; margin-bottom:.5rem;
+    position:relative; padding-left:1rem; margin-bottom:.4rem;
   }
   .cv-bloque-contenido li::before{
-    content:"–"; position:absolute; left:0; color: var(--cv-acento); font-weight:700;
+    content:"–"; position:absolute; left:0; color: #888; font-weight:700;
   }
-  .cv-bloque-contenido strong{ font-family:'Jost', sans-serif; font-weight:600; font-size:1.02rem; }
+  .cv-bloque-contenido strong{ font-family:'Inter', sans-serif; font-weight:600; font-size:.9rem; }
 
   /* ---- Experiencia laboral: tarjetas puesto/empresa/fechas + viñetas ---- */
   .cv-experiencia-item{ margin-bottom:1.4rem; }
@@ -458,18 +459,18 @@
     display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
     gap:.4rem; margin-bottom:.25rem;
   }
-  .cv-experiencia-puesto{ font-family:'Jost', sans-serif; font-weight:700; font-size:1.08rem; color:var(--cv-tinta); }
-  .cv-experiencia-fechas{ font-size:.87rem; color:var(--cv-acento); white-space:nowrap; }
-  .cv-experiencia-empresa{ font-size:.96rem; font-style:italic; color:#6B6354; margin-bottom:.5rem; }
+  .cv-experiencia-puesto{ font-family:'Inter', sans-serif; font-weight:700; font-size:.93rem; color:#1a1a1a; }
+  .cv-experiencia-fechas{ font-size:.72rem; color:#888; white-space:nowrap; }
+  .cv-experiencia-empresa{ font-size:.82rem; font-style:italic; color:#666; margin-bottom:.4rem; }
   .cv-experiencia-funciones{ list-style:none; padding:0; margin:0; }
-  .cv-experiencia-funciones li{ position:relative; padding-left:1.05rem; margin-bottom:.4rem; font-size:1.03rem; line-height:1.75; }
-  .cv-experiencia-funciones li::before{ content:"–"; position:absolute; left:0; color:var(--cv-acento); font-weight:700; }
+  .cv-experiencia-funciones li{ position:relative; padding-left:.9rem; margin-bottom:.3rem; font-size:.87rem; line-height:1.6; }
+  .cv-experiencia-funciones li::before{ content:"–"; position:absolute; left:0; color:#888; font-weight:700; }
 
   /* ---- Estudios: título oficial + formación complementaria agrupada ---- */
   .cv-estudio-item{ margin-bottom:1rem; }
   .cv-estudio-item:last-child{ margin-bottom:0; }
-  .cv-estudio-titulo{ font-family:'Jost', sans-serif; font-weight:700; font-size:1.06rem; color:var(--cv-tinta); }
-  .cv-estudio-centro{ font-size:.97rem; color:#6B6354; }
+  .cv-estudio-titulo{ font-family:'Inter', sans-serif; font-weight:700; font-size:.93rem; color:#1a1a1a; }
+  .cv-estudio-centro{ font-size:.82rem; color:#666; }
   .cv-formacion-complementaria{ margin-top:1.1rem; padding-top:1rem; border-top:1px dashed var(--cv-linea); }
   .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom:.5rem; }
   .cv-formacion-complementaria-lista{ list-style:none; padding:0; margin:0; }
@@ -567,9 +568,9 @@
       </div>
       <textarea data-texto-paso="2" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
-      <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <button class="px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="1" data-i18n="boton_anterior">← Atrás</button>
-        <button class="px-10 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="3" data-i18n="boton_siguiente">Siguiente →</button>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="1" data-i18n="boton_anterior">← Atrás</button>
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="3" data-i18n="boton_siguiente">Siguiente →</button>
       </div>
     </div>
   </article>
@@ -592,9 +593,9 @@
       </div>
       <textarea data-texto-paso="3" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
-      <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <button class="px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="2" data-i18n="boton_anterior">← Atrás</button>
-        <button class="px-10 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="4" data-i18n="boton_siguiente">Siguiente →</button>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="2" data-i18n="boton_anterior">← Atrás</button>
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="4" data-i18n="boton_siguiente">Siguiente →</button>
       </div>
     </div>
   </article>
@@ -617,9 +618,9 @@
       </div>
       <textarea data-texto-paso="4" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
-      <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <button class="px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="3" data-i18n="boton_anterior">← Atrás</button>
-        <button class="px-10 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="5" data-i18n="boton_siguiente">Siguiente →</button>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="3" data-i18n="boton_anterior">← Atrás</button>
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="5" data-i18n="boton_siguiente">Siguiente →</button>
       </div>
     </div>
   </article>
@@ -651,14 +652,14 @@
       </div>
 
       <div id="controles-foto-lista" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
-        <button id="btn-repetir-foto" class="px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-i18n="boton_repetir">↺ Repetir foto</button>
+        <button id="btn-repetir-foto" class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-i18n="boton_repetir">↺ Repetir foto</button>
       </div>
 
       <p id="aviso-camara" class="text-sm mb-2 hidden" style="color:#B23A3A"></p>
 
       <div class="flex flex-col sm:flex-row gap-3 justify-center mt-4">
-        <button class="px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="4" data-i18n="boton_anterior">← Atrás</button>
-        <button id="btn-saltar-foto" class="px-10 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_saltar">Saltar este paso →</button>
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="4" data-i18n="boton_anterior">← Atrás</button>
+        <button id="btn-saltar-foto" class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_saltar">Saltar este paso →</button>
       </div>
     </div>
   </article>
@@ -695,7 +696,7 @@
   <div id="contenedor-cvs">
 
     <!-- Selector visual de diseño premium (visible solo en tab premium) -->
-    <div id="selector-premium" class="cv-oculto mb-4 max-w-3xl mx-auto">
+    <div id="selector-premium" class="cv-oculto mb-2 max-w-3xl mx-auto">
       <p class="text-center text-sm font-bold mb-3" style="color:var(--musgo)">Elige tu diseño premium:</p>
       <div class="grid grid-cols-2 gap-2 mb-4">
         <button id="sel-prem1" onclick="elegirDisenoPremium('prem1')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--ambar);background:white">
@@ -710,18 +711,21 @@
           <p class="text-xs font-bold" style="color:#0f172a">Ejecutivo oscuro</p>
         </button>
         <button id="sel-prem2" onclick="elegirDisenoPremium('prem2')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
-          <div class="w-full h-16 rounded-lg mb-1 flex overflow-hidden" style="background:#fff;border:1px solid #e5e5e5">
-            <div style="width:38%;background:#fafaf9;border-right:1px solid #e5e5e5;padding:4px">
-              <div style="height:8px;width:8px;border-radius:50%;background:#1a1a1a;margin:0 auto 3px"></div>
-              <div style="height:2px;width:80%;background:#ddd;border-radius:2px;margin:0 auto"></div>
+          <div class="w-full h-16 rounded-lg mb-1 overflow-hidden" style="background:#fff;border:1px solid #e5e5e5">
+            <div style="display:flex;align-items:center;gap:6px;padding:5px 6px">
+              <div style="width:14px;height:14px;border-radius:50%;background:#e0e0e0;flex-shrink:0"></div>
+              <div style="height:5px;width:50px;background:#1a1a1a;border-radius:1px"></div>
             </div>
-            <div style="width:62%;background:#fff;padding:4px">
-              <div style="height:2px;width:100%;background:#1a1a1a;margin-bottom:4px"></div>
-              <div style="height:2px;width:70%;background:#eee;border-radius:2px;margin-bottom:2px"></div>
-              <div style="height:2px;width:85%;background:#eee;border-radius:2px"></div>
+            <div style="height:2px;background:#1a1a1a;margin:0 6px"></div>
+            <div style="display:grid;grid-template-columns:28px 1fr;gap:4px;padding:4px 6px">
+              <div style="height:2px;width:24px;background:#1a1a1a;border-radius:1px;margin-top:3px"></div>
+              <div>
+                <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
+              </div>
             </div>
           </div>
-          <p class="text-xs font-bold" style="color:#1a1a1a">Minimalista</p>
+          <p class="text-xs font-bold" style="color:#1a1a1a">Editorial</p>
         </button>
         <button id="sel-prem3" onclick="elegirDisenoPremium('prem3')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
           <div class="w-full h-16 rounded-lg mb-1 flex overflow-hidden" style="background:#fff">
@@ -865,37 +869,49 @@
     </div>
   </div><!-- /contenedor-cvs -->
 
-  <!-- ===== PLANTILLA PREMIUM 2: MINIMALISTA ===== -->
+  <!-- ===== PLANTILLA PREMIUM 2: EDITORIAL ===== -->
   <div id="hoja-cv-prem2" class="cv-oculto">
-    <div class="p2-izq">
+    <!-- Cabecera: foto grande + nombre -->
+    <div class="p2-head">
       <div class="p2-avatar">
-        <img id="p2-foto" alt="Foto" class="hidden">
-        <svg id="p2-avatar-placeholder" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
+        <img id="p2-foto" alt="Foto" class="hidden" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        <svg id="p2-avatar-placeholder" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
       </div>
-      <div contenteditable="true" id="p2-nombre" class="p2-nombre pista-edicion">NOMBRE APELLIDO</div>
-      <div class="p2-sec-izq" data-i18n="cv_lateral_contacto">Contacto</div>
-      <div class="p2-label" id="p2-label-tel">Teléfono</div>
-      <div contenteditable="true" id="p2-telefono" class="p2-valor pista-edicion">—</div>
-      <div class="p2-label" id="p2-label-email">Email</div>
-      <div contenteditable="true" id="p2-email" class="p2-valor pista-edicion">—</div>
-      <div class="p2-label" id="p2-label-ubi">Ubicación</div>
-      <div contenteditable="true" id="p2-ubicacion" class="p2-valor pista-edicion">—</div>
-      <div id="p2-sec-otros" class="hidden">
-        <div class="p2-sec-izq" data-i18n="cv_lateral_otros">Otros datos</div>
-        <div contenteditable="true" id="p2-otros" class="p2-valor pista-edicion"></div>
+      <div>
+        <div contenteditable="true" id="p2-nombre" class="p2-nombre pista-edicion">Nombre Apellido</div>
+        <div id="p2-cargo" class="p2-cargo"></div>
       </div>
     </div>
-    <div class="p2-der">
-      <div class="p2-top">
-        <div class="p2-sub">Currículum Vitae</div>
+    <!-- Banda de contacto -->
+    <div class="p2-contactband">
+      <div class="p2-citem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-.85a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span contenteditable="true" id="p2-telefono" class="pista-edicion">—</span>
       </div>
-      <div id="p2-sec-exp" class="hidden">
-        <div class="p2-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
-        <div contenteditable="true" id="p2-experiencia" class="pista-edicion"></div>
+      <div class="p2-csep"></div>
+      <div class="p2-citem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span contenteditable="true" id="p2-email" class="pista-edicion">—</span>
       </div>
-      <div id="p2-sec-est" class="hidden">
-        <div class="p2-sec-der" data-i18n="cv_bloque_estudios">Estudios y formación</div>
-        <div contenteditable="true" id="p2-estudios" class="pista-edicion"></div>
+      <div class="p2-csep"></div>
+      <div class="p2-citem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span contenteditable="true" id="p2-ubicacion" class="pista-edicion">—</span>
+      </div>
+    </div>
+    <!-- Cuerpo: filas con etiqueta izquierda + contenido derecha -->
+    <div class="p2-body">
+      <div id="p2-sec-est" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_estudios">Formación</div>
+        <div class="p2-contenido" contenteditable="true" id="p2-estudios"></div>
+      </div>
+      <div id="p2-sec-exp" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_experiencia">Experiencia</div>
+        <div class="p2-contenido" contenteditable="true" id="p2-experiencia"></div>
+      </div>
+      <div id="p2-sec-otros" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div class="p2-contenido" contenteditable="true" id="p2-otros"></div>
       </div>
     </div>
   </div>
@@ -930,8 +946,9 @@
     </div>
   </div>
 
-  <!-- ===== PLANTILLA PREMIUM 4: AZUL MARINO ===== -->
+  <!-- ===== PLANTILLA PREMIUM 4: AZUL MARINO (una columna) ===== -->
   <div id="hoja-cv-prem4" class="cv-oculto">
+    <!-- Cabecera con foto, nombre, cargo y contacto -->
     <div class="p4-header">
       <div class="p4-avatar">
         <img id="p4-foto" alt="Foto" class="hidden">
@@ -949,13 +966,8 @@
         </div>
       </div>
     </div>
-    <div class="p4-izq">
-      <div id="p4-sec-otros" class="hidden">
-        <div class="p4-sec" data-i18n="cv_lateral_otros">Otros datos</div>
-        <div contenteditable="true" id="p4-otros" class="p4-item pista-edicion"></div>
-      </div>
-    </div>
-    <div class="p4-der">
+    <!-- Cuerpo: experiencia y estudios en una columna -->
+    <div class="p4-body">
       <div id="p4-sec-exp" class="hidden">
         <div class="p4-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
         <div contenteditable="true" id="p4-experiencia" class="pista-edicion"></div>
@@ -965,6 +977,11 @@
         <div contenteditable="true" id="p4-estudios" class="pista-edicion"></div>
       </div>
     </div>
+    <!-- Footer: otros datos e idiomas al final -->
+    <div id="p4-sec-otros" class="p4-footer hidden">
+      <div class="p4-sec" data-i18n="cv_lateral_otros">Otros datos</div>
+      <div contenteditable="true" id="p4-otros" class="pista-edicion"></div>
+    </div>
   </div>
 
   <!-- ===== Zona de descarga / monetización ===== -->
@@ -972,7 +989,7 @@
 
     <!-- Fila superior: Volver y Traducir (sin cambios) -->
     <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-      <button id="btn-volver-editar" class="px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_rehacer">← Volver a grabar</button>
+      <button id="btn-volver-editar" class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_rehacer">← Volver a grabar</button>
       <div class="relative inline-block">
         <button id="btn-traducir-cv" class="w-full px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_traducir_cv">🌐 Traducir CV</button>
         <select id="select-idioma-traduccion" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 hidden w-56 rounded-2xl border-2 p-3 text-base shadow-lg bg-white" style="border-color:var(--linea); color:var(--tinta)" size="8"></select>
@@ -2907,7 +2924,7 @@ function rellenarPlantilla(modelo){
   }
 
   // Subtítulo/cargo en prem3 y prem4 (primer puesto de experiencia como subtítulo)
-  const subEl = document.getElementById(`${p}-sub-cargo`);
+  const subEl = document.getElementById(`${p}-sub-cargo`) || document.getElementById(`${p}-cargo`);
   if (subEl){
     const primerPuesto = document.querySelector("#cv-experiencia .cv-experiencia-puesto");
     subEl.textContent = primerPuesto ? primerPuesto.textContent.trim() : "";
@@ -3048,19 +3065,19 @@ function aplicarEscalaCV(){
   if (window.innerWidth >= 960) {
     document.documentElement.style.setProperty('--cv-escala', '1');
     const cont = document.getElementById('contenedor-cvs');
-    if (cont) cont.style.height = '';
+    if (cont){ cont.style.height = ''; cont.style.overflow = ''; }
     return;
   }
   const anchoDisponible = window.innerWidth * 0.92;
   const escala = Math.min(anchoDisponible / 900, 1);
   document.documentElement.style.setProperty('--cv-escala', escala.toFixed(4));
 
-  // Ajustar la altura del contenedor al CV actualmente visible
-  const idActivo = CV_MAP[tabActivo] || "hoja-cv";
+  const idActivo = tabActivo === 'premium' ? CV_MAP[disenoPremActivo] : 'hoja-cv';
   const el = document.getElementById(idActivo);
   const cont = document.getElementById('contenedor-cvs');
   if (el && cont && !el.classList.contains('cv-oculto')){
-    cont.style.height = (el.scrollHeight * escala) + 'px';
+    cont.style.height = Math.ceil(el.offsetHeight * escala) + 'px';
+    cont.style.overflow = 'hidden';
   }
 }
 
