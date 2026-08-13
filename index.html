@@ -54,31 +54,22 @@
     padding-left:   env(safe-area-inset-left, 0px);
     padding-right:  env(safe-area-inset-right, 0px);
   }
-  /* Escala el CV para que quepa en pantalla de móvil de un vistazo.
-     El CV tiene 900px de ancho. En móvil de ~390px → escala 390/900 ≈ 0.43
-     Usamos transform:scale con transform-origin top center para que se vea
-     desde arriba, manteniendo todas las proporciones y diseño originales. */
+  /* ===== ESCALA DEL CV EN MÓVIL =====
+     El CV tiene 900px de ancho. En móvil (~390px) → escala ≈ 0.43
+     Usamos zoom (Android WebView) + transform:scale (fallback) con
+     transform-origin top center. El contenedor ajusta su altura al CV escalado. */
   #contenedor-cvs {
-    overflow: visible;
+    width: 100%;
+    overflow: hidden;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
   }
-  #hoja-cv, #hoja-cv-premium {
+  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
     transform-origin: top center;
-  }
-  @media (max-width: 960px) {
-    #contenedor-cvs {
-      /* El contenedor ocupa el ancho real de pantalla */
-      width: 100%;
-      /* Altura = alto del CV escalado, para que el layout fluya correctamente */
-      overflow: hidden;
-    }
-    #hoja-cv, #hoja-cv-premium {
-      /* Calculamos la escala: ancho viewport / 900px */
-      /* En JS se aplica la escala exacta según el ancho real del móvil */
-      transform: scale(var(--cv-escala, 0.43));
-      margin-bottom: calc((var(--cv-escala, 0.43) - 1) * 100%);
-    }
+    transform: scale(var(--cv-escala, 1));
+    /* compensar el colapso de altura que produce transform:scale */
+    margin-bottom: calc((var(--cv-escala, 1) - 1) * 900px);
   }
   /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
   #modal-anuncio > div, #modal-pago > div {
@@ -546,7 +537,9 @@
       </div>
       <textarea data-texto-paso="1" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
-      <button class="w-full sm:w-auto px-10 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="2" data-i18n="boton_siguiente">Siguiente →</button>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="2" data-i18n="boton_siguiente">Siguiente →</button>
+      </div>
     </div>
   </article>
 
@@ -698,74 +691,69 @@
     <!-- Selector visual de diseño premium (visible solo en tab premium) -->
     <div id="selector-premium" class="cv-oculto mb-2 max-w-3xl mx-auto">
       <p class="text-center text-sm font-bold mb-3" style="color:var(--musgo)">Elige tu diseño premium:</p>
-      <div class="grid grid-cols-2 gap-2 mb-4">
-        <button id="sel-prem1" onclick="elegirDisenoPremium('prem1')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--ambar);background:white">
-          <div class="w-full h-16 rounded-lg mb-1 flex overflow-hidden" style="background:#0f172a">
-            <div style="width:35%;background:#0f172a;border-right:1px solid #1e293b"></div>
-            <div style="width:65%;background:#fff;padding:4px">
-              <div style="height:3px;width:60%;background:#e2e8f0;border-radius:2px;margin-bottom:3px"></div>
-              <div style="height:2px;width:80%;background:#f1f5f9;border-radius:2px;margin-bottom:2px"></div>
-              <div style="height:2px;width:70%;background:#f1f5f9;border-radius:2px"></div>
+    <!-- 4 miniaturas en horizontal con scroll si no caben -->
+    <div class="grid grid-cols-4 gap-2 mb-3">
+      <button id="sel-prem1" onclick="elegirDisenoPremium('prem1')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--ambar);background:white">
+        <div class="w-full h-20 rounded-lg mb-1 flex overflow-hidden" style="background:#0f172a">
+          <div style="width:35%;background:#0f172a;border-right:1px solid #1e293b"></div>
+          <div style="width:65%;background:#fff;padding:5px">
+            <div style="height:3px;width:60%;background:#e2e8f0;border-radius:2px;margin-bottom:3px"></div>
+            <div style="height:2px;width:80%;background:#f1f5f9;border-radius:2px;margin-bottom:2px"></div>
+            <div style="height:2px;width:70%;background:#f1f5f9;border-radius:2px"></div>
+          </div>
+        </div>
+        <p class="text-xs font-bold truncate" style="color:#0f172a">Ejecutivo oscuro</p>
+      </button>
+      <button id="sel-prem2" onclick="elegirDisenoPremium('prem2')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
+        <div class="w-full h-20 rounded-lg mb-1 overflow-hidden" style="background:#fff;border:1px solid #e5e5e5">
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 6px">
+            <div style="width:14px;height:14px;border-radius:50%;background:#e0e0e0;flex-shrink:0"></div>
+            <div style="height:5px;width:50px;background:#1a1a1a;border-radius:1px"></div>
+          </div>
+          <div style="height:2px;background:#1a1a1a;margin:0 6px"></div>
+          <div style="display:grid;grid-template-columns:28px 1fr;gap:4px;padding:4px 6px">
+            <div style="height:2px;width:24px;background:#1a1a1a;border-radius:1px;margin-top:3px"></div>
+            <div>
+              <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
             </div>
           </div>
-          <p class="text-xs font-bold" style="color:#0f172a">Ejecutivo oscuro</p>
-        </button>
-        <button id="sel-prem2" onclick="elegirDisenoPremium('prem2')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
-          <div class="w-full h-16 rounded-lg mb-1 overflow-hidden" style="background:#fff;border:1px solid #e5e5e5">
-            <div style="display:flex;align-items:center;gap:6px;padding:5px 6px">
-              <div style="width:14px;height:14px;border-radius:50%;background:#e0e0e0;flex-shrink:0"></div>
-              <div style="height:5px;width:50px;background:#1a1a1a;border-radius:1px"></div>
-            </div>
-            <div style="height:2px;background:#1a1a1a;margin:0 6px"></div>
-            <div style="display:grid;grid-template-columns:28px 1fr;gap:4px;padding:4px 6px">
-              <div style="height:2px;width:24px;background:#1a1a1a;border-radius:1px;margin-top:3px"></div>
-              <div>
-                <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
-                <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
-              </div>
+        </div>
+        <p class="text-xs font-bold truncate" style="color:#1a1a1a">Editorial</p>
+      </button>
+      <button id="sel-prem3" onclick="elegirDisenoPremium('prem3')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
+        <div class="w-full h-20 rounded-lg mb-1 flex overflow-hidden" style="background:#fff">
+          <div style="width:36%;background:#FBF8F3;border-right:1px solid #f0e8d8;padding:5px">
+            <div style="height:12px;width:12px;border-radius:50%;background:#C4874A;margin:0 auto 4px;border:1.5px solid #C4874A"></div>
+            <div style="height:2px;width:70%;background:#C4874A;border-radius:2px;margin:0 auto 2px"></div>
+            <div style="height:1.5px;width:80%;background:#e8d5bc;border-radius:2px;margin:0 auto"></div>
+          </div>
+          <div style="width:64%;background:#fff;padding:5px">
+            <div style="height:2px;width:40%;background:#C4874A;margin-bottom:4px"></div>
+            <div style="height:2px;width:75%;background:#eee;border-radius:2px;margin-bottom:2px"></div>
+            <div style="height:2px;width:65%;background:#eee;border-radius:2px"></div>
+          </div>
+        </div>
+        <p class="text-xs font-bold truncate" style="color:#C4874A">Ámbar moderno</p>
+      </button>
+      <button id="sel-prem4" onclick="elegirDisenoPremium('prem4')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
+        <div class="w-full h-20 rounded-lg mb-1 overflow-hidden" style="background:#fff">
+          <div style="background:#1B3A5C;padding:5px 7px;display:flex;align-items:center;gap:5px;border-bottom:2px solid #2D6A9F">
+            <div style="width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,.2)"></div>
+            <div>
+              <div style="height:2px;width:40px;background:rgba(255,255,255,.7);border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:28px;background:#93B5D4;border-radius:1px"></div>
             </div>
           </div>
-          <p class="text-xs font-bold" style="color:#1a1a1a">Editorial</p>
-        </button>
-        <button id="sel-prem3" onclick="elegirDisenoPremium('prem3')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
-          <div class="w-full h-16 rounded-lg mb-1 flex overflow-hidden" style="background:#fff">
-            <div style="width:36%;background:#FBF8F3;border-right:1px solid #f0e8d8;padding:4px">
-              <div style="height:10px;width:10px;border-radius:50%;background:#C4874A;margin:0 auto 3px;border:1.5px solid #C4874A"></div>
-              <div style="height:2px;width:70%;background:#C4874A;border-radius:2px;margin:0 auto 2px"></div>
-              <div style="height:1.5px;width:80%;background:#e8d5bc;border-radius:2px;margin:0 auto"></div>
-            </div>
-            <div style="width:64%;background:#fff;padding:4px">
-              <div style="height:2px;width:40%;background:#C4874A;margin-bottom:3px"></div>
-              <div style="height:2px;width:75%;background:#eee;border-radius:2px;margin-bottom:2px"></div>
-              <div style="height:2px;width:65%;background:#eee;border-radius:2px"></div>
-            </div>
+          <div style="padding:4px 6px">
+            <div style="height:1.5px;width:40%;background:#2D6A9F;border-radius:1px;margin-bottom:3px"></div>
+            <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+            <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
           </div>
-          <p class="text-xs font-bold" style="color:#C4874A">Ámbar moderno</p>
-        </button>
-        <button id="sel-prem4" onclick="elegirDisenoPremium('prem4')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
-          <div class="w-full h-16 rounded-lg mb-1 overflow-hidden" style="background:#fff">
-            <div style="background:#1B3A5C;padding:4px 6px;display:flex;align-items:center;gap:4px;border-bottom:2px solid #2D6A9F">
-              <div style="width:10px;height:10px;border-radius:3px;background:rgba(255,255,255,.2)"></div>
-              <div>
-                <div style="height:2px;width:35px;background:rgba(255,255,255,.7);border-radius:1px;margin-bottom:2px"></div>
-                <div style="height:1.5px;width:25px;background:#93B5D4;border-radius:1px"></div>
-              </div>
-            </div>
-            <div style="display:flex;padding:3px">
-              <div style="width:38%;background:#F5F9FC;border-right:1px solid #E0EBF5;padding:2px">
-                <div style="height:1.5px;width:80%;background:#ddd;border-radius:1px;margin-bottom:2px"></div>
-                <div style="height:1.5px;width:60%;background:#ddd;border-radius:1px"></div>
-              </div>
-              <div style="width:62%;padding:2px 4px">
-                <div style="height:1.5px;width:40%;background:#2D6A9F;border-radius:1px;margin-bottom:2px"></div>
-                <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
-                <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
-              </div>
-            </div>
-          </div>
-          <p class="text-xs font-bold" style="color:#1B3A5C">Azul marino</p>
-        </button>
-      </div>
+        </div>
+        <p class="text-xs font-bold truncate" style="color:#1B3A5C">Azul marino</p>
+      </button>
+    </div>
     </div>
 
     <!-- Plantilla BÁSICA (cv-oculto por defecto — pintarCV la muestra al generarse) -->
@@ -3062,22 +3050,23 @@ btnCancelarPago.addEventListener("click", () => {
 // Escala dinámica del CV: calcula qué factor aplicar para que el CV de 900px
 // quepa en el ancho real de la pantalla, con un pequeño margen lateral.
 function aplicarEscalaCV(){
-  if (window.innerWidth >= 960) {
-    document.documentElement.style.setProperty('--cv-escala', '1');
-    const cont = document.getElementById('contenedor-cvs');
-    if (cont){ cont.style.height = ''; cont.style.overflow = ''; }
-    return;
-  }
-  const anchoDisponible = window.innerWidth * 0.92;
-  const escala = Math.min(anchoDisponible / 900, 1);
+  const ancho = window.innerWidth;
+  // Escala: qué fracción del ancho disponible puede ocupar el CV (92% del ancho con margen)
+  const escala = ancho >= 960 ? 1 : Math.min((ancho * 0.96) / 900, 1);
   document.documentElement.style.setProperty('--cv-escala', escala.toFixed(4));
 
+  // Ajustar la altura del contenedor para eliminar el espacio vacío que deja transform:scale
+  // (transform:scale no afecta al layout normal — hay que compensarlo manualmente)
   const idActivo = tabActivo === 'premium' ? CV_MAP[disenoPremActivo] : 'hoja-cv';
   const el = document.getElementById(idActivo);
   const cont = document.getElementById('contenedor-cvs');
   if (el && cont && !el.classList.contains('cv-oculto')){
-    cont.style.height = Math.ceil(el.offsetHeight * escala) + 'px';
-    cont.style.overflow = 'hidden';
+    // offsetHeight = alto real del CV a 900px (sin escalar)
+    // × escala = alto visual que ocupa en pantalla
+    const altoEscalado = Math.ceil(el.offsetHeight * escala);
+    cont.style.height = altoEscalado + 'px';
+  } else if (cont){
+    cont.style.height = '';
   }
 }
 
