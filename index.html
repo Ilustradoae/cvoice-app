@@ -93,6 +93,14 @@
     .w-28, .sm\:w-32 { width: 5.5rem !important; height: 5.5rem !important; }
   }
 
+  /* Clases utilitarias para estilos inline repetidos */
+  .punto-item{ color:var(--ambar); font-size:1.1em; flex-shrink:0; }
+  .borde-musgo{ border-color:var(--musgo); }
+  .borde-linea{ border-color:var(--linea); }
+  .bg-musgo{ background:var(--musgo); }
+  .btn-outline-musgo{ border-color:var(--musgo); color:var(--musgo); background:white; }
+
+  /* Foco de teclado */
   button:focus-visible, [contenteditable="true"]:focus-visible, select:focus-visible, input:focus-visible{
     outline: 3px solid var(--ambar);
     outline-offset: 3px;
@@ -251,8 +259,110 @@
   .prem-compl-lista{ list-style: none; padding-left: 1rem; font-size: .78rem; color: #64748b; line-height: 1.6; }
   .prem-compl-lista li{ position: relative; }
   .prem-compl-lista li::before{ content: "–"; position: absolute; left: -1rem; color: #94a3b8; }
-  /* ============================================================================= */
-  #hoja-cv{
+  /* ============================================================
+     DISEÑO PREMIUM 2 — MINIMALISTA (blanco/negro, líneas finas)
+  ============================================================ */
+  #hoja-cv-prem2{
+    font-family: 'Inter', system-ui, sans-serif;
+    display: grid; grid-template-columns: 1fr 1.5fr;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: 1rem;
+    align-items: stretch;
+  }
+  .p2-izq{ background: #FAFAF9; border-right: 1px solid #e5e5e5; padding: 2.5rem 1.75rem; display: flex; flex-direction: column; gap: 0; }
+  .p2-avatar{ width: 7rem; height: 7rem; border-radius: 50%; border: 2px solid #1a1a1a; background: #f0f0f0; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto 1.5rem; }
+  .p2-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .p2-nombre{ font-size: 1.1rem; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: .5rem; font-family: 'Source Serif 4', Georgia, serif; }
+  .p2-sec-izq{ font-size: .6rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #1a1a1a; border-bottom: 1.5px solid #1a1a1a; padding-bottom: .25rem; margin: 1.25rem 0 .6rem; }
+  .p2-label{ font-size: .6rem; color: #888; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .1rem; }
+  .p2-valor{ font-size: .78rem; color: #1a1a1a; margin-bottom: .5rem; word-break: break-word; }
+  .p2-der{ background: #fff; padding: 2.5rem 2.25rem; display: flex; flex-direction: column; }
+  .p2-top{ border-bottom: 2px solid #1a1a1a; padding-bottom: .75rem; margin-bottom: 1.5rem; }
+  .p2-sub{ font-size: .65rem; letter-spacing: .18em; text-transform: uppercase; color: #888; margin-bottom: .2rem; }
+  .p2-sec-der{ font-size: .6rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #1a1a1a; margin: 1.25rem 0 .5rem; }
+  .p2-puesto{ font-size: .95rem; font-weight: 700; color: #1a1a1a; font-family: 'Source Serif 4', Georgia, serif; }
+  .p2-fecha{ font-size: .65rem; color: #888; float: right; margin-top: .2rem; }
+  .p2-empresa{ font-size: .78rem; color: #555; font-style: italic; margin: .15rem 0 .4rem; clear: both; }
+  .p2-desc{ list-style: none; padding-left: .8rem; font-size: .78rem; color: #444; line-height: 1.6; }
+  .p2-desc li{ position: relative; margin-bottom: .25rem; }
+  .p2-desc li::before{ content: "—"; position: absolute; left: -.8rem; color: #888; }
+  .p2-estudio{ font-size: .92rem; font-weight: 600; color: #1a1a1a; }
+  .p2-centro{ font-size: .78rem; color: #555; margin: .1rem 0 .5rem; }
+  .p2-compl-sec{ font-size: .58rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #888; margin: .75rem 0 .35rem; }
+  .p2-compl{ list-style: none; padding-left: .8rem; font-size: .76rem; color: #555; line-height: 1.6; }
+  .p2-compl li{ position: relative; }
+  .p2-compl li::before{ content: "–"; position: absolute; left: -.8rem; color: #aaa; }
+
+  /* ============================================================
+     DISEÑO PREMIUM 3 — ÁMBAR MODERNO (acento dorado/ámbar)
+  ============================================================ */
+  #hoja-cv-prem3{
+    font-family: 'Inter', system-ui, sans-serif;
+    display: grid; grid-template-columns: 1fr 1.75fr;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: 1rem;
+    align-items: stretch;
+  }
+  .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: 2.5rem 1.75rem; display: flex; flex-direction: column; }
+  .p3-avatar{ width: 7rem; height: 7rem; border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto 1.25rem; font-size: 1.5rem; font-weight: 700; color: #C4874A; }
+  .p3-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .p3-nombre{ font-size: 1.05rem; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: .2rem; }
+  .p3-sub{ font-size: .62rem; color: #C4874A; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; text-align: center; margin-bottom: 1.25rem; }
+  .p3-sec{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #C4874A; margin: 1rem 0 .4rem; }
+  .p3-label{ font-size: .6rem; color: #888; margin-bottom: .1rem; }
+  .p3-valor{ font-size: .78rem; color: #1a1a1a; margin-bottom: .4rem; display: flex; align-items: flex-start; gap: .35rem; word-break: break-word; }
+  .p3-dot{ width: 5px; height: 5px; border-radius: 50%; background: #C4874A; flex-shrink: 0; margin-top: .35rem; }
+  .p3-der{ background: #fff; padding: 2.5rem 2.25rem; display: flex; flex-direction: column; }
+  .p3-sec-der{ font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1a1a1a; display: inline-block; border-bottom: 2px solid #C4874A; padding-bottom: .2rem; margin: 1.25rem 0 .6rem; }
+  .p3-puesto{ font-size: .95rem; font-weight: 700; color: #1a1a1a; }
+  .p3-fecha{ font-size: .62rem; color: #C4874A; font-weight: 600; float: right; margin-top: .2rem; }
+  .p3-empresa{ font-size: .78rem; color: #777; font-style: italic; margin: .1rem 0 .4rem; clear: both; }
+  .p3-desc{ list-style: none; padding-left: .85rem; font-size: .78rem; color: #444; line-height: 1.6; }
+  .p3-desc li{ position: relative; margin-bottom: .2rem; }
+  .p3-desc li::before{ content: "–"; position: absolute; left: -.85rem; color: #C4874A; font-weight: 700; }
+  .p3-estudio{ font-size: .92rem; font-weight: 600; color: #1a1a1a; }
+  .p3-centro{ font-size: .78rem; color: #777; margin: .1rem 0 .5rem; }
+  .p3-compl-sec{ font-size: .58rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #888; margin: .75rem 0 .35rem; }
+  .p3-compl{ list-style: none; padding-left: .85rem; font-size: .76rem; color: #555; line-height: 1.6; }
+  .p3-compl li{ position: relative; }
+  .p3-compl li::before{ content: "–"; position: absolute; left: -.85rem; color: #C4874A; }
+
+  /* ============================================================
+     DISEÑO PREMIUM 4 — AZUL MARINO CORPORATIVO
+  ============================================================ */
+  #hoja-cv-prem4{
+    font-family: 'Inter', system-ui, sans-serif;
+    display: grid; grid-template-columns: 1fr 1.5fr;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: 1rem;
+    align-items: stretch;
+  }
+  .p4-header{ grid-column: 1 / -1; background: #1B3A5C; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1.25rem; border-bottom: 4px solid #2D6A9F; }
+  .p4-avatar{ width: 5.5rem; height: 5.5rem; border-radius: .6rem; border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: 1.4rem; font-weight: 700; color: #93B5D4; }
+  .p4-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .p4-hinfo{ flex: 1; }
+  .p4-nombre{ font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: .02em; }
+  .p4-sub{ font-size: .65rem; color: #93B5D4; text-transform: uppercase; letter-spacing: .12em; margin-top: .25rem; }
+  .p4-contacts{ display: flex; flex-wrap: wrap; gap: .25rem .75rem; margin-top: .5rem; }
+  .p4-c{ font-size: .65rem; color: #7A9FBF; }
+  .p4-izq{ background: #F5F9FC; padding: 1.75rem; border-right: 1px solid #E0EBF5; display: flex; flex-direction: column; }
+  .p4-sec{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin: 1rem 0 .4rem; }
+  .p4-item{ font-size: .78rem; color: #333; margin-bottom: .3rem; }
+  .p4-der{ background: #fff; padding: 1.75rem 2rem; display: flex; flex-direction: column; }
+  .p4-sec-der{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #2D6A9F; margin: 1rem 0 .5rem; }
+  .p4-puesto{ font-size: .95rem; font-weight: 700; color: #1a1a1a; }
+  .p4-fecha{ font-size: .62rem; background: #E8F0F8; color: #2D6A9F; padding: .15rem .45rem; border-radius: .25rem; float: right; font-weight: 600; }
+  .p4-empresa{ font-size: .78rem; color: #777; font-style: italic; margin: .1rem 0 .4rem; clear: both; }
+  .p4-desc{ list-style: none; padding-left: .85rem; font-size: .78rem; color: #444; line-height: 1.6; }
+  .p4-desc li{ position: relative; margin-bottom: .2rem; }
+  .p4-desc li::before{ content: "–"; position: absolute; left: -.85rem; color: #2D6A9F; font-weight: 700; }
+  .p4-estudio{ font-size: .92rem; font-weight: 600; color: #1a1a1a; }
+  .p4-centro{ font-size: .78rem; color: #777; margin: .1rem 0 .5rem; }
+  .p4-compl-sec{ font-size: .58rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #888; margin: .75rem 0 .35rem; }
+  .p4-compl{ list-style: none; padding-left: .85rem; font-size: .76rem; color: #555; line-height: 1.6; }
+  .p4-compl li{ position: relative; }
+  .p4-compl li::before{ content: "–"; position: absolute; left: -.85rem; color: #2D6A9F; }
+  /* ============================================================ */
     font-family:'Source Serif 4', Georgia, serif;
     color: var(--cv-tinta);
     display: grid;
@@ -422,10 +532,10 @@
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p1_titulo">Tus datos personales</h2>
       <ul id="p1-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p1_item1">Tu nombre completo</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p1_item2">Tu número de teléfono</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p1_item3">Tu correo electrónico</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p1_item4">Tu ciudad o municipio</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item1">Tu nombre completo</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item2">Tu número de teléfono</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item3">Tu correo electrónico</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item4">Tu ciudad o municipio</span></li>
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
@@ -444,10 +554,10 @@
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p2_titulo">Tu experiencia de trabajo</h2>
       <ul id="p2-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p2_item1">Nombre de la empresa o negocio</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p2_item2">Tu puesto o cargo</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p2_item3">Años o fechas en que trabajaste</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p2_item4">Qué tareas o funciones hacías</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item1">Nombre de la empresa o negocio</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item2">Tu puesto o cargo</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item3">Años o fechas en que trabajaste</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item4">Qué tareas o funciones hacías</span></li>
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
@@ -469,10 +579,10 @@
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p3_titulo">Tus estudios</h2>
       <ul id="p3-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p3_item1">Nombre del centro educativo</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p3_item2">Título o certificado obtenido</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p3_item3">Año en que terminaste</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p3_item4">Cursos o formaciones extra (si tienes)</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item1">Nombre del centro educativo</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item2">Título o certificado obtenido</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item3">Año en que terminaste</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item4">Cursos o formaciones extra (si tienes)</span></li>
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
@@ -494,10 +604,10 @@
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p4_titulo">Otros datos</h2>
       <ul id="p4-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p4_item1">Idiomas que hablas y nivel</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p4_item2">Carnet de conducir (si tienes)</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p4_item3">Disponibilidad horaria</span></li>
-        <li class="flex items-start gap-2"><span style="color:var(--ambar); font-size:1.1em">●</span><span data-i18n="p4_item4">Voluntariados o actividades extra (si tienes)</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item1">Idiomas que hablas y nivel</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item2">Carnet de conducir (si tienes)</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item3">Disponibilidad horaria</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item4">Voluntariados o actividades extra (si tienes)</span></li>
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
@@ -571,6 +681,7 @@
   </div>
 
   <!-- Tabs: Modelo Básico (actual) / Modelo Premium (previsualización) -->
+  <!-- Tabs: Modelo Básico / Diseño Premium -->
   <div id="tabs-modelo" class="flex gap-2 justify-center mb-4 max-w-3xl mx-auto">
     <button id="tab-basico" class="flex-1 py-3 px-4 rounded-full text-sm font-bold border-2 transition" style="background:var(--musgo);color:white;border-color:var(--musgo)" onclick="cambiarTab('basico')" data-i18n="tab_basico">
       📄 Modelo Básico
@@ -582,6 +693,76 @@
 
   <!-- Contenedor de las dos plantillas: solo una visible a la vez según el tab -->
   <div id="contenedor-cvs">
+
+    <!-- Selector visual de diseño premium (visible solo en tab premium) -->
+    <div id="selector-premium" class="cv-oculto mb-4 max-w-3xl mx-auto">
+      <p class="text-center text-sm font-bold mb-3" style="color:var(--musgo)">Elige tu diseño premium:</p>
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <button id="sel-prem1" onclick="elegirDisenoPremium('prem1')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--ambar);background:white">
+          <div class="w-full h-16 rounded-lg mb-1 flex overflow-hidden" style="background:#0f172a">
+            <div style="width:35%;background:#0f172a;border-right:1px solid #1e293b"></div>
+            <div style="width:65%;background:#fff;padding:4px">
+              <div style="height:3px;width:60%;background:#e2e8f0;border-radius:2px;margin-bottom:3px"></div>
+              <div style="height:2px;width:80%;background:#f1f5f9;border-radius:2px;margin-bottom:2px"></div>
+              <div style="height:2px;width:70%;background:#f1f5f9;border-radius:2px"></div>
+            </div>
+          </div>
+          <p class="text-xs font-bold" style="color:#0f172a">Ejecutivo oscuro</p>
+        </button>
+        <button id="sel-prem2" onclick="elegirDisenoPremium('prem2')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
+          <div class="w-full h-16 rounded-lg mb-1 flex overflow-hidden" style="background:#fff;border:1px solid #e5e5e5">
+            <div style="width:38%;background:#fafaf9;border-right:1px solid #e5e5e5;padding:4px">
+              <div style="height:8px;width:8px;border-radius:50%;background:#1a1a1a;margin:0 auto 3px"></div>
+              <div style="height:2px;width:80%;background:#ddd;border-radius:2px;margin:0 auto"></div>
+            </div>
+            <div style="width:62%;background:#fff;padding:4px">
+              <div style="height:2px;width:100%;background:#1a1a1a;margin-bottom:4px"></div>
+              <div style="height:2px;width:70%;background:#eee;border-radius:2px;margin-bottom:2px"></div>
+              <div style="height:2px;width:85%;background:#eee;border-radius:2px"></div>
+            </div>
+          </div>
+          <p class="text-xs font-bold" style="color:#1a1a1a">Minimalista</p>
+        </button>
+        <button id="sel-prem3" onclick="elegirDisenoPremium('prem3')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
+          <div class="w-full h-16 rounded-lg mb-1 flex overflow-hidden" style="background:#fff">
+            <div style="width:36%;background:#FBF8F3;border-right:1px solid #f0e8d8;padding:4px">
+              <div style="height:10px;width:10px;border-radius:50%;background:#C4874A;margin:0 auto 3px;border:1.5px solid #C4874A"></div>
+              <div style="height:2px;width:70%;background:#C4874A;border-radius:2px;margin:0 auto 2px"></div>
+              <div style="height:1.5px;width:80%;background:#e8d5bc;border-radius:2px;margin:0 auto"></div>
+            </div>
+            <div style="width:64%;background:#fff;padding:4px">
+              <div style="height:2px;width:40%;background:#C4874A;margin-bottom:3px"></div>
+              <div style="height:2px;width:75%;background:#eee;border-radius:2px;margin-bottom:2px"></div>
+              <div style="height:2px;width:65%;background:#eee;border-radius:2px"></div>
+            </div>
+          </div>
+          <p class="text-xs font-bold" style="color:#C4874A">Ámbar moderno</p>
+        </button>
+        <button id="sel-prem4" onclick="elegirDisenoPremium('prem4')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
+          <div class="w-full h-16 rounded-lg mb-1 overflow-hidden" style="background:#fff">
+            <div style="background:#1B3A5C;padding:4px 6px;display:flex;align-items:center;gap:4px;border-bottom:2px solid #2D6A9F">
+              <div style="width:10px;height:10px;border-radius:3px;background:rgba(255,255,255,.2)"></div>
+              <div>
+                <div style="height:2px;width:35px;background:rgba(255,255,255,.7);border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:1.5px;width:25px;background:#93B5D4;border-radius:1px"></div>
+              </div>
+            </div>
+            <div style="display:flex;padding:3px">
+              <div style="width:38%;background:#F5F9FC;border-right:1px solid #E0EBF5;padding:2px">
+                <div style="height:1.5px;width:80%;background:#ddd;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:1.5px;width:60%;background:#ddd;border-radius:1px"></div>
+              </div>
+              <div style="width:62%;padding:2px 4px">
+                <div style="height:1.5px;width:40%;background:#2D6A9F;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+                <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs font-bold" style="color:#1B3A5C">Azul marino</p>
+        </button>
+      </div>
+    </div>
 
     <!-- Plantilla BÁSICA (cv-oculto por defecto — pintarCV la muestra al generarse) -->
     <div id="hoja-cv" class="cv-oculto rounded-2xl shadow-2xl">
@@ -683,6 +864,108 @@
       </div>
     </div>
   </div><!-- /contenedor-cvs -->
+
+  <!-- ===== PLANTILLA PREMIUM 2: MINIMALISTA ===== -->
+  <div id="hoja-cv-prem2" class="cv-oculto">
+    <div class="p2-izq">
+      <div class="p2-avatar">
+        <img id="p2-foto" alt="Foto" class="hidden">
+        <svg id="p2-avatar-placeholder" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
+      </div>
+      <div contenteditable="true" id="p2-nombre" class="p2-nombre pista-edicion">NOMBRE APELLIDO</div>
+      <div class="p2-sec-izq" data-i18n="cv_lateral_contacto">Contacto</div>
+      <div class="p2-label" id="p2-label-tel">Teléfono</div>
+      <div contenteditable="true" id="p2-telefono" class="p2-valor pista-edicion">—</div>
+      <div class="p2-label" id="p2-label-email">Email</div>
+      <div contenteditable="true" id="p2-email" class="p2-valor pista-edicion">—</div>
+      <div class="p2-label" id="p2-label-ubi">Ubicación</div>
+      <div contenteditable="true" id="p2-ubicacion" class="p2-valor pista-edicion">—</div>
+      <div id="p2-sec-otros" class="hidden">
+        <div class="p2-sec-izq" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div contenteditable="true" id="p2-otros" class="p2-valor pista-edicion"></div>
+      </div>
+    </div>
+    <div class="p2-der">
+      <div class="p2-top">
+        <div class="p2-sub">Currículum Vitae</div>
+      </div>
+      <div id="p2-sec-exp" class="hidden">
+        <div class="p2-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
+        <div contenteditable="true" id="p2-experiencia" class="pista-edicion"></div>
+      </div>
+      <div id="p2-sec-est" class="hidden">
+        <div class="p2-sec-der" data-i18n="cv_bloque_estudios">Estudios y formación</div>
+        <div contenteditable="true" id="p2-estudios" class="pista-edicion"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLANTILLA PREMIUM 3: ÁMBAR MODERNO ===== -->
+  <div id="hoja-cv-prem3" class="cv-oculto">
+    <div class="p3-izq">
+      <div class="p3-avatar">
+        <img id="p3-foto" alt="Foto" class="hidden">
+        <span id="p3-iniciales">SG</span>
+      </div>
+      <div contenteditable="true" id="p3-nombre" class="p3-nombre pista-edicion">Nombre Apellido</div>
+      <div id="p3-sub-cargo" class="p3-sub"></div>
+      <div class="p3-sec" data-i18n="cv_lateral_contacto">Contacto</div>
+      <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-telefono" class="pista-edicion">—</span></div>
+      <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-email" class="pista-edicion">—</span></div>
+      <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-ubicacion" class="pista-edicion">—</span></div>
+      <div id="p3-sec-otros" class="hidden">
+        <div class="p3-sec" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div contenteditable="true" id="p3-otros" class="p3-valor pista-edicion"></div>
+      </div>
+    </div>
+    <div class="p3-der">
+      <div id="p3-sec-exp" class="hidden">
+        <div class="p3-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
+        <div contenteditable="true" id="p3-experiencia" class="pista-edicion"></div>
+      </div>
+      <div id="p3-sec-est" class="hidden">
+        <div class="p3-sec-der" data-i18n="cv_bloque_estudios">Estudios y formación</div>
+        <div contenteditable="true" id="p3-estudios" class="pista-edicion"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLANTILLA PREMIUM 4: AZUL MARINO ===== -->
+  <div id="hoja-cv-prem4" class="cv-oculto">
+    <div class="p4-header">
+      <div class="p4-avatar">
+        <img id="p4-foto" alt="Foto" class="hidden">
+        <span id="p4-iniciales">SG</span>
+      </div>
+      <div class="p4-hinfo">
+        <div contenteditable="true" id="p4-nombre" class="p4-nombre pista-edicion">Nombre Apellido</div>
+        <div id="p4-sub-cargo" class="p4-sub"></div>
+        <div class="p4-contacts">
+          <span contenteditable="true" id="p4-telefono" class="p4-c pista-edicion">—</span>
+          <span class="p4-c">·</span>
+          <span contenteditable="true" id="p4-email" class="p4-c pista-edicion">—</span>
+          <span class="p4-c">·</span>
+          <span contenteditable="true" id="p4-ubicacion" class="p4-c pista-edicion">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="p4-izq">
+      <div id="p4-sec-otros" class="hidden">
+        <div class="p4-sec" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div contenteditable="true" id="p4-otros" class="p4-item pista-edicion"></div>
+      </div>
+    </div>
+    <div class="p4-der">
+      <div id="p4-sec-exp" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
+        <div contenteditable="true" id="p4-experiencia" class="pista-edicion"></div>
+      </div>
+      <div id="p4-sec-est" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_estudios">Estudios y formación</div>
+        <div contenteditable="true" id="p4-estudios" class="pista-edicion"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== Zona de descarga / monetización ===== -->
   <div class="max-w-3xl mx-auto mt-6 mb-3 px-2">
@@ -842,7 +1125,7 @@ const TEXTOS = {
     camara_sin_permiso: "No hemos podido acceder a la cámara. Revisa los permisos del navegador.",
     placeholder_texto: "Aquí verás lo que vas diciendo…",
     puedes_corregir: "¿Algo está mal? Puedes escribir o corregir aquí mismo.",
-    boton_siguiente: "Siguiente →", boton_anterior: "← Atrás", boton_generar: "Crear mi currículum ✓",
+    boton_siguiente: "Siguiente →", boton_anterior: "← Atrás",
     mensaje_carga: "La IA está organizando y redactando tu CV con estilo profesional…",
     error_ia_generico: "No hemos podido redactar tu currículum automáticamente. Revisa tu conexión a internet e inténtalo de nuevo.",
     cv_titulo: "Tu currículum está listo", cv_ayuda: "Toca cualquier texto para corregirlo antes de descargar.",
@@ -896,7 +1179,7 @@ const TEXTOS = {
     camara_sin_permiso: "We couldn't access the camera. Check your browser permissions.",
     placeholder_texto: "You'll see what you're saying here…",
     puedes_corregir: "Something wrong? You can type or fix it right here.",
-    boton_siguiente: "Next →", boton_anterior: "← Back", boton_generar: "Create my résumé ✓",
+    boton_siguiente: "Next →", boton_anterior: "← Back",
     mensaje_carga: "The AI is organising and writing your résumé with a professional touch…",
     error_ia_generico: "We couldn't write your résumé automatically. Check your internet connection and try again.",
     cv_titulo: "Your résumé is ready", cv_ayuda: "Tap any text to fix it before downloading.",
@@ -944,7 +1227,7 @@ const TEXTOS = {
     camara_sin_permiso: "Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.",
     placeholder_texto: "Vous verrez ici ce que vous dites…",
     puedes_corregir: "Une erreur ? Vous pouvez écrire ou corriger ici.",
-    boton_siguiente: "Suivant →", boton_anterior: "← Retour", boton_generar: "Créer mon CV ✓",
+    boton_siguiente: "Suivant →", boton_anterior: "← Retour",
     mensaje_carga: "L'IA organise et rédige votre CV avec une touche professionnelle…",
     error_ia_generico: "Nous n'avons pas pu rédiger votre CV automatiquement. Vérifiez votre connexion internet et réessayez.",
     cv_titulo: "Votre CV est prêt", cv_ayuda: "Touchez un texte pour le corriger avant de télécharger.",
@@ -992,7 +1275,7 @@ const TEXTOS = {
     camara_sin_permiso: "Kein Zugriff auf die Kamera möglich. Prüfen Sie die Browser-Berechtigungen.",
     placeholder_texto: "Hier sehen Sie, was Sie sagen…",
     puedes_corregir: "Etwas falsch? Hier tippen oder korrigieren.",
-    boton_siguiente: "Weiter →", boton_anterior: "← Zurück", boton_generar: "Lebenslauf erstellen ✓",
+    boton_siguiente: "Weiter →", boton_anterior: "← Zurück",
     mensaje_carga: "Die KI organisiert und verfasst Ihren Lebenslauf mit professionellem Schliff…",
     error_ia_generico: "Ihr Lebenslauf konnte nicht automatisch erstellt werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
     cv_titulo: "Ihr Lebenslauf ist fertig", cv_ayuda: "Tippen Sie auf Text, um ihn vor dem Download zu korrigieren.",
@@ -1040,7 +1323,7 @@ const TEXTOS = {
     camara_sin_permiso: "Non siamo riusciti ad accedere alla fotocamera. Controlla i permessi del browser.",
     placeholder_texto: "Qui vedrai quello che stai dicendo…",
     puedes_corregir: "Qualcosa non va? Puoi scrivere o correggere qui.",
-    boton_siguiente: "Avanti →", boton_anterior: "← Indietro", boton_generar: "Crea il mio curriculum ✓",
+    boton_siguiente: "Avanti →", boton_anterior: "← Indietro",
     mensaje_carga: "L'IA sta organizzando e scrivendo il tuo curriculum con un tocco professionale…",
     error_ia_generico: "Non siamo riusciti a creare automaticamente il tuo curriculum. Controlla la connessione e riprova.",
     cv_titulo: "Il tuo curriculum è pronto", cv_ayuda: "Tocca un testo per correggerlo prima di scaricare.",
@@ -1088,7 +1371,7 @@ const TEXTOS = {
     camara_sin_permiso: "Não foi possível aceder à câmara. Verifique as permissões do navegador.",
     placeholder_texto: "Aqui verá o que está a dizer…",
     puedes_corregir: "Algo errado? Pode escrever ou corrigir aqui mesmo.",
-    boton_siguiente: "Seguinte →", boton_anterior: "← Voltar", boton_generar: "Criar o meu currículo ✓",
+    boton_siguiente: "Seguinte →", boton_anterior: "← Voltar",
     mensaje_carga: "A IA está a organizar e a escrever o seu currículo com um toque profissional…",
     error_ia_generico: "Não foi possível criar o seu currículo automaticamente. Verifique a sua ligação à internet e tente novamente.",
     cv_titulo: "O seu currículo está pronto", cv_ayuda: "Toque em qualquer texto para corrigir antes de descarregar.",
@@ -1136,7 +1419,7 @@ const TEXTOS = {
     camara_sin_permiso: "تعذّر الوصول إلى الكاميرا. تحقق من أذونات المتصفح.",
     placeholder_texto: "سترى هنا ما تقوله…",
     puedes_corregir: "هل هناك خطأ؟ يمكنك الكتابة أو التصحيح هنا.",
-    boton_siguiente: "التالي ←", boton_anterior: "→ السابق", boton_generar: "إنشاء سيرتي الذاتية ✓",
+    boton_siguiente: "التالي ←", boton_anterior: "→ السابق",
     mensaje_carga: "الذكاء الاصطناعي ينظّم ويكتب سيرتك الذاتية بأسلوب مهني…",
     error_ia_generico: "تعذّر إنشاء سيرتك الذاتية تلقائيًا. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
     cv_titulo: "سيرتك الذاتية جاهزة", cv_ayuda: "اضغط على أي نص لتصحيحه قبل التحميل.",
@@ -1184,7 +1467,7 @@ const TEXTOS = {
     camara_sin_permiso: "无法访问相机，请检查浏览器权限设置。",
     placeholder_texto: "你说的内容会显示在这里…",
     puedes_corregir: "有错误吗？你可以在这里直接输入或修改。",
-    boton_siguiente: "下一步 →", boton_anterior: "← 上一步", boton_generar: "生成我的简历 ✓",
+    boton_siguiente: "下一步 →", boton_anterior: "← 上一步",
     mensaje_carga: "AI 正在以专业的方式整理和撰写你的简历…",
     error_ia_generico: "无法自动生成简历。请检查网络连接后重试。",
     cv_titulo: "你的简历已完成", cv_ayuda: "点击任意文字即可在下载前修改。",
@@ -1232,7 +1515,7 @@ const TEXTOS = {
     camara_sin_permiso: "カメラにアクセスできませんでした。ブラウザの権限設定を確認してください。",
     placeholder_texto: "話した内容がここに表示されます…",
     puedes_corregir: "間違いがありますか？ここで直接入力・修正できます。",
-    boton_siguiente: "次へ →", boton_anterior: "← 戻る", boton_generar: "履歴書を作成する ✓",
+    boton_siguiente: "次へ →", boton_anterior: "← 戻る",
     mensaje_carga: "AIがあなたの履歴書をプロフェッショナルな仕上がりに整理・執筆しています…",
     error_ia_generico: "履歴書を自動作成できませんでした。インターネット接続を確認して再度お試しください。",
     cv_titulo: "履歴書が完成しました", cv_ayuda: "ダウンロード前にテキストをタップして修正できます。",
@@ -1280,7 +1563,7 @@ const TEXTOS = {
     camara_sin_permiso: "Nu am putut accesa camera. Verifică permisiunile browserului.",
     placeholder_texto: "Aici vei vedea ce spui…",
     puedes_corregir: "Ceva e greșit? Poți scrie sau corecta chiar aici.",
-    boton_siguiente: "Continuă →", boton_anterior: "← Înapoi", boton_generar: "Creează-mi CV-ul ✓",
+    boton_siguiente: "Continuă →", boton_anterior: "← Înapoi",
     mensaje_carga: "IA organizează și redactează CV-ul tău cu o notă profesională…",
     error_ia_generico: "Nu am putut crea automat CV-ul. Verifică conexiunea la internet și încearcă din nou.",
     cv_titulo: "CV-ul tău este pregătit", cv_ayuda: "Apasă pe orice text pentru a-l corecta înainte de descărcare.",
@@ -1328,7 +1611,7 @@ const TEXTOS = {
     camara_sin_permiso: "Nie udało się uzyskać dostępu do kamery. Sprawdź uprawnienia przeglądarki.",
     placeholder_texto: "Tutaj zobaczysz, co mówisz…",
     puedes_corregir: "Coś jest nie tak? Możesz tu pisać lub poprawiać.",
-    boton_siguiente: "Dalej →", boton_anterior: "← Wstecz", boton_generar: "Stwórz moje CV ✓",
+    boton_siguiente: "Dalej →", boton_anterior: "← Wstecz",
     mensaje_carga: "AI organizuje i pisze Twoje CV z profesjonalnym wyczuciem…",
     error_ia_generico: "Nie udało się automatycznie utworzyć CV. Sprawdź połączenie internetowe i spróbuj ponownie.",
     cv_titulo: "Twoje CV jest gotowe", cv_ayuda: "Dotknij dowolny tekst, aby go poprawić przed pobraniem.",
@@ -1376,7 +1659,7 @@ const TEXTOS = {
     camara_sin_permiso: "Не вдалося отримати доступ до камери. Перевірте дозволи браузера.",
     placeholder_texto: "Тут з'явиться те, що ви говорите…",
     puedes_corregir: "Щось не так? Можете написати або виправити тут.",
-    boton_siguiente: "Далі →", boton_anterior: "← Назад", boton_generar: "Створити моє резюме ✓",
+    boton_siguiente: "Далі →", boton_anterior: "← Назад",
     mensaje_carga: "ШІ організовує та пише ваше резюме у професійному стилі…",
     error_ia_generico: "Не вдалося автоматично створити резюме. Перевірте з'єднання з інтернетом і спробуйте ще раз.",
     cv_titulo: "Ваше резюме готове", cv_ayuda: "Торкніться будь-якого тексту, щоб виправити перед завантаженням.",
@@ -1424,7 +1707,7 @@ const TEXTOS = {
     camara_sin_permiso: "Не удалось получить доступ к камере. Проверьте разрешения браузера.",
     placeholder_texto: "Здесь появится то, что вы говорите…",
     puedes_corregir: "Что-то не так? Можете написать или исправить здесь.",
-    boton_siguiente: "Далее →", boton_anterior: "← Назад", boton_generar: "Создать резюме ✓",
+    boton_siguiente: "Далее →", boton_anterior: "← Назад",
     mensaje_carga: "ИИ организует и пишет ваше резюме в профессиональном стиле…",
     error_ia_generico: "Не удалось автоматически создать резюме. Проверьте подключение к интернету и попробуйте снова.",
     cv_titulo: "Ваше резюме готово", cv_ayuda: "Коснитесь любого текста, чтобы исправить его перед скачиванием.",
@@ -1483,6 +1766,11 @@ let idiomaActual = detectarIdiomaNavegador();
 let pasoActual = 1;
 let reconocimiento = null;
 let micEscuchandoEl = null;
+
+// Caché de elementos DOM accedidos frecuentemente
+// (evita múltiples getElementById en funciones llamadas en cada interacción)
+const DOM = {};
+const $id = id => (DOM[id] = DOM[id] || document.getElementById(id));
 
 // ---------- 3. Selector de idioma ----------
 const selectIdioma = document.getElementById("select-idioma");
@@ -1543,11 +1831,7 @@ function aplicarTextos(){
 }
 
 // ---------- 5. Reconocimiento de voz (Web Speech API) ----------
-// ---------- 6. Reconocimiento de voz (Web Speech API) ----------
-// Diseño de reinicio automático: cuando la API se detiene por una pausa larga
-// (comportamiento normal en Chrome/Android), si _micManual es false significa
-// que no fue el usuario quien lo apagó, así que reiniciamos automáticamente.
-// Cuando el usuario pulsa el botón para apagar, _micManual = true y no reiniciamos.
+// Reinicio automático al detectar pausas largas (comportamiento normal en Android WebView).
 
 let _micManual = false;    // true = el usuario apagó el micro a propósito
 let _textoAcumulado = "";  // texto final acumulado entre reinicios por pausa
@@ -1802,7 +2086,23 @@ document.getElementById("btn-saltar-foto").addEventListener("click", () => {
 const PROXY_URL = "https://cvoice-proxy.vercel.app/api/groq";
 const MODELO_GROQ = "llama-3.3-70b-versatile";
 
-const PROMPT_SISTEMA = "Actúas como un redactor profesional de currículums. Vas a recibir textos desestructurados y hablados por voz, con lenguaje coloquial, repeticiones y muletillas. Tu trabajo es: 1) Extraer solo la información útil, descartando relleno. 2) Corregir gramática y formatos hablados (por ejemplo, 'teléfono seis seis seis cuatro cuatro dos dos' se convierte en números; 'arroba hotmail punto com' se convierte en '@hotmail.com'). 3) Poner el nombre completo en MAYÚSCULAS. 4) Estructurar la experiencia laboral en orden cronológico inverso (lo más reciente primero), separando cada puesto en: nombre del puesto, empresa o ciudad, fechas o duración, y 3 a 4 viñetas con las funciones principales resumidas con verbos de acción en infinitivo o pasado (ej. 'Atender al público', 'Gestioné el inventario'). 5) Estructurar los estudios separando el título oficial obtenido (en negrita conceptual), el centro educativo o ciudad, y el año de finalización; si hay cursos cortos o formación no oficial, agrúpalos aparte como 'Formación complementaria'. 6) Si el usuario indica explícitamente que no tiene experiencia laboral, estudios, u otros datos en algún apartado, dejas ese campo como array vacío o cadena vacía, para que la aplicación oculte esa sección por completo. Devuelve el resultado estructurado estrictamente en el formato JSON que requiere la plantilla de la app, nunca en HTML libre ni con explicaciones adicionales.";
+const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 años de experiencia en RRHH y selección de personal. Recibirás texto hablado por voz, desestructurado y coloquial. Tu misión es transformarlo en un CV impecable y profesional. Sigue estas reglas estrictamente:
+
+1. EXTRACCIÓN: Extrae solo información útil. Ignora muletillas, repeticiones, "pues", "o sea", "tipo", "bueno", etc.
+
+2. FORMATO DE DATOS: Convierte números hablados a cifras (seis seis seis → 666). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
+
+3. TONO PROFESIONAL: Reescribe las funciones laborales usando verbos de acción e impacto en infinitivo: "Coordinar", "Gestionar", "Supervisar", "Implementar", "Optimizar", "Liderar", "Desarrollar", "Ejecutar". Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
+
+4. EXPERIENCIA LABORAL: Ordena cronológico inverso (lo más reciente primero). Para cada puesto incluye: título del puesto (profesional y específico), empresa/ciudad, fechas (si no las dice, estima "20XX – actualidad" o "20XX – 20XX" de forma coherente), y 3-4 viñetas con funciones concretas usando verbos de acción.
+
+5. ESTUDIOS: Separa título oficial, centro educativo, año. Agrupa cursos cortos como "Formación complementaria".
+
+6. CALIDAD: Si la descripción de funciones es vaga ("trabajaba allí", "hacía cosas"), infiere funciones típicas del puesto mencionado y redáctalas de forma profesional. Prioriza siempre la claridad y el impacto sobre el relleno.
+
+7. SECCIONES VACÍAS: Si el usuario dice explícitamente que no tiene algo, devuelve array vacío [] o cadena vacía "".
+
+8. FORMATO DE SALIDA: Devuelve ESTRICTAMENTE el JSON solicitado. Nunca HTML libre, nunca explicaciones adicionales, nunca texto fuera del JSON.`;
 
 function construirPromptUsuario(datos){
   return `Aquí están los textos en bruto, dictados por voz, recogidos en una entrevista de 4 pasos. Devuélvelos procesados.
@@ -2105,16 +2405,22 @@ function pintarCV(resultado){
   // Etiquetas de datos personales en el idioma actual (Teléfono:, Email:, Ubicación:)
   actualizarEtiquetasCV(idiomaActual);
 
-  // Al mostrar el CV por primera vez, siempre empezamos en el tab básico
+  // Al mostrar el CV siempre empezamos en el tab básico
   tabActivo = "basico";
+  disenoPremActivo = "prem1";
+  CV_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("cv-oculto");
+  });
   document.getElementById("hoja-cv").classList.remove("cv-oculto");
-  document.getElementById("hoja-cv-premium").classList.add("cv-oculto");
+  const selPrem = document.getElementById("selector-premium");
+  if (selPrem) selPrem.classList.add("cv-oculto");
   document.getElementById("zona-descarga-basico").classList.remove("hidden");
   document.getElementById("zona-descarga-premium").classList.add("hidden");
-  const tbB = document.getElementById("tab-basico");
-  const tbP = document.getElementById("tab-premium");
-  if (tbB) tbB.style.cssText = "background:var(--musgo);color:white;border-color:var(--musgo)";
-  if (tbP) tbP.style.cssText = "background:white;color:var(--tinta);border-color:var(--linea)";
+  const tbB2 = document.getElementById("tab-basico");
+  const tbP2 = document.getElementById("tab-premium");
+  if (tbB2) tbB2.style.cssText = "background:var(--musgo);color:white;border-color:var(--musgo)";
+  if (tbP2) tbP2.style.cssText = "background:white;color:var(--tinta);border-color:var(--linea)";
 
   document.getElementById("pantalla-carga").classList.add("hidden");
   document.getElementById("pantalla-cv").classList.remove("hidden");
@@ -2324,58 +2630,82 @@ document.getElementById("btn-volver-editar").addEventListener("click", () => {
 // solo cambia qué elemento del DOM está visible, preservando todos los contenteditable.
 
 let tabActivo = "basico"; // "basico" | "premium"
+let disenoPremActivo = "prem1"; // diseño premium seleccionado actualmente
+
+const CV_IDS  = ["hoja-cv","hoja-cv-premium","hoja-cv-prem2","hoja-cv-prem3","hoja-cv-prem4"];
+const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem2", prem3:"hoja-cv-prem3", prem4:"hoja-cv-prem4" };
 
 function cambiarTab(modelo){
-  if (tabActivo === modelo) return;
   tabActivo = modelo;
+  const esPremium = modelo === "premium";
 
-  const hojaBasico  = document.getElementById("hoja-cv");
-  const hojaPremium = document.getElementById("hoja-cv-premium");
-  const tabBasico   = document.getElementById("tab-basico");
-  const tabPremium  = document.getElementById("tab-premium");
-  const zonaBasico  = document.getElementById("zona-descarga-basico");
-  const zonaPremium = document.getElementById("zona-descarga-premium");
+  // Ocultar todos los CVs
+  CV_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("cv-oculto");
+  });
 
-  if (modelo === "premium"){
-    rellenarPlantillaPremium();
-    hojaBasico.classList.add("cv-oculto");
-    hojaPremium.classList.remove("cv-oculto");
-    zonaBasico.classList.add("hidden");
-    zonaPremium.classList.remove("hidden");
+  // Mostrar/ocultar selector de diseño premium
+  const selector = document.getElementById("selector-premium");
+  if (selector) selector.classList.toggle("cv-oculto", !esPremium);
 
-    tabPremium.style.cssText = "background:var(--ambar);color:white;border-color:var(--ambar)";
-    tabBasico.style.cssText  = "background:white;color:var(--tinta);border-color:var(--linea)";
-    setTimeout(aplicarEscalaCV, 50);
-
+  if (esPremium){
+    // Mostrar el diseño premium actualmente seleccionado
+    rellenarPlantilla(disenoPremActivo);
+    const cvPrem = document.getElementById(CV_MAP[disenoPremActivo]);
+    if (cvPrem) cvPrem.classList.remove("cv-oculto");
   } else {
-    hojaPremium.classList.add("cv-oculto");
-    hojaBasico.classList.remove("cv-oculto");
-    zonaPremium.classList.add("hidden");
-    zonaBasico.classList.remove("hidden");
-
-    tabBasico.style.cssText  = "background:var(--musgo);color:white;border-color:var(--musgo)";
-    tabPremium.style.cssText = "background:white;color:var(--tinta);border-color:var(--linea)";
-    setTimeout(aplicarEscalaCV, 50);
+    // Mostrar el básico
+    document.getElementById("hoja-cv").classList.remove("cv-oculto");
   }
+
+  // Zonas de descarga
+  document.getElementById("zona-descarga-basico").classList.toggle("hidden", esPremium);
+  document.getElementById("zona-descarga-premium").classList.toggle("hidden", !esPremium);
+
+  // Estilo visual de los tabs
+  const tbB = document.getElementById("tab-basico");
+  const tbP = document.getElementById("tab-premium");
+  if (tbB) tbB.style.cssText = esPremium
+    ? "background:white;color:var(--tinta);border-color:var(--linea)"
+    : "background:var(--musgo);color:white;border-color:var(--musgo)";
+  if (tbP) tbP.style.cssText = esPremium
+    ? "background:var(--ambar);color:white;border-color:var(--ambar)"
+    : "background:white;color:var(--tinta);border-color:var(--linea)";
+
+  setTimeout(aplicarEscalaCV, 50);
+}
+
+function elegirDisenoPremium(diseño){
+  disenoPremActivo = diseño;
+
+  // Ocultar todos los CVs premium
+  ["hoja-cv-premium","hoja-cv-prem2","hoja-cv-prem3","hoja-cv-prem4"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("cv-oculto");
+  });
+
+  // Mostrar el elegido
+  rellenarPlantilla(diseño);
+  const el = document.getElementById(CV_MAP[diseño]);
+  if (el) el.classList.remove("cv-oculto");
+
+  // Marcar visualmente el botón seleccionado
+  ["prem1","prem2","prem3","prem4"].forEach(d => {
+    const btn = document.getElementById(`sel-${d}`);
+    if (!btn) return;
+    btn.style.borderColor = d === diseño ? "var(--ambar)" : "var(--linea)";
+    btn.style.boxShadow = d === diseño ? "0 0 0 2px var(--ambar)" : "none";
+  });
+
+  setTimeout(aplicarEscalaCV, 50);
 }
 
 // ---------- 12b. Descargar el CV como PDF ----------
 
 // Genera y descarga el PDF directamente. Esta es la función "real" de descarga;
 // se llama tanto si no hay anuncio disponible como cuando el anuncio ya terminó.
-// =============================================================================
-// MONETIZACIÓN — CVoice
-//
-//   A) GRATIS con anuncio   → descarga el CV básico (hoja-cv, dos columnas actual)
-//   B) 0,99€ sin esperas    → descarga el CV básico (hoja-cv, dos columnas actual)
-//   C) 1,99€ diseño premium → descarga el CV premium (hoja-cv-premium, columna oscura)
-//
-// Puentes con la app nativa de Android (se activan automáticamente si existen):
-//   window.AndroidAds.mostrarRecompensado()          → AdMob rewarded video
-//   window.AndroidBilling.iniciarPago(productoId)    → Google Play IAP
-//   window.recompensaCompletada()                    → Android llama a esto al terminar el anuncio
-//   window.pagoCompletado(productoId)                → Android llama a esto al confirmar el pago
-// =============================================================================
+// Monetización
 
 let productoPendiente = null; // "basico_099" | "premium_199"
 
@@ -2466,8 +2796,8 @@ function generarYDescargarPDF(){
 
 // Rellena la plantilla premium con los datos del CV básico y la descarga
 function generarYDescargarPDFPremium(){
-  rellenarPlantillaPremium();
-  const hojaPrem = document.getElementById("hoja-cv-premium");
+  rellenarPlantilla(disenoPremActivo);
+  const hojaPrem = document.getElementById(CV_MAP[disenoPremActivo]);
   const yaEraVisible = !hojaPrem.classList.contains("cv-oculto");
 
   if (!yaEraVisible){
@@ -2491,98 +2821,106 @@ function generarYDescargarPDFPremium(){
 }
 
 // Sincroniza la plantilla premium con los datos del CV básico (ya rellenados por la IA)
-function rellenarPlantillaPremium(){
+// Función genérica que sincroniza los datos del CV básico a cualquier plantilla premium
+function rellenarPlantilla(modelo){
+  const prefijos = { prem1: "prem", prem2: "p2", prem3: "p3", prem4: "p4" };
+  const p = prefijos[modelo];
+  if (!p) return;
+
   const t = TEXTOS[idiomaActual];
-
-  // Datos personales
   const nombre = document.getElementById("cv-nombre").textContent.trim();
-  document.getElementById("prem-nombre").textContent = nombre || t.nombre_predeterminado;
+  const tel    = document.getElementById("cv-telefono").textContent.trim();
+  const email  = document.getElementById("cv-email").textContent.trim();
+  const ubi    = document.getElementById("cv-ubicacion").textContent.trim();
+  const telOculto = document.getElementById("cv-fila-telefono").classList.contains("hidden");
+  const emlOculto = document.getElementById("cv-fila-email").classList.contains("hidden");
+  const ubiOculto = document.getElementById("cv-fila-ubicacion").classList.contains("hidden");
 
-  const tel = document.getElementById("cv-telefono").textContent.trim();
-  const email = document.getElementById("cv-email").textContent.trim();
-  const ubi = document.getElementById("cv-ubicacion").textContent.trim();
+  // Nombre
+  const elNombre = document.getElementById(`${p}-nombre`);
+  if (elNombre) elNombre.textContent = nombre || t.nombre_predeterminado || "NOMBRE APELLIDO";
 
-  const filaFilaTel  = document.getElementById("cv-fila-telefono");
-  const filaFilaEml  = document.getElementById("cv-fila-email");
-  const filaFilaUbi  = document.getElementById("cv-fila-ubicacion");
+  // Iniciales para los avatares que las muestran (p3, p4)
+  const iniciales = nombre.split(" ").map(w => w[0]).join("").substring(0,2).toUpperCase();
+  const elIniciales = document.getElementById(`${p}-iniciales`);
+  if (elIniciales) elIniciales.textContent = iniciales || "—";
 
-  if (tel && !filaFilaTel.classList.contains("hidden")){
-    document.getElementById("prem-telefono").textContent = tel;
-    document.getElementById("prem-fila-telefono").style.display = "";
-  } else {
-    document.getElementById("prem-fila-telefono").style.display = "none";
-  }
-  if (email && !filaFilaEml.classList.contains("hidden")){
-    document.getElementById("prem-email").textContent = email;
-    document.getElementById("prem-fila-email").style.display = "";
-  } else {
-    document.getElementById("prem-fila-email").style.display = "none";
-  }
-  if (ubi && !filaFilaUbi.classList.contains("hidden")){
-    document.getElementById("prem-ubicacion").textContent = ubi;
-    document.getElementById("prem-fila-ubicacion").style.display = "";
-  } else {
-    document.getElementById("prem-fila-ubicacion").style.display = "none";
-  }
+  // Datos de contacto
+  const setContacto = (campo, valor, oculto) => {
+    const el = document.getElementById(`${p}-${campo}`);
+    if (!el) return;
+    if (!oculto && valor){ el.textContent = valor; el.closest("[id]").style.display = ""; }
+    else { el.textContent = "—"; }
+  };
+  setContacto("telefono", tel, telOculto);
+  setContacto("email", email, emlOculto);
+  setContacto("ubicacion", ubi, ubiOculto);
 
   // Foto
-  const premFoto = document.getElementById("prem-foto-img");
-  const premPlaceholder = document.getElementById("prem-avatar-placeholder");
-  if (fotoCapturadaDataURL){
-    premFoto.src = fotoCapturadaDataURL;
-    premFoto.classList.remove("hidden");
-    premPlaceholder.classList.add("hidden");
-  } else {
-    premFoto.classList.add("hidden");
-    premPlaceholder.classList.remove("hidden");
+  const fotoEl = document.getElementById(`${p}-foto`);
+  const inicEl = document.getElementById(`${p}-iniciales`);
+  const placEl = document.getElementById(`${p}-avatar-placeholder`);
+  if (fotoEl){
+    if (fotoCapturadaDataURL){
+      fotoEl.src = fotoCapturadaDataURL;
+      fotoEl.classList.remove("hidden");
+      if (inicEl) inicEl.style.display = "none";
+      if (placEl) placEl.classList.add("hidden");
+    } else {
+      fotoEl.classList.add("hidden");
+      if (inicEl) inicEl.style.display = "";
+      if (placEl) placEl.classList.remove("hidden");
+    }
   }
 
-  // Experiencia: copia el HTML ya construido por la IA
+  // Experiencia
   const secExp = document.getElementById("cv-seccion-experiencia");
-  const premSecExp = document.getElementById("prem-seccion-experiencia");
-  if (!secExp.classList.contains("hidden")){
-    // Convertir las clases del modelo básico a clases del modelo premium
-    const htmlExp = document.getElementById("cv-experiencia").innerHTML;
-    document.getElementById("prem-experiencia").innerHTML = htmlExp;
-    premSecExp.classList.remove("hidden");
-  } else {
-    premSecExp.classList.add("hidden");
+  const pSecExp = document.getElementById(`${p}-sec-exp`);
+  const pExp    = document.getElementById(`${p}-experiencia`);
+  if (pSecExp && pExp){
+    if (!secExp.classList.contains("hidden")){
+      pExp.innerHTML = document.getElementById("cv-experiencia").innerHTML;
+      pSecExp.classList.remove("hidden");
+    } else { pSecExp.classList.add("hidden"); }
   }
 
   // Estudios
   const secEst = document.getElementById("cv-seccion-estudios");
-  const premSecEst = document.getElementById("prem-seccion-estudios");
-  if (!secEst.classList.contains("hidden")){
-    const htmlEst = document.getElementById("cv-estudios").innerHTML;
-    document.getElementById("prem-estudios").innerHTML = htmlEst;
-    premSecEst.classList.remove("hidden");
-  } else {
-    premSecEst.classList.add("hidden");
+  const pSecEst = document.getElementById(`${p}-sec-est`);
+  const pEst    = document.getElementById(`${p}-estudios`);
+  if (pSecEst && pEst){
+    if (!secEst.classList.contains("hidden")){
+      pEst.innerHTML = document.getElementById("cv-estudios").innerHTML;
+      pSecEst.classList.remove("hidden");
+    } else { pSecEst.classList.add("hidden"); }
   }
 
   // Otros datos
   const secOtros = document.getElementById("cv-seccion-otros-datos");
-  const premSecOtros = document.getElementById("prem-seccion-otros");
-  if (!secOtros.classList.contains("hidden")){
-    document.getElementById("prem-otros").innerHTML = document.getElementById("cv-otros").innerHTML;
-    premSecOtros.classList.remove("hidden");
-  } else {
-    premSecOtros.classList.add("hidden");
+  const pSecOtros = document.getElementById(`${p}-sec-otros`);
+  const pOtros    = document.getElementById(`${p}-otros`);
+  if (pSecOtros && pOtros){
+    if (!secOtros.classList.contains("hidden")){
+      pOtros.innerHTML = document.getElementById("cv-otros").innerHTML;
+      pSecOtros.classList.remove("hidden");
+    } else { pSecOtros.classList.add("hidden"); }
   }
 
-  // Etiquetas traducibles
-  const etiquetasMapa = {
-    "prem-label-telefono": t.label_telefono || "Teléfono",
-    "prem-label-email": t.label_email || "Email",
-    "prem-label-ubicacion": t.label_ubicacion || "Ubicación",
-    "prem-titulo-experiencia": t.cv_bloque_experiencia || "Experiencia Laboral",
-    "prem-titulo-estudios": t.cv_bloque_estudios || "Estudios y Formación",
-    "prem-label-otros": t.cv_lateral_otros || "Otros Datos",
-  };
-  Object.entries(etiquetasMapa).forEach(([id, texto]) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = texto;
-  });
+  // Subtítulo/cargo en prem3 y prem4 (primer puesto de experiencia como subtítulo)
+  const subEl = document.getElementById(`${p}-sub-cargo`);
+  if (subEl){
+    const primerPuesto = document.querySelector("#cv-experiencia .cv-experiencia-puesto");
+    subEl.textContent = primerPuesto ? primerPuesto.textContent.trim() : "";
+  }
+
+  // Etiquetas i18n dentro de la plantilla
+  const cvPrem = document.getElementById(CV_MAP[modelo]);
+  if (cvPrem){
+    cvPrem.querySelectorAll("[data-i18n]").forEach(el => {
+      const clave = el.getAttribute("data-i18n");
+      if (t[clave]) el.textContent = t[clave];
+    });
+  }
 }
 
 // =============================================================================
@@ -2708,27 +3046,22 @@ btnCancelarPago.addEventListener("click", () => {
 // quepa en el ancho real de la pantalla, con un pequeño margen lateral.
 function aplicarEscalaCV(){
   if (window.innerWidth >= 960) {
-    // Escritorio: sin escala
     document.documentElement.style.setProperty('--cv-escala', '1');
     const cont = document.getElementById('contenedor-cvs');
     if (cont) cont.style.height = '';
     return;
   }
-  // Móvil: escalar para que el CV quepa en pantalla con margen lateral mínimo
-  // Usamos el 92% del ancho disponible para tener un pequeño margen a cada lado
   const anchoDisponible = window.innerWidth * 0.92;
   const escala = Math.min(anchoDisponible / 900, 1);
   document.documentElement.style.setProperty('--cv-escala', escala.toFixed(4));
 
-  // Ajustar altura del contenedor para compensar el colapso que produce transform:scale
-  ['hoja-cv', 'hoja-cv-premium'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el && !el.classList.contains('cv-oculto')){
-      const altoReal = el.scrollHeight * escala;
-      const cont = document.getElementById('contenedor-cvs');
-      if (cont) cont.style.height = altoReal + 'px';
-    }
-  });
+  // Ajustar la altura del contenedor al CV actualmente visible
+  const idActivo = CV_MAP[tabActivo] || "hoja-cv";
+  const el = document.getElementById(idActivo);
+  const cont = document.getElementById('contenedor-cvs');
+  if (el && cont && !el.classList.contains('cv-oculto')){
+    cont.style.height = (el.scrollHeight * escala) + 'px';
+  }
 }
 
 window.addEventListener('resize', aplicarEscalaCV);
