@@ -55,21 +55,16 @@
     padding-right:  env(safe-area-inset-right, 0px);
   }
   /* ===== ESCALA DEL CV EN MÓVIL =====
-     El CV tiene 900px de ancho. En móvil (~390px) → escala ≈ 0.43
-     Usamos zoom (Android WebView) + transform:scale (fallback) con
-     transform-origin top center. El contenedor ajusta su altura al CV escalado. */
+     El CV tiene 900px de ancho nativo. Para mostrarlo adaptado a la pantalla
+     usamos transform:scale con transform-origin top left desde JS.
+     El contenedor recibe la altura exacta calculada en JS para no dejar espacio vacío. */
   #contenedor-cvs {
     width: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: relative; /* la altura se asigna desde JS */
   }
   #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
-    transform-origin: top center;
-    transform: scale(var(--cv-escala, 1));
-    /* compensar el colapso de altura que produce transform:scale */
-    margin-bottom: calc((var(--cv-escala, 1) - 1) * 900px);
+    transform-origin: top left;
+    /* La escala y la posición se aplican desde JS vía style inline */
   }
   /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
   #modal-anuncio > div, #modal-pago > div {
@@ -685,13 +680,9 @@
     </button>
   </div>
 
-  <!-- Contenedor de las dos plantillas: solo una visible a la vez según el tab -->
-  <div id="contenedor-cvs">
-
-    <!-- Selector visual de diseño premium (visible solo en tab premium) -->
-    <div id="selector-premium" class="cv-oculto mb-2 max-w-3xl mx-auto">
-      <p class="text-center text-sm font-bold mb-3" style="color:var(--musgo)">Elige tu diseño premium:</p>
-    <!-- 4 miniaturas en horizontal con scroll si no caben -->
+  <!-- Selector visual de diseño premium (fuera del contenedor-cvs) -->
+  <div id="selector-premium" class="cv-oculto mb-2 max-w-3xl mx-auto w-full">
+    <p class="text-center text-sm font-bold mb-2" style="color:var(--musgo)">Elige tu diseño premium:</p>
     <div class="grid grid-cols-4 gap-2 mb-3">
       <button id="sel-prem1" onclick="elegirDisenoPremium('prem1')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--ambar);background:white">
         <div class="w-full h-20 rounded-lg mb-1 flex overflow-hidden" style="background:#0f172a">
@@ -754,9 +745,12 @@
         <p class="text-xs font-bold truncate" style="color:#1B3A5C">Azul marino</p>
       </button>
     </div>
-    </div>
+  </div><!-- /selector-premium -->
 
-    <!-- Plantilla BÁSICA (cv-oculto por defecto — pintarCV la muestra al generarse) -->
+  <!-- Contenedor de las dos plantillas: solo una visible a la vez según el tab -->
+  <div id="contenedor-cvs">
+
+    <!-- Plantilla BÁSICA -->
     <div id="hoja-cv" class="cv-oculto rounded-2xl shadow-2xl">
 
       <!-- ===== Columna izquierda: foto + datos personales + otros datos ===== -->
@@ -2432,7 +2426,7 @@ function pintarCV(resultado){
   // Aseguramos que los botones de descarga y el resto de la interfaz
   // muestren el idioma actualmente seleccionado por el usuario
   aplicarTextos();
-  aplicarEscalaCV();
+  requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -2678,32 +2672,28 @@ function cambiarTab(modelo){
     ? "background:var(--ambar);color:white;border-color:var(--ambar)"
     : "background:white;color:var(--tinta);border-color:var(--linea)";
 
-  setTimeout(aplicarEscalaCV, 50);
-}
+  // Esperar a que el browser pinte antes de calcular la escala
+  requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
+  disenoPremActivo = diseno;
 
-function elegirDisenoPremium(diseño){
-  disenoPremActivo = diseño;
-
-  // Ocultar todos los CVs premium
   ["hoja-cv-premium","hoja-cv-prem2","hoja-cv-prem3","hoja-cv-prem4"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add("cv-oculto");
   });
 
-  // Mostrar el elegido
-  rellenarPlantilla(diseño);
-  const el = document.getElementById(CV_MAP[diseño]);
+  rellenarPlantilla(diseno);
+  const el = document.getElementById(CV_MAP[diseno]);
   if (el) el.classList.remove("cv-oculto");
 
-  // Marcar visualmente el botón seleccionado
   ["prem1","prem2","prem3","prem4"].forEach(d => {
     const btn = document.getElementById(`sel-${d}`);
     if (!btn) return;
-    btn.style.borderColor = d === diseño ? "var(--ambar)" : "var(--linea)";
-    btn.style.boxShadow = d === diseño ? "0 0 0 2px var(--ambar)" : "none";
+    btn.style.borderColor = d === diseno ? "var(--ambar)" : "var(--linea)";
+    btn.style.boxShadow = d === diseno ? "0 0 0 2px var(--ambar)" : "none";
   });
 
-  setTimeout(aplicarEscalaCV, 50);
+  // Esperar a que el browser pinte el CV antes de calcular la escala
+  requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
 }
 
 // ---------- 12b. Descargar el CV como PDF ----------
@@ -3050,23 +3040,38 @@ btnCancelarPago.addEventListener("click", () => {
 // Escala dinámica del CV: calcula qué factor aplicar para que el CV de 900px
 // quepa en el ancho real de la pantalla, con un pequeño margen lateral.
 function aplicarEscalaCV(){
-  const ancho = window.innerWidth;
-  // Escala: qué fracción del ancho disponible puede ocupar el CV (92% del ancho con margen)
-  const escala = ancho >= 960 ? 1 : Math.min((ancho * 0.96) / 900, 1);
-  document.documentElement.style.setProperty('--cv-escala', escala.toFixed(4));
+  const anchoViewport = window.innerWidth;
+  const escala = Math.min((anchoViewport * 0.96) / 900, 1);
 
-  // Ajustar la altura del contenedor para eliminar el espacio vacío que deja transform:scale
-  // (transform:scale no afecta al layout normal — hay que compensarlo manualmente)
+  // Calcular margen izquierdo para centrar el CV escalado
+  const margenIzq = (anchoViewport - 900 * escala) / 2;
+
+  // Aplicar a todos los CVs (visible o no — para que offsetHeight funcione)
+  const todosCVs = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
+  todosCVs.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (escala < 1){
+      el.style.transform = `scale(${escala})`;
+      el.style.marginLeft = margenIzq + 'px';
+    } else {
+      el.style.transform = '';
+      el.style.marginLeft = '';
+    }
+  });
+
+  // Ajustar la altura del contenedor al CV actualmente visible
   const idActivo = tabActivo === 'premium' ? CV_MAP[disenoPremActivo] : 'hoja-cv';
   const el = document.getElementById(idActivo);
   const cont = document.getElementById('contenedor-cvs');
   if (el && cont && !el.classList.contains('cv-oculto')){
-    // offsetHeight = alto real del CV a 900px (sin escalar)
-    // × escala = alto visual que ocupa en pantalla
-    const altoEscalado = Math.ceil(el.offsetHeight * escala);
-    cont.style.height = altoEscalado + 'px';
+    // offsetHeight = alto real del elemento sin escalar
+    // La altura visual que ocupa en pantalla es offsetHeight * escala
+    cont.style.height = Math.ceil(el.offsetHeight * escala) + 'px';
+    cont.style.overflow = 'hidden';
   } else if (cont){
     cont.style.height = '';
+    cont.style.overflow = '';
   }
 }
 
