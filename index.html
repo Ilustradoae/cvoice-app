@@ -55,16 +55,15 @@
     padding-right:  env(safe-area-inset-right, 0px);
   }
   /* ===== ESCALA DEL CV EN MÓVIL =====
-     El CV tiene 900px de ancho nativo. Para mostrarlo adaptado a la pantalla
-     usamos transform:scale con transform-origin top left desde JS.
-     El contenedor recibe la altura exacta calculada en JS para no dejar espacio vacío. */
+     Usamos 'zoom' que en Android WebView escala correctamente y ajusta
+     el layout sin dejar espacio lateral ni requerir compensación de altura. */
   #contenedor-cvs {
     width: 100%;
-    position: relative; /* la altura se asigna desde JS */
+    overflow: hidden;
   }
   #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
+    /* zoom se aplica desde JS según el ancho real de la pantalla */
     transform-origin: top left;
-    /* La escala y la posición se aplican desde JS vía style inline */
   }
   /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
   #modal-anuncio > div, #modal-pago > div {
@@ -134,9 +133,9 @@
   .visor-camara video, .visor-camara img{ width:100%; height:100%; object-fit:cover; transform: scaleX(-1); }
   .visor-camara img{ transform:none; }
 
-  /* Clase de ocultado para los CVs: usa !important para ganar sobre display:grid/flex
-     declarados con selector de ID (#hoja-cv, #hoja-cv-premium), que tienen mayor
-     especificidad que la clase .hidden de Tailwind y la sobreescriben. */
+  /* cv-oculto oculta con display:none — cuando selector-premium se muestra
+     (quita cv-oculto) los botones hijos deben ser interactivos */
+  #selector-premium{ pointer-events: all; }
   .cv-oculto{ display: none !important; }
 
   /* ===================== PLANTILLA PREMIUM — COLUMNA OSCURA ===================== */
@@ -645,7 +644,7 @@
 
       <p id="aviso-camara" class="text-sm mb-2 hidden" style="color:#B23A3A"></p>
 
-      <div class="flex flex-col sm:flex-row gap-3 justify-center mt-4">
+      <div class="flex flex-row gap-2 justify-center mt-4">
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="4" data-i18n="boton_anterior">← Atrás</button>
         <button id="btn-saltar-foto" class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_saltar">Saltar este paso →</button>
       </div>
@@ -3041,38 +3040,29 @@ btnCancelarPago.addEventListener("click", () => {
 // quepa en el ancho real de la pantalla, con un pequeño margen lateral.
 function aplicarEscalaCV(){
   const anchoViewport = window.innerWidth;
-  const escala = Math.min((anchoViewport * 0.96) / 900, 1);
+  const escala = Math.min((anchoViewport * 0.98) / 900, 1);
 
-  // Calcular margen izquierdo para centrar el CV escalado
-  const margenIzq = (anchoViewport - 900 * escala) / 2;
-
-  // Aplicar a todos los CVs (visible o no — para que offsetHeight funcione)
+  // 'zoom' funciona perfectamente en Android WebView y escala el elemento
+  // ajustando automáticamente el espacio que ocupa en el layout (sin hueco).
+  // Es más fiable que transform:scale para este caso de uso.
   const todosCVs = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
   todosCVs.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     if (escala < 1){
-      el.style.transform = `scale(${escala})`;
-      el.style.marginLeft = margenIzq + 'px';
+      el.style.zoom = escala;
+      el.style.transform = '';
+      el.style.marginLeft = '';
     } else {
+      el.style.zoom = '';
       el.style.transform = '';
       el.style.marginLeft = '';
     }
   });
 
-  // Ajustar la altura del contenedor al CV actualmente visible
-  const idActivo = tabActivo === 'premium' ? CV_MAP[disenoPremActivo] : 'hoja-cv';
-  const el = document.getElementById(idActivo);
+  // Con zoom, el contenedor ya no necesita altura manual — zoom ajusta el layout.
   const cont = document.getElementById('contenedor-cvs');
-  if (el && cont && !el.classList.contains('cv-oculto')){
-    // offsetHeight = alto real del elemento sin escalar
-    // La altura visual que ocupa en pantalla es offsetHeight * escala
-    cont.style.height = Math.ceil(el.offsetHeight * escala) + 'px';
-    cont.style.overflow = 'hidden';
-  } else if (cont){
-    cont.style.height = '';
-    cont.style.overflow = '';
-  }
+  if (cont) cont.style.height = '';
 }
 
 window.addEventListener('resize', aplicarEscalaCV);
