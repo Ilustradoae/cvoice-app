@@ -2082,7 +2082,7 @@ document.getElementById("btn-saltar-foto").addEventListener("click", () => {
 // URL del proxy serverless en Vercel — la clave de Groq vive allí como
 // variable de entorno, nunca en este archivo ni en el APK de Android.
 const PROXY_URL = "https://cvoice-proxy.vercel.app/api/groq";
-const MODELO_GROQ = "llama-3.1-8b-instant";
+const MODELO_GROQ = "openai/gpt-oss-120b";
 
 const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 años de experiencia en RRHH y selección de personal. Recibirás texto hablado por voz, desestructurado y coloquial. Tu misión es transformarlo en un CV impecable y profesional. Sigue estas reglas estrictamente:
 
