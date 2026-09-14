@@ -2671,19 +2671,21 @@ function cambiarTab(modelo){
     ? "background:var(--ambar);color:white;border-color:var(--ambar)"
     : "background:white;color:var(--tinta);border-color:var(--linea)";
 
-  // Esperar a que el browser pinte antes de calcular la escala
-  requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
+  // Primero asignamos el diseño activo
   disenoPremActivo = diseno;
 
+  // Ocultar todos los CVs premium
   ["hoja-cv-premium","hoja-cv-prem2","hoja-cv-prem3","hoja-cv-prem4"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add("cv-oculto");
   });
 
+  // Rellenar y mostrar el elegido
   rellenarPlantilla(diseno);
-  const el = document.getElementById(CV_MAP[diseno]);
-  if (el) el.classList.remove("cv-oculto");
+  const elCV = document.getElementById(CV_MAP[diseno]);
+  if (elCV) elCV.classList.remove("cv-oculto");
 
+  // Marcar visualmente el botón seleccionado
   ["prem1","prem2","prem3","prem4"].forEach(d => {
     const btn = document.getElementById(`sel-${d}`);
     if (!btn) return;
@@ -2691,7 +2693,7 @@ function cambiarTab(modelo){
     btn.style.boxShadow = d === diseno ? "0 0 0 2px var(--ambar)" : "none";
   });
 
-  // Esperar a que el browser pinte el CV antes de calcular la escala
+  // Calcular escala tras el primer paint
   requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
 }
 
@@ -3040,27 +3042,21 @@ btnCancelarPago.addEventListener("click", () => {
 // quepa en el ancho real de la pantalla, con un pequeño margen lateral.
 function aplicarEscalaCV(){
   const anchoViewport = window.innerWidth;
-  const escala = Math.min((anchoViewport * 0.98) / 900, 1);
+  // A4 en miniatura: ocupar el 88% del ancho disponible, max 1 (no ampliar en escritorio)
+  const escala = Math.min((anchoViewport * 0.88) / 900, 1);
 
-  // 'zoom' funciona perfectamente en Android WebView y escala el elemento
-  // ajustando automáticamente el espacio que ocupa en el layout (sin hueco).
-  // Es más fiable que transform:scale para este caso de uso.
   const todosCVs = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
   todosCVs.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     if (escala < 1){
       el.style.zoom = escala;
-      el.style.transform = '';
-      el.style.marginLeft = '';
     } else {
       el.style.zoom = '';
-      el.style.transform = '';
-      el.style.marginLeft = '';
     }
   });
 
-  // Con zoom, el contenedor ya no necesita altura manual — zoom ajusta el layout.
+  // Con zoom el contenedor no necesita ajuste de altura manual
   const cont = document.getElementById('contenedor-cvs');
   if (cont) cont.style.height = '';
 }
