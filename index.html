@@ -2637,31 +2637,25 @@ function cambiarTab(modelo){
   tabActivo = modelo;
   const esPremium = modelo === "premium";
 
-  // Ocultar todos los CVs
   CV_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add("cv-oculto");
   });
 
-  // Mostrar/ocultar selector de diseño premium
   const selector = document.getElementById("selector-premium");
   if (selector) selector.classList.toggle("cv-oculto", !esPremium);
 
   if (esPremium){
-    // Mostrar el diseño premium actualmente seleccionado
     rellenarPlantilla(disenoPremActivo);
     const cvPrem = document.getElementById(CV_MAP[disenoPremActivo]);
     if (cvPrem) cvPrem.classList.remove("cv-oculto");
   } else {
-    // Mostrar el básico
     document.getElementById("hoja-cv").classList.remove("cv-oculto");
   }
 
-  // Zonas de descarga
   document.getElementById("zona-descarga-basico").classList.toggle("hidden", esPremium);
   document.getElementById("zona-descarga-premium").classList.toggle("hidden", !esPremium);
 
-  // Estilo visual de los tabs
   const tbB = document.getElementById("tab-basico");
   const tbP = document.getElementById("tab-premium");
   if (tbB) tbB.style.cssText = esPremium
@@ -2671,29 +2665,28 @@ function cambiarTab(modelo){
     ? "background:var(--ambar);color:white;border-color:var(--ambar)"
     : "background:white;color:var(--tinta);border-color:var(--linea)";
 
-  // Primero asignamos el diseño activo
+  requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
+}
+
+function elegirDisenoPremium(diseno){
   disenoPremActivo = diseno;
 
-  // Ocultar todos los CVs premium
   ["hoja-cv-premium","hoja-cv-prem2","hoja-cv-prem3","hoja-cv-prem4"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add("cv-oculto");
   });
 
-  // Rellenar y mostrar el elegido
   rellenarPlantilla(diseno);
   const elCV = document.getElementById(CV_MAP[diseno]);
   if (elCV) elCV.classList.remove("cv-oculto");
 
-  // Marcar visualmente el botón seleccionado
   ["prem1","prem2","prem3","prem4"].forEach(d => {
     const btn = document.getElementById(`sel-${d}`);
     if (!btn) return;
     btn.style.borderColor = d === diseno ? "var(--ambar)" : "var(--linea)";
-    btn.style.boxShadow = d === diseno ? "0 0 0 2px var(--ambar)" : "none";
+    btn.style.boxShadow   = d === diseno ? "0 0 0 2px var(--ambar)" : "none";
   });
 
-  // Calcular escala tras el primer paint
   requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
 }
 
