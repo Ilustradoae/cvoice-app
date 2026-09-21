@@ -2816,6 +2816,14 @@ function rellenarPlantilla(modelo){
   const p = prefijos[modelo];
   if (!p) return;
 
+  // prem1 usa nombres de ID distintos para las secciones
+  const secExpId  = modelo === "prem1" ? "prem-seccion-experiencia" : `${p}-sec-exp`;
+  const secEstId  = modelo === "prem1" ? "prem-seccion-estudios"    : `${p}-sec-est`;
+  const secOtrId  = modelo === "prem1" ? "prem-seccion-otros"       : `${p}-sec-otros`;
+  const expId     = modelo === "prem1" ? "prem-experiencia"         : `${p}-experiencia`;
+  const estId     = modelo === "prem1" ? "prem-estudios"            : `${p}-estudios`;
+  const otrosId   = modelo === "prem1" ? "prem-otros"               : `${p}-otros`;
+
   const t = TEXTOS[idiomaActual];
   const nombre = document.getElementById("cv-nombre").textContent.trim();
   const tel    = document.getElementById("cv-telefono").textContent.trim();
@@ -2863,9 +2871,9 @@ function rellenarPlantilla(modelo){
   }
 
   // Experiencia
-  const secExp = document.getElementById("cv-seccion-experiencia");
-  const pSecExp = document.getElementById(`${p}-sec-exp`);
-  const pExp    = document.getElementById(`${p}-experiencia`);
+  const secExp  = document.getElementById("cv-seccion-experiencia");
+  const pSecExp = document.getElementById(secExpId);
+  const pExp    = document.getElementById(expId);
   if (pSecExp && pExp){
     if (!secExp.classList.contains("hidden")){
       pExp.innerHTML = document.getElementById("cv-experiencia").innerHTML;
@@ -2874,9 +2882,9 @@ function rellenarPlantilla(modelo){
   }
 
   // Estudios
-  const secEst = document.getElementById("cv-seccion-estudios");
-  const pSecEst = document.getElementById(`${p}-sec-est`);
-  const pEst    = document.getElementById(`${p}-estudios`);
+  const secEst  = document.getElementById("cv-seccion-estudios");
+  const pSecEst = document.getElementById(secEstId);
+  const pEst    = document.getElementById(estId);
   if (pSecEst && pEst){
     if (!secEst.classList.contains("hidden")){
       pEst.innerHTML = document.getElementById("cv-estudios").innerHTML;
@@ -2885,9 +2893,9 @@ function rellenarPlantilla(modelo){
   }
 
   // Otros datos
-  const secOtros = document.getElementById("cv-seccion-otros-datos");
-  const pSecOtros = document.getElementById(`${p}-sec-otros`);
-  const pOtros    = document.getElementById(`${p}-otros`);
+  const secOtros  = document.getElementById("cv-seccion-otros-datos");
+  const pSecOtros = document.getElementById(secOtrId);
+  const pOtros    = document.getElementById(otrosId);
   if (pSecOtros && pOtros){
     if (!secOtros.classList.contains("hidden")){
       pOtros.innerHTML = document.getElementById("cv-otros").innerHTML;
