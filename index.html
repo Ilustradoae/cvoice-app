@@ -2763,7 +2763,21 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
     },
     jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
     pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-  }).from(elemento).save()
+  }).from(elemento).outputPdf("blob")
+    .then(blob => {
+      // Forzar descarga con extensión .pdf usando blob URL
+      // (html2pdf().save() en Android WebView omite la extensión)
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = nombreArchivo + ".pdf";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1000);
+    })
     .then(() => restaurarTrasPDF(elemento, paddingPrevio))
     .catch(() => restaurarTrasPDF(elemento, paddingPrevio));
 }
