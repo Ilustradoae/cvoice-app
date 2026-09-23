@@ -60,6 +60,8 @@
   #contenedor-cvs {
     width: 100%;
     overflow: hidden;
+    /* Permitir zoom táctil (pinch-zoom) para editar el CV en móvil */
+    touch-action: pinch-zoom;
   }
   #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
     /* zoom se aplica desde JS según el ancho real de la pantalla */
@@ -801,7 +803,7 @@
       <!-- Columna izquierda oscura -->
       <div class="prem-izq">
         <div class="prem-avatar">
-          <img id="prem-foto-img" alt="" class="hidden">
+          <img id="prem-foto" alt="" class="hidden">
           <svg id="prem-avatar-placeholder" width="46" height="46" viewBox="0 0 24 24" fill="#475569"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         </div>
 
@@ -2763,21 +2765,7 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
     },
     jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
     pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-  }).from(elemento).outputPdf("blob")
-    .then(blob => {
-      // Forzar descarga con extensión .pdf usando blob URL
-      // (html2pdf().save() en Android WebView omite la extensión)
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = nombreArchivo + ".pdf";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 1000);
-    })
+  }).from(elemento).save()
     .then(() => restaurarTrasPDF(elemento, paddingPrevio))
     .catch(() => restaurarTrasPDF(elemento, paddingPrevio));
 }
