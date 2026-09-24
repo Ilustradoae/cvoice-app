@@ -2724,50 +2724,53 @@ let intervaloContador = null;
 
 // Descarga cualquier elemento como PDF A4 completo
 function descargarHojaComoPDF(elemento, nombreArchivo){
-  const paddingPrevio = elemento.style.paddingBottom;
-  const zoomPrevio = elemento.style.zoom;
 
-  // Quitar el zoom antes de capturar — con zoom aplicado html2canvas
-  // captura el elemento escalado y el PDF sale en blanco o muy pequeño
-  elemento.style.zoom = '';
+  // Clonar el elemento para no afectar lo visible en pantalla
+  const clon = elemento.cloneNode(true);
+  clon.style.zoom = '';
+  clon.style.transform = '';
+  clon.style.position = 'fixed';
+  clon.style.top = '-9999px';
+  clon.style.left = '0';
+  clon.style.width = '900px';
+  clon.style.maxWidth = '900px';
+  clon.style.margin = '0';
+  clon.style.borderRadius = '0';
+  document.body.appendChild(clon);
 
-  const altoActual = elemento.scrollHeight || elemento.offsetHeight || 0;
-  if (altoActual < 1123){
-    elemento.style.paddingBottom = `${1123 - altoActual}px`;
-  }
-
+  // Ocultar pistas de edición en el clon
   const estiloTemp = document.createElement("style");
   estiloTemp.id = "estilo-pdf-temp";
-  estiloTemp.textContent = [
-    ".pista-edicion::after{ display:none !important; }",
-    "[contenteditable]{ outline:none !important; }",
-    "#hoja-cv-premium .prem-izq{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }",
-    "#hoja-cv .cv-col-izquierda{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }",
-  ].join(" ");
+  estiloTemp.textContent = ".pista-edicion::after{ display:none !important; } [contenteditable]{ outline:none !important; }";
   document.head.appendChild(estiloTemp);
 
-  html2pdf().set({
-    margin: 0,
-    filename: nombreArchivo + ".pdf",
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff",
-      windowWidth: 1200,
-      logging: false,
-    },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-    pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-  }).from(elemento).save()
-    .then(() => restaurarTrasPDF(elemento, paddingPrevio, zoomPrevio))
-    .catch(() => restaurarTrasPDF(elemento, paddingPrevio, zoomPrevio));
+  // Esperar a que el clon se pinte antes de capturar
+  requestAnimationFrame(() => {
+    const altoReal = clon.scrollHeight || 1123;
+    if (altoReal < 1123) clon.style.paddingBottom = `${1123 - altoReal}px`;
+
+    html2pdf().set({
+      margin: 0,
+      filename: nombreArchivo + ".pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        windowWidth: 900,
+        logging: false,
+      },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+    }).from(clon).save()
+      .then(() => limpiarTrasPDF(clon))
+      .catch(() => limpiarTrasPDF(clon));
+  });
 }
 
-function restaurarTrasPDF(elemento, paddingPrevio, zoomPrevio){
-  elemento.style.paddingBottom = paddingPrevio;
-  elemento.style.zoom = zoomPrevio || '';
+function limpiarTrasPDF(clon){
+  if (clon && clon.parentNode) clon.parentNode.removeChild(clon);
   const est = document.getElementById("estilo-pdf-temp");
   if (est) est.remove();
 }
@@ -3060,7 +3063,65 @@ function aplicarEscalaCV(){
   if (cont) cont.style.height = '';
 }
 
-window.addEventListener('resize', aplicarEscalaCV);
+// ---------- ZOOM TÁCTIL PARA EDITAR EL CV EN PANTALLA ----------
+// Permite hacer pinch-zoom sobre el CV para ampliar y editar texto
+(function(){
+  let escalaActual = 1;
+  let distanciaInicial = 0;
+  let escalaBase = 1;
+
+  function distancia(t1, t2){
+    const dx = t1.clientX - t2.clientX;
+    const dy = t1.clientY - t2.clientY;
+    return Math.sqrt(dx*dx + dy*dy);
+  }
+
+  function aplicarZoomEdicion(escala){
+    escalaActual = Math.min(Math.max(escala, 0.8), 3);
+    const cvIds = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
+    cvIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !el.classList.contains('cv-oculto')){
+        // Combinamos el zoom de escala de pantalla con el zoom de edición
+        const zoomBase = parseFloat(el.style.zoom) || 1;
+        el.style.transform = escalaActual > 1 ? `scale(${escalaActual})` : '';
+        el.style.transformOrigin = 'top center';
+        // Ajustar altura del contenedor
+        const cont = document.getElementById('contenedor-cvs');
+        if (cont){
+          cont.style.height = escalaActual > 1
+            ? Math.ceil(el.offsetHeight * zoomBase * escalaActual) + 'px'
+            : '';
+        }
+      }
+    });
+  }
+
+  document.addEventListener('touchstart', e => {
+    if (e.touches.length === 2){
+      distanciaInicial = distancia(e.touches[0], e.touches[1]);
+      escalaBase = escalaActual;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (e.touches.length === 2){
+      const dist = distancia(e.touches[0], e.touches[1]);
+      const nueva = escalaBase * (dist / distanciaInicial);
+      aplicarZoomEdicion(nueva);
+    }
+  }, { passive: true });
+
+  // Doble tap para resetear zoom
+  let ultimoTap = 0;
+  document.getElementById('contenedor-cvs').addEventListener('touchend', e => {
+    const ahora = Date.now();
+    if (ahora - ultimoTap < 300){
+      aplicarZoomEdicion(1);
+    }
+    ultimoTap = ahora;
+  }, { passive: true });
+})();
 document.documentElement.lang = idiomaActual;
 document.documentElement.dir = IDIOMAS[idiomaActual].dir;
 aplicarTextos();
