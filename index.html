@@ -59,9 +59,9 @@
      el layout sin dejar espacio lateral ni requerir compensación de altura. */
   #contenedor-cvs {
     width: 100%;
-    overflow: hidden;
-    /* Permitir zoom táctil (pinch-zoom) para editar el CV en móvil */
-    touch-action: pinch-zoom;
+    overflow: auto;
+    /* Permitir zoom táctil (pinch-zoom) nativo en Android WebView */
+    touch-action: pan-x pan-y pinch-zoom;
   }
   #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
     /* zoom se aplica desde JS según el ancho real de la pantalla */
@@ -2725,16 +2725,17 @@ let intervaloContador = null;
 // Descarga cualquier elemento como PDF A4 completo
 function descargarHojaComoPDF(elemento, nombreArchivo){
   const paddingPrevio = elemento.style.paddingBottom;
+  const zoomPrevio = elemento.style.zoom;
 
-  // Añadir padding-bottom si el CV es más corto que una hoja A4 (1123px @ 96dpi),
-  // para que el PDF ocupe la página completa sin distorsionar el layout interior.
-  // scrollHeight mide el alto real del contenido incluyendo desbordamiento oculto.
+  // Quitar el zoom antes de capturar — con zoom aplicado html2canvas
+  // captura el elemento escalado y el PDF sale en blanco o muy pequeño
+  elemento.style.zoom = '';
+
   const altoActual = elemento.scrollHeight || elemento.offsetHeight || 0;
   if (altoActual < 1123){
     elemento.style.paddingBottom = `${1123 - altoActual}px`;
   }
 
-  // Ocultar pistas de edición y garantizar fondos de color opacos en la captura
   const estiloTemp = document.createElement("style");
   estiloTemp.id = "estilo-pdf-temp";
   estiloTemp.textContent = [
@@ -2745,12 +2746,6 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
   ].join(" ");
   document.head.appendChild(estiloTemp);
 
-  // El ancho del elemento ya está fijado por CSS a 900px con max-width:100%.
-  // Le pasamos a html2canvas un windowWidth de 1200px (más ancho que el elemento)
-  // para que el margin:0 auto del elemento tenga espacio y se centre correctamente
-  // dentro del viewport simulado. Sin esto, con windowWidth === ancho del elemento,
-  // el centrado falla y el PDF sale desplazado a la izquierda.
-  // No tocamos element.style.width — dejamos que el CSS del elemento mande.
   html2pdf().set({
     margin: 0,
     filename: nombreArchivo + ".pdf",
@@ -2766,12 +2761,13 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
     jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
     pagebreak: { mode: ["avoid-all", "css", "legacy"] },
   }).from(elemento).save()
-    .then(() => restaurarTrasPDF(elemento, paddingPrevio))
-    .catch(() => restaurarTrasPDF(elemento, paddingPrevio));
+    .then(() => restaurarTrasPDF(elemento, paddingPrevio, zoomPrevio))
+    .catch(() => restaurarTrasPDF(elemento, paddingPrevio, zoomPrevio));
 }
 
-function restaurarTrasPDF(elemento, paddingPrevio){
+function restaurarTrasPDF(elemento, paddingPrevio, zoomPrevio){
   elemento.style.paddingBottom = paddingPrevio;
+  elemento.style.zoom = zoomPrevio || '';
   const est = document.getElementById("estilo-pdf-temp");
   if (est) est.remove();
 }
