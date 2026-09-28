@@ -670,83 +670,111 @@
     <p class="text-base" data-i18n="cv_ayuda">Toca cualquier texto para corregirlo antes de descargar.</p>
   </div>
 
-  <!-- Tabs: Modelo Básico (actual) / Modelo Premium (previsualización) -->
-  <!-- Tabs: Modelo Básico / Diseño Premium -->
-  <div id="tabs-modelo" class="flex gap-2 justify-center mb-4 max-w-3xl mx-auto">
-    <button id="tab-basico" class="flex-1 py-3 px-4 rounded-full text-sm font-bold border-2 transition" style="background:var(--musgo);color:white;border-color:var(--musgo)" onclick="cambiarTab('basico')" data-i18n="tab_basico">
-      📄 Modelo Básico
-    </button>
-    <button id="tab-premium" class="flex-1 py-3 px-4 rounded-full text-sm font-bold border-2 transition" style="background:white;color:var(--tinta);border-color:var(--linea)" onclick="cambiarTab('premium')" data-i18n="tab_premium">
-      ⭐ Diseño Premium
-    </button>
-  </div>
+  <!-- Carrusel unificado de 5 plantillas -->
+  <div id="carrusel-plantillas" class="mb-4 max-w-3xl mx-auto w-full">
+    <p class="text-sm font-bold mb-2" style="color:var(--musgo)">Elige tu estilo favorito:</p>
+    <div class="flex gap-2 overflow-x-auto pb-2" style="-webkit-overflow-scrolling:touch; scrollbar-width:none">
 
-  <!-- Selector visual de diseño premium (fuera del contenedor-cvs) -->
-  <div id="selector-premium" class="cv-oculto mb-2 max-w-3xl mx-auto w-full">
-    <p class="text-center text-sm font-bold mb-2" style="color:var(--musgo)">Elige tu diseño premium:</p>
-    <div class="grid grid-cols-4 gap-2 mb-3">
-      <button id="sel-prem1" onclick="elegirDisenoPremium('prem1')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--ambar);background:white">
-        <div class="w-full h-20 rounded-lg mb-1 flex overflow-hidden" style="background:#0f172a">
-          <div style="width:35%;background:#0f172a;border-right:1px solid #1e293b"></div>
-          <div style="width:65%;background:#fff;padding:5px">
-            <div style="height:3px;width:60%;background:#e2e8f0;border-radius:2px;margin-bottom:3px"></div>
-            <div style="height:2px;width:80%;background:#f1f5f9;border-radius:2px;margin-bottom:2px"></div>
-            <div style="height:2px;width:70%;background:#f1f5f9;border-radius:2px"></div>
+      <!-- 1. BÁSICO (GRATIS) -->
+      <button id="car-basico" onclick="seleccionarPlantilla('basico')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:#FF5533;background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#FAFAF9;border:1px solid #e5e5e5">
+          <div style="display:flex;height:100%">
+            <div style="width:38%;background:#FAFAF9;border-right:1px solid #e5e5e5;padding:4px">
+              <div style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;margin:0 auto 3px"></div>
+              <div style="height:1.5px;width:80%;background:#ddd;border-radius:1px;margin:0 auto"></div>
+            </div>
+            <div style="width:62%;padding:4px">
+              <div style="height:1.5px;width:100%;background:#1a1a1a;margin-bottom:3px"></div>
+              <div style="height:1.5px;width:70%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:85%;background:#eee;border-radius:1px"></div>
+            </div>
           </div>
         </div>
-        <p class="text-xs font-bold truncate" style="color:#0f172a">Ejecutivo oscuro</p>
+        <span style="display:block;font-size:9px;font-weight:800;background:#64748B;color:white;border-radius:8px;padding:2px 4px">GRATIS</span>
       </button>
-      <button id="sel-prem2" onclick="elegirDisenoPremium('prem2')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
-        <div class="w-full h-20 rounded-lg mb-1 overflow-hidden" style="background:#fff;border:1px solid #e5e5e5">
-          <div style="display:flex;align-items:center;gap:6px;padding:5px 6px">
-            <div style="width:14px;height:14px;border-radius:50%;background:#e0e0e0;flex-shrink:0"></div>
-            <div style="height:5px;width:50px;background:#1a1a1a;border-radius:1px"></div>
+
+      <!-- 2. EJECUTIVO -->
+      <button id="car-prem1" onclick="seleccionarPlantilla('prem1')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#0f172a">
+          <div style="display:flex;height:100%">
+            <div style="width:35%;background:#0f172a;border-right:1px solid #1e293b;padding:4px">
+              <div style="width:8px;height:8px;border-radius:50%;background:#475569;margin:0 auto 3px"></div>
+            </div>
+            <div style="width:65%;background:#fff;padding:4px">
+              <div style="height:2px;width:60%;background:#e2e8f0;border-radius:1px;margin-bottom:3px"></div>
+              <div style="height:1.5px;width:80%;background:#f1f5f9;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:70%;background:#f1f5f9;border-radius:1px"></div>
+            </div>
           </div>
-          <div style="height:2px;background:#1a1a1a;margin:0 6px"></div>
-          <div style="display:grid;grid-template-columns:28px 1fr;gap:4px;padding:4px 6px">
-            <div style="height:2px;width:24px;background:#1a1a1a;border-radius:1px;margin-top:3px"></div>
+        </div>
+        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+      </button>
+
+      <!-- 3. EDITORIAL -->
+      <button id="car-prem2" onclick="seleccionarPlantilla('prem2')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff;border:1px solid #e5e5e5">
+          <div style="display:flex;align-items:center;gap:4px;padding:4px 5px">
+            <div style="width:12px;height:12px;border-radius:50%;background:#e0e0e0;flex-shrink:0"></div>
+            <div style="height:4px;width:35px;background:#1a1a1a;border-radius:1px"></div>
+          </div>
+          <div style="height:1.5px;background:#1a1a1a;margin:0 5px 3px"></div>
+          <div style="display:grid;grid-template-columns:20px 1fr;gap:3px;padding:0 5px">
+            <div style="height:1.5px;width:16px;background:#1a1a1a;border-radius:1px;margin-top:2px"></div>
             <div>
               <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
               <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
             </div>
           </div>
         </div>
-        <p class="text-xs font-bold truncate" style="color:#1a1a1a">Editorial</p>
+        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
       </button>
-      <button id="sel-prem3" onclick="elegirDisenoPremium('prem3')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
-        <div class="w-full h-20 rounded-lg mb-1 flex overflow-hidden" style="background:#fff">
-          <div style="width:36%;background:#FBF8F3;border-right:1px solid #f0e8d8;padding:5px">
-            <div style="height:12px;width:12px;border-radius:50%;background:#C4874A;margin:0 auto 4px;border:1.5px solid #C4874A"></div>
-            <div style="height:2px;width:70%;background:#C4874A;border-radius:2px;margin:0 auto 2px"></div>
-            <div style="height:1.5px;width:80%;background:#e8d5bc;border-radius:2px;margin:0 auto"></div>
-          </div>
-          <div style="width:64%;background:#fff;padding:5px">
-            <div style="height:2px;width:40%;background:#C4874A;margin-bottom:4px"></div>
-            <div style="height:2px;width:75%;background:#eee;border-radius:2px;margin-bottom:2px"></div>
-            <div style="height:2px;width:65%;background:#eee;border-radius:2px"></div>
-          </div>
-        </div>
-        <p class="text-xs font-bold truncate" style="color:#C4874A">Ámbar moderno</p>
-      </button>
-      <button id="sel-prem4" onclick="elegirDisenoPremium('prem4')" class="prem-sel-btn rounded-xl border-2 p-2 text-left transition" style="border-color:var(--linea);background:white">
-        <div class="w-full h-20 rounded-lg mb-1 overflow-hidden" style="background:#fff">
-          <div style="background:#1B3A5C;padding:5px 7px;display:flex;align-items:center;gap:5px;border-bottom:2px solid #2D6A9F">
-            <div style="width:12px;height:12px;border-radius:3px;background:rgba(255,255,255,.2)"></div>
-            <div>
-              <div style="height:2px;width:40px;background:rgba(255,255,255,.7);border-radius:1px;margin-bottom:2px"></div>
-              <div style="height:1.5px;width:28px;background:#93B5D4;border-radius:1px"></div>
+
+      <!-- 4. ÁMBAR -->
+      <button id="car-prem3" onclick="seleccionarPlantilla('prem3')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff">
+          <div style="display:flex;height:100%">
+            <div style="width:36%;background:#FBF8F3;border-right:1px solid #f0e8d8;padding:4px">
+              <div style="width:10px;height:10px;border-radius:50%;background:#C4874A;margin:0 auto 3px"></div>
+              <div style="height:1.5px;width:70%;background:#C4874A;border-radius:1px;margin:0 auto"></div>
+            </div>
+            <div style="width:64%;padding:4px">
+              <div style="height:1.5px;width:40%;background:#C4874A;margin-bottom:3px"></div>
+              <div style="height:1.5px;width:75%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
             </div>
           </div>
-          <div style="padding:4px 6px">
-            <div style="height:1.5px;width:40%;background:#2D6A9F;border-radius:1px;margin-bottom:3px"></div>
+        </div>
+        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+      </button>
+
+      <!-- 5. AZUL MARINO -->
+      <button id="car-prem4" onclick="seleccionarPlantilla('prem4')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff">
+          <div style="background:#1B3A5C;padding:4px 5px;display:flex;align-items:center;gap:4px;border-bottom:2px solid #2D6A9F">
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,255,255,.2)"></div>
+            <div style="height:1.5px;width:30px;background:rgba(255,255,255,.6);border-radius:1px"></div>
+          </div>
+          <div style="padding:3px 5px">
+            <div style="height:1.5px;width:40%;background:#2D6A9F;border-radius:1px;margin-bottom:2px"></div>
             <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
             <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
           </div>
         </div>
-        <p class="text-xs font-bold truncate" style="color:#1B3A5C">Azul marino</p>
+        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
       </button>
-    </div>
-  </div><!-- /selector-premium -->
+
+    </div><!-- /flex carrusel -->
+  </div><!-- /carrusel-plantillas -->
 
   <!-- Contenedor de las dos plantillas: solo una visible a la vez según el tab -->
   <div id="contenedor-cvs">
@@ -979,46 +1007,26 @@
       </div>
     </div>
 
-    <!-- ===== ZONA BÁSICO: gratis + 0,99€ (visible cuando tab=basico) ===== -->
-    <div id="zona-descarga-basico">
+    <!-- ===== BOTÓN PRINCIPAL DINÁMICO ===== -->
+    <div class="mt-4">
       <div class="border-t mb-4" style="border-color:var(--linea)"></div>
-      <div class="grid grid-cols-2 gap-3">
 
-        <!-- Opción A: Descarga gratuita con anuncio -->
-        <div class="rounded-2xl border-2 p-3 flex flex-col gap-2 text-center" style="border-color:var(--linea); background:white">
-          <p class="font-display text-sm font-bold" style="color:var(--tinta)" data-i18n="descarga_gratis_titulo">Descarga gratuita</p>
-          <p class="text-xs" style="color:#6B6354" data-i18n="descarga_gratis_sub">Ver un vídeo de 15 s</p>
-          <button id="btn-descargar-gratis" class="mt-auto w-full py-3 rounded-full text-sm font-bold border-2 transition" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="descarga_gratis_btn">
-            Ver anuncio y descargar
-          </button>
-        </div>
+      <!-- Botón principal — cambia según plantilla seleccionada -->
+      <button id="btn-cta-principal" class="w-full py-4 rounded-full text-base font-bold text-white shadow-md transition hover:opacity-90 mb-2">
+        ⬇️ DESCARGAR GRATIS (VER ANUNCIO 15s)
+      </button>
 
-        <!-- Opción B: 0,99€ sin esperas -->
-        <div class="rounded-2xl border-2 p-3 flex flex-col gap-2 text-center" style="border-color:var(--linea); background:white">
-          <p class="font-display text-sm font-bold" style="color:var(--tinta)" data-i18n="descarga_basico_titulo">Sin anuncios</p>
-          <p class="text-xs" style="color:#6B6354" data-i18n="descarga_basico_sub">Descarga inmediata</p>
-          <button id="btn-descargar-premium" class="mt-auto w-full py-3 rounded-full text-sm font-bold border-2 transition" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="descarga_basico_btn">
-            Descargar por 0,99 €
-          </button>
-        </div>
+      <!-- Subtexto dinámico del botón -->
+      <p id="txt-cta-sub" class="text-center text-xs mb-3" style="color:#6B6354"></p>
 
-      </div>
+      <!-- Opción secundaria (solo visible en modo gratis) -->
+      <p id="txt-cta-secundario" class="text-center text-xs underline cursor-pointer" style="color:var(--musgo)">
+        Descarga inmediata sin anuncio por 0,99 €
+      </p>
     </div>
 
-    <!-- ===== ZONA PREMIUM: solo 1,99€ (visible cuando tab=premium) ===== -->
-    <div id="zona-descarga-premium" class="hidden">
-      <div class="border-t mb-6" style="border-color:var(--linea)"></div>
-      <div class="rounded-2xl border-2 p-5 text-center shadow-md" style="border-color:var(--ambar); background:white">
-        <p class="font-display text-lg font-bold mb-1" style="color:var(--tinta)" data-i18n="descarga_premium_titulo">Diseño Premium</p>
-        <p class="text-sm mb-4" style="color:#6B6354" data-i18n="descarga_premium_sub">Plantilla ejecutiva con columna oscura · Sin anuncios · Pago único</p>
-        <button id="btn-descargar-premium-plus" class="w-full sm:w-auto px-12 py-4 rounded-full text-base font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)" data-i18n="descarga_premium_btn">
-          Descargar diseño Premium por 1,99 €
-        </button>
-      </div>
-    </div>
-
-  <p id="txt-traduccion-estado" class="text-center text-sm mb-4 hidden" style="color:var(--musgo)" data-i18n="traduciendo_cv">Traduciendo tu currículum…</p>
-  <p id="aviso-error-traduccion" class="hidden mb-10 text-sm rounded-2xl border-2 p-4 max-w-xl mx-auto" style="border-color:#E3A0A0; background:#FBEAEA; color:#8A2E2E"></p>
+    <p id="txt-traduccion-estado" class="text-center text-sm mb-4 hidden" style="color:var(--musgo)" data-i18n="traduciendo_cv">Traduciendo tu currículum…</p>
+    <p id="aviso-error-traduccion" class="hidden mb-10 text-sm rounded-2xl border-2 p-4 max-w-xl mx-auto" style="border-color:#E3A0A0; background:#FBEAEA; color:#8A2E2E"></p>
 
   </div><!-- /max-w-3xl zona descarga -->
 </section>
@@ -2405,7 +2413,8 @@ function pintarCV(resultado){
   // Etiquetas de datos personales en el idioma actual (Teléfono:, Email:, Ubicación:)
   actualizarEtiquetasCV(idiomaActual);
 
-  // Al mostrar el CV siempre empezamos en el tab básico
+  // Al mostrar el CV siempre empezamos en el básico y actualizamos el CTA
+  plantillaActiva = "basico";
   tabActivo = "basico";
   disenoPremActivo = "prem1";
   CV_IDS.forEach(id => {
@@ -2413,14 +2422,14 @@ function pintarCV(resultado){
     if (el) el.classList.add("cv-oculto");
   });
   document.getElementById("hoja-cv").classList.remove("cv-oculto");
-  const selPrem = document.getElementById("selector-premium");
-  if (selPrem) selPrem.classList.add("cv-oculto");
-  document.getElementById("zona-descarga-basico").classList.remove("hidden");
-  document.getElementById("zona-descarga-premium").classList.add("hidden");
-  const tbB2 = document.getElementById("tab-basico");
-  const tbP2 = document.getElementById("tab-premium");
-  if (tbB2) tbB2.style.cssText = "background:var(--musgo);color:white;border-color:var(--musgo)";
-  if (tbP2) tbP2.style.cssText = "background:white;color:var(--tinta);border-color:var(--linea)";
+  // Marcar el básico como seleccionado en el carrusel
+  ["basico","prem1","prem2","prem3","prem4"].forEach(p => {
+    const btn = document.getElementById(`car-${p}`);
+    if (!btn) return;
+    btn.style.borderColor = p === "basico" ? "#FF5533" : "var(--linea)";
+    btn.style.boxShadow   = p === "basico" ? "0 0 0 2px rgba(255,85,51,0.3)" : "none";
+  });
+  actualizarCTA(true);
 
   document.getElementById("pantalla-carga").classList.add("hidden");
   document.getElementById("pantalla-cv").classList.remove("hidden");
@@ -2585,7 +2594,7 @@ selectIdiomaTraduccion.addEventListener("change", () => {
   estadoTexto.textContent = t.traduciendo_cv;
   estadoTexto.classList.remove("hidden");
   btnTraducirCV.disabled = true;
-  document.getElementById("btn-descargar-premium").disabled = true;
+  document.getElementById("btn-cta-principal").disabled = true;
 
   llamarGroqTraduccion(estadoActual, nombreIdiomaDestino)
     .then(resultado => {
@@ -2600,7 +2609,7 @@ selectIdiomaTraduccion.addEventListener("change", () => {
     })
     .finally(() => {
       btnTraducirCV.disabled = false;
-      document.getElementById("btn-descargar-premium").disabled = false;
+      document.getElementById("btn-cta-principal").disabled = false;
     });
 });
 
@@ -2635,61 +2644,75 @@ let disenoPremActivo = "prem1"; // diseño premium seleccionado actualmente
 const CV_IDS  = ["hoja-cv","hoja-cv-premium","hoja-cv-prem2","hoja-cv-prem3","hoja-cv-prem4"];
 const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem2", prem3:"hoja-cv-prem3", prem4:"hoja-cv-prem4" };
 
-function cambiarTab(modelo){
-  tabActivo = modelo;
-  const esPremium = modelo === "premium";
+// ===== CARRUSEL UNIFICADO DE PLANTILLAS =====
+let plantillaActiva = "basico"; // "basico" | "prem1" | "prem2" | "prem3" | "prem4"
 
+function seleccionarPlantilla(plantilla){
+  plantillaActiva = plantilla;
+  const esBasico = plantilla === "basico";
+  const esPremium = !esBasico;
+
+  // Mantener compatibilidad con código que usa tabActivo y disenoPremActivo
+  tabActivo = esBasico ? "basico" : "premium";
+  if (esPremium) disenoPremActivo = plantilla;
+
+  // Ocultar todos los CVs
   CV_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add("cv-oculto");
   });
 
-  const selector = document.getElementById("selector-premium");
-  if (selector) selector.classList.toggle("cv-oculto", !esPremium);
-
-  if (esPremium){
-    rellenarPlantilla(disenoPremActivo);
-    const cvPrem = document.getElementById(CV_MAP[disenoPremActivo]);
-    if (cvPrem) cvPrem.classList.remove("cv-oculto");
-  } else {
+  // Mostrar el CV correspondiente
+  if (esBasico){
     document.getElementById("hoja-cv").classList.remove("cv-oculto");
+  } else {
+    rellenarPlantilla(plantilla);
+    const el = document.getElementById(CV_MAP[plantilla]);
+    if (el) el.classList.remove("cv-oculto");
   }
 
-  document.getElementById("zona-descarga-basico").classList.toggle("hidden", esPremium);
-  document.getElementById("zona-descarga-premium").classList.toggle("hidden", !esPremium);
+  // Marcar visualmente el botón del carrusel seleccionado
+  ["basico","prem1","prem2","prem3","prem4"].forEach(p => {
+    const btn = document.getElementById(`car-${p}`);
+    if (!btn) return;
+    btn.style.borderColor = p === plantilla ? "#FF5533" : "var(--linea)";
+    btn.style.boxShadow   = p === plantilla ? "0 0 0 2px rgba(255,85,51,0.3)" : "none";
+  });
 
-  const tbB = document.getElementById("tab-basico");
-  const tbP = document.getElementById("tab-premium");
-  if (tbB) tbB.style.cssText = esPremium
-    ? "background:white;color:var(--tinta);border-color:var(--linea)"
-    : "background:var(--musgo);color:white;border-color:var(--musgo)";
-  if (tbP) tbP.style.cssText = esPremium
-    ? "background:var(--ambar);color:white;border-color:var(--ambar)"
-    : "background:white;color:var(--tinta);border-color:var(--linea)";
+  // Actualizar el botón principal dinámico
+  actualizarCTA(esBasico);
 
+  // Recalcular escala
   requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
 }
 
+function actualizarCTA(esBasico){
+  const btnCTA  = document.getElementById("btn-cta-principal");
+  const txtSub  = document.getElementById("txt-cta-sub");
+  const txtSec  = document.getElementById("txt-cta-secundario");
+  if (!btnCTA) return;
+
+  if (esBasico){
+    btnCTA.textContent = "⬇️ DESCARGAR GRATIS (VER ANUNCIO 15s)";
+    btnCTA.style.background = "var(--musgo)";
+    if (txtSub) txtSub.textContent = "";
+    if (txtSec) txtSec.style.display = "";
+  } else {
+    btnCTA.textContent = "✨ DESCARGAR DISEÑO PREMIUM · 2,99 €";
+    btnCTA.style.background = "#FF5533";
+    if (txtSub) txtSub.textContent = "Pago único · Sin anuncios";
+    if (txtSec) txtSec.style.display = "none";
+  }
+}
+
+// Compatibilidad con código existente que llama a cambiarTab
+function cambiarTab(modelo){
+  seleccionarPlantilla(modelo === "premium" ? disenoPremActivo : "basico");
+}
+
+// Compatibilidad con elegirDisenoPremium
 function elegirDisenoPremium(diseno){
-  disenoPremActivo = diseno;
-
-  ["hoja-cv-premium","hoja-cv-prem2","hoja-cv-prem3","hoja-cv-prem4"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add("cv-oculto");
-  });
-
-  rellenarPlantilla(diseno);
-  const elCV = document.getElementById(CV_MAP[diseno]);
-  if (elCV) elCV.classList.remove("cv-oculto");
-
-  ["prem1","prem2","prem3","prem4"].forEach(d => {
-    const btn = document.getElementById(`sel-${d}`);
-    if (!btn) return;
-    btn.style.borderColor = d === diseno ? "var(--ambar)" : "var(--linea)";
-    btn.style.boxShadow   = d === diseno ? "0 0 0 2px var(--ambar)" : "none";
-  });
-
-  requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
+  seleccionarPlantilla(diseno);
 }
 
 // ---------- 12b. Descargar el CV como PDF ----------
@@ -2955,11 +2978,38 @@ window.recompensaCompletada = function(){
   btnConfirmarGratis.classList.remove("hidden");
 };
 
-document.getElementById("btn-descargar-gratis").addEventListener("click", abrirModalAnuncio);
+// =============================================================================
+// BOTÓN CTA PRINCIPAL — comportamiento dinámico según plantilla seleccionada
+// =============================================================================
+document.getElementById("btn-cta-principal").addEventListener("click", () => {
+  if (plantillaActiva === "basico"){
+    // GRATIS: mostrar modal de anuncio
+    abrirModalAnuncio();
+  } else {
+    // PREMIUM 2,99€: iniciar compra
+    const t = TEXTOS[idiomaActual];
+    productoPendiente = "premium_299";
+    modalPagoTitulo.textContent      = t.modal_pago_premium_titulo;
+    modalPagoDescripcion.textContent = t.modal_pago_premium_desc;
+    modalPagoPrecio.textContent      = "2,99 €";
+    modalPago.classList.remove("hidden");
+  }
+});
 
+// Opción secundaria: descarga sin anuncio por 0,99€ (solo en modo básico)
+document.getElementById("txt-cta-secundario").addEventListener("click", () => {
+  const t = TEXTOS[idiomaActual];
+  productoPendiente = "basico_099";
+  modalPagoTitulo.textContent      = t.modal_pago_sin_anuncio_titulo;
+  modalPagoDescripcion.textContent = t.modal_pago_sin_anuncio_desc;
+  modalPagoPrecio.textContent      = "0,99 €";
+  modalPago.classList.remove("hidden");
+});
+
+// Modal de anuncio: confirmar tras ver el vídeo
 btnConfirmarGratis.addEventListener("click", () => {
   modalAnuncio.classList.add("hidden");
-  generarYDescargarPDF(); // básico tras ver el anuncio
+  generarYDescargarPDF();
 });
 
 function cerrarModalAnuncio(){
@@ -2969,67 +3019,38 @@ function cerrarModalAnuncio(){
 
 btnCancelarAnuncio.addEventListener("click", cerrarModalAnuncio);
 
-// =============================================================================
-// FLUJO B: 0,99€ sin esperas → descarga básico
-// =============================================================================
-document.getElementById("btn-descargar-premium").addEventListener("click", () => {
-  const t = TEXTOS[idiomaActual];
-  productoPendiente = "basico_099";
-  modalPagoTitulo.textContent     = t.modal_pago_sin_anuncio_titulo;
-  modalPagoDescripcion.textContent = t.modal_pago_sin_anuncio_desc;
-  modalPagoPrecio.textContent      = "0,99 €";
-  modalPago.classList.remove("hidden");
-});
-
-// =============================================================================
-// FLUJO C: 1,99€ diseño Premium → descarga plantilla premium
-// =============================================================================
-document.getElementById("btn-descargar-premium-plus").addEventListener("click", () => {
-  const t = TEXTOS[idiomaActual];
-  productoPendiente = "premium_199";
-  modalPagoTitulo.textContent      = t.modal_pago_premium_titulo;
-  modalPagoDescripcion.textContent  = t.modal_pago_premium_desc;
-  modalPagoPrecio.textContent       = "1,99 €";
-  modalPago.classList.remove("hidden");
-});
-
-// Opción 0,99€ desde dentro del modal de anuncio (alternativa a ver el vídeo)
+// Opción 0,99€ desde dentro del modal de anuncio
 btnPagarBasico.addEventListener("click", () => {
   const t = TEXTOS[idiomaActual];
   clearInterval(intervaloContador);
   modalAnuncio.classList.add("hidden");
   productoPendiente = "basico_099";
   modalPagoTitulo.textContent      = t.modal_pago_sin_anuncio_titulo;
-  modalPagoDescripcion.textContent  = t.modal_pago_sin_anuncio_desc;
-  modalPagoPrecio.textContent       = "0,99 €";
+  modalPagoDescripcion.textContent = t.modal_pago_sin_anuncio_desc;
+  modalPagoPrecio.textContent      = "0,99 €";
   modalPago.classList.remove("hidden");
 });
 
-// =============================================================================
-// CONFIRMACIÓN DE PAGO (común a B y C)
-// =============================================================================
+// Confirmación de pago (común a todos los flujos de pago)
 btnConfirmarPago.addEventListener("click", () => {
   if (window.AndroidBilling && typeof window.AndroidBilling.iniciarPago === "function"){
     window.AndroidBilling.iniciarPago(productoPendiente);
-    // Android llamará a window.pagoCompletado(productoId) al confirmar
   } else {
-    // Sin app nativa: simulamos el pago directamente
     modalPago.classList.add("hidden");
-    if (productoPendiente === "premium_199"){
+    if (productoPendiente === "premium_299"){
       generarYDescargarPDFPremium();
     } else {
       generarYDescargarPDF();
     }
-    productoPendiente = null;
   }
 });
 
 window.pagoCompletado = function(productoId){
   modalPago.classList.add("hidden");
-  if (productoId === "premium_199"){
+  if (productoId === "premium_299"){
     generarYDescargarPDFPremium();
   } else {
-    generarYDescargarPDF(); // basico_099
+    generarYDescargarPDF();
   }
 };
 
