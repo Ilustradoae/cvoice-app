@@ -678,7 +678,7 @@
       <!-- 1. BÁSICO (GRATIS) -->
       <button id="car-basico" onclick="seleccionarPlantilla('basico')"
         class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
-        style="width:72px;border-color:#FF5533;background:white">
+        style="width:72px;border-color:var(--ambar);background:white">
         <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#FAFAF9;border:1px solid #e5e5e5">
           <div style="display:flex;height:100%">
             <div style="width:38%;background:#FAFAF9;border-right:1px solid #e5e5e5;padding:4px">
@@ -711,7 +711,7 @@
             </div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
       </button>
 
       <!-- 3. EDITORIAL -->
@@ -732,7 +732,7 @@
             </div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
       </button>
 
       <!-- 4. ÁMBAR -->
@@ -752,7 +752,7 @@
             </div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
       </button>
 
       <!-- 5. AZUL MARINO -->
@@ -770,7 +770,7 @@
             <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:#FF5533;color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
       </button>
 
     </div><!-- /flex carrusel -->
@@ -996,33 +996,31 @@
   </div>
 
   <!-- ===== Zona de descarga / monetización ===== -->
-  <div class="max-w-3xl mx-auto mt-6 mb-3 px-2">
+  <div class="max-w-3xl mx-auto mt-4 mb-3 px-2">
 
-    <!-- Fila superior: Volver y Traducir (sin cambios) -->
-    <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-      <button id="btn-volver-editar" class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_rehacer">← Volver a grabar</button>
-      <div class="relative inline-block">
-        <button id="btn-traducir-cv" class="w-full px-8 py-4 rounded-full text-lg font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_traducir_cv">🌐 Traducir CV</button>
+    <!-- BOTÓN PRINCIPAL DINÁMICO (arriba) -->
+    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl text-base font-bold text-white shadow-md transition hover:opacity-90 mb-1 flex items-center justify-center gap-2" style="background:var(--musgo)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      DESCARGAR GRATIS (VER ANUNCIO 15s)
+    </button>
+
+    <!-- Subtexto dinámico -->
+    <p id="txt-cta-sub" class="text-center text-xs mb-2" style="color:#6B6354"></p>
+
+    <!-- Opción secundaria sin anuncio (solo visible en modo gratis) -->
+    <p id="txt-cta-secundario" class="text-center text-xs underline cursor-pointer mb-4" style="color:var(--musgo)">
+      Descarga inmediata sin anuncio por 0,99 €
+    </p>
+
+    <div class="border-t mb-3" style="border-color:var(--linea)"></div>
+
+    <!-- Botones secundarios en horizontal -->
+    <div class="flex gap-2 mb-2">
+      <button id="btn-volver-editar" class="flex-1 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_rehacer">← Volver a grabar</button>
+      <div class="relative flex-1">
+        <button id="btn-traducir-cv" class="w-full py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_traducir_cv">🌐 Traducir CV</button>
         <select id="select-idioma-traduccion" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 hidden w-56 rounded-2xl border-2 p-3 text-base shadow-lg bg-white" style="border-color:var(--linea); color:var(--tinta)" size="8"></select>
       </div>
-    </div>
-
-    <!-- ===== BOTÓN PRINCIPAL DINÁMICO ===== -->
-    <div class="mt-4">
-      <div class="border-t mb-4" style="border-color:var(--linea)"></div>
-
-      <!-- Botón principal — cambia según plantilla seleccionada -->
-      <button id="btn-cta-principal" class="w-full py-4 rounded-full text-base font-bold text-white shadow-md transition hover:opacity-90 mb-2">
-        ⬇️ DESCARGAR GRATIS (VER ANUNCIO 15s)
-      </button>
-
-      <!-- Subtexto dinámico del botón -->
-      <p id="txt-cta-sub" class="text-center text-xs mb-3" style="color:#6B6354"></p>
-
-      <!-- Opción secundaria (solo visible en modo gratis) -->
-      <p id="txt-cta-secundario" class="text-center text-xs underline cursor-pointer" style="color:var(--musgo)">
-        Descarga inmediata sin anuncio por 0,99 €
-      </p>
     </div>
 
     <p id="txt-traduccion-estado" class="text-center text-sm mb-4 hidden" style="color:var(--musgo)" data-i18n="traduciendo_cv">Traduciendo tu currículum…</p>
@@ -2113,7 +2111,10 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 8. FORMATO DE SALIDA: Devuelve ESTRICTAMENTE el JSON solicitado. Nunca HTML libre, nunca explicaciones adicionales, nunca texto fuera del JSON.`;
 
 function construirPromptUsuario(datos){
+  const nombreIdioma = IDIOMAS[idiomaActual]?.nombre || "español";
   return `Aquí están los textos en bruto, dictados por voz, recogidos en una entrevista de 4 pasos. Devuélvelos procesados.
+
+IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro.
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
@@ -2426,7 +2427,7 @@ function pintarCV(resultado){
   ["basico","prem1","prem2","prem3","prem4"].forEach(p => {
     const btn = document.getElementById(`car-${p}`);
     if (!btn) return;
-    btn.style.borderColor = p === "basico" ? "#FF5533" : "var(--linea)";
+    btn.style.borderColor = p === "basico" ? "var(--ambar)" : "var(--linea)";
     btn.style.boxShadow   = p === "basico" ? "0 0 0 2px rgba(255,85,51,0.3)" : "none";
   });
   actualizarCTA(true);
@@ -2675,7 +2676,7 @@ function seleccionarPlantilla(plantilla){
   ["basico","prem1","prem2","prem3","prem4"].forEach(p => {
     const btn = document.getElementById(`car-${p}`);
     if (!btn) return;
-    btn.style.borderColor = p === plantilla ? "#FF5533" : "var(--linea)";
+    btn.style.borderColor = p === plantilla ? "var(--ambar)" : "var(--linea)";
     btn.style.boxShadow   = p === plantilla ? "0 0 0 2px rgba(255,85,51,0.3)" : "none";
   });
 
@@ -2699,7 +2700,7 @@ function actualizarCTA(esBasico){
     if (txtSec) txtSec.style.display = "";
   } else {
     btnCTA.textContent = "✨ DESCARGAR DISEÑO PREMIUM · 2,99 €";
-    btnCTA.style.background = "#FF5533";
+    btnCTA.style.background = "var(--ambar)";
     if (txtSub) txtSub.textContent = "Pago único · Sin anuncios";
     if (txtSec) txtSec.style.display = "none";
   }
@@ -2745,30 +2746,31 @@ let intervaloContador = null;
 // GENERACIÓN DEL PDF
 // =============================================================================
 
-// Descarga cualquier elemento como PDF A4 completo
 function descargarHojaComoPDF(elemento, nombreArchivo){
+  // Crear un wrapper invisible que contiene el clon a tamaño real
+  // Usamos overflow:hidden + height:0 para que no afecte al layout
+  // pero el clon sí es renderizable por html2canvas
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = "position:absolute;left:0;top:0;width:900px;overflow:hidden;height:0;pointer-events:none;";
+  document.body.appendChild(wrapper);
 
-  // Clonar el elemento para no afectar lo visible en pantalla
   const clon = elemento.cloneNode(true);
-  clon.style.zoom = '';
-  clon.style.transform = '';
-  clon.style.position = 'fixed';
-  clon.style.top = '-9999px';
-  clon.style.left = '0';
-  clon.style.width = '900px';
-  clon.style.maxWidth = '900px';
-  clon.style.margin = '0';
-  clon.style.borderRadius = '0';
-  document.body.appendChild(clon);
+  clon.style.cssText = "zoom:1;transform:none;width:900px;max-width:900px;margin:0;border-radius:0;position:relative;";
+  // Quitar clase cv-oculto si la tiene
+  clon.classList.remove("cv-oculto");
+  wrapper.appendChild(clon);
 
-  // Ocultar pistas de edición en el clon
+  // Mostrar brevemente el wrapper para el render
+  wrapper.style.height = "auto";
+  wrapper.style.visibility = "hidden";
+
+  // Estilo temporal para PDF
   const estiloTemp = document.createElement("style");
   estiloTemp.id = "estilo-pdf-temp";
-  estiloTemp.textContent = ".pista-edicion::after{ display:none !important; } [contenteditable]{ outline:none !important; }";
+  estiloTemp.textContent = ".pista-edicion::after{display:none!important;} [contenteditable]{outline:none!important;}";
   document.head.appendChild(estiloTemp);
 
-  // Esperar a que el clon se pinte antes de capturar
-  requestAnimationFrame(() => {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
     const altoReal = clon.scrollHeight || 1123;
     if (altoReal < 1123) clon.style.paddingBottom = `${1123 - altoReal}px`;
 
@@ -2783,17 +2785,23 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
         backgroundColor: "#ffffff",
         windowWidth: 900,
         logging: false,
+        onclone: (doc) => {
+          // Asegurar que los fondos de color se imprimen
+          const style = doc.createElement("style");
+          style.textContent = "* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }";
+          doc.head.appendChild(style);
+        }
       },
       jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
       pagebreak: { mode: ["avoid-all", "css", "legacy"] },
     }).from(clon).save()
-      .then(() => limpiarTrasPDF(clon))
-      .catch(() => limpiarTrasPDF(clon));
-  });
+      .then(() => limpiarTrasPDF(wrapper))
+      .catch(() => limpiarTrasPDF(wrapper));
+  }));
 }
 
-function limpiarTrasPDF(clon){
-  if (clon && clon.parentNode) clon.parentNode.removeChild(clon);
+function limpiarTrasPDF(wrapper){
+  if (wrapper && wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
   const est = document.getElementById("estilo-pdf-temp");
   if (est) est.remove();
 }
@@ -3085,11 +3093,11 @@ function aplicarEscalaCV(){
 }
 
 // ---------- ZOOM TÁCTIL PARA EDITAR EL CV EN PANTALLA ----------
-// Permite hacer pinch-zoom sobre el CV para ampliar y editar texto
 (function(){
-  let escalaActual = 1;
+  let escalaZoom = 1;
   let distanciaInicial = 0;
   let escalaBase = 1;
+  let origenX = 0, origenY = 0;
 
   function distancia(t1, t2){
     const dx = t1.clientX - t2.clientX;
@@ -3097,48 +3105,64 @@ function aplicarEscalaCV(){
     return Math.sqrt(dx*dx + dy*dy);
   }
 
-  function aplicarZoomEdicion(escala){
-    escalaActual = Math.min(Math.max(escala, 0.8), 3);
-    const cvIds = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
-    cvIds.forEach(id => {
+  function cvActivo(){
+    const ids = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
+    for (const id of ids){
       const el = document.getElementById(id);
-      if (el && !el.classList.contains('cv-oculto')){
-        // Combinamos el zoom de escala de pantalla con el zoom de edición
-        const zoomBase = parseFloat(el.style.zoom) || 1;
-        el.style.transform = escalaActual > 1 ? `scale(${escalaActual})` : '';
-        el.style.transformOrigin = 'top center';
-        // Ajustar altura del contenedor
-        const cont = document.getElementById('contenedor-cvs');
-        if (cont){
-          cont.style.height = escalaActual > 1
-            ? Math.ceil(el.offsetHeight * zoomBase * escalaActual) + 'px'
-            : '';
-        }
-      }
-    });
+      if (el && !el.classList.contains('cv-oculto')) return el;
+    }
+    return null;
   }
 
-  document.addEventListener('touchstart', e => {
+  function aplicarZoom(escala, ox, oy){
+    escalaZoom = Math.min(Math.max(escala, 0.8), 3);
+    const el = cvActivo();
+    const cont = document.getElementById('contenedor-cvs');
+    if (!el || !cont) return;
+
+    // Aplicar transform:scale con origen en el punto central del gesto
+    el.style.transformOrigin = `${ox}px ${oy}px`;
+    el.style.transform = `scale(${escalaZoom})`;
+
+    // Ajustar la altura del contenedor para que el scroll funcione bien
+    const zoomBase = parseFloat(el.style.zoom) || 1;
+    cont.style.height = Math.ceil(el.offsetHeight * zoomBase * escalaZoom) + 'px';
+    cont.style.overflow = 'auto';
+  }
+
+  const contEl = document.getElementById('contenedor-cvs');
+  if (!contEl) return;
+
+  contEl.addEventListener('touchstart', e => {
     if (e.touches.length === 2){
       distanciaInicial = distancia(e.touches[0], e.touches[1]);
-      escalaBase = escalaActual;
+      escalaBase = escalaZoom;
+      // Punto medio del gesto relativo al contenedor
+      const rect = contEl.getBoundingClientRect();
+      origenX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+      origenY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
     }
   }, { passive: true });
 
-  document.addEventListener('touchmove', e => {
+  contEl.addEventListener('touchmove', e => {
     if (e.touches.length === 2){
       const dist = distancia(e.touches[0], e.touches[1]);
-      const nueva = escalaBase * (dist / distanciaInicial);
-      aplicarZoomEdicion(nueva);
+      aplicarZoom(escalaBase * (dist / distanciaInicial), origenX, origenY);
     }
   }, { passive: true });
 
-  // Doble tap para resetear zoom
+  // Doble tap para resetear zoom al tamaño original de pantalla
   let ultimoTap = 0;
-  document.getElementById('contenedor-cvs').addEventListener('touchend', e => {
+  contEl.addEventListener('touchend', e => {
+    if (e.touches.length > 0) return; // aún hay dedos
     const ahora = Date.now();
     if (ahora - ultimoTap < 300){
-      aplicarZoomEdicion(1);
+      escalaZoom = 1;
+      const el = cvActivo();
+      const cont = document.getElementById('contenedor-cvs');
+      if (el){ el.style.transform = ''; el.style.transformOrigin = ''; }
+      if (cont){ cont.style.height = ''; cont.style.overflow = 'hidden'; }
+      requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
     }
     ultimoTap = ahora;
   }, { passive: true });
