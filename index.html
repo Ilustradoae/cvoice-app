@@ -2736,34 +2736,38 @@ let intervaloContador = null;
 // =============================================================================
 
 function descargarHojaComoPDF(elemento, nombreArchivo){
-  // Crear un wrapper invisible que contiene el clon a tamaño real
-  // Usamos overflow:hidden + height:0 para que no afecte al layout
-  // pero el clon sí es renderizable por html2canvas
-  const wrapper = document.createElement("div");
-  // opacity:0 en vez de visibility:hidden — html2canvas no renderiza con visibility:hidden
-  // position:absolute con scroll para que esté en el DOM renderizable
-  wrapper.style.cssText = "position:absolute;left:0;top:0;width:900px;pointer-events:none;opacity:0;z-index:-1;";
-  document.body.appendChild(wrapper);
+  // Guardar estado original del elemento
+  const zoomPrevio    = elemento.style.zoom;
+  const transformPrev = elemento.style.transform;
+  const displayPrev   = elemento.style.display;
+  const eraOculto     = elemento.classList.contains("cv-oculto");
 
-  const clon = elemento.cloneNode(true);
-  clon.style.cssText = "zoom:1!important;transform:none!important;width:900px;max-width:900px;margin:0;border-radius:0;position:relative;display:block!important;";
-  clon.classList.remove("cv-oculto");
-  wrapper.appendChild(clon);
+  // Poner el elemento a tamaño completo y visible para que html2canvas lo capture
+  elemento.style.zoom      = '1';
+  elemento.style.transform = 'none';
+  elemento.classList.remove("cv-oculto");
 
-  // Estilo temporal para PDF
+  // Scroll al inicio del CV para que html2canvas capture desde arriba
+  window.scrollTo(0, elemento.getBoundingClientRect().top + window.scrollY - 10);
+
   const estiloTemp = document.createElement("style");
   estiloTemp.id = "estilo-pdf-temp";
-  estiloTemp.textContent = ".pista-edicion::after{display:none!important;} [contenteditable]{outline:none!important;}";
+  estiloTemp.textContent = [
+    ".pista-edicion::after{display:none!important;}",
+    "[contenteditable]{outline:none!important;}",
+    "* {-webkit-print-color-adjust:exact!important; print-color-adjust:exact!important;}"
+  ].join(" ");
   document.head.appendChild(estiloTemp);
 
+  // Esperar 2 frames para que el browser pinte el elemento a tamaño completo
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    const altoReal = clon.scrollHeight || 1123;
-    if (altoReal < 1123) clon.style.paddingBottom = `${1123 - altoReal}px`;
+    const altoReal = elemento.scrollHeight || 1123;
+    if (altoReal < 1123) elemento.style.paddingBottom = `${1123 - altoReal}px`;
 
     html2pdf().set({
       margin: 0,
       filename: nombreArchivo + ".pdf",
-      image: { type: "jpeg", quality: 0.98 },
+      image: { type: "jpeg", quality: 0.95 },
       html2canvas: {
         scale: 2,
         useCORS: true,
@@ -2771,25 +2775,24 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
         backgroundColor: "#ffffff",
         windowWidth: 900,
         logging: false,
-        onclone: (doc) => {
-          // Asegurar que los fondos de color se imprimen
-          const style = doc.createElement("style");
-          style.textContent = "* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }";
-          doc.head.appendChild(style);
-        }
       },
       jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
       pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-    }).from(clon).save()
-      .then(() => limpiarTrasPDF(wrapper))
-      .catch(() => limpiarTrasPDF(wrapper));
+    }).from(elemento).save()
+      .then(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, eraOculto))
+      .catch(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, eraOculto));
   }));
 }
 
-function limpiarTrasPDF(wrapper){
-  if (wrapper && wrapper.parentNode) wrapper.parentNode.removeChild(wrapper);
+function restaurarTrasPDF(elemento, zoomPrevio, transformPrev, eraOculto){
+  elemento.style.zoom      = zoomPrevio || '';
+  elemento.style.transform = transformPrev || '';
+  elemento.style.paddingBottom = '';
+  if (eraOculto) elemento.classList.add("cv-oculto");
   const est = document.getElementById("estilo-pdf-temp");
   if (est) est.remove();
+  // Volver al inicio de la pantalla
+  window.scrollTo(0, 0);
 }
 
 function nombreCVActual(){
