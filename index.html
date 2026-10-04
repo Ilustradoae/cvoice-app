@@ -135,9 +135,6 @@
   .visor-camara video, .visor-camara img{ width:100%; height:100%; object-fit:cover; transform: scaleX(-1); }
   .visor-camara img{ transform:none; }
 
-  /* cv-oculto oculta con display:none — cuando selector-premium se muestra
-     (quita cv-oculto) los botones hijos deben ser interactivos */
-  #selector-premium{ pointer-events: all; }
   .cv-oculto{ display: none !important; }
 
   /* ===================== PLANTILLA PREMIUM — COLUMNA OSCURA ===================== */
@@ -999,9 +996,12 @@
   <div class="max-w-3xl mx-auto mt-4 mb-3 px-2">
 
     <!-- BOTÓN PRINCIPAL DINÁMICO (arriba) -->
-    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl text-base font-bold text-white shadow-md transition hover:opacity-90 mb-1 flex items-center justify-center gap-2" style="background:var(--musgo)">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-      DESCARGAR GRATIS (VER ANUNCIO 15s)
+    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-1" style="background:var(--musgo)">
+      <div class="flex items-center justify-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        <span class="text-base">DESCARGAR GRATIS</span>
+      </div>
+      <div class="text-xs font-normal opacity-80">(ver anuncio de 15 segundos)</div>
     </button>
 
     <!-- Subtexto dinámico -->
@@ -2636,7 +2636,6 @@ document.getElementById("btn-volver-editar").addEventListener("click", () => {
 // Esta función es llamada por los onclick del HTML en los botones de tab.
 // Muestra/oculta la hoja-cv-premium en su lugar en el DOM (sin moverla fuera de pantalla)
 // para que el usuario pueda ver la previsualización real antes de pagar.
-// IMPORTANTE: cambiarTab NO modifica el contenido editado por el usuario —
 // solo cambia qué elemento del DOM está visible, preservando todos los contenteditable.
 
 let tabActivo = "basico"; // "basico" | "premium"
@@ -2706,16 +2705,6 @@ function actualizarCTA(esBasico){
   }
 }
 
-// Compatibilidad con código existente que llama a cambiarTab
-function cambiarTab(modelo){
-  seleccionarPlantilla(modelo === "premium" ? disenoPremActivo : "basico");
-}
-
-// Compatibilidad con elegirDisenoPremium
-function elegirDisenoPremium(diseno){
-  seleccionarPlantilla(diseno);
-}
-
 // ---------- 12b. Descargar el CV como PDF ----------
 
 // Genera y descarga el PDF directamente. Esta es la función "real" de descarga;
@@ -2751,18 +2740,15 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
   // Usamos overflow:hidden + height:0 para que no afecte al layout
   // pero el clon sí es renderizable por html2canvas
   const wrapper = document.createElement("div");
-  wrapper.style.cssText = "position:absolute;left:0;top:0;width:900px;overflow:hidden;height:0;pointer-events:none;";
+  // opacity:0 en vez de visibility:hidden — html2canvas no renderiza con visibility:hidden
+  // position:absolute con scroll para que esté en el DOM renderizable
+  wrapper.style.cssText = "position:absolute;left:0;top:0;width:900px;pointer-events:none;opacity:0;z-index:-1;";
   document.body.appendChild(wrapper);
 
   const clon = elemento.cloneNode(true);
-  clon.style.cssText = "zoom:1;transform:none;width:900px;max-width:900px;margin:0;border-radius:0;position:relative;";
-  // Quitar clase cv-oculto si la tiene
+  clon.style.cssText = "zoom:1!important;transform:none!important;width:900px;max-width:900px;margin:0;border-radius:0;position:relative;display:block!important;";
   clon.classList.remove("cv-oculto");
   wrapper.appendChild(clon);
-
-  // Mostrar brevemente el wrapper para el render
-  wrapper.style.height = "auto";
-  wrapper.style.visibility = "hidden";
 
   // Estilo temporal para PDF
   const estiloTemp = document.createElement("style");
@@ -3082,14 +3068,16 @@ function aplicarEscalaCV(){
     if (!el) return;
     if (escala < 1){
       el.style.zoom = escala;
+      el.dataset.zoomBase = escala; // guardar para el zoom de edición
     } else {
       el.style.zoom = '';
+      el.dataset.zoomBase = 1;
     }
+    el.style.transform = ''; // limpiar cualquier transform anterior
   });
 
-  // Con zoom el contenedor no necesita ajuste de altura manual
   const cont = document.getElementById('contenedor-cvs');
-  if (cont) cont.style.height = '';
+  if (cont){ cont.style.height = ''; cont.style.maxHeight = ''; cont.style.overflow = 'hidden'; }
 }
 
 // ---------- ZOOM TÁCTIL PARA EDITAR EL CV EN PANTALLA ----------
@@ -3120,14 +3108,16 @@ function aplicarEscalaCV(){
     const cont = document.getElementById('contenedor-cvs');
     if (!el || !cont) return;
 
-    // Aplicar transform:scale con origen en el punto central del gesto
-    el.style.transformOrigin = `${ox}px ${oy}px`;
-    el.style.transform = `scale(${escalaZoom})`;
+    // Combinar zoom base de pantalla con zoom de edición usando zoom CSS
+    // (más compatible en Android WebView que transform:scale para todos los diseños)
+    const zoomBase = parseFloat(el.dataset.zoomBase || el.style.zoom) || 1;
+    el.style.zoom = zoomBase * escalaZoom;
+    el.style.transform = '';
 
-    // Ajustar la altura del contenedor para que el scroll funcione bien
-    const zoomBase = parseFloat(el.style.zoom) || 1;
-    cont.style.height = Math.ceil(el.offsetHeight * zoomBase * escalaZoom) + 'px';
+    // El contenedor necesita scroll para poder ver todo el CV ampliado
+    cont.style.height = '';
     cont.style.overflow = 'auto';
+    cont.style.maxHeight = '80vh';
   }
 
   const contEl = document.getElementById('contenedor-cvs');
@@ -3151,18 +3141,21 @@ function aplicarEscalaCV(){
     }
   }, { passive: true });
 
-  // Doble tap para resetear zoom al tamaño original de pantalla
+  // Doble tap: resetear zoom de edición al zoom base de pantalla
   let ultimoTap = 0;
   contEl.addEventListener('touchend', e => {
-    if (e.touches.length > 0) return; // aún hay dedos
+    if (e.touches.length > 0) return;
     const ahora = Date.now();
     if (ahora - ultimoTap < 300){
       escalaZoom = 1;
       const el = cvActivo();
       const cont = document.getElementById('contenedor-cvs');
-      if (el){ el.style.transform = ''; el.style.transformOrigin = ''; }
-      if (cont){ cont.style.height = ''; cont.style.overflow = 'hidden'; }
-      requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
+      if (el){
+        const zoomBase = parseFloat(el.dataset.zoomBase) || 1;
+        el.style.zoom = zoomBase < 1 ? zoomBase : '';
+        el.style.transform = '';
+      }
+      if (cont){ cont.style.maxHeight = ''; cont.style.overflow = 'hidden'; }
     }
     ultimoTap = ahora;
   }, { passive: true });
