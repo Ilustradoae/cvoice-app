@@ -2687,18 +2687,23 @@ function seleccionarPlantilla(plantilla){
 }
 
 function actualizarCTA(esBasico){
-  const btnCTA  = document.getElementById("btn-cta-principal");
-  const txtSub  = document.getElementById("txt-cta-sub");
-  const txtSec  = document.getElementById("txt-cta-secundario");
+  const btnCTA = document.getElementById("btn-cta-principal");
+  const txtSub = document.getElementById("txt-cta-sub");
+  const txtSec = document.getElementById("txt-cta-secundario");
   if (!btnCTA) return;
 
+  const svgFlecha = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14M5 12l7 7 7-7"/></svg>`;
+
   if (esBasico){
-    btnCTA.textContent = "⬇️ DESCARGAR GRATIS (VER ANUNCIO 15s)";
+    btnCTA.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800">${svgFlecha}DESCARGAR GRATIS</div>
+      <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">(ver anuncio de 15 segundos)</div>`;
     btnCTA.style.background = "var(--musgo)";
     if (txtSub) txtSub.textContent = "";
     if (txtSec) txtSec.style.display = "";
   } else {
-    btnCTA.textContent = "✨ DESCARGAR DISEÑO PREMIUM · 2,99 €";
+    btnCTA.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800">${svgFlecha}DESCARGAR DISEÑO PREMIUM · 2,99 €</div>`;
     btnCTA.style.background = "var(--ambar)";
     if (txtSub) txtSub.textContent = "Pago único · Sin anuncios";
     if (txtSec) txtSec.style.display = "none";
@@ -2736,31 +2741,27 @@ let intervaloContador = null;
 // =============================================================================
 
 function descargarHojaComoPDF(elemento, nombreArchivo){
-  // Guardar estado original del elemento
   const zoomPrevio    = elemento.style.zoom;
   const transformPrev = elemento.style.transform;
-  const displayPrev   = elemento.style.display;
+  const widthPrevio   = elemento.style.width;
   const eraOculto     = elemento.classList.contains("cv-oculto");
 
-  // Poner el elemento a tamaño completo y visible para que html2canvas lo capture
-  elemento.style.zoom      = '1';
+  // Quitar zoom/transform y forzar ancho 900px para que html2canvas capture correctamente
+  elemento.style.zoom      = '';
   elemento.style.transform = 'none';
+  elemento.style.width     = '900px';
   elemento.classList.remove("cv-oculto");
-
-  // Scroll al inicio del CV para que html2canvas capture desde arriba
-  window.scrollTo(0, elemento.getBoundingClientRect().top + window.scrollY - 10);
 
   const estiloTemp = document.createElement("style");
   estiloTemp.id = "estilo-pdf-temp";
-  estiloTemp.textContent = [
-    ".pista-edicion::after{display:none!important;}",
-    "[contenteditable]{outline:none!important;}",
-    "* {-webkit-print-color-adjust:exact!important; print-color-adjust:exact!important;}"
-  ].join(" ");
+  estiloTemp.textContent =
+    ".pista-edicion::after{display:none!important;}" +
+    "[contenteditable]{outline:none!important;}" +
+    "* {-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}";
   document.head.appendChild(estiloTemp);
 
-  // Esperar 2 frames para que el browser pinte el elemento a tamaño completo
-  requestAnimationFrame(() => requestAnimationFrame(() => {
+  // 300ms para que el browser repinte el elemento sin zoom antes de capturar
+  setTimeout(() => {
     const altoReal = elemento.scrollHeight || 1123;
     if (altoReal < 1123) elemento.style.paddingBottom = `${1123 - altoReal}px`;
 
@@ -2775,24 +2776,25 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
         backgroundColor: "#ffffff",
         windowWidth: 900,
         logging: false,
+        width: 900,
+        height: altoReal,
       },
       jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
       pagebreak: { mode: ["avoid-all", "css", "legacy"] },
     }).from(elemento).save()
-      .then(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, eraOculto))
-      .catch(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, eraOculto));
-  }));
+      .then(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, widthPrevio, eraOculto))
+      .catch(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, widthPrevio, eraOculto));
+  }, 300);
 }
 
-function restaurarTrasPDF(elemento, zoomPrevio, transformPrev, eraOculto){
-  elemento.style.zoom      = zoomPrevio || '';
-  elemento.style.transform = transformPrev || '';
+function restaurarTrasPDF(elemento, zoomPrevio, transformPrev, widthPrevio, eraOculto){
+  elemento.style.zoom          = zoomPrevio || '';
+  elemento.style.transform     = transformPrev || '';
+  elemento.style.width         = widthPrevio || '';
   elemento.style.paddingBottom = '';
   if (eraOculto) elemento.classList.add("cv-oculto");
   const est = document.getElementById("estilo-pdf-temp");
   if (est) est.remove();
-  // Volver al inicio de la pantalla
-  window.scrollTo(0, 0);
 }
 
 function nombreCVActual(){
