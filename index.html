@@ -2623,6 +2623,8 @@ function abrirModalAnuncio(){
   modalAnuncio.classList.remove("hidden");
 
   if (window.AndroidAds && typeof window.AndroidAds.mostrarRecompensado === "function"){
+    // App Android: AdMob muestra el vídeo a pantalla completa y responde con
+    // recompensaCompletada / anuncioCerrado / anuncioNoDisponible (ver abajo)
     window.AndroidAds.mostrarRecompensado();
   } else {
     // Simulación en navegador: contador regresivo de 15 s
@@ -2640,8 +2642,29 @@ function abrirModalAnuncio(){
   }
 }
 
+// Mensaje breve flotante (reutiliza el aviso inferior)
+function avisoBreve(texto, ms = 4500){
+  const aviso = document.getElementById("aviso-sin-voz");
+  aviso.textContent = texto;
+  aviso.classList.remove("hidden");
+  clearTimeout(avisoBreve.temporizador);
+  avisoBreve.temporizador = setTimeout(() => aviso.classList.add("hidden"), ms);
+}
+
+// Callbacks del anuncio recompensado (los llama AnunciosBridge.java)
+// Vídeo visto entero: se descarga el CV directamente, como promete el modal
 window.recompensaCompletada = function(){
   clearInterval(intervaloContador);
+  modalAnuncio.classList.add("hidden");
+  generarYDescargarPDF();
+};
+// Cerrado antes de terminar: sin recompensa, se puede volver a intentar o pagar
+window.anuncioCerrado = function(){
+  modalAnuncio.classList.add("hidden");
+  avisoBreve("Para la descarga gratuita hay que ver el vídeo completo.");
+};
+// No hay anuncio disponible (sin conexión, sin inventario…): no se bloquea al usuario
+window.anuncioNoDisponible = function(){
   txtContadorAnuncio.classList.add("hidden");
   btnConfirmarGratis.classList.remove("hidden");
 };
@@ -2702,24 +2725,35 @@ btnPagarBasico.addEventListener("click", () => {
 // Confirmación de pago (común a todos los flujos de pago)
 btnConfirmarPago.addEventListener("click", () => {
   if (window.AndroidBilling && typeof window.AndroidBilling.iniciarPago === "function"){
+    // App Android: abre el pago de Google Play; responde con pagoCompletado / pagoCancelado / pagoPendiente
+    btnConfirmarPago.disabled = true;
     window.AndroidBilling.iniciarPago(productoPendiente);
   } else {
-    modalPago.classList.add("hidden");
-    if (productoPendiente === "premium_299"){
-      generarYDescargarPDFPremium();
-    } else {
-      generarYDescargarPDF();
-    }
+    // Navegador (pruebas): sin pasarela de pago, se descarga directamente
+    window.pagoCompletado(productoPendiente);
   }
 });
 
+// Callbacks del pago (los llama PagosBridge.java)
 window.pagoCompletado = function(productoId){
+  btnConfirmarPago.disabled = false;
   modalPago.classList.add("hidden");
   if (productoId === "premium_299"){
     generarYDescargarPDFPremium();
   } else {
     generarYDescargarPDF();
   }
+};
+// mensaje vacío = lo canceló el usuario (no se muestra nada)
+window.pagoCancelado = function(mensaje){
+  btnConfirmarPago.disabled = false;
+  modalPago.classList.add("hidden");
+  if (mensaje) avisoBreve("No se ha podido completar el pago. Inténtalo de nuevo.");
+};
+window.pagoPendiente = function(){
+  btnConfirmarPago.disabled = false;
+  modalPago.classList.add("hidden");
+  avisoBreve("Pago pendiente de confirmar. Cuando Google lo confirme, vuelve a pulsar descargar.", 7000);
 };
 
 btnCancelarPago.addEventListener("click", () => {
