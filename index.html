@@ -141,6 +141,13 @@
   #aviso-error-ia, #aviso-error-traduccion{ overflow-wrap: anywhere; }
 
   .cv-oculto{ display: none !important; }
+
+  /* Carrusel de diseños: nombre + etiqueta GRATIS/PREMIUM bajo cada miniatura */
+  #carrusel-plantillas button{ width: 84px !important; }
+  .car-nombre{ display: block; font-size: 11px; font-weight: 700; color: var(--tinta); margin: 2px 0 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .car-etiqueta{ display: block; font-size: 9px; font-weight: 800; color: white; border-radius: 8px; padding: 2px 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   /* Dato de contacto vacío en las plantillas premium: se oculta la fila entera */
   .cv-vacio{ display: none !important; }
 
@@ -237,7 +244,7 @@
     text-align: center;
   }
   /* Separación entre secciones de la columna derecha del premium */
-  #prem-seccion-experiencia, #prem-seccion-estudios, #prem-seccion-otros{
+  #prem-seccion-perfil, #prem-seccion-experiencia, #prem-seccion-estudios, #prem-seccion-otros, #prem-seccion-habilidades{
     margin-bottom: calc(2 * var(--ue));
   }
   #prem-seccion-experiencia:last-child,
@@ -426,6 +433,18 @@
   .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height: calc(1.6 * var(--li)); margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--u)); }
   .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; left:0; color:var(--cv-acento); }
 
+  /* ---- Perfil profesional (lo redacta la IA) y habilidades (las deduce la IA) ---- */
+  .cv-perfil{ font-size: calc(.88 * var(--u)); line-height: calc(1.65 * var(--li)); color: #333; margin: 0; }
+  #prem-perfil{ color: #334155; }
+  .cv-habilidades{ list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: calc(.4 * var(--u)) calc(.4 * var(--u)); }
+  .cv-habilidades li{
+    font-size: calc(.74 * var(--u)); line-height: 1.3; padding: calc(.25 * var(--u)) calc(.6 * var(--u));
+    border-radius: 999px; background: rgba(0,0,0,.06); color: #333;
+  }
+  #prem-habilidades li{ background: rgba(255,255,255,.1); color: #e2e8f0; }
+  #p3-habilidades li{ background: #f5e6d4; color: #7a4f22; }
+  #p4-habilidades li{ background: #E8F0F8; color: #1B3A5C; }
+
   /* Regla defensiva: neutraliza cualquier bullet/asterisco que la IA pueda inyectar
      en el contenido de estudios o experiencia (ej. list-disc de Tailwind, list-style circle, etc.) */
   #cv-estudios ul, #cv-estudios ol,
@@ -489,7 +508,7 @@
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
-        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="1" aria-label="Grabar voz">
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="1" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -513,7 +532,7 @@
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
-        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="2" aria-label="Grabar voz">
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="2" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -538,7 +557,7 @@
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
-        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="3" aria-label="Grabar voz">
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="3" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -563,7 +582,7 @@
       </ul>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
-        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="4" aria-label="Grabar voz">
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="4" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -636,7 +655,7 @@
 
   <!-- Carrusel unificado de 5 plantillas -->
   <div id="carrusel-plantillas" class="mb-4 max-w-3xl mx-auto w-full">
-    <p class="text-sm font-bold mb-2" style="color:var(--musgo)">Elige tu estilo favorito:</p>
+    <p class="text-sm font-bold mb-2" style="color:var(--musgo)" data-i18n="elige_estilo">Elige el diseño de tu currículum:</p>
     <div class="flex gap-2 overflow-x-auto pb-2" style="-webkit-overflow-scrolling:touch; scrollbar-width:none">
 
       <!-- 1. BÁSICO (GRATIS) -->
@@ -656,7 +675,8 @@
             </div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:#64748B;color:white;border-radius:8px;padding:2px 4px">GRATIS</span>
+        <span class="car-nombre" data-i18n="diseno_basico">Clásico</span>
+        <span class="car-etiqueta" style="background:#64748B" data-i18n="etiqueta_gratis">GRATIS</span>
       </button>
 
       <!-- 2. EJECUTIVO -->
@@ -675,7 +695,8 @@
             </div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span class="car-nombre" data-i18n="diseno_prem1">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
       <!-- 3. EDITORIAL -->
@@ -696,7 +717,8 @@
             </div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span class="car-nombre" data-i18n="diseno_prem2">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
       <!-- 4. ÁMBAR -->
@@ -716,7 +738,8 @@
             </div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span class="car-nombre" data-i18n="diseno_prem3">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
       <!-- 5. AZUL MARINO -->
@@ -734,7 +757,8 @@
             <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
           </div>
         </div>
-        <span style="display:block;font-size:9px;font-weight:800;background:var(--ambar);color:white;border-radius:8px;padding:2px 4px">PREMIUM</span>
+        <span class="car-nombre" data-i18n="diseno_prem4">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
     </div><!-- /flex carrusel -->
@@ -770,14 +794,23 @@
           </p>
         </div>
 
+        <div class="cv-lateral-seccion hidden" id="cv-seccion-habilidades">
+          <p class="cv-lateral-titulo" data-i18n="cv_bloque_habilidades">Habilidades</p>
+          <ul contenteditable="true" id="cv-habilidades" class="cv-habilidades pista-edicion"></ul>
+        </div>
+
         <div class="cv-lateral-seccion hidden" id="cv-seccion-otros-datos">
           <p class="cv-lateral-titulo" data-i18n="cv_lateral_otros">Otros datos</p>
           <div contenteditable="true" id="cv-otros" class="cv-lateral-dato pista-edicion"><p>—</p></div>
         </div>
       </aside>
 
-      <!-- ===== Columna derecha: experiencia y estudios ===== -->
+      <!-- ===== Columna derecha: perfil, experiencia y estudios ===== -->
       <div class="cv-col-derecha">
+        <div class="cv-bloque hidden" id="cv-seccion-perfil">
+          <h3 class="cv-derecha-titulo" data-i18n="cv_bloque_perfil">Perfil profesional</h3>
+          <p contenteditable="true" id="cv-perfil" class="cv-perfil pista-edicion"></p>
+        </div>
         <div class="cv-bloque hidden" id="cv-seccion-experiencia">
           <h3 class="cv-derecha-titulo" data-i18n="cv_bloque_experiencia">Experiencia laboral</h3>
           <div contenteditable="true" id="cv-experiencia" class="cv-bloque-contenido pista-edicion"></div>
@@ -819,6 +852,11 @@
 
         <hr class="prem-hr" style="margin-top: calc(1.25 * var(--ue));">
 
+        <div id="prem-seccion-habilidades" class="hidden">
+          <p class="prem-seccion-titulo-izq" data-i18n="cv_bloque_habilidades">Habilidades</p>
+          <ul contenteditable="true" id="prem-habilidades" class="cv-habilidades"></ul>
+        </div>
+
         <div id="prem-seccion-otros" class="hidden">
           <p class="prem-seccion-titulo-izq" data-i18n="cv_lateral_otros">Otros datos</p>
           <div contenteditable="true" id="prem-otros" style="font-size:calc(.78 * var(--u)); color:#94a3b8; line-height: calc(1.6 * var(--li));"></div>
@@ -827,6 +865,11 @@
 
       <!-- Columna derecha blanca -->
       <div class="prem-der">
+
+        <div id="prem-seccion-perfil" class="hidden">
+          <h2 class="prem-seccion-titulo-der" data-i18n="cv_bloque_perfil">Perfil profesional</h2>
+          <p contenteditable="true" id="prem-perfil" class="cv-perfil"></p>
+        </div>
 
         <div id="prem-seccion-experiencia" class="hidden">
           <h2 class="prem-seccion-titulo-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</h2>
@@ -871,6 +914,10 @@
     </div>
     <!-- Cuerpo: filas con etiqueta izquierda + contenido derecha -->
     <div class="p2-body">
+      <div id="p2-sec-perfil" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_perfil">Perfil</div>
+        <div class="p2-contenido"><p contenteditable="true" id="p2-perfil" class="cv-perfil pista-edicion"></p></div>
+      </div>
       <div id="p2-sec-est" class="p2-row hidden">
         <div class="p2-etiqueta" data-i18n="cv_bloque_estudios">Formación</div>
         <div class="p2-contenido" contenteditable="true" id="p2-estudios"></div>
@@ -878,6 +925,10 @@
       <div id="p2-sec-exp" class="p2-row hidden">
         <div class="p2-etiqueta" data-i18n="cv_bloque_experiencia">Experiencia</div>
         <div class="p2-contenido" contenteditable="true" id="p2-experiencia"></div>
+      </div>
+      <div id="p2-sec-hab" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <div class="p2-contenido"><ul contenteditable="true" id="p2-habilidades" class="cv-habilidades"></ul></div>
       </div>
       <div id="p2-sec-otros" class="p2-row hidden">
         <div class="p2-etiqueta" data-i18n="cv_lateral_otros">Otros datos</div>
@@ -899,12 +950,20 @@
       <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-telefono" class="pista-edicion">—</span></div>
       <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-email" class="pista-edicion">—</span></div>
       <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-ubicacion" class="pista-edicion">—</span></div>
+      <div id="p3-sec-hab" class="hidden">
+        <div class="p3-sec" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <ul contenteditable="true" id="p3-habilidades" class="cv-habilidades"></ul>
+      </div>
       <div id="p3-sec-otros" class="hidden">
         <div class="p3-sec" data-i18n="cv_lateral_otros">Otros datos</div>
         <div contenteditable="true" id="p3-otros" class="p3-valor pista-edicion"></div>
       </div>
     </div>
     <div class="p3-der">
+      <div id="p3-sec-perfil" class="hidden">
+        <div class="p3-sec-der" data-i18n="cv_bloque_perfil">Perfil profesional</div>
+        <p contenteditable="true" id="p3-perfil" class="cv-perfil pista-edicion"></p>
+      </div>
       <div id="p3-sec-exp" class="hidden">
         <div class="p3-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
         <div contenteditable="true" id="p3-experiencia" class="pista-edicion"></div>
@@ -936,6 +995,10 @@
     </div>
     <!-- Cuerpo: experiencia y estudios en una columna -->
     <div class="p4-body">
+      <div id="p4-sec-perfil" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_perfil">Perfil profesional</div>
+        <p contenteditable="true" id="p4-perfil" class="cv-perfil pista-edicion"></p>
+      </div>
       <div id="p4-sec-exp" class="hidden">
         <div class="p4-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
         <div contenteditable="true" id="p4-experiencia" class="pista-edicion"></div>
@@ -943,6 +1006,10 @@
       <div id="p4-sec-est" class="hidden">
         <div class="p4-sec-der" data-i18n="cv_bloque_estudios">Estudios y formación</div>
         <div contenteditable="true" id="p4-estudios" class="pista-edicion"></div>
+      </div>
+      <div id="p4-sec-hab" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <ul contenteditable="true" id="p4-habilidades" class="cv-habilidades"></ul>
       </div>
     </div>
     <!-- Footer: otros datos e idiomas al final -->
@@ -993,25 +1060,26 @@
 <!-- ===== Modal: fuera de la app no se descarga (solo la app tiene anuncios y pagos) ===== -->
 <div id="modal-app" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){this.classList.add('hidden')}">
   <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full m-auto text-center flex flex-col gap-5">
-    <p class="font-display text-2xl font-bold" style="color:var(--musgo)">Descarga tu CV desde la app</p>
-    <p class="text-base" style="color:var(--tinta)">La descarga del currículum en PDF está disponible en la app CVoice para Android.</p>
+    <p class="font-display text-2xl font-bold" style="color:var(--musgo)" data-i18n="app_titulo">Descarga tu CV desde la app</p>
+    <p class="text-base" style="color:var(--tinta)" data-i18n="app_desc">La descarga del currículum en PDF está disponible en la app CVoice para Android.</p>
     <a href="https://play.google.com/store/apps/details?id=com.illustratedstudio.cvoice" target="_blank" rel="noopener"
-       class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md" style="background:var(--musgo)">Conseguir CVoice en Google Play</a>
-    <button class="text-sm" style="color:#999" onclick="document.getElementById('modal-app').classList.add('hidden')">Cerrar</button>
+       class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md" style="background:var(--musgo)" data-i18n="app_boton">Conseguir CVoice en Google Play</a>
+    <button class="text-sm" style="color:#6B6354; min-height:44px" onclick="document.getElementById('modal-app').classList.add('hidden')" data-i18n="cerrar">Cerrar</button>
   </div>
 </div>
 
 <!-- ===== Modal: confirmación de pago ===== -->
-<div id="modal-pago" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){document.getElementById('modal-pago').classList.add('hidden');productoPendiente=null;}">
-  <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full m-auto text-center flex flex-col gap-5" onclick="event.stopPropagation()">
-    <p id="modal-pago-titulo" class="font-display text-2xl font-bold" style="color:var(--musgo)">Pago seguro</p>
-    <p id="modal-pago-descripcion" class="text-base" style="color:var(--tinta)">Pago único a través de Google Play.</p>
-    <p id="modal-pago-precio" class="text-3xl font-bold" style="color:var(--ambar)">0,99 €</p>
-    <p class="text-xs" style="color:#999">Sin suscripciones. Pago único.</p>
-    <button id="btn-confirmar-pago" class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)">
-      Confirmar pago
-    </button>
-    <button id="btn-cancelar-pago" class="text-sm" style="color:#bbb">Cancelar</button>
+<div id="modal-pago" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){cerrarModalPago();productoPendiente=null;}">
+  <div class="bg-white rounded-3xl shadow-2xl p-6 max-w-sm w-full m-auto text-center flex flex-col gap-4" onclick="event.stopPropagation()">
+    <span id="modal-pago-insignia" class="hidden self-center text-xs font-bold px-3 py-1 rounded-full" style="background:var(--ambar-suave); color:#8a5a1f" data-i18n="insignia_recomendado">⭐ Recomendado</span>
+    <p id="modal-pago-titulo" class="font-display text-2xl font-bold" style="color:var(--musgo)"></p>
+    <!-- Vista previa del CV del propio usuario con el diseño elegido -->
+    <div id="modal-pago-vista" class="mx-auto rounded-lg overflow-hidden shadow-lg" style="width:150px; height:212px; background:#fff; border:1px solid var(--linea); pointer-events:none"></div>
+    <ul id="modal-pago-ventajas" class="text-left text-sm mx-auto flex flex-col gap-1" style="color:var(--tinta)"></ul>
+    <p id="modal-pago-precio" class="text-3xl font-bold" style="color:var(--ambar)"></p>
+    <button id="btn-confirmar-pago" class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)"></button>
+    <p class="text-xs" style="color:#6B6354" data-i18n="pago_pie">Pago único · Sin suscripciones · Pago seguro con Google Play</p>
+    <button id="btn-cancelar-pago" class="text-sm" style="color:#6B6354; min-height:44px" data-i18n="ahora_no">Ahora no</button>
   </div>
 </div>
 
@@ -1085,12 +1153,6 @@ const TEXTOS = {
     cv_bloque_experiencia: "Experiencia laboral", cv_bloque_estudios: "Estudios",
     boton_rehacer: "← Volver a grabar",
     boton_traducir_cv: "🌐 Traducir CV", traduciendo_cv: "Traduciendo tu currículum…", error_traduccion_generico: "No hemos podido traducir el currículum. Revisa tu conexión e inténtalo de nuevo.",
-
-
-    modal_pago_sin_anuncio_titulo: "Sin anuncios",
-    modal_pago_sin_anuncio_desc: "Descarga inmediata, sin ver ningún vídeo. Pago único.",
-    modal_pago_premium_titulo: "Diseño Premium",
-    modal_pago_premium_desc: "Plantilla ejecutiva con columna oscura. Sin anuncios. Pago único.",
     nombre_predeterminado: "NOMBRE APELLIDO",
     p1_item1: "Tu nombre completo",
     p1_item2: "Tu número de teléfono",
@@ -1616,6 +1678,219 @@ const TEXTOS = {
   },
 };
 
+// Textos de la pantalla final, venta y avisos en todos los idiomas.
+// {precio} y {diseno} se sustituyen al usarlos (ver tx()).
+const TEXTOS_EXTRA = {
+  es: {
+    cv_bloque_perfil: "Perfil profesional", cv_bloque_habilidades: "Habilidades",
+    elige_estilo: "Elige el diseño de tu currículum:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Clásico", diseno_prem1: "Ejecutivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    cta_gratis: "DESCARGAR GRATIS", cta_gratis_sub: "(viendo un vídeo corto)", cta_premium: "DESCARGAR · {precio}", cta_premium_sub: "Diseño {diseno} · Pago único · Sin anuncios",
+    cta_sin_anuncio: "Descarga inmediata sin anuncio por {precio}",
+    pago_titulo_premium: "Diseño {diseno}", pago_titulo_sin_anuncio: "Descarga sin anuncios", insignia_recomendado: "⭐ Recomendado",
+    pago_ventaja_premium_1: "Un diseño que destaca entre los candidatos", pago_ventaja_premium_2: "Listo para enviar a empresas en PDF", pago_ventaja_premium_3: "Sin anuncios",
+    pago_ventaja_basico_1: "Descarga inmediata", pago_ventaja_basico_2: "Sin ver ningún vídeo", pago_ventaja_basico_3: "Listo para enviar a empresas en PDF",
+    pago_pie: "Pago único · Sin suscripciones · Pago seguro con Google Play", boton_pagar: "Descargar por {precio}", ahora_no: "Ahora no",
+    app_titulo: "Descarga tu CV desde la app", app_desc: "La descarga del currículum en PDF está disponible en la app CVoice para Android.", app_boton: "Conseguir CVoice en Google Play", cerrar: "Cerrar",
+    aviso_cargando_video: "Cargando el vídeo…", aviso_descargando: "Descargando tu currículum…", aviso_video_completo: "Para la descarga gratuita hay que ver el vídeo completo.",
+    aviso_pago_error: "No se ha podido completar el pago. Inténtalo de nuevo.", aviso_pago_pendiente: "Pago pendiente de confirmar. Cuando Google lo confirme, vuelve a pulsar descargar.",
+    aria_grabar: "Grabar voz",
+  },
+  en: {
+    cv_bloque_perfil: "Professional profile", cv_bloque_habilidades: "Skills",
+    elige_estilo: "Choose your résumé design:", etiqueta_gratis: "FREE", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate",
+    cta_gratis: "DOWNLOAD FREE", cta_gratis_sub: "(by watching a short video)", cta_premium: "DOWNLOAD · {precio}", cta_premium_sub: "{diseno} design · One-time payment · No ads",
+    cta_sin_anuncio: "Instant download without ads for {precio}",
+    pago_titulo_premium: "{diseno} design", pago_titulo_sin_anuncio: "Download without ads", insignia_recomendado: "⭐ Recommended",
+    pago_ventaja_premium_1: "A design that stands out from other candidates", pago_ventaja_premium_2: "Ready to send to employers as a PDF", pago_ventaja_premium_3: "No ads",
+    pago_ventaja_basico_1: "Instant download", pago_ventaja_basico_2: "No video to watch", pago_ventaja_basico_3: "Ready to send to employers as a PDF",
+    pago_pie: "One-time payment · No subscription · Secure payment with Google Play", boton_pagar: "Download for {precio}", ahora_no: "Not now",
+    app_titulo: "Download your CV in the app", app_desc: "Downloading your résumé as a PDF is available in the CVoice app for Android.", app_boton: "Get CVoice on Google Play", cerrar: "Close",
+    aviso_cargando_video: "Loading the video…", aviso_descargando: "Downloading your résumé…", aviso_video_completo: "To download for free you need to watch the whole video.",
+    aviso_pago_error: "The payment could not be completed. Please try again.", aviso_pago_pendiente: "Payment pending confirmation. Once Google confirms it, tap download again.",
+    aria_grabar: "Record voice",
+  },
+  fr: {
+    cv_bloque_perfil: "Profil professionnel", cv_bloque_habilidades: "Compétences",
+    elige_estilo: "Choisissez le design de votre CV :", etiqueta_gratis: "GRATUIT", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Classique", diseno_prem1: "Exécutif", diseno_prem2: "Éditorial", diseno_prem3: "Moderne", diseno_prem4: "Entreprise",
+    cta_gratis: "TÉLÉCHARGER GRATUITEMENT", cta_gratis_sub: "(en regardant une courte vidéo)", cta_premium: "TÉLÉCHARGER · {precio}", cta_premium_sub: "Design {diseno} · Paiement unique · Sans publicité",
+    cta_sin_anuncio: "Téléchargement immédiat sans publicité pour {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Téléchargement sans publicité", insignia_recomendado: "⭐ Recommandé",
+    pago_ventaja_premium_1: "Un design qui se démarque des autres candidats", pago_ventaja_premium_2: "Prêt à envoyer aux entreprises en PDF", pago_ventaja_premium_3: "Sans publicité",
+    pago_ventaja_basico_1: "Téléchargement immédiat", pago_ventaja_basico_2: "Aucune vidéo à regarder", pago_ventaja_basico_3: "Prêt à envoyer aux entreprises en PDF",
+    pago_pie: "Paiement unique · Sans abonnement · Paiement sécurisé avec Google Play", boton_pagar: "Télécharger pour {precio}", ahora_no: "Pas maintenant",
+    app_titulo: "Téléchargez votre CV dans l'application", app_desc: "Le téléchargement du CV en PDF est disponible dans l'application CVoice pour Android.", app_boton: "Obtenir CVoice sur Google Play", cerrar: "Fermer",
+    aviso_cargando_video: "Chargement de la vidéo…", aviso_descargando: "Téléchargement de votre CV…", aviso_video_completo: "Pour le téléchargement gratuit, il faut regarder toute la vidéo.",
+    aviso_pago_error: "Le paiement n'a pas pu être effectué. Réessayez.", aviso_pago_pendiente: "Paiement en attente de confirmation. Quand Google le confirmera, appuyez de nouveau sur télécharger.",
+    aria_grabar: "Enregistrer la voix",
+  },
+  de: {
+    cv_bloque_perfil: "Berufsprofil", cv_bloque_habilidades: "Fähigkeiten",
+    elige_estilo: "Wähle das Design deines Lebenslaufs:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Klassisch", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Business",
+    cta_gratis: "KOSTENLOS HERUNTERLADEN", cta_gratis_sub: "(mit einem kurzen Video)", cta_premium: "HERUNTERLADEN · {precio}", cta_premium_sub: "Design {diseno} · Einmalzahlung · Ohne Werbung",
+    cta_sin_anuncio: "Sofort ohne Werbung herunterladen für {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download ohne Werbung", insignia_recomendado: "⭐ Empfohlen",
+    pago_ventaja_premium_1: "Ein Design, das unter den Bewerbern auffällt", pago_ventaja_premium_2: "Als PDF bereit für Arbeitgeber", pago_ventaja_premium_3: "Ohne Werbung",
+    pago_ventaja_basico_1: "Sofortiger Download", pago_ventaja_basico_2: "Kein Video ansehen", pago_ventaja_basico_3: "Als PDF bereit für Arbeitgeber",
+    pago_pie: "Einmalzahlung · Kein Abo · Sichere Zahlung über Google Play", boton_pagar: "Für {precio} herunterladen", ahora_no: "Jetzt nicht",
+    app_titulo: "Lade deinen Lebenslauf in der App herunter", app_desc: "Der Download des Lebenslaufs als PDF ist in der CVoice-App für Android verfügbar.", app_boton: "CVoice bei Google Play holen", cerrar: "Schließen",
+    aviso_cargando_video: "Video wird geladen…", aviso_descargando: "Dein Lebenslauf wird heruntergeladen…", aviso_video_completo: "Für den kostenlosen Download musst du das ganze Video ansehen.",
+    aviso_pago_error: "Die Zahlung konnte nicht abgeschlossen werden. Bitte versuche es erneut.", aviso_pago_pendiente: "Zahlung wartet auf Bestätigung. Sobald Google sie bestätigt, tippe erneut auf Herunterladen.",
+    aria_grabar: "Sprache aufnehmen",
+  },
+  it: {
+    cv_bloque_perfil: "Profilo professionale", cv_bloque_habilidades: "Competenze",
+    elige_estilo: "Scegli il design del tuo curriculum:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Classico", diseno_prem1: "Executive", diseno_prem2: "Editoriale", diseno_prem3: "Moderno", diseno_prem4: "Aziendale",
+    cta_gratis: "SCARICA GRATIS", cta_gratis_sub: "(guardando un breve video)", cta_premium: "SCARICA · {precio}", cta_premium_sub: "Design {diseno} · Pagamento unico · Senza pubblicità",
+    cta_sin_anuncio: "Download immediato senza pubblicità per {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download senza pubblicità", insignia_recomendado: "⭐ Consigliato",
+    pago_ventaja_premium_1: "Un design che si distingue tra i candidati", pago_ventaja_premium_2: "Pronto da inviare alle aziende in PDF", pago_ventaja_premium_3: "Senza pubblicità",
+    pago_ventaja_basico_1: "Download immediato", pago_ventaja_basico_2: "Nessun video da guardare", pago_ventaja_basico_3: "Pronto da inviare alle aziende in PDF",
+    pago_pie: "Pagamento unico · Nessun abbonamento · Pagamento sicuro con Google Play", boton_pagar: "Scarica per {precio}", ahora_no: "Non ora",
+    app_titulo: "Scarica il tuo CV dall'app", app_desc: "Il download del curriculum in PDF è disponibile nell'app CVoice per Android.", app_boton: "Scarica CVoice da Google Play", cerrar: "Chiudi",
+    aviso_cargando_video: "Caricamento del video…", aviso_descargando: "Download del tuo curriculum…", aviso_video_completo: "Per il download gratuito devi guardare tutto il video.",
+    aviso_pago_error: "Non è stato possibile completare il pagamento. Riprova.", aviso_pago_pendiente: "Pagamento in attesa di conferma. Quando Google lo confermerà, tocca di nuovo scarica.",
+    aria_grabar: "Registra voce",
+  },
+  pt: {
+    cv_bloque_perfil: "Perfil profissional", cv_bloque_habilidades: "Competências",
+    elige_estilo: "Escolhe o design do teu currículo:", etiqueta_gratis: "GRÁTIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Clássico", diseno_prem1: "Executivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    cta_gratis: "DESCARREGAR GRÁTIS", cta_gratis_sub: "(vendo um vídeo curto)", cta_premium: "DESCARREGAR · {precio}", cta_premium_sub: "Design {diseno} · Pagamento único · Sem anúncios",
+    cta_sin_anuncio: "Download imediato sem anúncios por {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download sem anúncios", insignia_recomendado: "⭐ Recomendado",
+    pago_ventaja_premium_1: "Um design que se destaca entre os candidatos", pago_ventaja_premium_2: "Pronto a enviar às empresas em PDF", pago_ventaja_premium_3: "Sem anúncios",
+    pago_ventaja_basico_1: "Download imediato", pago_ventaja_basico_2: "Sem ver nenhum vídeo", pago_ventaja_basico_3: "Pronto a enviar às empresas em PDF",
+    pago_pie: "Pagamento único · Sem subscrição · Pagamento seguro com Google Play", boton_pagar: "Descarregar por {precio}", ahora_no: "Agora não",
+    app_titulo: "Descarrega o teu CV na app", app_desc: "O download do currículo em PDF está disponível na app CVoice para Android.", app_boton: "Obter CVoice no Google Play", cerrar: "Fechar",
+    aviso_cargando_video: "A carregar o vídeo…", aviso_descargando: "A descarregar o teu currículo…", aviso_video_completo: "Para o download grátis é preciso ver o vídeo completo.",
+    aviso_pago_error: "Não foi possível concluir o pagamento. Tenta novamente.", aviso_pago_pendiente: "Pagamento pendente de confirmação. Quando a Google o confirmar, volta a tocar em descarregar.",
+    aria_grabar: "Gravar voz",
+  },
+  ar: {
+    cv_bloque_perfil: "الملف المهني", cv_bloque_habilidades: "المهارات",
+    elige_estilo: "اختر تصميم سيرتك الذاتية:", etiqueta_gratis: "مجاني", etiqueta_premium: "مميز",
+    diseno_basico: "كلاسيكي", diseno_prem1: "تنفيذي", diseno_prem2: "تحريري", diseno_prem3: "عصري", diseno_prem4: "مؤسسي",
+    cta_gratis: "تنزيل مجاني", cta_gratis_sub: "(بمشاهدة فيديو قصير)", cta_premium: "تنزيل · {precio}", cta_premium_sub: "تصميم {diseno} · دفعة واحدة · بدون إعلانات",
+    cta_sin_anuncio: "تنزيل فوري بدون إعلانات مقابل {precio}",
+    pago_titulo_premium: "تصميم {diseno}", pago_titulo_sin_anuncio: "تنزيل بدون إعلانات", insignia_recomendado: "⭐ موصى به",
+    pago_ventaja_premium_1: "تصميم يميزك بين المرشحين", pago_ventaja_premium_2: "جاهز للإرسال إلى الشركات بصيغة PDF", pago_ventaja_premium_3: "بدون إعلانات",
+    pago_ventaja_basico_1: "تنزيل فوري", pago_ventaja_basico_2: "بدون مشاهدة أي فيديو", pago_ventaja_basico_3: "جاهز للإرسال إلى الشركات بصيغة PDF",
+    pago_pie: "دفعة واحدة · بدون اشتراك · دفع آمن عبر Google Play", boton_pagar: "تنزيل مقابل {precio}", ahora_no: "ليس الآن",
+    app_titulo: "نزّل سيرتك الذاتية من التطبيق", app_desc: "تنزيل السيرة الذاتية بصيغة PDF متاح في تطبيق CVoice لنظام Android.", app_boton: "احصل على CVoice من Google Play", cerrar: "إغلاق",
+    aviso_cargando_video: "جارٍ تحميل الفيديو…", aviso_descargando: "جارٍ تنزيل سيرتك الذاتية…", aviso_video_completo: "للتنزيل المجاني يجب مشاهدة الفيديو كاملاً.",
+    aviso_pago_error: "تعذّر إتمام الدفع. حاول مرة أخرى.", aviso_pago_pendiente: "الدفع بانتظار التأكيد. عندما تؤكده Google، اضغط على التنزيل مرة أخرى.",
+    aria_grabar: "تسجيل الصوت",
+  },
+  zh: {
+    cv_bloque_perfil: "个人简介", cv_bloque_habilidades: "技能",
+    elige_estilo: "选择简历设计：", etiqueta_gratis: "免费", etiqueta_premium: "高级",
+    diseno_basico: "经典", diseno_prem1: "商务", diseno_prem2: "杂志", diseno_prem3: "现代", diseno_prem4: "企业",
+    cta_gratis: "免费下载", cta_gratis_sub: "（观看一段短视频）", cta_premium: "下载 · {precio}", cta_premium_sub: "{diseno}设计 · 一次性付款 · 无广告",
+    cta_sin_anuncio: "无广告立即下载，仅需 {precio}",
+    pago_titulo_premium: "{diseno}设计", pago_titulo_sin_anuncio: "无广告下载", insignia_recomendado: "⭐ 推荐",
+    pago_ventaja_premium_1: "让你在求职者中脱颖而出的设计", pago_ventaja_premium_2: "PDF 格式，可直接发送给企业", pago_ventaja_premium_3: "无广告",
+    pago_ventaja_basico_1: "立即下载", pago_ventaja_basico_2: "无需观看视频", pago_ventaja_basico_3: "PDF 格式，可直接发送给企业",
+    pago_pie: "一次性付款 · 无订阅 · 通过 Google Play 安全支付", boton_pagar: "以 {precio} 下载", ahora_no: "暂不",
+    app_titulo: "在应用中下载你的简历", app_desc: "PDF 简历下载功能仅在 Android 版 CVoice 应用中提供。", app_boton: "在 Google Play 获取 CVoice", cerrar: "关闭",
+    aviso_cargando_video: "正在加载视频…", aviso_descargando: "正在下载你的简历…", aviso_video_completo: "免费下载需要看完整个视频。",
+    aviso_pago_error: "付款未能完成，请重试。", aviso_pago_pendiente: "付款待确认。Google 确认后，请再次点击下载。",
+    aria_grabar: "录音",
+  },
+  ja: {
+    cv_bloque_perfil: "プロフィール", cv_bloque_habilidades: "スキル",
+    elige_estilo: "履歴書のデザインを選んでください：", etiqueta_gratis: "無料", etiqueta_premium: "プレミアム",
+    diseno_basico: "クラシック", diseno_prem1: "エグゼクティブ", diseno_prem2: "エディトリアル", diseno_prem3: "モダン", diseno_prem4: "コーポレート",
+    cta_gratis: "無料でダウンロード", cta_gratis_sub: "（短い動画を見る）", cta_premium: "ダウンロード · {precio}", cta_premium_sub: "{diseno}デザイン · 買い切り · 広告なし",
+    cta_sin_anuncio: "{precio}で広告なしですぐにダウンロード",
+    pago_titulo_premium: "{diseno}デザイン", pago_titulo_sin_anuncio: "広告なしでダウンロード", insignia_recomendado: "⭐ おすすめ",
+    pago_ventaja_premium_1: "他の応募者と差がつくデザイン", pago_ventaja_premium_2: "PDFで企業にそのまま送れます", pago_ventaja_premium_3: "広告なし",
+    pago_ventaja_basico_1: "すぐにダウンロード", pago_ventaja_basico_2: "動画を見る必要なし", pago_ventaja_basico_3: "PDFで企業にそのまま送れます",
+    pago_pie: "買い切り · サブスクなし · Google Play で安全にお支払い", boton_pagar: "{precio}でダウンロード", ahora_no: "あとで",
+    app_titulo: "アプリで履歴書をダウンロード", app_desc: "PDF での履歴書ダウンロードは Android 版 CVoice アプリで利用できます。", app_boton: "Google Play で CVoice を入手", cerrar: "閉じる",
+    aviso_cargando_video: "動画を読み込んでいます…", aviso_descargando: "履歴書をダウンロードしています…", aviso_video_completo: "無料ダウンロードには動画を最後まで見る必要があります。",
+    aviso_pago_error: "支払いを完了できませんでした。もう一度お試しください。", aviso_pago_pendiente: "支払いの確認待ちです。Google が確認したら、もう一度ダウンロードを押してください。",
+    aria_grabar: "音声を録音",
+  },
+  ro: {
+    cv_bloque_perfil: "Profil profesional", cv_bloque_habilidades: "Competențe",
+    elige_estilo: "Alege designul CV-ului tău:", etiqueta_gratis: "GRATUIT", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Clasic", diseno_prem1: "Executiv", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporativ",
+    cta_gratis: "DESCARCĂ GRATUIT", cta_gratis_sub: "(urmărind un videoclip scurt)", cta_premium: "DESCARCĂ · {precio}", cta_premium_sub: "Design {diseno} · Plată unică · Fără reclame",
+    cta_sin_anuncio: "Descărcare imediată fără reclame pentru {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Descărcare fără reclame", insignia_recomendado: "⭐ Recomandat",
+    pago_ventaja_premium_1: "Un design care iese în evidență printre candidați", pago_ventaja_premium_2: "Gata de trimis la firme în PDF", pago_ventaja_premium_3: "Fără reclame",
+    pago_ventaja_basico_1: "Descărcare imediată", pago_ventaja_basico_2: "Fără niciun videoclip", pago_ventaja_basico_3: "Gata de trimis la firme în PDF",
+    pago_pie: "Plată unică · Fără abonament · Plată sigură prin Google Play", boton_pagar: "Descarcă pentru {precio}", ahora_no: "Nu acum",
+    app_titulo: "Descarcă CV-ul din aplicație", app_desc: "Descărcarea CV-ului în PDF este disponibilă în aplicația CVoice pentru Android.", app_boton: "Obține CVoice pe Google Play", cerrar: "Închide",
+    aviso_cargando_video: "Se încarcă videoclipul…", aviso_descargando: "Se descarcă CV-ul tău…", aviso_video_completo: "Pentru descărcarea gratuită trebuie să urmărești tot videoclipul.",
+    aviso_pago_error: "Plata nu a putut fi finalizată. Încearcă din nou.", aviso_pago_pendiente: "Plata așteaptă confirmarea. Când Google o confirmă, apasă din nou pe descarcă.",
+    aria_grabar: "Înregistrează vocea",
+  },
+  pl: {
+    cv_bloque_perfil: "Profil zawodowy", cv_bloque_habilidades: "Umiejętności",
+    elige_estilo: "Wybierz wygląd swojego CV:", etiqueta_gratis: "ZA DARMO", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny",
+    cta_gratis: "POBIERZ ZA DARMO", cta_gratis_sub: "(po obejrzeniu krótkiego filmu)", cta_premium: "POBIERZ · {precio}", cta_premium_sub: "Wzór {diseno} · Jednorazowa opłata · Bez reklam",
+    cta_sin_anuncio: "Natychmiastowe pobranie bez reklam za {precio}",
+    pago_titulo_premium: "Wzór {diseno}", pago_titulo_sin_anuncio: "Pobieranie bez reklam", insignia_recomendado: "⭐ Polecany",
+    pago_ventaja_premium_1: "Wygląd, który wyróżnia cię spośród kandydatów", pago_ventaja_premium_2: "Gotowe do wysłania firmom w PDF", pago_ventaja_premium_3: "Bez reklam",
+    pago_ventaja_basico_1: "Natychmiastowe pobranie", pago_ventaja_basico_2: "Bez oglądania filmu", pago_ventaja_basico_3: "Gotowe do wysłania firmom w PDF",
+    pago_pie: "Jednorazowa opłata · Bez subskrypcji · Bezpieczna płatność przez Google Play", boton_pagar: "Pobierz za {precio}", ahora_no: "Nie teraz",
+    app_titulo: "Pobierz CV w aplikacji", app_desc: "Pobieranie CV w PDF jest dostępne w aplikacji CVoice na Androida.", app_boton: "Pobierz CVoice z Google Play", cerrar: "Zamknij",
+    aviso_cargando_video: "Ładowanie filmu…", aviso_descargando: "Pobieranie twojego CV…", aviso_video_completo: "Aby pobrać za darmo, trzeba obejrzeć cały film.",
+    aviso_pago_error: "Nie udało się dokończyć płatności. Spróbuj ponownie.", aviso_pago_pendiente: "Płatność czeka na potwierdzenie. Gdy Google ją potwierdzi, ponownie naciśnij pobierz.",
+    aria_grabar: "Nagraj głos",
+  },
+  uk: {
+    cv_bloque_perfil: "Професійний профіль", cv_bloque_habilidades: "Навички",
+    elige_estilo: "Оберіть дизайн резюме:", etiqueta_gratis: "БЕЗКОШТОВНО", etiqueta_premium: "ПРЕМІУМ",
+    diseno_basico: "Класичний", diseno_prem1: "Діловий", diseno_prem2: "Редакційний", diseno_prem3: "Сучасний", diseno_prem4: "Корпоративний",
+    cta_gratis: "ЗАВАНТАЖИТИ БЕЗКОШТОВНО", cta_gratis_sub: "(переглянувши коротке відео)", cta_premium: "ЗАВАНТАЖИТИ · {precio}", cta_premium_sub: "Дизайн «{diseno}» · Разова оплата · Без реклами",
+    cta_sin_anuncio: "Миттєве завантаження без реклами за {precio}",
+    pago_titulo_premium: "Дизайн «{diseno}»", pago_titulo_sin_anuncio: "Завантаження без реклами", insignia_recomendado: "⭐ Рекомендовано",
+    pago_ventaja_premium_1: "Дизайн, що вирізняє вас серед кандидатів", pago_ventaja_premium_2: "Готове до надсилання компаніям у PDF", pago_ventaja_premium_3: "Без реклами",
+    pago_ventaja_basico_1: "Миттєве завантаження", pago_ventaja_basico_2: "Без перегляду відео", pago_ventaja_basico_3: "Готове до надсилання компаніям у PDF",
+    pago_pie: "Разова оплата · Без підписки · Безпечна оплата через Google Play", boton_pagar: "Завантажити за {precio}", ahora_no: "Не зараз",
+    app_titulo: "Завантажте резюме в застосунку", app_desc: "Завантаження резюме у PDF доступне в застосунку CVoice для Android.", app_boton: "Отримати CVoice у Google Play", cerrar: "Закрити",
+    aviso_cargando_video: "Завантаження відео…", aviso_descargando: "Завантаження вашого резюме…", aviso_video_completo: "Для безкоштовного завантаження потрібно переглянути відео повністю.",
+    aviso_pago_error: "Не вдалося завершити оплату. Спробуйте ще раз.", aviso_pago_pendiente: "Оплата очікує підтвердження. Коли Google її підтвердить, знову натисніть «Завантажити».",
+    aria_grabar: "Записати голос",
+  },
+  ru: {
+    cv_bloque_perfil: "Профессиональный профиль", cv_bloque_habilidades: "Навыки",
+    elige_estilo: "Выберите дизайн резюме:", etiqueta_gratis: "БЕСПЛАТНО", etiqueta_premium: "ПРЕМИУМ",
+    diseno_basico: "Классический", diseno_prem1: "Деловой", diseno_prem2: "Редакционный", diseno_prem3: "Современный", diseno_prem4: "Корпоративный",
+    cta_gratis: "СКАЧАТЬ БЕСПЛАТНО", cta_gratis_sub: "(посмотрев короткое видео)", cta_premium: "СКАЧАТЬ · {precio}", cta_premium_sub: "Дизайн «{diseno}» · Разовая оплата · Без рекламы",
+    cta_sin_anuncio: "Мгновенная загрузка без рекламы за {precio}",
+    pago_titulo_premium: "Дизайн «{diseno}»", pago_titulo_sin_anuncio: "Загрузка без рекламы", insignia_recomendado: "⭐ Рекомендуем",
+    pago_ventaja_premium_1: "Дизайн, который выделит вас среди кандидатов", pago_ventaja_premium_2: "Готово к отправке работодателям в PDF", pago_ventaja_premium_3: "Без рекламы",
+    pago_ventaja_basico_1: "Мгновенная загрузка", pago_ventaja_basico_2: "Без просмотра видео", pago_ventaja_basico_3: "Готово к отправке работодателям в PDF",
+    pago_pie: "Разовая оплата · Без подписки · Безопасная оплата через Google Play", boton_pagar: "Скачать за {precio}", ahora_no: "Не сейчас",
+    app_titulo: "Скачайте резюме в приложении", app_desc: "Скачивание резюме в PDF доступно в приложении CVoice для Android.", app_boton: "Скачать CVoice в Google Play", cerrar: "Закрыть",
+    aviso_cargando_video: "Загрузка видео…", aviso_descargando: "Скачиваем ваше резюме…", aviso_video_completo: "Для бесплатной загрузки нужно досмотреть видео до конца.",
+    aviso_pago_error: "Не удалось завершить оплату. Попробуйте ещё раз.", aviso_pago_pendiente: "Оплата ожидает подтверждения. Когда Google её подтвердит, снова нажмите «Скачать».",
+    aria_grabar: "Записать голос",
+  },
+};
+Object.keys(TEXTOS_EXTRA).forEach(l => Object.assign(TEXTOS[l], TEXTOS_EXTRA[l]));
+
+// Texto traducido con sustituciones: tx("boton_pagar", {precio: "0,99 €"})
+function tx(clave, datos = {}, idioma = idiomaActual){
+  const texto = (TEXTOS[idioma] && TEXTOS[idioma][clave]) || TEXTOS.es[clave] || "";
+  return texto.replace(/\{(\w+)\}/g, (_, k) => datos[k] ?? "");
+}
+// Precio con el formato del idioma del teléfono (0,99 € / €0.99 …)
+function precioLocal(euros){
+  try { return new Intl.NumberFormat(IDIOMAS[idiomaActual].lang, { style: "currency", currency: "EUR" }).format(euros); }
+  catch(e){ return euros.toFixed(2).replace(".", ",") + " €"; }
+}
+const PRECIOS = { basico_099: 0.99, premium_299: 2.99 };
+
 const PLANTILLA_PASO = {
   es: (n,t) => `Paso ${n} de ${t}`,
   en: (n,t) => `Step ${n} of ${t}`,
@@ -1686,11 +1961,18 @@ function aplicarTextos(){
     const clave = el.getAttribute("data-i18n-placeholder");
     if (t[clave]) el.placeholder = t[clave];
   });
+  // Etiquetas para lectores de pantalla (accesibilidad)
+  document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+    const clave = el.getAttribute("data-i18n-aria");
+    if (t[clave]) el.setAttribute("aria-label", t[clave]);
+  });
   const btnSaltarFoto = document.getElementById("btn-saltar-foto");
   if (btnSaltarFoto){
     btnSaltarFoto.textContent = fotoCapturadaDataURL ? t.boton_continuar : t.boton_saltar;
   }
   actualizarContador();
+  // Botón de descarga (texto y precio en el idioma de la interfaz)
+  if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
 }
 
 // ---------- 5. Reconocimiento de voz (Web Speech API) ----------
@@ -2027,14 +2309,17 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
     }
   ],
   "formacion_complementaria": ["curso corto 1 con su año si se mencionó", "curso corto 2"],
-  "otros_html": "HTML breve usando <ul><li>...</li></ul> con idiomas (indicando nivel si se mencionó), carnet de conducir, vehículo propio, disponibilidad horaria y voluntariados; usa <strong> solo para la etiqueta del dato (ej. <strong>Idiomas:</strong> Español nativo, inglés básico). Cadena vacía si no se dijo nada en este apartado."
+  "otros_html": "HTML breve usando <ul><li>...</li></ul> con idiomas (indicando nivel si se mencionó), carnet de conducir, vehículo propio, disponibilidad horaria y voluntariados; usa <strong> solo para la etiqueta del dato (ej. <strong>Idiomas:</strong> Español nativo, inglés básico). Cadena vacía si no se dijo nada en este apartado.",
+  "perfil": "Perfil profesional de 2 o 3 frases (máximo 50 palabras) que redactas TÚ a partir de todo lo anterior: a qué se dedica la persona, años de experiencia si se deducen de las fechas, sus puntos fuertes y lo que aporta a una empresa. Tono profesional y positivo, sin primera persona (ej. 'Repartidor con 4 años de experiencia en entregas a domicilio, puntual y orientado al cliente...'). Cadena vacía solo si no hay ningún dato con el que redactarlo.",
+  "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
 }
 Reglas estrictas:
 - Si el usuario indica que NO tiene experiencia laboral, el array "experiencia" debe ser exactamente [].
 - Si el usuario indica que NO tiene estudios, el array "estudios" debe ser exactamente [].
 - Si no hay cursos cortos o formación no oficial, "formacion_complementaria" debe ser exactamente [].
 - Si no se dijo nada en el paso 4, "otros_html" debe ser cadena vacía "".
-- Nunca inventes datos que no se mencionaron; deja el campo vacío en ese caso.
+- Nunca inventes datos que no se mencionaron (empresas, fechas, títulos, cifras); deja el campo vacío en ese caso.
+- "perfil" y "habilidades" sí son tu redacción profesional, pero basadas solo en lo que se dijo: no añadas experiencia, títulos ni certificados que no existan.
 - El array "funciones" de cada experiencia debe tener entre 1 y 4 viñetas, nunca más de 4.`;
 }
 
@@ -2238,6 +2523,15 @@ function pintarCV(resultado){
     seccionOtros.classList.add("hidden");
   }
 
+  // --- Perfil profesional (redactado por la IA) y habilidades (deducidas por la IA) ---
+  const perfil = limpiarTextoIA(resultado.perfil || "");
+  document.getElementById("cv-perfil").textContent = perfil;
+  document.getElementById("cv-seccion-perfil").classList.toggle("hidden", !perfil);
+  const habilidades = (Array.isArray(resultado.habilidades) ? resultado.habilidades : [])
+    .map(h => limpiarTextoIA(String(h))).filter(Boolean).slice(0, 8);
+  document.getElementById("cv-habilidades").innerHTML = habilidades.map(h => `<li>${escaparHTML(h)}</li>`).join("");
+  document.getElementById("cv-seccion-habilidades").classList.toggle("hidden", !habilidades.length);
+
   const imgFoto = document.getElementById("cv-foto-img");
   const placeholderFoto = document.getElementById("cv-avatar-placeholder");
   if (fotoCapturadaDataURL){
@@ -2289,7 +2583,7 @@ const PROMPT_SISTEMA_TRADUCCION = "Eres un traductor profesional especializado e
 // Se excluyen los títulos con data-i18n: esos se traducen con el diccionario TEXTOS.
 function nodosTraduciblesCV(){
   const nodos = [];
-  ["cv-ubicacion", "cv-experiencia", "cv-estudios", "cv-otros"].forEach(id => {
+  ["cv-ubicacion", "cv-perfil", "cv-experiencia", "cv-estudios", "cv-habilidades", "cv-otros"].forEach(id => {
     const recorrido = document.createTreeWalker(document.getElementById(id), NodeFilter.SHOW_TEXT);
     let nodo;
     while ((nodo = recorrido.nextNode())){
@@ -2441,11 +2735,15 @@ function actualizarCTA(esBasico){
       <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">${subtitulo}</div>`;
 
   if (esBasico){
-    btnCTA.innerHTML = contenido("DESCARGAR GRATIS", "(viendo un vídeo corto)");
+    btnCTA.innerHTML = contenido(tx("cta_gratis"), tx("cta_gratis_sub"));
     btnCTA.style.background = "var(--musgo)";
-    if (txtSec) txtSec.style.display = "";
+    if (txtSec){
+      txtSec.textContent = tx("cta_sin_anuncio", { precio: precioLocal(PRECIOS.basico_099) });
+      txtSec.style.display = "";
+    }
   } else {
-    btnCTA.innerHTML = contenido("DESCARGAR PREMIUM · 2,99 €", "Pago único · Sin anuncios");
+    btnCTA.innerHTML = contenido(tx("cta_premium", { precio: precioLocal(PRECIOS.premium_299) }),
+                                 tx("cta_premium_sub", { diseno: tx("diseno_" + plantillaActiva) }));
     btnCTA.style.background = "var(--ambar)";
     if (txtSec) txtSec.style.display = "none";
   }
@@ -2459,7 +2757,6 @@ let productoPendiente = null; // "basico_099" | "premium_299"
 // ---- Referencias al modal de pago ----
 const modalPago             = document.getElementById("modal-pago");
 const modalPagoTitulo       = document.getElementById("modal-pago-titulo");
-const modalPagoDescripcion  = document.getElementById("modal-pago-descripcion");
 const modalPagoPrecio       = document.getElementById("modal-pago-precio");
 const btnConfirmarPago      = document.getElementById("btn-confirmar-pago");
 const btnCancelarPago       = document.getElementById("btn-cancelar-pago");
@@ -2539,6 +2836,57 @@ async function ajustarCVaA4(hoja){
   hoja.style.setProperty("--aire", aire.toFixed(2));
 }
 
+// ---------- Capa de texto invisible del PDF ----------
+// El PDF lleva el CV como imagen (idéntico a la pantalla). Encima se escribe el mismo texto
+// en modo invisible y en su misma posición: no cambia nada a la vista, pero el texto se puede
+// seleccionar/copiar y lo leen los programas de selección de personal (ATS).
+// Se mide la posición de cada palabra en una copia del CV y se agrupan por líneas.
+function medirCapaDeTexto(clon){
+  const caja = document.createElement("div");
+  caja.className = "medidor-a4";
+  caja.style.cssText = `position:absolute;left:-20000px;top:0;width:${PDF_ANCHO_PX}px;visibility:hidden;pointer-events:none`;
+  caja.appendChild(clon);
+  document.body.appendChild(caja);
+  const base = clon.getBoundingClientRect();
+  const lineas = new Map();
+  const rango = document.createRange();
+  const recorrido = document.createTreeWalker(clon, NodeFilter.SHOW_TEXT);
+  let nodo, n = 0;
+  while ((nodo = recorrido.nextNode())){
+    n++;
+    const texto = nodo.nodeValue;
+    if (!texto.trim()) continue;
+    const tam = parseFloat(getComputedStyle(nodo.parentElement).fontSize) || 12;
+    for (const m of texto.matchAll(/\S+/g)){
+      rango.setStart(nodo, m.index);
+      rango.setEnd(nodo, m.index + m[0].length);
+      const r = rango.getBoundingClientRect();
+      if (!r.width) continue; // palabra oculta
+      const clave = n + ":" + Math.round(r.top);
+      const linea = lineas.get(clave);
+      if (linea) linea.texto += " " + m[0];
+      else lineas.set(clave, { texto: m[0], x: r.left - base.left, y: r.bottom - base.top - tam * 0.22, tam });
+    }
+  }
+  caja.remove();
+  clon.remove();
+  return [...lineas.values()];
+}
+
+function escribirCapaDeTexto(pdf, lineas){
+  const paginas = pdf.internal.getNumberOfPages();
+  pdf.setFont("helvetica");
+  for (const l of lineas){
+    // Las fuentes estándar de PDF solo cubren el alfabeto latino: el resto se omite
+    if (/[^\u0000-ÿ€–—‘’“”•…·]/.test(l.texto)) continue;
+    const pagina = Math.floor(l.y / PDF_ALTO_PX);
+    if (pagina >= paginas) continue;
+    pdf.setPage(pagina + 1);
+    pdf.setFontSize(l.tam * 0.75); // px → pt
+    pdf.text(l.texto, l.x, l.y - pagina * PDF_ALTO_PX, { renderingMode: "invisible" });
+  }
+}
+
 async function descargarHojaComoPDF(elemento, nombreArchivo){
   if (generandoPDF) return;
   generandoPDF = true;
@@ -2592,7 +2940,12 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
     generandoPDF = false;
   };
 
-  return html2pdf().set(opciones).from(clon).save()
+  let capa = [];
+  try { capa = medirCapaDeTexto(clon); } catch(e) { console.error("Capa de texto:", e); }
+
+  return html2pdf().set(opciones).from(clon).toPdf().get("pdf")
+    .then(pdf => { try { escribirCapaDeTexto(pdf, capa); } catch(e) { console.error("Capa de texto:", e); } })
+    .save()
     .then(limpiar)
     .catch(err => { limpiar(); console.error("Error generando PDF:", err); });
 }
@@ -2668,6 +3021,8 @@ function rellenarPlantilla(modelo){
   copiarSeccion("cv-seccion-experiencia", "cv-experiencia", idSec("experiencia", "exp"), `${p}-experiencia`);
   copiarSeccion("cv-seccion-estudios", "cv-estudios", idSec("estudios", "est"), `${p}-estudios`);
   copiarSeccion("cv-seccion-otros-datos", "cv-otros", idSec("otros", "otros"), `${p}-otros`);
+  copiarSeccion("cv-seccion-perfil", "cv-perfil", idSec("perfil", "perfil"), `${p}-perfil`);
+  copiarSeccion("cv-seccion-habilidades", "cv-habilidades", idSec("habilidades", "hab"), `${p}-habilidades`);
 
   // Subtítulo/cargo en prem2, prem3 y prem4: el primer puesto de la experiencia
   const subEl = $(`${p}-sub-cargo`) || $(`${p}-cargo`);
@@ -2688,10 +3043,12 @@ function mostrarModalApp(){
   document.getElementById("modal-app").classList.remove("hidden");
 }
 
-// Mensaje breve flotante (reutiliza el aviso inferior)
-function avisoBreve(texto, ms = 4500){
+// Mensaje breve flotante (reutiliza el aviso inferior). Por defecto con estilo neutro;
+// con error = true, en rojo.
+function avisoBreve(texto, ms = 4500, error = false){
   const aviso = document.getElementById("aviso-sin-voz");
   aviso.textContent = texto;
+  aviso.style.cssText = error ? "" : "background:#1F2A24; color:#fff; border-color:#1F2A24";
   aviso.classList.remove("hidden");
   clearTimeout(avisoBreve.temporizador);
   avisoBreve.temporizador = setTimeout(() => aviso.classList.add("hidden"), ms);
@@ -2704,7 +3061,7 @@ let anuncioEnCurso = false; // evita lanzar dos vídeos con dos pulsaciones segu
 function lanzarAnuncio(){
   if (anuncioEnCurso) return;
   anuncioEnCurso = true;
-  avisoBreve("Cargando el vídeo…", 3000);
+  avisoBreve(tx("aviso_cargando_video"), 3000);
   window.AndroidAds.mostrarRecompensado();
 }
 
@@ -2713,12 +3070,12 @@ function lanzarAnuncio(){
 window.recompensaCompletada = function(){
   anuncioEnCurso = false;
   generarYDescargarPDF();
-  avisoBreve("Descargando tu currículum…", 3000);
+  avisoBreve(tx("aviso_descargando"), 3000);
 };
 // Cerrado antes de terminar: sin recompensa, se puede volver a intentar o pagar
 window.anuncioCerrado = function(){
   anuncioEnCurso = false;
-  avisoBreve("Para la descarga gratuita hay que ver el vídeo completo.");
+  avisoBreve(tx("aviso_video_completo"));
 };
 // No hay anuncio disponible (sin conexión, sin inventario…): no se bloquea al usuario
 window.anuncioNoDisponible = function(){
@@ -2726,14 +3083,43 @@ window.anuncioNoDisponible = function(){
 };
 
 // ---------- Descargas de pago ----------
+// Ventana de pago: nombre del diseño elegido, vista previa con el CV del propio usuario,
+// ventajas y precio en el formato del idioma del teléfono
 function abrirModalPago(producto){
-  const t = TEXTOS[idiomaActual];
   productoPendiente = producto;
   const premium = producto === "premium_299";
-  modalPagoTitulo.textContent      = premium ? t.modal_pago_premium_titulo : t.modal_pago_sin_anuncio_titulo;
-  modalPagoDescripcion.textContent = premium ? t.modal_pago_premium_desc   : t.modal_pago_sin_anuncio_desc;
-  modalPagoPrecio.textContent      = premium ? "2,99 €" : "0,99 €";
+  const plantilla = premium ? disenoPremActivo : "basico";
+  const precio = precioLocal(PRECIOS[producto]);
+
+  modalPagoTitulo.textContent = premium ? tx("pago_titulo_premium", { diseno: tx("diseno_" + plantilla) })
+                                        : tx("pago_titulo_sin_anuncio");
+  document.getElementById("modal-pago-insignia").classList.toggle("hidden", plantilla !== "prem1");
+  const ventajas = premium ? ["pago_ventaja_premium_1", "pago_ventaja_premium_2", "pago_ventaja_premium_3"]
+                           : ["pago_ventaja_basico_1", "pago_ventaja_basico_2", "pago_ventaja_basico_3"];
+  document.getElementById("modal-pago-ventajas").innerHTML =
+    ventajas.map(k => `<li><span style="color:var(--musgo);font-weight:800">✓</span> ${escaparHTML(tx(k))}</li>`).join("");
+  modalPagoPrecio.textContent = precio;
+  btnConfirmarPago.textContent = tx("boton_pagar", { precio });
+
+  // Miniatura del CV real del usuario (copia de la hoja, sin edición, escalada al ancho de la vista)
+  const vista = document.getElementById("modal-pago-vista");
+  vista.innerHTML = "";
+  const hoja = document.getElementById(CV_MAP[plantilla]);
+  if (premium && hoja.classList.contains("cv-oculto")) rellenarPlantilla(plantilla);
+  const mini = hoja.cloneNode(true);
+  mini.removeAttribute("contenteditable");
+  mini.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
+  mini.classList.remove("cv-oculto", "shadow-2xl", "rounded-2xl");
+  Object.assign(mini.style, { zoom: String(150 / PDF_ANCHO_PX), width: PDF_ANCHO_PX + "px", maxWidth: "none",
+                              minHeight: PDF_ALTO_PX + "px", margin: "0", borderRadius: "0" });
+  vista.appendChild(mini);
+
   modalPago.classList.remove("hidden");
+}
+
+function cerrarModalPago(){
+  modalPago.classList.add("hidden");
+  document.getElementById("modal-pago-vista").innerHTML = ""; // quitar la copia (ids duplicados)
 }
 
 // Botón principal: gratis con vídeo (básico) o pago (premium)
@@ -2759,27 +3145,28 @@ btnConfirmarPago.addEventListener("click", () => {
 // Callbacks del pago (los llama PagosBridge.java)
 window.pagoCompletado = function(productoId){
   btnConfirmarPago.disabled = false;
-  modalPago.classList.add("hidden");
+  cerrarModalPago();
   if (productoId === "premium_299"){
     generarYDescargarPDFPremium();
   } else {
     generarYDescargarPDF();
   }
+  avisoBreve(tx("aviso_descargando"), 3000);
 };
 // mensaje vacío = lo canceló el usuario (no se muestra nada)
 window.pagoCancelado = function(mensaje){
   btnConfirmarPago.disabled = false;
-  modalPago.classList.add("hidden");
-  if (mensaje) avisoBreve("No se ha podido completar el pago. Inténtalo de nuevo.");
+  cerrarModalPago();
+  if (mensaje) avisoBreve(tx("aviso_pago_error"), 4500, true);
 };
 window.pagoPendiente = function(){
   btnConfirmarPago.disabled = false;
-  modalPago.classList.add("hidden");
-  avisoBreve("Pago pendiente de confirmar. Cuando Google lo confirme, vuelve a pulsar descargar.", 7000);
+  cerrarModalPago();
+  avisoBreve(tx("aviso_pago_pendiente"), 7000);
 };
 
 btnCancelarPago.addEventListener("click", () => {
-  modalPago.classList.add("hidden");
+  cerrarModalPago();
   productoPendiente = null;
 });
 
