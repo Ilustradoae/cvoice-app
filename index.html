@@ -151,9 +151,12 @@
   #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
     --u: 16px;
     --aire: 1;
-    /* --ue: unidad de los espacios (márgenes, rellenos, separaciones) = --u × --aire */
+    --li: 1;
+    /* --ue: unidad de los espacios VERTICALES (márgenes y rellenos arriba/abajo) = --u × --aire */
     --ue: calc(var(--u) * var(--aire));
     font-size: var(--u);
+    /* Interlineado base (antes heredado: 1.5) escalado por --li */
+    line-height: calc(1.5 * var(--li));
   }
   /* Emails largos: el generador de PDF (html2canvas) solo los parte con break-all */
   #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
@@ -177,7 +180,7 @@
     width: 33.333%;
     background: #0f172a; /* slate-900 */
     color: #cbd5e1;       /* slate-300 */
-    padding: calc(2.5 * var(--ue)) calc(1.75 * var(--ue));
+    padding: calc(2.5 * var(--u)) calc(1.75 * var(--u));
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -187,7 +190,7 @@
     width: 66.666%;
     background: #fff;
     color: #1e293b;
-    padding: calc(2.5 * var(--ue)) calc(3 * var(--ue));
+    padding: calc(2.5 * var(--u)) calc(3 * var(--u));
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -223,14 +226,14 @@
   .prem-seccion-titulo-izq{
     font-size: calc(.7 * var(--u)); font-weight: 700; color: #94a3b8;
     text-transform: uppercase; letter-spacing: .1em;
-    margin: calc(1.5 * var(--ue)) 0 calc(.75 * var(--ue));
+    margin: calc(1.5 * var(--ue)) 0 calc(.75 * var(--u));
   }
 
   .prem-seccion-titulo-der{
     font-size: calc(.82 * var(--u)); font-weight: 700; color: #0f172a;
     text-transform: uppercase; letter-spacing: .1em;
     border-bottom: 2px solid #f1f5f9;
-    padding-bottom: calc(.5 * var(--u)); margin-bottom: calc(1.25 * var(--ue));
+    padding-bottom: calc(.5 * var(--u)); margin-bottom: calc(1.25 * var(--u));
     text-align: center;
   }
   /* Separación entre secciones de la columna derecha del premium */
@@ -249,20 +252,20 @@
     width: 900px; max-width: 100%; margin: 0 auto;
     background: #fff; overflow: hidden; border-radius: calc(1 * var(--u)); color: #1a1a1a;
   }
-  .p2-head{ display: flex; align-items: center; gap: calc(2 * var(--ue)); padding: calc(2.5 * var(--ue)) calc(2.5 * var(--ue)) calc(1.5 * var(--ue)); }
+  .p2-head{ display: flex; align-items: center; gap: calc(2 * var(--u)); padding: calc(2.5 * var(--u)) calc(2.5 * var(--u)) calc(1.5 * var(--u)); }
   .p2-avatar{ width: calc(9 * var(--u)); height: calc(9 * var(--u)); border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f0f0f0; border: 2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
   .p2-avatar img{ width:100%; height:100%; object-fit:cover; }
-  .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: calc(2.4 * var(--u)); font-weight: 700; color: #1a1a1a; line-height: 1.1; }
+  .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: calc(2.4 * var(--u)); font-weight: 700; color: #1a1a1a; line-height: calc(1.1 * var(--li)); }
   .p2-cargo{ font-size: calc(.8 * var(--u)); color: #666; letter-spacing: .08em; text-transform: uppercase; margin-top: calc(.4 * var(--u)); }
-  .p2-contactband{ display: flex; align-items: center; border-top: 2px solid #1a1a1a; border-bottom: 2px solid #1a1a1a; padding: calc(.65 * var(--ue)) calc(2.5 * var(--ue)); }
+  .p2-contactband{ display: flex; align-items: center; border-top: 2px solid #1a1a1a; border-bottom: 2px solid #1a1a1a; padding: calc(.65 * var(--u)) calc(2.5 * var(--u)); }
   .p2-citem{ display: flex; align-items: center; gap: calc(.4 * var(--u)); font-size: calc(.75 * var(--u)); color: #333; flex: 1; }
   /* Separador vertical solo entre datos de contacto visibles */
-  .p2-citem:not(.cv-vacio) ~ .p2-citem:not(.cv-vacio){ border-left: 1px solid #ccc; padding-left: calc(.75 * var(--ue)); margin-left: calc(.75 * var(--ue)); }
-  .p2-body{ padding: 0 calc(2.5 * var(--ue)) calc(2 * var(--ue)); }
-  .p2-row{ display: grid; grid-template-columns: calc(7.5 * var(--u)) 1fr; gap: calc(1.5 * var(--ue)); padding: calc(1.1 * var(--ue)) 0; border-bottom: 1px solid #e8e8e8; }
+  .p2-citem:not(.cv-vacio) ~ .p2-citem:not(.cv-vacio){ border-left: 1px solid #ccc; padding-left: calc(.75 * var(--u)); margin-left: calc(.75 * var(--u)); }
+  .p2-body{ padding: 0 calc(2.5 * var(--u)) calc(2 * var(--u)); }
+  .p2-row{ display: grid; grid-template-columns: calc(7.5 * var(--u)) 1fr; gap: calc(1.5 * var(--u)); padding: calc(1.1 * var(--ue)) 0; border-bottom: 1px solid #e8e8e8; }
   .p2-row:last-child{ border-bottom: none; }
   .p2-etiqueta{ font-size: calc(.58 * var(--u)); font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #1a1a1a; padding-top: calc(.2 * var(--u)); }
-  .p2-contenido{ display: flex; flex-direction: column; gap: calc(.75 * var(--ue)); }
+  .p2-contenido{ display: flex; flex-direction: column; gap: calc(.75 * var(--u)); }
 
   /* ============================================================
      DISEÑO PREMIUM 3 — ÁMBAR MODERNO (acento dorado/ámbar)
@@ -274,7 +277,7 @@
     background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
     align-items: stretch;
   }
-  .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: calc(2.5 * var(--ue)) calc(1.75 * var(--ue)); display: flex; flex-direction: column; }
+  .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: calc(2.5 * var(--u)) calc(1.75 * var(--u)); display: flex; flex-direction: column; }
   .p3-avatar{ width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto calc(1.25 * var(--ue)); font-size: calc(1.5 * var(--u)); font-weight: 700; color: #C4874A; }
   .p3-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p3-nombre{ font-size: calc(1.05 * var(--u)); font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: calc(.2 * var(--u)); }
@@ -284,8 +287,8 @@
   .p3-dot{ width: 5px; height: 5px; border-radius: 50%; background: #C4874A; flex-shrink: 0; margin-top: calc(.35 * var(--u)); }
   /* Textos largos sin espacios (emails) se parten en su línea en vez de saltar bajo el punto */
   .p3-valor > span:not(.p3-dot){ min-width: 0; overflow-wrap: anywhere; }
-  .p3-der{ background: #fff; padding: calc(2.5 * var(--ue)) calc(2.25 * var(--ue)); display: flex; flex-direction: column; }
-  .p3-sec-der{ font-size: calc(.6 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1a1a1a; display: inline-block; border-bottom: 2px solid #C4874A; padding-bottom: calc(.2 * var(--u)); margin: calc(1.25 * var(--ue)) 0 calc(.6 * var(--ue)); }
+  .p3-der{ background: #fff; padding: calc(2.5 * var(--u)) calc(2.25 * var(--u)); display: flex; flex-direction: column; }
+  .p3-sec-der{ font-size: calc(.6 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1a1a1a; display: inline-block; border-bottom: 2px solid #C4874A; padding-bottom: calc(.2 * var(--u)); margin: calc(1.25 * var(--ue)) 0 calc(.6 * var(--u)); }
 
   /* ============================================================
      DISEÑO PREMIUM 4 — AZUL MARINO CORPORATIVO (una columna)
@@ -297,21 +300,21 @@
     width: 900px; max-width: 100%; margin: 0 auto;
     background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
   }
-  .p4-header{ background: #1B3A5C; padding: calc(1.5 * var(--ue)) calc(2 * var(--ue)); display: flex; align-items: center; gap: calc(1.25 * var(--ue)); border-bottom: 4px solid #2D6A9F; }
+  .p4-header{ background: #1B3A5C; padding: calc(1.5 * var(--u)) calc(2 * var(--u)); display: flex; align-items: center; gap: calc(1.25 * var(--u)); border-bottom: 4px solid #2D6A9F; }
   .p4-avatar{ width: calc(5.5 * var(--u)); height: calc(5.5 * var(--u)); border-radius: calc(.6 * var(--u)); border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: calc(1.4 * var(--u)); font-weight: 700; color: #93B5D4; }
   .p4-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p4-hinfo{ flex: 1; }
   .p4-nombre{ font-size: calc(1.4 * var(--u)); font-weight: 700; color: #fff; letter-spacing: .02em; }
   .p4-sub{ font-size: calc(.65 * var(--u)); color: #93B5D4; text-transform: uppercase; letter-spacing: .12em; margin-top: calc(.25 * var(--u)); }
-  .p4-contacts{ display: flex; flex-wrap: wrap; gap: calc(.25 * var(--u)) calc(.75 * var(--ue)); margin-top: calc(.5 * var(--u)); }
+  .p4-contacts{ display: flex; flex-wrap: wrap; gap: calc(.25 * var(--u)) calc(.75 * var(--u)); margin-top: calc(.5 * var(--u)); }
   .p4-c{ font-size: calc(.65 * var(--u)); color: #7A9FBF; }
   /* Punto separador solo entre datos de contacto visibles */
-  .p4-c:not(.cv-vacio) ~ .p4-c:not(.cv-vacio)::before{ content: "·"; margin-right: calc(.75 * var(--ue)); }
+  .p4-c:not(.cv-vacio) ~ .p4-c:not(.cv-vacio)::before{ content: "·"; margin-right: calc(.75 * var(--u)); }
   /* Cuerpo: una sola columna */
-  .p4-body{ background: #fff; padding: calc(1.75 * var(--ue)) calc(2 * var(--ue)); display: flex; flex-direction: column; gap: 0; }
+  .p4-body{ background: #fff; padding: calc(1.75 * var(--u)) calc(2 * var(--u)); display: flex; flex-direction: column; gap: 0; }
   .p4-sec-der{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #2D6A9F; margin: calc(1.25 * var(--ue)) 0 calc(.5 * var(--u)); }
   /* Idiomas/otros datos: al final, en banda gris clara */
-  .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: calc(1 * var(--ue)) calc(2 * var(--ue)); }
+  .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: calc(1 * var(--u)) calc(2 * var(--u)); }
   .p4-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin-bottom: calc(.4 * var(--u)); }
   /* ===== MODELO BÁSICO — Minimalista (blanco/negro, líneas finas) ===== */
   #hoja-cv{
@@ -330,14 +333,14 @@
   .cv-col-izquierda{
     background: #FAFAF9;
     border-right: 1px solid #e5e5e5;
-    padding: calc(2 * var(--ue)) calc(1.5 * var(--ue));
+    padding: calc(2 * var(--u)) calc(1.5 * var(--u));
     display: flex;
     flex-direction: column;
     gap: 0;
   }
   .cv-col-derecha{
     background: #fff;
-    padding: calc(2 * var(--ue)) calc(2 * var(--ue));
+    padding: calc(2 * var(--u)) calc(2 * var(--u));
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -354,7 +357,7 @@
 
   .cv-nombre{
     font-family:'Source Serif 4', Georgia, serif; font-weight:700;
-    font-size:calc(1.15 * var(--u)); line-height:1.25; text-align:center;
+    font-size:calc(1.15 * var(--u)); line-height: calc(1.25 * var(--li)); text-align:center;
     color: #1a1a1a; margin-bottom: calc(.5 * var(--u));
   }
 
@@ -374,20 +377,20 @@
     font-weight: 600;
   }
 
-  .cv-lateral-dato{ font-size:calc(.92 * var(--u)); line-height:1.6; word-break:break-word; margin-bottom: calc(.35 * var(--u)); }
+  .cv-lateral-dato{ font-size:calc(.92 * var(--u)); line-height: calc(1.6 * var(--li)); word-break:break-word; margin-bottom: calc(.35 * var(--u)); }
   .cv-lateral-dato:last-child{ margin-bottom: 0; }
   .cv-lateral-dato .cv-etiqueta{ display:block; font-size:calc(.68 * var(--u)); text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom: calc(.1 * var(--u)); }
 
   .cv-derecha-titulo{
     font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.6 * var(--u)); letter-spacing:.18em;
-    text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.75 * var(--ue));
-    display:flex; align-items:center; gap: calc(.6 * var(--ue));
+    text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.75 * var(--u));
+    display:flex; align-items:center; gap: calc(.6 * var(--u));
     border-bottom: 1.5px solid #1a1a1a; padding-bottom: calc(.3 * var(--u));
   }
 
   .cv-bloque{ margin-bottom: calc(1.75 * var(--ue)); }
   .cv-bloque:last-child{ margin-bottom: 0; }
-  .cv-bloque-contenido{ font-size:calc(.88 * var(--u)); line-height:1.65; }
+  .cv-bloque-contenido{ font-size:calc(.88 * var(--u)); line-height: calc(1.65 * var(--li)); }
   .cv-bloque-contenido p{ margin-bottom: calc(.45 * var(--u)); }
   .cv-bloque-contenido ul{ list-style:none; padding: 0; margin: 0; }
   .cv-bloque-contenido li{
@@ -409,7 +412,7 @@
   .cv-experiencia-fechas{ font-size:calc(.72 * var(--u)); color:#888; white-space:nowrap; }
   .cv-experiencia-empresa{ font-size:calc(.82 * var(--u)); font-style:italic; color:#666; margin-bottom: calc(.4 * var(--u)); }
   .cv-experiencia-funciones{ list-style:none; padding: 0; margin: 0; }
-  .cv-experiencia-funciones li{ position:relative; padding-left: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height:1.6; }
+  .cv-experiencia-funciones li{ position:relative; padding-left: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height: calc(1.6 * var(--li)); }
   .cv-experiencia-funciones li::before{ content:"–"; position:absolute; left:0; color:#888; font-weight:700; }
 
   /* ---- Estudios: título oficial + formación complementaria agrupada ---- */
@@ -417,10 +420,10 @@
   .cv-estudio-item:last-child{ margin-bottom: 0; }
   .cv-estudio-titulo{ font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.93 * var(--u)); color:#1a1a1a; }
   .cv-estudio-centro{ font-size:calc(.82 * var(--u)); color:#666; }
-  .cv-formacion-complementaria{ margin-top: calc(1.1 * var(--ue)); padding-top: calc(1 * var(--ue)); border-top:1px dashed var(--cv-linea); }
+  .cv-formacion-complementaria{ margin-top: calc(1.1 * var(--ue)); padding-top: calc(1 * var(--u)); border-top:1px dashed var(--cv-linea); }
   .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:calc(.78 * var(--u)); letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom: calc(.5 * var(--u)); }
   .cv-formacion-complementaria-lista{ list-style:none; padding: 0; margin: 0; }
-  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height:1.6; margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--u)); }
+  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height: calc(1.6 * var(--li)); margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--u)); }
   .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; left:0; color:var(--cv-acento); }
 
   /* Regla defensiva: neutraliza cualquier bullet/asterisco que la IA pueda inyectar
@@ -799,7 +802,7 @@
         <h1 contenteditable="true" id="prem-nombre" class="prem-nombre">NOMBRE APELLIDO</h1>
         <hr class="prem-hr">
 
-        <div style="display:flex; flex-direction:column; gap: calc(.75 * var(--ue)); font-size:calc(.85 * var(--u));">
+        <div style="display:flex; flex-direction:column; gap: calc(.75 * var(--u)); font-size:calc(.85 * var(--u));">
           <div id="prem-fila-telefono">
             <span class="prem-label" data-cv-label="label_telefono">Teléfono</span>
             <span contenteditable="true" id="prem-telefono" class="prem-valor">—</span>
@@ -818,7 +821,7 @@
 
         <div id="prem-seccion-otros" class="hidden">
           <p class="prem-seccion-titulo-izq" data-i18n="cv_lateral_otros">Otros datos</p>
-          <div contenteditable="true" id="prem-otros" style="font-size:calc(.78 * var(--u)); color:#94a3b8; line-height:1.6;"></div>
+          <div contenteditable="true" id="prem-otros" style="font-size:calc(.78 * var(--u)); color:#94a3b8; line-height: calc(1.6 * var(--li));"></div>
         </div>
       </div>
 
@@ -2471,17 +2474,18 @@ const PDF_ALTO_PX  = 1273;
 let generandoPDF = false; // evita PDFs duplicados por doble pulsación
 
 // ---------- Ajuste automático del CV a una página A4 ----------
-// Las medidas de las hojas dependen de dos variables (ver CSS):
+// Las medidas de las hojas dependen de tres variables (ver CSS):
 //   --u    → letra y elementos (16px = tamaño de diseño)
-//   --aire → multiplica solo los espacios (márgenes, rellenos, separaciones)
+//   --li   → multiplica el interlineado
+//   --aire → multiplica solo los espacios VERTICALES (entre experiencias, estudios, secciones)
 // Se mide un clon de la hoja a 900px de ancho y:
-//   1. se busca el --u más grande con el que el contenido cabe en un A4 (con mucha
-//      información se compacta, sin bajar de un tamaño legible; si aun así no cabe,
-//      el PDF pasa a una segunda página);
-//   2. si con la letra al máximo sigue sobrando hoja, se reparte el hueco aumentando
-//      --aire, para que el CV ocupe la página entera sin letras desproporcionadas.
-const U_MIN = 13, U_MAX = 20;   // px
-const AIRE_MAX = 2.6;
+//   1. si el contenido no cabe a tamaño de diseño, se compacta la letra (--u) lo justo,
+//      sin bajar de un tamaño legible (si aun así no cabe, el PDF pasa a una 2ª página);
+//   2. si sobra hoja, la letra apenas crece: el hueco se reparte con más interlineado y
+//      más separación vertical entre bloques, hasta llenar el A4 sin pasarse.
+const U_MIN = 13, U_DISENO = 16, U_MAX = 17;   // px
+const LI_MAX = 1.3;    // interlineado máximo: 1.5 → 1.95
+const AIRE_MAX = 3.2;  // separación vertical máxima entre bloques
 
 async function ajustarCVaA4(hoja){
   if (!hoja) return;
@@ -2496,8 +2500,9 @@ async function ajustarCVaA4(hoja){
   caja.appendChild(clon);
   document.body.appendChild(caja);
 
-  const cabe = (u, aire) => {
+  const cabe = (u, li, aire) => {
     clon.style.setProperty("--u", u + "px");
+    clon.style.setProperty("--li", li);
     clon.style.setProperty("--aire", aire);
     // Margen de seguridad: si queda demasiado justo, el PDF puede abrir una 2ª página vacía
     return clon.offsetHeight <= PDF_ALTO_PX - 24;
@@ -2513,10 +2518,24 @@ async function ajustarCVaA4(hoja){
     return bajo;
   };
 
-  const u = mayorQueCabe(U_MIN, U_MAX, 0.25, v => cabe(v, 1));
-  const aire = u < U_MAX ? 1 : mayorQueCabe(1, AIRE_MAX, 0.05, v => cabe(u, v));
+  let u = U_DISENO, li = 1, aire = 1;
+  if (!cabe(U_DISENO, 1, 1)){
+    // Demasiado contenido: compactar la letra lo justo
+    u = mayorQueCabe(U_MIN, U_DISENO, 0.25, v => cabe(v, 1, 1));
+  } else {
+    // Sobra hoja: interlineado y separación vertical crecen a la vez (t de 0 a 1) y la
+    // letra solo un poco (hasta U_MAX), para que el CV respire y llene el A4
+    const t = mayorQueCabe(0, 1, 0.01, v => cabe(U_DISENO + (U_MAX - U_DISENO) * v, 1 + (LI_MAX - 1) * v, 1 + (AIRE_MAX - 1) * v));
+    u = U_DISENO + (U_MAX - U_DISENO) * t;
+    li = 1 + (LI_MAX - 1) * t;
+    aire = 1 + (AIRE_MAX - 1) * t;
+    // Si aun con todo al máximo sobra mucho, seguir separando bloques (no la letra)
+    // (con tope, para no dejar saltos exagerados entre secciones en CV muy cortos)
+    if (t === 1) aire = mayorQueCabe(AIRE_MAX, AIRE_MAX * 1.4, 0.05, v => cabe(u, li, v));
+  }
   caja.remove();
   hoja.style.setProperty("--u", u.toFixed(2) + "px");
+  hoja.style.setProperty("--li", li.toFixed(3));
   hoja.style.setProperty("--aire", aire.toFixed(2));
 }
 
