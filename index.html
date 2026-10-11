@@ -144,6 +144,20 @@
   /* Dato de contacto vacío en las plantillas premium: se oculta la fila entera */
   .cv-vacio{ display: none !important; }
 
+  /* ===== ESCALA DE LAS HOJAS DE CV =====
+     Todas las medidas de los CV usan la unidad --u (16px por defecto) en vez de rem.
+     ajustarCVaA4() la cambia en cada hoja para que el contenido llene un A4 sin pasarse:
+     más grande si hay poca información, más compacto si hay mucha. */
+  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
+    --u: 16px;
+    --aire: 1;
+    /* --ue: unidad de los espacios (márgenes, rellenos, separaciones) = --u × --aire */
+    --ue: calc(var(--u) * var(--aire));
+    font-size: var(--u);
+  }
+  /* Al medir para el A4 se mide como en el PDF: sin los iconos ✎ de edición */
+  .medidor-a4 .pista-edicion::after{ display: none !important; }
+
   /* ===================== PLANTILLA PREMIUM — COLUMNA OSCURA ===================== */
   #hoja-cv-premium{
     font-family: 'Inter', system-ui, sans-serif;
@@ -153,7 +167,7 @@
     margin: 0 auto;
     background: #fff;
     overflow: hidden;
-    border-radius: 1rem;
+    border-radius: calc(1 * var(--u));
     /* min-height solo se añade en JS justo antes de exportar a PDF,
        para que en pantalla el CV se ajuste al contenido real */
   }
@@ -161,7 +175,7 @@
     width: 33.333%;
     background: #0f172a; /* slate-900 */
     color: #cbd5e1;       /* slate-300 */
-    padding: 2.5rem 1.75rem;
+    padding: calc(2.5 * var(--ue)) calc(1.75 * var(--ue));
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -171,56 +185,55 @@
     width: 66.666%;
     background: #fff;
     color: #1e293b;
-    padding: 2.5rem 3rem;
+    padding: calc(2.5 * var(--ue)) calc(3 * var(--ue));
     display: flex;
     flex-direction: column;
     gap: 0;
     justify-content: flex-start;
   }
   .prem-avatar{
-    width: 8rem; height: 8rem;
+    width: calc(8 * var(--u)); height: calc(8 * var(--u));
     border-radius: 50%;
     border: 2px solid #334155;
     background: #1e293b;
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
-    margin: 0 auto 1.5rem;
+    margin: 0 auto calc(1.5 * var(--ue));
   }
   .prem-avatar img{ width:100%; height:100%; object-fit:cover; }
   .prem-nombre{
-    font-size: 1.25rem; font-weight: 700; color: #fff;
+    font-size: calc(1.25 * var(--u)); font-weight: 700; color: #fff;
     text-transform: uppercase; letter-spacing: .05em;
-    text-align: center; margin-bottom: 1.25rem;
+    text-align: center; margin-bottom: calc(1.25 * var(--ue));
   }
-  .prem-hr{ border: none; border-top: 1px solid #1e293b; margin: 1rem 0; }
+  .prem-hr{ border: none; border-top: 1px solid #1e293b; margin: calc(1 * var(--ue)) 0; }
   .prem-label{
-    display: block; font-size: .65rem; font-weight: 600;
+    display: block; font-size: calc(.65 * var(--u)); font-weight: 600;
     text-transform: uppercase; letter-spacing: .1em;
-    color: #64748b; margin-bottom: .2rem;
+    color: #64748b; margin-bottom: calc(.2 * var(--u));
   }
   .prem-valor{
-    display: block; font-size: .85rem; color: #fff;
-    padding: .2rem .3rem; border-radius: .25rem;
+    display: block; font-size: calc(.85 * var(--u)); color: #fff;
+    padding: calc(.2 * var(--u)) calc(.3 * var(--u)); border-radius: calc(.25 * var(--u));
     word-break: break-word;
   }
   .prem-valor-azul{ color: #60a5fa; }
   .prem-seccion-titulo-izq{
-    font-size: .7rem; font-weight: 700; color: #94a3b8;
+    font-size: calc(.7 * var(--u)); font-weight: 700; color: #94a3b8;
     text-transform: uppercase; letter-spacing: .1em;
-    margin: 1.5rem 0 .75rem;
+    margin: calc(1.5 * var(--ue)) 0 calc(.75 * var(--ue));
   }
-  .prem-footer{ font-size: .6rem; color: #334155; text-align: center; margin-top: auto; padding-top: 2rem; }
 
   .prem-seccion-titulo-der{
-    font-size: .82rem; font-weight: 700; color: #0f172a;
+    font-size: calc(.82 * var(--u)); font-weight: 700; color: #0f172a;
     text-transform: uppercase; letter-spacing: .1em;
     border-bottom: 2px solid #f1f5f9;
-    padding-bottom: .5rem; margin-bottom: 1.25rem;
+    padding-bottom: calc(.5 * var(--u)); margin-bottom: calc(1.25 * var(--ue));
     text-align: center;
   }
   /* Separación entre secciones de la columna derecha del premium */
   #prem-seccion-experiencia, #prem-seccion-estudios, #prem-seccion-otros{
-    margin-bottom: 2rem;
+    margin-bottom: calc(2 * var(--ue));
   }
   #prem-seccion-experiencia:last-child,
   #prem-seccion-estudios:last-child,
@@ -232,22 +245,22 @@
     font-family: 'Inter', system-ui, sans-serif;
     display: flex; flex-direction: column;
     width: 900px; max-width: 100%; margin: 0 auto;
-    background: #fff; overflow: hidden; border-radius: 1rem; color: #1a1a1a;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u)); color: #1a1a1a;
   }
-  .p2-head{ display: flex; align-items: center; gap: 2rem; padding: 2.5rem 2.5rem 1.5rem; }
-  .p2-avatar{ width: 9rem; height: 9rem; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f0f0f0; border: 2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
+  .p2-head{ display: flex; align-items: center; gap: calc(2 * var(--ue)); padding: calc(2.5 * var(--ue)) calc(2.5 * var(--ue)) calc(1.5 * var(--ue)); }
+  .p2-avatar{ width: calc(9 * var(--u)); height: calc(9 * var(--u)); border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f0f0f0; border: 2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
   .p2-avatar img{ width:100%; height:100%; object-fit:cover; }
-  .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: 2.4rem; font-weight: 700; color: #1a1a1a; line-height: 1.1; }
-  .p2-cargo{ font-size: .8rem; color: #666; letter-spacing: .08em; text-transform: uppercase; margin-top: .4rem; }
-  .p2-contactband{ display: flex; align-items: center; border-top: 2px solid #1a1a1a; border-bottom: 2px solid #1a1a1a; padding: .65rem 2.5rem; }
-  .p2-citem{ display: flex; align-items: center; gap: .4rem; font-size: .75rem; color: #333; flex: 1; }
+  .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: calc(2.4 * var(--u)); font-weight: 700; color: #1a1a1a; line-height: 1.1; }
+  .p2-cargo{ font-size: calc(.8 * var(--u)); color: #666; letter-spacing: .08em; text-transform: uppercase; margin-top: calc(.4 * var(--u)); }
+  .p2-contactband{ display: flex; align-items: center; border-top: 2px solid #1a1a1a; border-bottom: 2px solid #1a1a1a; padding: calc(.65 * var(--ue)) calc(2.5 * var(--ue)); }
+  .p2-citem{ display: flex; align-items: center; gap: calc(.4 * var(--u)); font-size: calc(.75 * var(--u)); color: #333; flex: 1; }
   /* Separador vertical solo entre datos de contacto visibles */
-  .p2-citem:not(.cv-vacio) ~ .p2-citem:not(.cv-vacio){ border-left: 1px solid #ccc; padding-left: .75rem; margin-left: .75rem; }
-  .p2-body{ padding: 0 2.5rem 2rem; }
-  .p2-row{ display: grid; grid-template-columns: 7.5rem 1fr; gap: 1.5rem; padding: 1.1rem 0; border-bottom: 1px solid #e8e8e8; }
+  .p2-citem:not(.cv-vacio) ~ .p2-citem:not(.cv-vacio){ border-left: 1px solid #ccc; padding-left: calc(.75 * var(--ue)); margin-left: calc(.75 * var(--ue)); }
+  .p2-body{ padding: 0 calc(2.5 * var(--ue)) calc(2 * var(--ue)); }
+  .p2-row{ display: grid; grid-template-columns: calc(7.5 * var(--u)) 1fr; gap: calc(1.5 * var(--ue)); padding: calc(1.1 * var(--ue)) 0; border-bottom: 1px solid #e8e8e8; }
   .p2-row:last-child{ border-bottom: none; }
-  .p2-etiqueta{ font-size: .58rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #1a1a1a; padding-top: .2rem; }
-  .p2-contenido{ display: flex; flex-direction: column; gap: .75rem; }
+  .p2-etiqueta{ font-size: calc(.58 * var(--u)); font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #1a1a1a; padding-top: calc(.2 * var(--u)); }
+  .p2-contenido{ display: flex; flex-direction: column; gap: calc(.75 * var(--ue)); }
 
   /* ============================================================
      DISEÑO PREMIUM 3 — ÁMBAR MODERNO (acento dorado/ámbar)
@@ -256,19 +269,21 @@
     font-family: 'Inter', system-ui, sans-serif;
     display: grid; grid-template-columns: 1fr 1.75fr;
     width: 900px; max-width: 100%; margin: 0 auto;
-    background: #fff; overflow: hidden; border-radius: 1rem;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
     align-items: stretch;
   }
-  .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: 2.5rem 1.75rem; display: flex; flex-direction: column; }
-  .p3-avatar{ width: 7rem; height: 7rem; border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto 1.25rem; font-size: 1.5rem; font-weight: 700; color: #C4874A; }
+  .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: calc(2.5 * var(--ue)) calc(1.75 * var(--ue)); display: flex; flex-direction: column; }
+  .p3-avatar{ width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto calc(1.25 * var(--ue)); font-size: calc(1.5 * var(--u)); font-weight: 700; color: #C4874A; }
   .p3-avatar img{ width:100%; height:100%; object-fit:cover; }
-  .p3-nombre{ font-size: 1.05rem; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: .2rem; }
-  .p3-sub{ font-size: .62rem; color: #C4874A; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; text-align: center; margin-bottom: 1.25rem; }
-  .p3-sec{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #C4874A; margin: 1rem 0 .4rem; }
-  .p3-valor{ font-size: .78rem; color: #1a1a1a; margin-bottom: .4rem; display: flex; align-items: flex-start; gap: .35rem; word-break: break-word; }
-  .p3-dot{ width: 5px; height: 5px; border-radius: 50%; background: #C4874A; flex-shrink: 0; margin-top: .35rem; }
-  .p3-der{ background: #fff; padding: 2.5rem 2.25rem; display: flex; flex-direction: column; }
-  .p3-sec-der{ font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1a1a1a; display: inline-block; border-bottom: 2px solid #C4874A; padding-bottom: .2rem; margin: 1.25rem 0 .6rem; }
+  .p3-nombre{ font-size: calc(1.05 * var(--u)); font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: calc(.2 * var(--u)); }
+  .p3-sub{ font-size: calc(.62 * var(--u)); color: #C4874A; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; text-align: center; margin-bottom: calc(1.25 * var(--ue)); }
+  .p3-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #C4874A; margin: calc(1 * var(--ue)) 0 calc(.4 * var(--u)); }
+  .p3-valor{ font-size: calc(.78 * var(--u)); color: #1a1a1a; margin-bottom: calc(.4 * var(--u)); display: flex; align-items: flex-start; gap: calc(.35 * var(--u)); word-break: break-word; }
+  .p3-dot{ width: 5px; height: 5px; border-radius: 50%; background: #C4874A; flex-shrink: 0; margin-top: calc(.35 * var(--u)); }
+  /* Textos largos sin espacios (emails) se parten en su línea en vez de saltar bajo el punto */
+  .p3-valor > span:not(.p3-dot){ min-width: 0; overflow-wrap: anywhere; }
+  .p3-der{ background: #fff; padding: calc(2.5 * var(--ue)) calc(2.25 * var(--ue)); display: flex; flex-direction: column; }
+  .p3-sec-der{ font-size: calc(.6 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1a1a1a; display: inline-block; border-bottom: 2px solid #C4874A; padding-bottom: calc(.2 * var(--u)); margin: calc(1.25 * var(--ue)) 0 calc(.6 * var(--ue)); }
 
   /* ============================================================
      DISEÑO PREMIUM 4 — AZUL MARINO CORPORATIVO (una columna)
@@ -278,24 +293,24 @@
     display: flex;
     flex-direction: column;
     width: 900px; max-width: 100%; margin: 0 auto;
-    background: #fff; overflow: hidden; border-radius: 1rem;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
   }
-  .p4-header{ background: #1B3A5C; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1.25rem; border-bottom: 4px solid #2D6A9F; }
-  .p4-avatar{ width: 5.5rem; height: 5.5rem; border-radius: .6rem; border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: 1.4rem; font-weight: 700; color: #93B5D4; }
+  .p4-header{ background: #1B3A5C; padding: calc(1.5 * var(--ue)) calc(2 * var(--ue)); display: flex; align-items: center; gap: calc(1.25 * var(--ue)); border-bottom: 4px solid #2D6A9F; }
+  .p4-avatar{ width: calc(5.5 * var(--u)); height: calc(5.5 * var(--u)); border-radius: calc(.6 * var(--u)); border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: calc(1.4 * var(--u)); font-weight: 700; color: #93B5D4; }
   .p4-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p4-hinfo{ flex: 1; }
-  .p4-nombre{ font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: .02em; }
-  .p4-sub{ font-size: .65rem; color: #93B5D4; text-transform: uppercase; letter-spacing: .12em; margin-top: .25rem; }
-  .p4-contacts{ display: flex; flex-wrap: wrap; gap: .25rem .75rem; margin-top: .5rem; }
-  .p4-c{ font-size: .65rem; color: #7A9FBF; }
+  .p4-nombre{ font-size: calc(1.4 * var(--u)); font-weight: 700; color: #fff; letter-spacing: .02em; }
+  .p4-sub{ font-size: calc(.65 * var(--u)); color: #93B5D4; text-transform: uppercase; letter-spacing: .12em; margin-top: calc(.25 * var(--u)); }
+  .p4-contacts{ display: flex; flex-wrap: wrap; gap: calc(.25 * var(--u)) calc(.75 * var(--ue)); margin-top: calc(.5 * var(--u)); }
+  .p4-c{ font-size: calc(.65 * var(--u)); color: #7A9FBF; }
   /* Punto separador solo entre datos de contacto visibles */
-  .p4-c:not(.cv-vacio) ~ .p4-c:not(.cv-vacio)::before{ content: "·"; margin-right: .75rem; }
+  .p4-c:not(.cv-vacio) ~ .p4-c:not(.cv-vacio)::before{ content: "·"; margin-right: calc(.75 * var(--ue)); }
   /* Cuerpo: una sola columna */
-  .p4-body{ background: #fff; padding: 1.75rem 2rem; display: flex; flex-direction: column; gap: 0; }
-  .p4-sec-der{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #2D6A9F; margin: 1.25rem 0 .5rem; }
+  .p4-body{ background: #fff; padding: calc(1.75 * var(--ue)) calc(2 * var(--ue)); display: flex; flex-direction: column; gap: 0; }
+  .p4-sec-der{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #2D6A9F; margin: calc(1.25 * var(--ue)) 0 calc(.5 * var(--u)); }
   /* Idiomas/otros datos: al final, en banda gris clara */
-  .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: 1rem 2rem; }
-  .p4-sec{ font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin-bottom: .4rem; }
+  .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: calc(1 * var(--ue)) calc(2 * var(--ue)); }
+  .p4-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin-bottom: calc(.4 * var(--u)); }
   /* ===== MODELO BÁSICO — Minimalista (blanco/negro, líneas finas) ===== */
   #hoja-cv{
     font-family:'Inter', system-ui, sans-serif;
@@ -308,19 +323,19 @@
     width: 900px;
     max-width: 100%;
     margin: 0 auto;
-    border-radius: 1rem;
+    border-radius: calc(1 * var(--u));
   }
   .cv-col-izquierda{
     background: #FAFAF9;
     border-right: 1px solid #e5e5e5;
-    padding: 2rem 1.5rem;
+    padding: calc(2 * var(--ue)) calc(1.5 * var(--ue));
     display: flex;
     flex-direction: column;
     gap: 0;
   }
   .cv-col-derecha{
     background: #fff;
-    padding: 2rem 2rem;
+    padding: calc(2 * var(--ue)) calc(2 * var(--ue));
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -328,82 +343,82 @@
   }
 
   .cv-avatar{
-    width:7.5rem; height:7.5rem; border-radius:50%; overflow:hidden;
+    width:calc(7.5 * var(--u)); height:calc(7.5 * var(--u)); border-radius:50%; overflow:hidden;
     border:2px solid #1a1a1a;
-    margin:0 auto 1.25rem; background:#f0f0f0;
+    margin: 0 auto calc(1.25 * var(--ue)); background:#f0f0f0;
     display:flex; align-items:center; justify-content:center;
   }
   .cv-avatar img{ width:100%; height:100%; object-fit:cover; }
 
   .cv-nombre{
     font-family:'Source Serif 4', Georgia, serif; font-weight:700;
-    font-size:1.15rem; line-height:1.25; text-align:center;
-    color: #1a1a1a; margin-bottom:.5rem;
+    font-size:calc(1.15 * var(--u)); line-height:1.25; text-align:center;
+    color: #1a1a1a; margin-bottom: calc(.5 * var(--u));
   }
 
-  .cv-lateral-seccion{ margin-top: 1.25rem; padding-top: 1rem; border-top: 1.5px solid #1a1a1a; }
+  .cv-lateral-seccion{ margin-top: calc(1.25 * var(--ue)); padding-top: calc(1 * var(--ue)); border-top: 1.5px solid #1a1a1a; }
   .cv-lateral-titulo{
-    font-family:'Inter', sans-serif; font-weight:700; font-size:.58rem; letter-spacing:.18em;
-    text-transform:uppercase; color: #1a1a1a; margin-bottom:.5rem;
+    font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.58 * var(--u)); letter-spacing:.18em;
+    text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.5 * var(--u));
   }
   .cv-lateral-dato .cv-etiqueta{
     display: block;
-    font-size: .58rem;
+    font-size: calc(.58 * var(--u));
     text-transform: uppercase;
     letter-spacing: .1em;
     color: #888;
-    margin-bottom: .1rem;
+    margin-bottom: calc(.1 * var(--u));
     font-family: 'Inter', sans-serif;
     font-weight: 600;
   }
 
-  .cv-lateral-dato{ font-size:.92rem; line-height:1.6; word-break:break-word; margin-bottom:.35rem; }
-  .cv-lateral-dato:last-child{ margin-bottom:0; }
-  .cv-lateral-dato .cv-etiqueta{ display:block; font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom:.1rem; }
+  .cv-lateral-dato{ font-size:calc(.92 * var(--u)); line-height:1.6; word-break:break-word; margin-bottom: calc(.35 * var(--u)); }
+  .cv-lateral-dato:last-child{ margin-bottom: 0; }
+  .cv-lateral-dato .cv-etiqueta{ display:block; font-size:calc(.68 * var(--u)); text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom: calc(.1 * var(--u)); }
 
   .cv-derecha-titulo{
-    font-family:'Inter', sans-serif; font-weight:700; font-size:.6rem; letter-spacing:.18em;
-    text-transform:uppercase; color: #1a1a1a; margin-bottom:.75rem;
-    display:flex; align-items:center; gap:.6rem;
-    border-bottom: 1.5px solid #1a1a1a; padding-bottom: .3rem;
+    font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.6 * var(--u)); letter-spacing:.18em;
+    text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.75 * var(--ue));
+    display:flex; align-items:center; gap: calc(.6 * var(--ue));
+    border-bottom: 1.5px solid #1a1a1a; padding-bottom: calc(.3 * var(--u));
   }
 
-  .cv-bloque{ margin-bottom: 1.75rem; }
+  .cv-bloque{ margin-bottom: calc(1.75 * var(--ue)); }
   .cv-bloque:last-child{ margin-bottom: 0; }
-  .cv-bloque-contenido{ font-size:.88rem; line-height:1.65; }
-  .cv-bloque-contenido p{ margin-bottom:.45rem; }
-  .cv-bloque-contenido ul{ list-style:none; padding:0; margin:0; }
+  .cv-bloque-contenido{ font-size:calc(.88 * var(--u)); line-height:1.65; }
+  .cv-bloque-contenido p{ margin-bottom: calc(.45 * var(--u)); }
+  .cv-bloque-contenido ul{ list-style:none; padding: 0; margin: 0; }
   .cv-bloque-contenido li{
-    position:relative; padding-left:1rem; margin-bottom:.4rem;
+    position:relative; padding-left: calc(1 * var(--ue)); margin-bottom: calc(.4 * var(--u));
   }
   .cv-bloque-contenido li::before{
     content:"–"; position:absolute; left:0; color: #888; font-weight:700;
   }
-  .cv-bloque-contenido strong{ font-family:'Inter', sans-serif; font-weight:600; font-size:.9rem; }
+  .cv-bloque-contenido strong{ font-family:'Inter', sans-serif; font-weight:600; font-size:calc(.9 * var(--u)); }
 
   /* ---- Experiencia laboral: tarjetas puesto/empresa/fechas + viñetas ---- */
-  .cv-experiencia-item{ margin-bottom:1.4rem; }
-  .cv-experiencia-item:last-child{ margin-bottom:0; }
+  .cv-experiencia-item{ margin-bottom: calc(1.4 * var(--ue)); }
+  .cv-experiencia-item:last-child{ margin-bottom: 0; }
   .cv-experiencia-cabecera{
     display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
-    gap:.4rem; margin-bottom:.25rem;
+    gap: calc(.4 * var(--u)); margin-bottom: calc(.25 * var(--u));
   }
-  .cv-experiencia-puesto{ font-family:'Inter', sans-serif; font-weight:700; font-size:.93rem; color:#1a1a1a; }
-  .cv-experiencia-fechas{ font-size:.72rem; color:#888; white-space:nowrap; }
-  .cv-experiencia-empresa{ font-size:.82rem; font-style:italic; color:#666; margin-bottom:.4rem; }
-  .cv-experiencia-funciones{ list-style:none; padding:0; margin:0; }
-  .cv-experiencia-funciones li{ position:relative; padding-left:.9rem; margin-bottom:.3rem; font-size:.87rem; line-height:1.6; }
+  .cv-experiencia-puesto{ font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.93 * var(--u)); color:#1a1a1a; }
+  .cv-experiencia-fechas{ font-size:calc(.72 * var(--u)); color:#888; white-space:nowrap; }
+  .cv-experiencia-empresa{ font-size:calc(.82 * var(--u)); font-style:italic; color:#666; margin-bottom: calc(.4 * var(--u)); }
+  .cv-experiencia-funciones{ list-style:none; padding: 0; margin: 0; }
+  .cv-experiencia-funciones li{ position:relative; padding-left: calc(.9 * var(--ue)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height:1.6; }
   .cv-experiencia-funciones li::before{ content:"–"; position:absolute; left:0; color:#888; font-weight:700; }
 
   /* ---- Estudios: título oficial + formación complementaria agrupada ---- */
-  .cv-estudio-item{ margin-bottom:1rem; }
-  .cv-estudio-item:last-child{ margin-bottom:0; }
-  .cv-estudio-titulo{ font-family:'Inter', sans-serif; font-weight:700; font-size:.93rem; color:#1a1a1a; }
-  .cv-estudio-centro{ font-size:.82rem; color:#666; }
-  .cv-formacion-complementaria{ margin-top:1.1rem; padding-top:1rem; border-top:1px dashed var(--cv-linea); }
-  .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom:.5rem; }
-  .cv-formacion-complementaria-lista{ list-style:none; padding:0; margin:0; }
-  .cv-formacion-complementaria-lista li{ font-size:.97rem; line-height:1.6; margin-bottom:.3rem; position:relative; padding-left:1rem; }
+  .cv-estudio-item{ margin-bottom: calc(1 * var(--ue)); }
+  .cv-estudio-item:last-child{ margin-bottom: 0; }
+  .cv-estudio-titulo{ font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.93 * var(--u)); color:#1a1a1a; }
+  .cv-estudio-centro{ font-size:calc(.82 * var(--u)); color:#666; }
+  .cv-formacion-complementaria{ margin-top: calc(1.1 * var(--ue)); padding-top: calc(1 * var(--ue)); border-top:1px dashed var(--cv-linea); }
+  .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:calc(.78 * var(--u)); letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom: calc(.5 * var(--u)); }
+  .cv-formacion-complementaria-lista{ list-style:none; padding: 0; margin: 0; }
+  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height:1.6; margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--ue)); }
   .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; left:0; color:var(--cv-acento); }
 
   /* Regla defensiva: neutraliza cualquier bullet/asterisco que la IA pueda inyectar
@@ -782,7 +797,7 @@
         <h1 contenteditable="true" id="prem-nombre" class="prem-nombre">NOMBRE APELLIDO</h1>
         <hr class="prem-hr">
 
-        <div style="display:flex; flex-direction:column; gap:.75rem; font-size:.85rem;">
+        <div style="display:flex; flex-direction:column; gap: calc(.75 * var(--ue)); font-size:calc(.85 * var(--u));">
           <div id="prem-fila-telefono">
             <span class="prem-label" data-cv-label="label_telefono">Teléfono</span>
             <span contenteditable="true" id="prem-telefono" class="prem-valor">—</span>
@@ -797,14 +812,12 @@
           </div>
         </div>
 
-        <hr class="prem-hr" style="margin-top:1.25rem;">
+        <hr class="prem-hr" style="margin-top: calc(1.25 * var(--ue));">
 
         <div id="prem-seccion-otros" class="hidden">
           <p class="prem-seccion-titulo-izq" data-i18n="cv_lateral_otros">Otros datos</p>
-          <div contenteditable="true" id="prem-otros" style="font-size:.78rem; color:#94a3b8; line-height:1.6;"></div>
+          <div contenteditable="true" id="prem-otros" style="font-size:calc(.78 * var(--u)); color:#94a3b8; line-height:1.6;"></div>
         </div>
-
-        <div class="prem-footer">Illustrated Studio · CVoice</div>
       </div>
 
       <!-- Columna derecha blanca -->
@@ -2305,6 +2318,8 @@ Devuelve exactamente {"traducciones": [...]} con ${textos.length} cadenas, en el
   traducirEtiquetasCV(codigoDestino);
   // Si hay una plantilla premium a la vista, volver a copiarle el contenido traducido
   if (plantillaActiva !== "basico") rellenarPlantilla(plantillaActiva);
+  // El texto traducido tiene otra longitud: reajustar al A4
+  ajustarCVaA4(cvActivo());
 }
 
 // Pone los títulos de sección (data-i18n) y las etiquetas de contacto (data-cv-label)
@@ -2400,6 +2415,9 @@ function seleccionarPlantilla(plantilla){
   // Actualizar el botón principal dinámico
   actualizarCTA(esBasico);
 
+  // Ajustar el tamaño del contenido para que la hoja llene un A4
+  ajustarCVaA4(document.getElementById(CV_MAP[plantilla]));
+
   // Recalcular escala
   requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
 }
@@ -2412,20 +2430,21 @@ function actualizarCTA(esBasico){
 
   const svgFlecha = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14M5 12l7 7 7-7"/></svg>`;
 
+  // Mismo formato en los dos botones: flecha pegada al título en una línea + subtítulo
+  const contenido = (titulo, subtitulo) => `
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800;white-space:nowrap">${svgFlecha}${titulo}</div>
+      <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">${subtitulo}</div>`;
+
   if (esBasico){
-    btnCTA.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800">${svgFlecha}DESCARGAR GRATIS</div>
-      <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">(viendo un vídeo corto)</div>`;
+    btnCTA.innerHTML = contenido("DESCARGAR GRATIS", "(viendo un vídeo corto)");
     btnCTA.style.background = "var(--musgo)";
-    if (txtSub) txtSub.textContent = "";
     if (txtSec) txtSec.style.display = "";
   } else {
-    btnCTA.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800;line-height:1.3">${svgFlecha}<span>DESCARGAR DISEÑO PREMIUM · 2,99 €</span></div>`;
+    btnCTA.innerHTML = contenido("DESCARGAR PREMIUM · 2,99 €", "Pago único · Sin anuncios");
     btnCTA.style.background = "var(--ambar)";
-    if (txtSub) txtSub.textContent = "Pago único · Sin anuncios";
     if (txtSec) txtSec.style.display = "none";
   }
+  if (txtSub) txtSub.textContent = "";
 }
 
 // ---------- 12b. Monetización y descarga del CV en PDF ----------
@@ -2449,9 +2468,61 @@ const PDF_ANCHO_PX = 900;
 const PDF_ALTO_PX  = 1273;
 let generandoPDF = false; // evita PDFs duplicados por doble pulsación
 
-function descargarHojaComoPDF(elemento, nombreArchivo){
-  if (generandoPDF) return Promise.resolve();
+// ---------- Ajuste automático del CV a una página A4 ----------
+// Las medidas de las hojas dependen de dos variables (ver CSS):
+//   --u    → letra y elementos (16px = tamaño de diseño)
+//   --aire → multiplica solo los espacios (márgenes, rellenos, separaciones)
+// Se mide un clon de la hoja a 900px de ancho y:
+//   1. se busca el --u más grande con el que el contenido cabe en un A4 (con mucha
+//      información se compacta, sin bajar de un tamaño legible; si aun así no cabe,
+//      el PDF pasa a una segunda página);
+//   2. si con la letra al máximo sigue sobrando hoja, se reparte el hueco aumentando
+//      --aire, para que el CV ocupe la página entera sin letras desproporcionadas.
+const U_MIN = 13, U_MAX = 20;   // px
+const AIRE_MAX = 2.6;
+
+async function ajustarCVaA4(hoja){
+  if (!hoja) return;
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+  const caja = document.createElement("div");
+  caja.className = "medidor-a4";
+  caja.style.cssText = `position:absolute;left:-20000px;top:0;width:${PDF_ANCHO_PX}px;visibility:hidden;pointer-events:none`;
+  const clon = hoja.cloneNode(true);
+  clon.classList.remove("cv-oculto");
+  Object.assign(clon.style, { zoom: "1", width: PDF_ANCHO_PX + "px", maxWidth: "none", minHeight: "0", margin: "0" });
+  caja.appendChild(clon);
+  document.body.appendChild(caja);
+
+  const cabe = (u, aire) => {
+    clon.style.setProperty("--u", u + "px");
+    clon.style.setProperty("--aire", aire);
+    // Margen de seguridad: si queda demasiado justo, el PDF puede abrir una 2ª página vacía
+    return clon.offsetHeight <= PDF_ALTO_PX - 24;
+  };
+  // Mayor valor en [min, max] que cumple cabe(v) (búsqueda binaria)
+  const mayorQueCabe = (min, max, precision, cabeCon) => {
+    if (cabeCon(max)) return max;
+    let bajo = min, alto = max;
+    while (alto - bajo > precision){
+      const medio = (bajo + alto) / 2;
+      if (cabeCon(medio)) bajo = medio; else alto = medio;
+    }
+    return bajo;
+  };
+
+  const u = mayorQueCabe(U_MIN, U_MAX, 0.25, v => cabe(v, 1));
+  const aire = u < U_MAX ? 1 : mayorQueCabe(1, AIRE_MAX, 0.05, v => cabe(u, v));
+  caja.remove();
+  hoja.style.setProperty("--u", u.toFixed(2) + "px");
+  hoja.style.setProperty("--aire", aire.toFixed(2));
+}
+
+async function descargarHojaComoPDF(elemento, nombreArchivo){
+  if (generandoPDF) return;
   generandoPDF = true;
+  // Reajustar justo antes: el usuario puede haber editado textos
+  try { await ajustarCVaA4(elemento); } catch(e) { console.error("Ajuste A4:", e); }
 
   // NO capturamos el elemento visible: tiene zoom CSS (zoomBase × escalaZoom) y puede
   // estar oculto o dentro de un contenedor con scroll; html2canvas lo pinta en blanco.
@@ -2486,7 +2557,8 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
       // scrollX/Y = 0: si la página está desplazada, html2canvas captura una zona vacía
       scrollX: 0,
       scrollY: 0,
-      windowWidth: PDF_ANCHO_PX,
+      // Sin windowWidth: la copia que pinta html2canvas debe tener el mismo ancho que la
+      // ventana real, o en pantallas de más de 900px el CV sale desplazado y recortado
       logging: false
     },
     // Página con proporción A4 y exactamente 900px de ancho, para que el CV no se recorte
@@ -2723,6 +2795,11 @@ window.addEventListener("resize", () => {
 function cvActivo(){
   return document.getElementById(CV_MAP[plantillaActiva]);
 }
+
+// Al terminar de editar un texto del CV (no mientras se escribe), reajustar al A4
+document.getElementById("contenedor-cvs").addEventListener("focusout", e => {
+  if (e.target.isContentEditable) ajustarCVaA4(cvActivo());
+});
 
 (function(){
   const ZOOM_MIN = 1, ZOOM_MAX = 3;
