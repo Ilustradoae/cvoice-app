@@ -72,7 +72,7 @@
     max-width: none;
   }
   /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
-  #modal-anuncio > div, #modal-pago > div {
+  #modal-app > div, #modal-pago > div {
     max-height: 90dvh; /* dvh = dynamic viewport height, correcto en móvil */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -944,7 +944,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         <span class="text-base">DESCARGAR GRATIS</span>
       </div>
-      <div class="text-xs font-normal opacity-80">(ver anuncio de 15 segundos)</div>
+      <div class="text-xs font-normal opacity-80">(viendo un vídeo corto)</div>
     </button>
 
     <!-- Subtexto dinámico -->
@@ -972,32 +972,14 @@
   </div><!-- /max-w-3xl zona descarga -->
 </section>
 
-<!-- ===== Modal: anuncio antes de descarga gratuita ===== -->
-<div id="modal-anuncio" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){cerrarModalAnuncio()}">
-  <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full m-auto text-center flex flex-col gap-5" onclick="event.stopPropagation()">
-    <p class="font-display text-2xl font-bold" style="color:var(--musgo)" data-i18n="modal_anuncio_titulo">Casi listo</p>
-    <p class="text-base" style="color:var(--tinta)" data-i18n="modal_anuncio_desc">Vas a ver un vídeo corto de 15 segundos y tu currículum se descargará automáticamente.</p>
-
-    <!-- Espacio del anuncio (AdMob lo rellena; en pruebas muestra un placeholder) -->
-    <div id="slot-anuncio" class="rounded-xl flex items-center justify-center text-sm font-bold" style="height:90px; background:var(--musgo-claro); color:var(--musgo)">
-      📺 Espacio del anuncio (AdMob)
-    </div>
-
-    <!-- Contador regresivo visible durante el anuncio -->
-    <p id="txt-contador-anuncio" class="text-sm hidden" style="color:var(--musgo)">Descargando en <span id="num-contador">15</span> s…</p>
-
-    <!-- Botón de descarga (aparece cuando termina el anuncio o el contador llega a 0) -->
-    <button id="btn-confirmar-descarga-gratis" class="hidden w-full py-4 rounded-full text-lg font-bold text-white" style="background:var(--musgo)">
-      ⬇ Descargar ahora
-    </button>
-
-    <!-- Opción de pago para evitar el anuncio -->
-    <button id="btn-pagar-basico" class="text-sm underline py-3 px-4" style="color:#999; min-height:44px">
-      Prefiero no ver el vídeo — descargar por 0,99 €
-    </button>
-
-    <!-- Cancelar -->
-    <button id="btn-cancelar-anuncio" class="text-xs" style="color:#bbb">Cancelar</button>
+<!-- ===== Modal: fuera de la app no se descarga (solo la app tiene anuncios y pagos) ===== -->
+<div id="modal-app" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){this.classList.add('hidden')}">
+  <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full m-auto text-center flex flex-col gap-5">
+    <p class="font-display text-2xl font-bold" style="color:var(--musgo)">Descarga tu CV desde la app</p>
+    <p class="text-base" style="color:var(--tinta)">La descarga del currículum en PDF está disponible en la app CVoice para Android.</p>
+    <a href="https://play.google.com/store/apps/details?id=com.illustratedstudio.cvoice" target="_blank" rel="noopener"
+       class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md" style="background:var(--musgo)">Conseguir CVoice en Google Play</a>
+    <button class="text-sm" style="color:#999" onclick="document.getElementById('modal-app').classList.add('hidden')">Cerrar</button>
   </div>
 </div>
 
@@ -1085,8 +1067,8 @@ const TEXTOS = {
     cv_bloque_experiencia: "Experiencia laboral", cv_bloque_estudios: "Estudios",
     boton_rehacer: "← Volver a grabar",
     boton_traducir_cv: "🌐 Traducir CV", traduciendo_cv: "Traduciendo tu currículum…", error_traduccion_generico: "No hemos podido traducir el currículum. Revisa tu conexión e inténtalo de nuevo.",
-    modal_anuncio_titulo: "Casi listo",
-    modal_anuncio_desc: "Vas a ver un vídeo corto de 15 segundos y tu currículum se descargará automáticamente.",
+
+
     modal_pago_sin_anuncio_titulo: "Sin anuncios",
     modal_pago_sin_anuncio_desc: "Descarga inmediata, sin ver ningún vídeo. Pago único.",
     modal_pago_premium_titulo: "Diseño Premium",
@@ -2433,7 +2415,7 @@ function actualizarCTA(esBasico){
   if (esBasico){
     btnCTA.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800">${svgFlecha}DESCARGAR GRATIS</div>
-      <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">(ver anuncio de 15 segundos)</div>`;
+      <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">(viendo un vídeo corto)</div>`;
     btnCTA.style.background = "var(--musgo)";
     if (txtSub) txtSub.textContent = "";
     if (txtSec) txtSec.style.display = "";
@@ -2450,14 +2432,6 @@ function actualizarCTA(esBasico){
 
 let productoPendiente = null; // "basico_099" | "premium_299"
 
-// ---- Referencias al modal de anuncio ----
-const modalAnuncio          = document.getElementById("modal-anuncio");
-const txtContadorAnuncio    = document.getElementById("txt-contador-anuncio");
-const numContador           = document.getElementById("num-contador");
-const btnConfirmarGratis    = document.getElementById("btn-confirmar-descarga-gratis");
-const btnCancelarAnuncio    = document.getElementById("btn-cancelar-anuncio");
-const btnPagarBasico        = document.getElementById("btn-pagar-basico");
-
 // ---- Referencias al modal de pago ----
 const modalPago             = document.getElementById("modal-pago");
 const modalPagoTitulo       = document.getElementById("modal-pago-titulo");
@@ -2465,8 +2439,6 @@ const modalPagoDescripcion  = document.getElementById("modal-pago-descripcion");
 const modalPagoPrecio       = document.getElementById("modal-pago-precio");
 const btnConfirmarPago      = document.getElementById("btn-confirmar-pago");
 const btnCancelarPago       = document.getElementById("btn-cancelar-pago");
-
-let intervaloContador = null;
 
 // =============================================================================
 // GENERACIÓN DEL PDF
@@ -2613,39 +2585,14 @@ function rellenarPlantilla(modelo){
 }
 
 // =============================================================================
-// FLUJO A: GRATIS con rewarded video → descarga básico
+// DESCARGA: solo dentro de la app Android, que es la que tiene anuncios (AdMob)
+// y pagos (Google Play). En un navegador normal se invita a instalar la app.
+// (La app inyecta window.AndroidAds y window.AndroidBilling desde Java.)
 // =============================================================================
-let anuncioEnCurso = false; // evita lanzar dos vídeos con dos pulsaciones seguidas
+const EN_APP = !!(window.AndroidAds && window.AndroidBilling);
 
-function abrirModalAnuncio(){
-  if (window.AndroidAds && typeof window.AndroidAds.mostrarRecompensado === "function"){
-    // App Android: el vídeo de AdMob ocupa toda la pantalla, así que no se muestra
-    // el modal intermedio. Responde con recompensaCompletada / anuncioCerrado /
-    // anuncioNoDisponible (ver abajo)
-    if (anuncioEnCurso) return;
-    anuncioEnCurso = true;
-    avisoBreve("Cargando el vídeo…", 3000);
-    window.AndroidAds.mostrarRecompensado();
-    return;
-  }
-
-  // Navegador (sin anuncios reales): modal con cuenta atrás simulada
-  txtContadorAnuncio.classList.add("hidden");
-  btnConfirmarGratis.classList.add("hidden");
-  numContador.textContent = "15";
-  if (intervaloContador) clearInterval(intervaloContador);
-  modalAnuncio.classList.remove("hidden");
-  txtContadorAnuncio.classList.remove("hidden");
-  let seg = 15;
-  intervaloContador = setInterval(() => {
-    seg--;
-    numContador.textContent = seg;
-    if (seg <= 0){
-      clearInterval(intervaloContador);
-      txtContadorAnuncio.classList.add("hidden");
-      btnConfirmarGratis.classList.remove("hidden");
-    }
-  }, 1000);
+function mostrarModalApp(){
+  document.getElementById("modal-app").classList.remove("hidden");
 }
 
 // Mensaje breve flotante (reutiliza el aviso inferior)
@@ -2657,19 +2604,27 @@ function avisoBreve(texto, ms = 4500){
   avisoBreve.temporizador = setTimeout(() => aviso.classList.add("hidden"), ms);
 }
 
+// ---------- Descarga gratis con vídeo recompensado ----------
+// El vídeo de AdMob ocupa toda la pantalla: no hace falta ningún modal intermedio.
+let anuncioEnCurso = false; // evita lanzar dos vídeos con dos pulsaciones seguidas
+
+function lanzarAnuncio(){
+  if (anuncioEnCurso) return;
+  anuncioEnCurso = true;
+  avisoBreve("Cargando el vídeo…", 3000);
+  window.AndroidAds.mostrarRecompensado();
+}
+
 // Callbacks del anuncio recompensado (los llama AnunciosBridge.java)
 // Vídeo visto entero: se descarga el CV directamente
 window.recompensaCompletada = function(){
   anuncioEnCurso = false;
-  clearInterval(intervaloContador);
-  modalAnuncio.classList.add("hidden");
   generarYDescargarPDF();
   avisoBreve("Descargando tu currículum…", 3000);
 };
 // Cerrado antes de terminar: sin recompensa, se puede volver a intentar o pagar
 window.anuncioCerrado = function(){
   anuncioEnCurso = false;
-  modalAnuncio.classList.add("hidden");
   avisoBreve("Para la descarga gratuita hay que ver el vídeo completo.");
 };
 // No hay anuncio disponible (sin conexión, sin inventario…): no se bloquea al usuario
@@ -2677,69 +2632,35 @@ window.anuncioNoDisponible = function(){
   window.recompensaCompletada();
 };
 
-// =============================================================================
-// BOTÓN CTA PRINCIPAL — comportamiento dinámico según plantilla seleccionada
-// =============================================================================
-document.getElementById("btn-cta-principal").addEventListener("click", () => {
-  if (plantillaActiva === "basico"){
-    // GRATIS: mostrar modal de anuncio
-    abrirModalAnuncio();
-  } else {
-    // PREMIUM 2,99€: iniciar compra
-    const t = TEXTOS[idiomaActual];
-    productoPendiente = "premium_299";
-    modalPagoTitulo.textContent      = t.modal_pago_premium_titulo;
-    modalPagoDescripcion.textContent = t.modal_pago_premium_desc;
-    modalPagoPrecio.textContent      = "2,99 €";
-    modalPago.classList.remove("hidden");
-  }
-});
-
-// Opción secundaria: descarga sin anuncio por 0,99€ (solo en modo básico)
-document.getElementById("txt-cta-secundario").addEventListener("click", () => {
+// ---------- Descargas de pago ----------
+function abrirModalPago(producto){
   const t = TEXTOS[idiomaActual];
-  productoPendiente = "basico_099";
-  modalPagoTitulo.textContent      = t.modal_pago_sin_anuncio_titulo;
-  modalPagoDescripcion.textContent = t.modal_pago_sin_anuncio_desc;
-  modalPagoPrecio.textContent      = "0,99 €";
+  productoPendiente = producto;
+  const premium = producto === "premium_299";
+  modalPagoTitulo.textContent      = premium ? t.modal_pago_premium_titulo : t.modal_pago_sin_anuncio_titulo;
+  modalPagoDescripcion.textContent = premium ? t.modal_pago_premium_desc   : t.modal_pago_sin_anuncio_desc;
+  modalPagoPrecio.textContent      = premium ? "2,99 €" : "0,99 €";
   modalPago.classList.remove("hidden");
-});
-
-// Modal de anuncio: confirmar tras ver el vídeo
-btnConfirmarGratis.addEventListener("click", () => {
-  modalAnuncio.classList.add("hidden");
-  generarYDescargarPDF();
-});
-
-function cerrarModalAnuncio(){
-  clearInterval(intervaloContador);
-  modalAnuncio.classList.add("hidden");
 }
 
-btnCancelarAnuncio.addEventListener("click", cerrarModalAnuncio);
-
-// Opción 0,99€ desde dentro del modal de anuncio
-btnPagarBasico.addEventListener("click", () => {
-  const t = TEXTOS[idiomaActual];
-  clearInterval(intervaloContador);
-  modalAnuncio.classList.add("hidden");
-  productoPendiente = "basico_099";
-  modalPagoTitulo.textContent      = t.modal_pago_sin_anuncio_titulo;
-  modalPagoDescripcion.textContent = t.modal_pago_sin_anuncio_desc;
-  modalPagoPrecio.textContent      = "0,99 €";
-  modalPago.classList.remove("hidden");
+// Botón principal: gratis con vídeo (básico) o pago (premium)
+document.getElementById("btn-cta-principal").addEventListener("click", () => {
+  if (!EN_APP) return mostrarModalApp();
+  if (plantillaActiva === "basico") lanzarAnuncio();
+  else abrirModalPago("premium_299");
 });
 
-// Confirmación de pago (común a todos los flujos de pago)
+// Opción secundaria: básico sin anuncio por 0,99 €
+document.getElementById("txt-cta-secundario").addEventListener("click", () => {
+  if (!EN_APP) return mostrarModalApp();
+  abrirModalPago("basico_099");
+});
+
+// Confirmación de pago: abre Google Play; responde con pagoCompletado / pagoCancelado / pagoPendiente
 btnConfirmarPago.addEventListener("click", () => {
-  if (window.AndroidBilling && typeof window.AndroidBilling.iniciarPago === "function"){
-    // App Android: abre el pago de Google Play; responde con pagoCompletado / pagoCancelado / pagoPendiente
-    btnConfirmarPago.disabled = true;
-    window.AndroidBilling.iniciarPago(productoPendiente);
-  } else {
-    // Navegador (pruebas): sin pasarela de pago, se descarga directamente
-    window.pagoCompletado(productoPendiente);
-  }
+  if (!EN_APP) return mostrarModalApp();
+  btnConfirmarPago.disabled = true;
+  window.AndroidBilling.iniciarPago(productoPendiente);
 });
 
 // Callbacks del pago (los llama PagosBridge.java)
