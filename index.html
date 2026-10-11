@@ -155,6 +155,8 @@
     --ue: calc(var(--u) * var(--aire));
     font-size: var(--u);
   }
+  /* Emails largos: el generador de PDF (html2canvas) solo los parte con break-all */
+  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
   /* Al medir para el A4 se mide como en el PDF: sin los iconos ✎ de edición */
   .medidor-a4 .pista-edicion::after{ display: none !important; }
 
@@ -389,7 +391,7 @@
   .cv-bloque-contenido p{ margin-bottom: calc(.45 * var(--u)); }
   .cv-bloque-contenido ul{ list-style:none; padding: 0; margin: 0; }
   .cv-bloque-contenido li{
-    position:relative; padding-left: calc(1 * var(--ue)); margin-bottom: calc(.4 * var(--u));
+    position:relative; padding-left: calc(1 * var(--u)); margin-bottom: calc(.4 * var(--u));
   }
   .cv-bloque-contenido li::before{
     content:"–"; position:absolute; left:0; color: #888; font-weight:700;
@@ -407,7 +409,7 @@
   .cv-experiencia-fechas{ font-size:calc(.72 * var(--u)); color:#888; white-space:nowrap; }
   .cv-experiencia-empresa{ font-size:calc(.82 * var(--u)); font-style:italic; color:#666; margin-bottom: calc(.4 * var(--u)); }
   .cv-experiencia-funciones{ list-style:none; padding: 0; margin: 0; }
-  .cv-experiencia-funciones li{ position:relative; padding-left: calc(.9 * var(--ue)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height:1.6; }
+  .cv-experiencia-funciones li{ position:relative; padding-left: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height:1.6; }
   .cv-experiencia-funciones li::before{ content:"–"; position:absolute; left:0; color:#888; font-weight:700; }
 
   /* ---- Estudios: título oficial + formación complementaria agrupada ---- */
@@ -418,7 +420,7 @@
   .cv-formacion-complementaria{ margin-top: calc(1.1 * var(--ue)); padding-top: calc(1 * var(--ue)); border-top:1px dashed var(--cv-linea); }
   .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:calc(.78 * var(--u)); letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom: calc(.5 * var(--u)); }
   .cv-formacion-complementaria-lista{ list-style:none; padding: 0; margin: 0; }
-  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height:1.6; margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--ue)); }
+  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height:1.6; margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--u)); }
   .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; left:0; color:var(--cv-acento); }
 
   /* Regla defensiva: neutraliza cualquier bullet/asterisco que la IA pueda inyectar
