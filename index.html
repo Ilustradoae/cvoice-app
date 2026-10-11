@@ -2703,7 +2703,7 @@ function actualizarCTA(esBasico){
     if (txtSec) txtSec.style.display = "";
   } else {
     btnCTA.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800">${svgFlecha}DESCARGAR DISEÑO PREMIUM · 2,99 €</div>`;
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800;line-height:1.3">${svgFlecha}<span>DESCARGAR DISEÑO PREMIUM · 2,99 €</span></div>`;
     btnCTA.style.background = "var(--ambar)";
     if (txtSub) txtSub.textContent = "Pago único · Sin anuncios";
     if (txtSec) txtSec.style.display = "none";
@@ -2746,8 +2746,8 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
   const widthPrevio   = elemento.style.width;
   const eraOculto     = elemento.classList.contains("cv-oculto");
 
-  // Quitar zoom/transform y forzar ancho 900px para que html2canvas capture correctamente
-  elemento.style.zoom      = '';
+  // Quitar zoom/transform — html2canvas no puede capturar con zoom CSS activo
+  elemento.style.zoom      = '1';
   elemento.style.transform = 'none';
   elemento.style.width     = '900px';
   elemento.classList.remove("cv-oculto");
@@ -2760,41 +2760,61 @@ function descargarHojaComoPDF(elemento, nombreArchivo){
     "* {-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}";
   document.head.appendChild(estiloTemp);
 
-  // 300ms para que el browser repinte el elemento sin zoom antes de capturar
+  const restaurar = () => {
+    elemento.style.zoom          = zoomPrevio || '';
+    elemento.style.transform     = transformPrev || '';
+    elemento.style.width         = widthPrevio || '';
+    elemento.style.paddingBottom = '';
+    if (eraOculto) elemento.classList.add("cv-oculto");
+    const est = document.getElementById("estilo-pdf-temp");
+    if (est) est.remove();
+  };
+
+  // Esperar repintado completo antes de capturar
   setTimeout(() => {
     const altoReal = elemento.scrollHeight || 1123;
     if (altoReal < 1123) elemento.style.paddingBottom = `${1123 - altoReal}px`;
 
-    html2pdf().set({
-      margin: 0,
-      filename: nombreArchivo + ".pdf",
-      image: { type: "jpeg", quality: 0.95 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        windowWidth: 900,
-        logging: false,
-        width: 900,
-        height: altoReal,
-      },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-      pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-    }).from(elemento).save()
-      .then(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, widthPrevio, eraOculto))
-      .catch(() => restaurarTrasPDF(elemento, zoomPrevio, transformPrev, widthPrevio, eraOculto));
-  }, 300);
-}
-
-function restaurarTrasPDF(elemento, zoomPrevio, transformPrev, widthPrevio, eraOculto){
-  elemento.style.zoom          = zoomPrevio || '';
-  elemento.style.transform     = transformPrev || '';
-  elemento.style.width         = widthPrevio || '';
-  elemento.style.paddingBottom = '';
-  if (eraOculto) elemento.classList.add("cv-oculto");
-  const est = document.getElementById("estilo-pdf-temp");
-  if (est) est.remove();
+    // Capturar con html2canvas directamente (más control que html2pdf)
+    html2canvas(elemento, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      windowWidth: 900,
+      windowHeight: altoReal,
+      width: 900,
+      height: altoReal,
+      logging: false,
+      willReadFrequently: true,
+    }).then(canvas => {
+      // Convertir canvas a PDF con jsPDF directamente
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      // jsPDF está incluido en html2pdf bundle — accedemos a él
+      const { jsPDF } = window.jspdf || {};
+      if (jsPDF) {
+        const pdf = new jsPDF({ unit: 'in', format: 'a4', orientation: 'portrait' });
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const imgH = (canvas.height * pageW) / canvas.width;
+        let posY = 0;
+        // Añadir páginas si el CV es más largo que una A4
+        while (posY < imgH) {
+          if (posY > 0) pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 0, -posY, pageW, imgH);
+          posY += pageH;
+        }
+        pdf.save(nombreArchivo + '.pdf');
+      } else {
+        // Fallback: descargar como imagen si jsPDF no está disponible
+        const a = document.createElement('a');
+        a.href = imgData;
+        a.download = nombreArchivo + '.jpg';
+        a.click();
+      }
+      restaurar();
+    }).catch(() => restaurar());
+  }, 400);
 }
 
 function nombreCVActual(){
@@ -3107,22 +3127,24 @@ function aplicarEscalaCV(){
     return null;
   }
 
-  function aplicarZoom(escala, ox, oy){
+  function aplicarZoom(escala){
     escalaZoom = Math.min(Math.max(escala, 0.8), 3);
     const el = cvActivo();
     const cont = document.getElementById('contenedor-cvs');
     if (!el || !cont) return;
 
-    // Combinar zoom base de pantalla con zoom de edición usando zoom CSS
-    // (más compatible en Android WebView que transform:scale para todos los diseños)
-    const zoomBase = parseFloat(el.dataset.zoomBase || el.style.zoom) || 1;
-    el.style.zoom = zoomBase * escalaZoom;
-    el.style.transform = '';
+    // Usar transform:scale en el CV manteniendo el zoom base de pantalla separado
+    // Esto no estrecha el CV — solo lo amplía visualmente
+    // El contenedor tiene overflow:auto para permitir scroll en todas direcciones
+    const zoomBase = parseFloat(el.dataset.zoomBase) || 1;
+    el.style.zoom = zoomBase; // mantener zoom base de pantalla
+    el.style.transform = `scale(${escalaZoom})`;
+    el.style.transformOrigin = 'top center';
 
-    // El contenedor necesita scroll para poder ver todo el CV ampliado
-    cont.style.height = '';
+    // Ajustar altura del contenedor para que el scroll funcione bien
+    cont.style.height = Math.ceil(el.offsetHeight * zoomBase * escalaZoom) + 'px';
     cont.style.overflow = 'auto';
-    cont.style.maxHeight = '80vh';
+    cont.style.maxHeight = 'none';
   }
 
   const contEl = document.getElementById('contenedor-cvs');
@@ -3142,7 +3164,7 @@ function aplicarEscalaCV(){
   contEl.addEventListener('touchmove', e => {
     if (e.touches.length === 2){
       const dist = distancia(e.touches[0], e.touches[1]);
-      aplicarZoom(escalaBase * (dist / distanciaInicial), origenX, origenY);
+      aplicarZoom(escalaBase * (dist / distanciaInicial));
     }
   }, { passive: true });
 
@@ -3157,10 +3179,10 @@ function aplicarEscalaCV(){
       const cont = document.getElementById('contenedor-cvs');
       if (el){
         const zoomBase = parseFloat(el.dataset.zoomBase) || 1;
-        el.style.zoom = zoomBase < 1 ? zoomBase : '';
+        el.style.zoom = zoomBase < 1 ? String(zoomBase) : '';
         el.style.transform = '';
       }
-      if (cont){ cont.style.maxHeight = ''; cont.style.overflow = 'hidden'; }
+      if (cont){ cont.style.height = ''; cont.style.overflow = 'hidden'; cont.style.maxHeight = ''; }
     }
     ultimoTap = ahora;
   }, { passive: true });
