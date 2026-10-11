@@ -59,13 +59,18 @@
      el layout sin dejar espacio lateral ni requerir compensación de altura. */
   #contenedor-cvs {
     width: 100%;
-    overflow: auto;
-    /* Permitir zoom táctil (pinch-zoom) nativo en Android WebView */
-    touch-action: pan-x pan-y pinch-zoom;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* El pinch lo gestiona nuestro JS (zoom de edición); el navegador solo hace scroll */
+    touch-action: pan-x pan-y;
   }
-  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
-    /* zoom se aplica desde JS según el ancho real de la pantalla */
-    transform-origin: top left;
+  /* Las 5 hojas mantienen SIEMPRE su layout de 900px: el zoom CSS (zoomBase × escalaZoom)
+     las escala sin estrechar el texto. Si no caben, el contenedor hace scroll horizontal. */
+  #contenedor-cvs > #hoja-cv, #contenedor-cvs > #hoja-cv-premium, #contenedor-cvs > #hoja-cv-prem2,
+  #contenedor-cvs > #hoja-cv-prem3, #contenedor-cvs > #hoja-cv-prem4 {
+    width: 900px;
+    max-width: none;
   }
   /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
   #modal-anuncio > div, #modal-pago > div {
@@ -875,7 +880,6 @@
 
       </div>
     </div>
-  </div><!-- /contenedor-cvs -->
 
   <!-- ===== PLANTILLA PREMIUM 2: EDITORIAL ===== -->
   <div id="hoja-cv-prem2" class="cv-oculto">
@@ -991,6 +995,7 @@
       <div contenteditable="true" id="p4-otros" class="pista-edicion"></div>
     </div>
   </div>
+  </div><!-- /contenedor-cvs (contiene las 5 plantillas) -->
 
   <!-- ===== Zona de descarga / monetización ===== -->
   <div class="max-w-3xl mx-auto mt-4 mb-3 px-2">
@@ -2740,81 +2745,60 @@ let intervaloContador = null;
 // GENERACIÓN DEL PDF
 // =============================================================================
 
-function descargarHojaComoPDF(elemento, nombreArchivo){
-  const zoomPrevio    = elemento.style.zoom;
-  const transformPrev = elemento.style.transform;
-  const widthPrevio   = elemento.style.width;
-  const eraOculto     = elemento.classList.contains("cv-oculto");
+// El CV se maqueta a 900px de ancho; una página A4 a ese ancho mide 900 × 1273 px.
+const PDF_ANCHO_PX = 900;
+const PDF_ALTO_PX  = 1273;
 
-  // Quitar zoom/transform — html2canvas no puede capturar con zoom CSS activo
-  elemento.style.zoom      = '1';
-  elemento.style.transform = 'none';
-  elemento.style.width     = '900px';
-  elemento.classList.remove("cv-oculto");
+function descargarHojaComoPDF(elemento, nombreArchivo){
+  // NO capturamos el elemento visible: tiene zoom CSS (zoomBase × escalaZoom) y puede
+  // estar oculto o dentro de un contenedor con scroll; html2canvas lo pinta en blanco.
+  // En su lugar capturamos un CLON limpio: sin zoom, sin transform, 900px, visible.
+  // (El bundle de html2pdf no expone html2canvas ni jsPDF como globales: usamos html2pdf().)
+  const clon = elemento.cloneNode(true);
+  clon.classList.remove("cv-oculto", "shadow-2xl", "rounded-2xl");
+  Object.assign(clon.style, {
+    zoom: "1", transform: "none", position: "static", left: "", top: "",
+    visibility: "visible", width: PDF_ANCHO_PX + "px", maxWidth: "none",
+    minHeight: (PDF_ALTO_PX - 3) + "px", margin: "0", borderRadius: "0", boxShadow: "none"
+  });
+  clon.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
 
   const estiloTemp = document.createElement("style");
   estiloTemp.id = "estilo-pdf-temp";
   estiloTemp.textContent =
     ".pista-edicion::after{display:none!important;}" +
     "[contenteditable]{outline:none!important;}" +
+    ".html2pdf__container *{animation:none!important;transition:none!important;}" +
     "* {-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}";
   document.head.appendChild(estiloTemp);
 
-  const restaurar = () => {
-    elemento.style.zoom          = zoomPrevio || '';
-    elemento.style.transform     = transformPrev || '';
-    elemento.style.width         = widthPrevio || '';
-    elemento.style.paddingBottom = '';
-    if (eraOculto) elemento.classList.add("cv-oculto");
+  const opciones = {
+    margin: 0,
+    filename: nombreArchivo + ".pdf",
+    image: { type: "jpeg", quality: 0.95 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      // scrollX/Y = 0: si la página está desplazada, html2canvas captura una zona vacía
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: PDF_ANCHO_PX,
+      logging: false
+    },
+    // Página con proporción A4 y exactamente 900px de ancho, para que el CV no se recorte
+    jsPDF: { unit: "px", format: [PDF_ANCHO_PX, PDF_ALTO_PX], orientation: "portrait", hotfixes: ["px_scaling"] },
+    pagebreak: { mode: ["css", "legacy"], avoid: ["li", "p", "h1", "h2", "h3", "img"] }
+  };
+
+  const limpiar = () => {
     const est = document.getElementById("estilo-pdf-temp");
     if (est) est.remove();
   };
 
-  // Esperar repintado completo antes de capturar
-  setTimeout(() => {
-    const altoReal = elemento.scrollHeight || 1123;
-    if (altoReal < 1123) elemento.style.paddingBottom = `${1123 - altoReal}px`;
-
-    // Capturar con html2canvas directamente (más control que html2pdf)
-    html2canvas(elemento, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
-      windowWidth: 900,
-      windowHeight: altoReal,
-      width: 900,
-      height: altoReal,
-      logging: false,
-      willReadFrequently: true,
-    }).then(canvas => {
-      // Convertir canvas a PDF con jsPDF directamente
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      // jsPDF está incluido en html2pdf bundle — accedemos a él
-      const { jsPDF } = window.jspdf || {};
-      if (jsPDF) {
-        const pdf = new jsPDF({ unit: 'in', format: 'a4', orientation: 'portrait' });
-        const pageW = pdf.internal.pageSize.getWidth();
-        const pageH = pdf.internal.pageSize.getHeight();
-        const imgH = (canvas.height * pageW) / canvas.width;
-        let posY = 0;
-        // Añadir páginas si el CV es más largo que una A4
-        while (posY < imgH) {
-          if (posY > 0) pdf.addPage();
-          pdf.addImage(imgData, 'JPEG', 0, -posY, pageW, imgH);
-          posY += pageH;
-        }
-        pdf.save(nombreArchivo + '.pdf');
-      } else {
-        // Fallback: descargar como imagen si jsPDF no está disponible
-        const a = document.createElement('a');
-        a.href = imgData;
-        a.download = nombreArchivo + '.jpg';
-        a.click();
-      }
-      restaurar();
-    }).catch(() => restaurar());
-  }, 400);
+  return html2pdf().set(opciones).from(clon).save()
+    .then(limpiar)
+    .catch(err => { limpiar(); console.error("Error generando PDF:", err); });
 }
 
 function nombreCVActual(){
@@ -2828,28 +2812,12 @@ function generarYDescargarPDF(){
 
 // Rellena la plantilla premium con los datos del CV básico y la descarga
 function generarYDescargarPDFPremium(){
-  rellenarPlantilla(disenoPremActivo);
+  // Si el usuario ha editado directamente la plantilla premium visible, no la
+  // sobrescribimos con los datos del básico: solo rellenamos si no está a la vista.
   const hojaPrem = document.getElementById(CV_MAP[disenoPremActivo]);
-  const yaEraVisible = !hojaPrem.classList.contains("cv-oculto");
-
-  if (!yaEraVisible){
-    hojaPrem.style.position = "fixed";
-    hojaPrem.style.left = "-9999px";
-    hojaPrem.style.top = "0";
-    hojaPrem.style.visibility = "hidden";
-    hojaPrem.classList.remove("cv-oculto");
-  }
-
-  setTimeout(() => {
-    descargarHojaComoPDF(hojaPrem, nombreCVActual() + "_premium");
-    if (!yaEraVisible){
-      hojaPrem.classList.add("cv-oculto");
-      hojaPrem.style.position = "";
-      hojaPrem.style.left = "";
-      hojaPrem.style.top = "";
-      hojaPrem.style.visibility = "";
-    }
-  }, 150);
+  if (hojaPrem.classList.contains("cv-oculto")) rellenarPlantilla(disenoPremActivo);
+  // descargarHojaComoPDF trabaja sobre un clon, así que da igual que esté oculta
+  descargarHojaComoPDF(hojaPrem, nombreCVActual() + "_premium");
 }
 
 // Sincroniza la plantilla premium con los datos del CV básico (ya rellenados por la IA)
@@ -3087,30 +3055,37 @@ function aplicarEscalaCV(){
   // A4 en miniatura: ocupar el 88% del ancho disponible, max 1 (no ampliar en escritorio)
   const escala = Math.min((anchoViewport * 0.88) / 900, 1);
 
-  const todosCVs = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
-  todosCVs.forEach(id => {
+  // Al recalcular (cambio de plantilla, CV nuevo) se vuelve al tamaño "encajado"
+  escalaZoomEdicion = 1;
+  CV_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    if (escala < 1){
-      el.style.zoom = escala;
-      el.dataset.zoomBase = escala; // guardar para el zoom de edición
-    } else {
-      el.style.zoom = '';
-      el.dataset.zoomBase = 1;
-    }
+    el.dataset.zoomBase = escala; // guardar para el zoom de edición
+    el.style.zoom = escala < 1 ? String(escala) : '';
     el.style.transform = ''; // limpiar cualquier transform anterior
   });
 
   const cont = document.getElementById('contenedor-cvs');
-  if (cont){ cont.style.height = ''; cont.style.maxHeight = ''; cont.style.overflow = 'hidden'; }
+  if (cont){ cont.style.height = ''; cont.style.maxHeight = ''; cont.scrollLeft = 0; }
 }
 
 // ---------- ZOOM TÁCTIL PARA EDITAR EL CV EN PANTALLA ----------
+// Zoom compuesto: zoom CSS = zoomBase (encaje en pantalla) × escalaZoomEdicion (pinch).
+// Con 'zoom' (no transform) el layout del CV sigue siendo de 900px: el texto no se
+// amontona, la altura del contenedor se ajusta sola y el ancho sobrante se recorre
+// con scroll horizontal en #contenedor-cvs.
+let escalaZoomEdicion = 1;
+
+// Devuelve la hoja de CV de la plantilla seleccionada en el carrusel
+function cvActivo(){
+  return document.getElementById(CV_MAP[plantillaActiva]) || null;
+}
+
 (function(){
-  let escalaZoom = 1;
+  const ZOOM_MIN = 1, ZOOM_MAX = 3;
   let distanciaInicial = 0;
-  let escalaBase = 1;
-  let origenX = 0, origenY = 0;
+  let escalaInicial = 1;
+  let origenX = 0;
 
   function distancia(t1, t2){
     const dx = t1.clientX - t2.clientX;
@@ -3118,33 +3093,21 @@ function aplicarEscalaCV(){
     return Math.sqrt(dx*dx + dy*dy);
   }
 
-  function cvActivo(){
-    const ids = ['hoja-cv','hoja-cv-premium','hoja-cv-prem2','hoja-cv-prem3','hoja-cv-prem4'];
-    for (const id of ids){
-      const el = document.getElementById(id);
-      if (el && !el.classList.contains('cv-oculto')) return el;
-    }
-    return null;
-  }
-
   function aplicarZoom(escala){
-    escalaZoom = Math.min(Math.max(escala, 0.8), 3);
     const el = cvActivo();
     const cont = document.getElementById('contenedor-cvs');
     if (!el || !cont) return;
 
-    // Usar transform:scale en el CV manteniendo el zoom base de pantalla separado
-    // Esto no estrecha el CV — solo lo amplía visualmente
-    // El contenedor tiene overflow:auto para permitir scroll en todas direcciones
+    const anterior = escalaZoomEdicion;
+    escalaZoomEdicion = Math.min(Math.max(escala, ZOOM_MIN), ZOOM_MAX);
     const zoomBase = parseFloat(el.dataset.zoomBase) || 1;
-    el.style.zoom = zoomBase; // mantener zoom base de pantalla
-    el.style.transform = `scale(${escalaZoom})`;
-    el.style.transformOrigin = 'top center';
+    const zoomTotal = zoomBase * escalaZoomEdicion;
+    el.style.transform = '';
+    el.style.zoom = zoomTotal === 1 ? '' : String(zoomTotal);
 
-    // Ajustar altura del contenedor para que el scroll funcione bien
-    cont.style.height = Math.ceil(el.offsetHeight * zoomBase * escalaZoom) + 'px';
-    cont.style.overflow = 'auto';
-    cont.style.maxHeight = 'none';
+    // Mantener bajo los dedos el punto donde empezó el gesto (eje horizontal)
+    const factor = escalaZoomEdicion / anterior;
+    cont.scrollLeft = (cont.scrollLeft + origenX) * factor - origenX;
   }
 
   const contEl = document.getElementById('contenedor-cvs');
@@ -3152,37 +3115,30 @@ function aplicarEscalaCV(){
 
   contEl.addEventListener('touchstart', e => {
     if (e.touches.length === 2){
-      distanciaInicial = distancia(e.touches[0], e.touches[1]);
-      escalaBase = escalaZoom;
-      // Punto medio del gesto relativo al contenedor
+      distanciaInicial = distancia(e.touches[0], e.touches[1]) || 1;
+      escalaInicial = escalaZoomEdicion;
       const rect = contEl.getBoundingClientRect();
       origenX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
-      origenY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
     }
   }, { passive: true });
 
   contEl.addEventListener('touchmove', e => {
-    if (e.touches.length === 2){
+    if (e.touches.length === 2 && distanciaInicial > 0){
       const dist = distancia(e.touches[0], e.touches[1]);
-      aplicarZoom(escalaBase * (dist / distanciaInicial));
+      aplicarZoom(escalaInicial * (dist / distanciaInicial));
     }
   }, { passive: true });
 
-  // Doble tap: resetear zoom de edición al zoom base de pantalla
+  // Doble tap: volver al zoom base de pantalla (solo si había zoom de edición)
   let ultimoTap = 0;
   contEl.addEventListener('touchend', e => {
     if (e.touches.length > 0) return;
+    distanciaInicial = 0;
     const ahora = Date.now();
-    if (ahora - ultimoTap < 300){
-      escalaZoom = 1;
-      const el = cvActivo();
-      const cont = document.getElementById('contenedor-cvs');
-      if (el){
-        const zoomBase = parseFloat(el.dataset.zoomBase) || 1;
-        el.style.zoom = zoomBase < 1 ? String(zoomBase) : '';
-        el.style.transform = '';
-      }
-      if (cont){ cont.style.height = ''; cont.style.overflow = 'hidden'; cont.style.maxHeight = ''; }
+    if (ahora - ultimoTap < 300 && escalaZoomEdicion !== 1){
+      origenX = 0;
+      aplicarZoom(1);
+      contEl.scrollLeft = 0;
     }
     ultimoTap = ahora;
   }, { passive: true });
