@@ -2615,31 +2615,37 @@ function rellenarPlantilla(modelo){
 // =============================================================================
 // FLUJO A: GRATIS con rewarded video → descarga básico
 // =============================================================================
+let anuncioEnCurso = false; // evita lanzar dos vídeos con dos pulsaciones seguidas
+
 function abrirModalAnuncio(){
+  if (window.AndroidAds && typeof window.AndroidAds.mostrarRecompensado === "function"){
+    // App Android: el vídeo de AdMob ocupa toda la pantalla, así que no se muestra
+    // el modal intermedio. Responde con recompensaCompletada / anuncioCerrado /
+    // anuncioNoDisponible (ver abajo)
+    if (anuncioEnCurso) return;
+    anuncioEnCurso = true;
+    avisoBreve("Cargando el vídeo…", 3000);
+    window.AndroidAds.mostrarRecompensado();
+    return;
+  }
+
+  // Navegador (sin anuncios reales): modal con cuenta atrás simulada
   txtContadorAnuncio.classList.add("hidden");
   btnConfirmarGratis.classList.add("hidden");
   numContador.textContent = "15";
   if (intervaloContador) clearInterval(intervaloContador);
   modalAnuncio.classList.remove("hidden");
-
-  if (window.AndroidAds && typeof window.AndroidAds.mostrarRecompensado === "function"){
-    // App Android: AdMob muestra el vídeo a pantalla completa y responde con
-    // recompensaCompletada / anuncioCerrado / anuncioNoDisponible (ver abajo)
-    window.AndroidAds.mostrarRecompensado();
-  } else {
-    // Simulación en navegador: contador regresivo de 15 s
-    txtContadorAnuncio.classList.remove("hidden");
-    let seg = 15;
-    intervaloContador = setInterval(() => {
-      seg--;
-      numContador.textContent = seg;
-      if (seg <= 0){
-        clearInterval(intervaloContador);
-        txtContadorAnuncio.classList.add("hidden");
-        btnConfirmarGratis.classList.remove("hidden");
-      }
-    }, 1000);
-  }
+  txtContadorAnuncio.classList.remove("hidden");
+  let seg = 15;
+  intervaloContador = setInterval(() => {
+    seg--;
+    numContador.textContent = seg;
+    if (seg <= 0){
+      clearInterval(intervaloContador);
+      txtContadorAnuncio.classList.add("hidden");
+      btnConfirmarGratis.classList.remove("hidden");
+    }
+  }, 1000);
 }
 
 // Mensaje breve flotante (reutiliza el aviso inferior)
@@ -2652,21 +2658,23 @@ function avisoBreve(texto, ms = 4500){
 }
 
 // Callbacks del anuncio recompensado (los llama AnunciosBridge.java)
-// Vídeo visto entero: se descarga el CV directamente, como promete el modal
+// Vídeo visto entero: se descarga el CV directamente
 window.recompensaCompletada = function(){
+  anuncioEnCurso = false;
   clearInterval(intervaloContador);
   modalAnuncio.classList.add("hidden");
   generarYDescargarPDF();
+  avisoBreve("Descargando tu currículum…", 3000);
 };
 // Cerrado antes de terminar: sin recompensa, se puede volver a intentar o pagar
 window.anuncioCerrado = function(){
+  anuncioEnCurso = false;
   modalAnuncio.classList.add("hidden");
   avisoBreve("Para la descarga gratuita hay que ver el vídeo completo.");
 };
 // No hay anuncio disponible (sin conexión, sin inventario…): no se bloquea al usuario
 window.anuncioNoDisponible = function(){
-  txtContadorAnuncio.classList.add("hidden");
-  btnConfirmarGratis.classList.remove("hidden");
+  window.recompensaCompletada();
 };
 
 // =============================================================================
