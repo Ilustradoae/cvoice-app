@@ -2271,7 +2271,7 @@ async function llamarIA(promptSistema, promptUsuario, temperatura, reintentos = 
       try {
         return await llamarIAUnaVez(promptSistema, promptUsuario, temperatura);
       } catch(error){
-        if (error.status === 429 && Date.now() - inicio < ESPERA_MAX_SATURACION_MS){
+        if (error.saturacionGroq && Date.now() - inicio < ESPERA_MAX_SATURACION_MS){
           avisoSaturacion(true);
           await new Promise(r => setTimeout(r, error.esperaMs));
           continue;
@@ -2332,7 +2332,11 @@ async function llamarIAUnaVez(promptSistema, promptUsuario, temperatura){
       const error = new Error(`Groq respondió con error ${respuesta.status}. ${detalle}`);
       error.status = respuesta.status;
       error.jsonInvalido = /json_validate_failed|Failed to validate JSON/i.test(detalle);
-      if (respuesta.status === 429) error.esperaMs = esperaTrasSaturacion(respuesta.headers.get("retry-after"), detalle);
+      // 429 de Groq (límite de la cuenta, compartido por todos y de segundos): se reintenta.
+      // El proxy también responde 429 cuando UNA persona hace demasiadas peticiones
+      // ("Demasiadas peticiones"): ese bloqueo dura minutos y reintentar lo alarga.
+      error.saturacionGroq = respuesta.status === 429 && /rate limit|tokens per minute|requests per minute/i.test(detalle);
+      if (error.saturacionGroq) error.esperaMs = esperaTrasSaturacion(respuesta.headers.get("retry-after"), detalle);
       throw error;
     }
     const cuerpo = await respuesta.json();
