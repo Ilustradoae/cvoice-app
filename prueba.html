@@ -1,0 +1,3323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CVoice — Tu currículum hablando</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- html2pdf.js para exportar el CV final -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- Tipografías: Fraunces (display cálida, marca de la app) + Atkinson Hyperlegible (interfaz, máxima legibilidad)
+     + Source Serif 4 (cuerpo del CV final: una serif de currículum ejecutivo, distinta de las dos anteriores) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..800&family=Atkinson+Hyperlegible:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,400..700&family=Jost:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --tinta:#1F2A24;       /* casi negro verdoso, texto principal de la app */
+    --papel:#FBF7EE;       /* crema cálido, fondo de la app */
+    --musgo:#2F5D4F;       /* verde profundo, color de marca */
+    --musgo-claro:#E4EFE9; /* verde muy pálido para tarjetas */
+    --ambar:#D98B3F;       /* ámbar, acento y llamada a la acción */
+    --ambar-suave:#F3DDBC;
+    --linea:#CFC6B2;       /* líneas/bordes sutiles */
+
+    /* Paleta exclusiva del documento de CV: pensada para parecer papel impreso, no "app" */
+    --cv-tinta:#22282B;
+    --cv-lateral-fondo:#F1EFEA;   /* gris muy suave, cálido, no frío */
+    --cv-lateral-borde:#E0DCD3;
+    --cv-acento:#8A6D3B;          /* bronce/ocre discreto, una sola vez como firma del documento */
+    --cv-linea:#DAD5CC;
+  }
+  body{
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  }
+  .font-display{ font-family:'Fraunces', serif; }
+
+  /* ============ OPTIMIZACIÓN MÓVIL ============ */
+  /* Eliminar delay de 300ms en taps y resaltado azul en Android */
+  * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; box-sizing: border-box; }
+  /* Evitar selección accidental de texto al tocar botones y labels */
+  button, label, .mic-btn { user-select: none; -webkit-user-select: none; }
+  /* Fuente mínima 16px en inputs para evitar zoom automático en iOS */
+  input, textarea, select { font-size: max(16px, 1rem) !important; }
+  /* Safe area para notch y barra de gestos de Android/iOS */
+  body {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left:   env(safe-area-inset-left, 0px);
+    padding-right:  env(safe-area-inset-right, 0px);
+  }
+  /* ===== ESCALA DEL CV EN MÓVIL =====
+     Usamos 'zoom' que en Android WebView escala correctamente y ajusta
+     el layout sin dejar espacio lateral ni requerir compensación de altura. */
+  #contenedor-cvs {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* El pinch lo gestiona nuestro JS (zoom de edición); el navegador solo hace scroll */
+    touch-action: pan-x pan-y;
+  }
+  /* Las 5 hojas mantienen SIEMPRE su layout de 900px: el zoom CSS (zoomBase × escalaZoom)
+     las escala sin estrechar el texto. Si no caben, el contenedor hace scroll horizontal. */
+  #contenedor-cvs > #hoja-cv, #contenedor-cvs > #hoja-cv-premium, #contenedor-cvs > #hoja-cv-prem2,
+  #contenedor-cvs > #hoja-cv-prem3, #contenedor-cvs > #hoja-cv-prem4 {
+    width: 900px;
+    max-width: none;
+  }
+  /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
+  #modal-app > div, #modal-pago > div {
+    max-height: 90dvh; /* dvh = dynamic viewport height, correcto en móvil */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Pantallas muy pequeñas (≤ 380px): ajustar espaciado y tamaños */
+  @media (max-width: 380px) {
+    .bg-white.rounded-3xl { padding: 1.25rem !important; }
+    .font-display.text-2xl { font-size: 1.3rem !important; }
+    .w-28, .sm\:w-32 { width: 5.5rem !important; height: 5.5rem !important; }
+  }
+
+  /* Clases utilitarias para estilos inline repetidos */
+  .punto-item{ color:var(--ambar); font-size:1.1em; flex-shrink:0; }
+
+  /* Foco de teclado */
+  button:focus-visible, [contenteditable="true"]:focus-visible, select:focus-visible, input:focus-visible{
+    outline: 3px solid var(--ambar);
+    outline-offset: 3px;
+  }
+
+  .mic-btn{ background: var(--musgo); box-shadow: 0 0 0 0 rgba(47,93,79,0.45); }
+  .mic-btn.escuchando{ background: var(--ambar); animation: pulso 1.6s ease-out infinite; }
+  @keyframes pulso{
+    0%   { box-shadow: 0 0 0 0 rgba(217,139,63,0.55); }
+    70%  { box-shadow: 0 0 0 28px rgba(217,139,63,0); }
+    100% { box-shadow: 0 0 0 0 rgba(217,139,63,0); }
+  }
+  @media (prefers-reduced-motion: reduce){ .mic-btn.escuchando{ animation: none; } }
+
+  .onda{ position:absolute; border:2px solid var(--ambar); border-radius:50%; opacity:0; pointer-events:none; }
+  .escuchando .onda{ animation: expandir 1.8s ease-out infinite; }
+  .onda:nth-child(2){ animation-delay:.4s; }
+  .onda:nth-child(3){ animation-delay:.8s; }
+  @keyframes expandir{
+    0%{ width:8rem; height:8rem; opacity:.6; }
+    100%{ width:14rem; height:14rem; opacity:0; }
+  }
+
+  .paso{ display:none; }
+  .paso.activo{ display:block; animation: aparecer .4s ease; }
+  @keyframes aparecer{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .barra-progreso > div{ transition: width .5s ease; }
+
+  [contenteditable="true"]{ cursor: text; }
+  [contenteditable="true"]:hover{ background: rgba(138,109,59,0.08); border-radius:3px; }
+  [contenteditable="true"]:focus{ background: rgba(138,109,59,0.14); border-radius:3px; }
+
+  .pista-edicion::after{
+    content: "✎"; display:inline-block; font-size:.7rem; color:var(--cv-acento);
+    margin-left:5px; opacity:.7; vertical-align:middle;
+  }
+
+  ::selection{ background: var(--ambar-suave); }
+
+  .visor-camara{
+    width:14rem; height:14rem; border-radius:50%; overflow:hidden; background:var(--musgo-claro);
+    border:4px solid var(--musgo); display:flex; align-items:center; justify-content:center;
+  }
+  .visor-camara video, .visor-camara img{ width:100%; height:100%; object-fit:cover; transform: scaleX(-1); }
+  .visor-camara img{ transform:none; }
+
+  /* Ningún contenido (p. ej. un mensaje de error largo) debe ensanchar la página:
+     en el WebView eso desplaza la vista y descentra los modales */
+  html, body{ overflow-x: hidden; }
+  #aviso-error-ia, #aviso-error-traduccion{ overflow-wrap: anywhere; }
+
+  .cv-oculto{ display: none !important; }
+
+  /* Carrusel de diseños: nombre + etiqueta GRATIS/PREMIUM bajo cada miniatura */
+  #carrusel-plantillas button{ width: 84px !important; }
+  .car-nombre{ display: block; font-size: 11px; font-weight: 700; color: var(--tinta); margin: 2px 0 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .car-etiqueta{ display: block; font-size: 9px; font-weight: 800; color: white; border-radius: 8px; padding: 2px 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* Dato de contacto vacío en las plantillas premium: se oculta la fila entera */
+  .cv-vacio{ display: none !important; }
+
+  /* ===== ESCALA DE LAS HOJAS DE CV =====
+     Todas las medidas de los CV usan la unidad --u (16px por defecto) en vez de rem.
+     ajustarCVaA4() la cambia en cada hoja para que el contenido llene un A4 sin pasarse:
+     más grande si hay poca información, más compacto si hay mucha. */
+  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
+    --u: 16px;
+    --aire: 1;
+    --li: 1;
+    /* --ue: unidad de los espacios VERTICALES (márgenes y rellenos arriba/abajo) = --u × --aire */
+    --ue: calc(var(--u) * var(--aire));
+    font-size: var(--u);
+    /* Interlineado base (antes heredado: 1.5) escalado por --li */
+    line-height: calc(1.5 * var(--li));
+  }
+  /* Emails largos: el generador de PDF (html2canvas) solo los parte con break-all */
+  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
+  /* Al medir para el A4 se mide como en el PDF: sin los iconos ✎ de edición */
+  .medidor-a4 .pista-edicion::after{ display: none !important; }
+
+  /* ===================== PLANTILLA PREMIUM — COLUMNA OSCURA ===================== */
+  #hoja-cv-premium{
+    font-family: 'Inter', system-ui, sans-serif;
+    display: flex;
+    width: 900px;
+    max-width: 100%;
+    margin: 0 auto;
+    background: #fff;
+    overflow: hidden;
+    border-radius: calc(1 * var(--u));
+    /* min-height solo se añade en JS justo antes de exportar a PDF,
+       para que en pantalla el CV se ajuste al contenido real */
+  }
+  .prem-izq{
+    width: 33.333%;
+    background: #0f172a; /* slate-900 */
+    color: #cbd5e1;       /* slate-300 */
+    padding: calc(2.5 * var(--u)) calc(1.75 * var(--u));
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-self: stretch; /* el fondo oscuro cubre siempre toda la altura del CV */
+  }
+  .prem-der{
+    width: 66.666%;
+    background: #fff;
+    color: #1e293b;
+    padding: calc(2.5 * var(--u)) calc(3 * var(--u));
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    justify-content: flex-start;
+  }
+  .prem-avatar{
+    width: calc(8 * var(--u)); height: calc(8 * var(--u));
+    border-radius: 50%;
+    border: 2px solid #334155;
+    background: #1e293b;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    margin: 0 auto calc(1.5 * var(--ue));
+  }
+  .prem-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .prem-nombre{
+    font-size: calc(1.25 * var(--u)); font-weight: 700; color: #fff;
+    text-transform: uppercase; letter-spacing: .05em;
+    text-align: center; margin-bottom: calc(1.25 * var(--ue));
+  }
+  .prem-hr{ border: none; border-top: 1px solid #1e293b; margin: calc(1 * var(--ue)) 0; }
+  .prem-label{
+    display: block; font-size: calc(.65 * var(--u)); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .1em;
+    color: #64748b; margin-bottom: calc(.2 * var(--u));
+  }
+  .prem-valor{
+    display: block; font-size: calc(.85 * var(--u)); color: #fff;
+    padding: calc(.2 * var(--u)) calc(.3 * var(--u)); border-radius: calc(.25 * var(--u));
+    word-break: break-word;
+  }
+  .prem-valor-azul{ color: #60a5fa; }
+  .prem-seccion-titulo-izq{
+    font-size: calc(.7 * var(--u)); font-weight: 700; color: #94a3b8;
+    text-transform: uppercase; letter-spacing: .1em;
+    margin: calc(1.5 * var(--ue)) 0 calc(.75 * var(--u));
+  }
+
+  .prem-seccion-titulo-der{
+    font-size: calc(.82 * var(--u)); font-weight: 700; color: #0f172a;
+    text-transform: uppercase; letter-spacing: .1em;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: calc(.5 * var(--u)); margin-bottom: calc(1.25 * var(--u));
+    text-align: center;
+  }
+  /* Separación entre secciones de la columna derecha del premium */
+  #prem-seccion-perfil, #prem-seccion-experiencia, #prem-seccion-estudios, #prem-seccion-otros, #prem-seccion-habilidades{
+    margin-bottom: calc(2 * var(--ue));
+  }
+  #prem-seccion-experiencia:last-child,
+  #prem-seccion-estudios:last-child,
+  #prem-seccion-otros:last-child{ margin-bottom: 0; }
+  /* ============================================================
+     DISEÑO PREMIUM 2 — EDITORIAL (foto grande, etiquetas laterales)
+  ============================================================ */
+  #hoja-cv-prem2{
+    font-family: 'Inter', system-ui, sans-serif;
+    display: flex; flex-direction: column;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u)); color: #1a1a1a;
+  }
+  .p2-head{ display: flex; align-items: center; gap: calc(2 * var(--u)); padding: calc(2.5 * var(--u)) calc(2.5 * var(--u)) calc(1.5 * var(--u)); }
+  .p2-avatar{ width: calc(9 * var(--u)); height: calc(9 * var(--u)); border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f0f0f0; border: 2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
+  .p2-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: calc(2.4 * var(--u)); font-weight: 700; color: #1a1a1a; line-height: calc(1.1 * var(--li)); }
+  .p2-cargo{ font-size: calc(.8 * var(--u)); color: #666; letter-spacing: .08em; text-transform: uppercase; margin-top: calc(.4 * var(--u)); }
+  .p2-contactband{ display: flex; align-items: center; border-top: 2px solid #1a1a1a; border-bottom: 2px solid #1a1a1a; padding: calc(.65 * var(--u)) calc(2.5 * var(--u)); }
+  .p2-citem{ display: flex; align-items: center; gap: calc(.4 * var(--u)); font-size: calc(.75 * var(--u)); color: #333; flex: 1; }
+  /* Separador vertical solo entre datos de contacto visibles */
+  .p2-citem:not(.cv-vacio) ~ .p2-citem:not(.cv-vacio){ border-left: 1px solid #ccc; padding-left: calc(.75 * var(--u)); margin-left: calc(.75 * var(--u)); }
+  .p2-body{ padding: 0 calc(2.5 * var(--u)) calc(2 * var(--u)); }
+  .p2-row{ display: grid; grid-template-columns: calc(7.5 * var(--u)) 1fr; gap: calc(1.5 * var(--u)); padding: calc(1.1 * var(--ue)) 0; border-bottom: 1px solid #e8e8e8; }
+  .p2-row:last-child{ border-bottom: none; }
+  .p2-etiqueta{ font-size: calc(.58 * var(--u)); font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #1a1a1a; padding-top: calc(.2 * var(--u)); }
+  .p2-contenido{ display: flex; flex-direction: column; gap: calc(.75 * var(--u)); }
+
+  /* ============================================================
+     DISEÑO PREMIUM 3 — ÁMBAR MODERNO (acento dorado/ámbar)
+  ============================================================ */
+  #hoja-cv-prem3{
+    font-family: 'Inter', system-ui, sans-serif;
+    display: grid; grid-template-columns: 1fr 1.75fr;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
+    align-items: stretch;
+  }
+  .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: calc(2.5 * var(--u)) calc(1.75 * var(--u)); display: flex; flex-direction: column; }
+  .p3-avatar{ width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto calc(1.25 * var(--ue)); font-size: calc(1.5 * var(--u)); font-weight: 700; color: #C4874A; }
+  .p3-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .p3-nombre{ font-size: calc(1.05 * var(--u)); font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: calc(.2 * var(--u)); }
+  .p3-sub{ font-size: calc(.62 * var(--u)); color: #C4874A; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; text-align: center; margin-bottom: calc(1.25 * var(--ue)); }
+  .p3-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #C4874A; margin: calc(1 * var(--ue)) 0 calc(.4 * var(--u)); }
+  .p3-valor{ font-size: calc(.78 * var(--u)); color: #1a1a1a; margin-bottom: calc(.4 * var(--u)); display: flex; align-items: flex-start; gap: calc(.35 * var(--u)); word-break: break-word; }
+  .p3-dot{ width: 5px; height: 5px; border-radius: 50%; background: #C4874A; flex-shrink: 0; margin-top: calc(.35 * var(--u)); }
+  /* Textos largos sin espacios (emails) se parten en su línea en vez de saltar bajo el punto */
+  .p3-valor > span:not(.p3-dot){ min-width: 0; overflow-wrap: anywhere; }
+  .p3-der{ background: #fff; padding: calc(2.5 * var(--u)) calc(2.25 * var(--u)); display: flex; flex-direction: column; }
+  .p3-sec-der{ font-size: calc(.6 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1a1a1a; display: inline-block; border-bottom: 2px solid #C4874A; padding-bottom: calc(.2 * var(--u)); margin: calc(1.25 * var(--ue)) 0 calc(.6 * var(--u)); }
+
+  /* ============================================================
+     DISEÑO PREMIUM 4 — AZUL MARINO CORPORATIVO (una columna)
+  ============================================================ */
+  #hoja-cv-prem4{
+    font-family: 'Inter', system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
+  }
+  .p4-header{ background: #1B3A5C; padding: calc(1.5 * var(--u)) calc(2 * var(--u)); display: flex; align-items: center; gap: calc(1.25 * var(--u)); border-bottom: 4px solid #2D6A9F; }
+  .p4-avatar{ width: calc(5.5 * var(--u)); height: calc(5.5 * var(--u)); border-radius: calc(.6 * var(--u)); border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: calc(1.4 * var(--u)); font-weight: 700; color: #93B5D4; }
+  .p4-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .p4-hinfo{ flex: 1; }
+  .p4-nombre{ font-size: calc(1.4 * var(--u)); font-weight: 700; color: #fff; letter-spacing: .02em; }
+  .p4-sub{ font-size: calc(.65 * var(--u)); color: #93B5D4; text-transform: uppercase; letter-spacing: .12em; margin-top: calc(.25 * var(--u)); }
+  .p4-contacts{ display: flex; flex-wrap: wrap; gap: calc(.25 * var(--u)) calc(.75 * var(--u)); margin-top: calc(.5 * var(--u)); }
+  .p4-c{ font-size: calc(.65 * var(--u)); color: #7A9FBF; }
+  /* Punto separador solo entre datos de contacto visibles */
+  .p4-c:not(.cv-vacio) ~ .p4-c:not(.cv-vacio)::before{ content: "·"; margin-right: calc(.75 * var(--u)); }
+  /* Cuerpo: una sola columna */
+  .p4-body{ background: #fff; padding: calc(1.75 * var(--u)) calc(2 * var(--u)); display: flex; flex-direction: column; gap: 0; }
+  .p4-sec-der{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #2D6A9F; margin: calc(1.25 * var(--ue)) 0 calc(.5 * var(--u)); }
+  /* Idiomas/otros datos: al final, en banda gris clara */
+  .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: calc(1 * var(--u)) calc(2 * var(--u)); }
+  .p4-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin-bottom: calc(.4 * var(--u)); }
+  /* ===== MODELO BÁSICO — Minimalista (blanco/negro, líneas finas) ===== */
+  #hoja-cv{
+    font-family:'Inter', system-ui, sans-serif;
+    color: #1a1a1a;
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    align-items: stretch;
+    background: #fff;
+    overflow: hidden;
+    width: 900px;
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: calc(1 * var(--u));
+  }
+  .cv-col-izquierda{
+    background: #FAFAF9;
+    border-right: 1px solid #e5e5e5;
+    padding: calc(2 * var(--u)) calc(1.5 * var(--u));
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .cv-col-derecha{
+    background: #fff;
+    padding: calc(2 * var(--u)) calc(2 * var(--u));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0;
+  }
+
+  .cv-avatar{
+    width:calc(7.5 * var(--u)); height:calc(7.5 * var(--u)); border-radius:50%; overflow:hidden;
+    border:2px solid #1a1a1a;
+    margin: 0 auto calc(1.25 * var(--ue)); background:#f0f0f0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cv-avatar img{ width:100%; height:100%; object-fit:cover; }
+
+  .cv-nombre{
+    font-family:'Source Serif 4', Georgia, serif; font-weight:700;
+    font-size:calc(1.15 * var(--u)); line-height: calc(1.25 * var(--li)); text-align:center;
+    color: #1a1a1a; margin-bottom: calc(.5 * var(--u));
+  }
+
+  .cv-lateral-seccion{ margin-top: calc(1.25 * var(--ue)); padding-top: calc(1 * var(--ue)); border-top: 1.5px solid #1a1a1a; }
+  .cv-lateral-titulo{
+    font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.58 * var(--u)); letter-spacing:.18em;
+    text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.5 * var(--u));
+  }
+  .cv-lateral-dato .cv-etiqueta{
+    display: block;
+    font-size: calc(.58 * var(--u));
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #888;
+    margin-bottom: calc(.1 * var(--u));
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+  }
+
+  .cv-lateral-dato{ font-size:calc(.92 * var(--u)); line-height: calc(1.6 * var(--li)); word-break:break-word; margin-bottom: calc(.35 * var(--u)); }
+  .cv-lateral-dato:last-child{ margin-bottom: 0; }
+  .cv-lateral-dato .cv-etiqueta{ display:block; font-size:calc(.68 * var(--u)); text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom: calc(.1 * var(--u)); }
+
+  .cv-derecha-titulo{
+    font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.6 * var(--u)); letter-spacing:.18em;
+    text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.75 * var(--u));
+    display:flex; align-items:center; gap: calc(.6 * var(--u));
+    border-bottom: 1.5px solid #1a1a1a; padding-bottom: calc(.3 * var(--u));
+  }
+
+  .cv-bloque{ margin-bottom: calc(1.75 * var(--ue)); }
+  .cv-bloque:last-child{ margin-bottom: 0; }
+  .cv-bloque-contenido{ font-size:calc(.88 * var(--u)); line-height: calc(1.65 * var(--li)); }
+  .cv-bloque-contenido p{ margin-bottom: calc(.45 * var(--u)); }
+  .cv-bloque-contenido ul{ list-style:none; padding: 0; margin: 0; }
+  .cv-bloque-contenido li{
+    position:relative; padding-left: calc(1 * var(--u)); margin-bottom: calc(.4 * var(--u));
+  }
+  .cv-bloque-contenido li::before{
+    content:"–"; position:absolute; left:0; color: #888; font-weight:700;
+  }
+  .cv-bloque-contenido strong{ font-family:'Inter', sans-serif; font-weight:600; font-size:calc(.9 * var(--u)); }
+
+  /* ---- Experiencia laboral: tarjetas puesto/empresa/fechas + viñetas ---- */
+  .cv-experiencia-item{ margin-bottom: calc(1.4 * var(--ue)); }
+  .cv-experiencia-item:last-child{ margin-bottom: 0; }
+  .cv-experiencia-cabecera{
+    display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between;
+    gap: calc(.4 * var(--u)); margin-bottom: calc(.25 * var(--u));
+  }
+  .cv-experiencia-puesto{ font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.93 * var(--u)); color:#1a1a1a; }
+  .cv-experiencia-fechas{ font-size:calc(.72 * var(--u)); color:#888; white-space:nowrap; }
+  .cv-experiencia-empresa{ font-size:calc(.82 * var(--u)); font-style:italic; color:#666; margin-bottom: calc(.4 * var(--u)); }
+  .cv-experiencia-funciones{ list-style:none; padding: 0; margin: 0; }
+  .cv-experiencia-funciones li{ position:relative; padding-left: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height: calc(1.6 * var(--li)); }
+  .cv-experiencia-funciones li::before{ content:"–"; position:absolute; left:0; color:#888; font-weight:700; }
+
+  /* ---- Estudios: título oficial + formación complementaria agrupada ---- */
+  .cv-estudio-item{ margin-bottom: calc(1 * var(--ue)); }
+  .cv-estudio-item:last-child{ margin-bottom: 0; }
+  .cv-estudio-titulo{ font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.93 * var(--u)); color:#1a1a1a; }
+  .cv-estudio-centro{ font-size:calc(.82 * var(--u)); color:#666; }
+  .cv-formacion-complementaria{ margin-top: calc(1.1 * var(--ue)); padding-top: calc(1 * var(--u)); border-top:1px dashed var(--cv-linea); }
+  .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:calc(.78 * var(--u)); letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom: calc(.5 * var(--u)); }
+  .cv-formacion-complementaria-lista{ list-style:none; padding: 0; margin: 0; }
+  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height: calc(1.6 * var(--li)); margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--u)); }
+  .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; left:0; color:var(--cv-acento); }
+
+  /* ---- Perfil profesional (lo redacta la IA) y habilidades (las deduce la IA) ---- */
+  .cv-perfil{ font-size: calc(.88 * var(--u)); line-height: calc(1.65 * var(--li)); color: #333; margin: 0; }
+  #prem-perfil{ color: #334155; }
+  .cv-habilidades{ list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: calc(.4 * var(--u)) calc(.4 * var(--u)); }
+  .cv-habilidades li{
+    font-size: calc(.74 * var(--u)); line-height: 1.3; padding: calc(.25 * var(--u)) calc(.6 * var(--u));
+    border-radius: 999px; background: rgba(0,0,0,.06); color: #333;
+  }
+  #prem-habilidades li{ background: rgba(255,255,255,.1); color: #e2e8f0; }
+  #p3-habilidades li{ background: #f5e6d4; color: #7a4f22; }
+  #p4-habilidades li{ background: #E8F0F8; color: #1B3A5C; }
+
+  /* Regla defensiva: neutraliza cualquier bullet/asterisco que la IA pueda inyectar
+     en el contenido de estudios o experiencia (ej. list-disc de Tailwind, list-style circle, etc.) */
+  #cv-estudios ul, #cv-estudios ol,
+  #cv-experiencia ul, #cv-experiencia ol,
+  .cv-bloque-contenido ul, .cv-bloque-contenido ol,
+  .cv-experiencia-funciones,
+  .cv-formacion-complementaria-lista { list-style: none !important; }
+
+  /* ===================== PANTALLA DE CARGA IA ===================== */
+  .anillo-carga{
+    width:5rem; height:5rem; border-radius:50%;
+    border:5px solid var(--musgo-claro); border-top-color: var(--ambar);
+    animation: girar 0.9s linear infinite;
+  }
+  @keyframes girar{ to{ transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce){ .anillo-carga{ animation: girar 2.4s linear infinite; } }
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center px-4 py-6 sm:py-10">
+
+<!-- ============== CABECERA ============== -->
+<header class="w-full max-w-2xl text-center mb-4">
+  <div class="flex items-center justify-center gap-2 mb-1">
+    <svg width="44" height="44" viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#2F5D4F"/><path d="M47 19H69L77 27V56A17 17 0 0 1 43 56V23Q43 19 47 19Z" fill="#fff"/><path d="M69 19V24.5Q69 27 71.5 27H77Z" fill="#D9CFBF"/><rect x="46" y="22.5" width="11" height="13" rx="2" fill="#F3DDBC"/><circle cx="51.5" cy="26.8" r="2.8" fill="#D98B3F"/><path d="M47 35.5C50 30.5 53 30.5 56 35.5Z" fill="#D98B3F"/><g fill="#D98B3F"><rect x="59.5" y="23" width="9.5" height="3.4" rx="1.7"/><rect x="46" y="40" width="14" height="3.4" rx="1.7"/><rect x="46" y="58" width="15" height="3.4" rx="1.7"/></g><g fill="#E2DACB"><rect x="59.5" y="29.5" width="12" height="3" rx="1.5"/><rect x="46" y="46" width="28" height="3" rx="1.5"/><rect x="46" y="51.5" width="21" height="3" rx="1.5"/><rect x="47.5" y="64" width="25" height="3" rx="1.5"/></g><path d="M33 55A27 27 0 0 0 87 55M60 82V96M46 96H74" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/></svg>
+    <h1 class="font-display text-3xl sm:text-4xl font-bold" style="color:var(--musgo)">CVoice</h1>
+  </div>
+  <p id="txt-subtitulo" class="text-base sm:text-lg">Habla. Nosotros redactamos tu currículum.</p>
+</header>
+
+<!-- ============== ENTREVISTA POR PASOS ============== -->
+<section id="pantalla-entrevista" class="w-full max-w-xl">
+
+  <!-- Selector de idioma: visible solo en el paso 1 -->
+  <div id="zona-idioma" class="flex items-center justify-center gap-2 mb-4">
+    <div class="relative inline-block">
+      <button id="btn-cambiar-idioma" class="inline-flex items-center gap-2 px-4 py-3 rounded-full border-2 text-sm font-bold transition hover:shadow-sm" style="border-color:var(--linea); color:var(--musgo); background:white; min-height:44px">
+        <span aria-hidden="true">🌐</span>
+        <span id="txt-boton-idioma" data-i18n="boton_cambiar_idioma">Cambiar idioma</span>
+      </button>
+      <select id="select-idioma" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 hidden w-56 rounded-2xl border-2 p-3 text-base shadow-lg bg-white" style="border-color:var(--linea); color:var(--tinta)" size="8"></select>
+    </div>
+  </div>
+
+  <div class="mb-5">
+    <div class="barra-progreso w-full h-3 rounded-full overflow-hidden" style="background:var(--musgo-claro)">
+      <div id="barra-relleno" class="h-full rounded-full" style="width:20%; background:var(--ambar)"></div>
+    </div>
+    <p id="txt-paso-contador" class="text-center text-sm mt-2" style="color:var(--musgo)">Paso 1 de 5</p>
+  </div>
+
+  <!-- Tarjeta Paso 1: Datos personales -->
+  <article class="paso activo" data-paso="1">
+    <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
+      <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p1_titulo">Tus datos personales</h2>
+      <p class="text-base font-bold mb-2" style="color:var(--musgo)" data-i18n="p1_instruccion">Pulsa el micrófono y dinos:</p>
+      <ul id="p1-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item1">Tu nombre completo</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item2">Tu número de teléfono</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item3">Tu correo electrónico</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item4">Tu ciudad o municipio</span></li>
+      </ul>
+      <div class="relative flex justify-center mb-6">
+        <span class="onda"></span><span class="onda"></span><span class="onda"></span>
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="1" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <textarea data-texto-paso="1" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
+      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="2" data-i18n="boton_siguiente">Siguiente →</button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Tarjeta Paso 2: Experiencia laboral -->
+  <article class="paso" data-paso="2">
+    <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
+      <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p2_titulo">Tu experiencia de trabajo</h2>
+      <ul id="p2-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item1">Nombre de la empresa o negocio</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item2">Tu puesto o cargo</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item3">Años o fechas en que trabajaste</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item4">Qué tareas o funciones hacías</span></li>
+      </ul>
+      <div class="relative flex justify-center mb-6">
+        <span class="onda"></span><span class="onda"></span><span class="onda"></span>
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="2" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <textarea data-texto-paso="2" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
+      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="1" data-i18n="boton_anterior">← Atrás</button>
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="3" data-i18n="boton_siguiente">Siguiente →</button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Tarjeta Paso 3: Estudios -->
+  <article class="paso" data-paso="3">
+    <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
+      <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p3_titulo">Tus estudios</h2>
+      <ul id="p3-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item1">Nombre del centro educativo</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item2">Título o certificado obtenido</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item3">Año en que terminaste</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item4">Cursos o formaciones extra (si tienes)</span></li>
+      </ul>
+      <div class="relative flex justify-center mb-6">
+        <span class="onda"></span><span class="onda"></span><span class="onda"></span>
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="3" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <textarea data-texto-paso="3" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
+      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="2" data-i18n="boton_anterior">← Atrás</button>
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="4" data-i18n="boton_siguiente">Siguiente →</button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Tarjeta Paso 4: Otros datos -->
+  <article class="paso" data-paso="4">
+    <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
+      <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p4_titulo">Otros datos</h2>
+      <ul id="p4-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item1">Idiomas que hablas y nivel</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item2">Carnet de conducir (si tienes)</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item3">Disponibilidad horaria</span></li>
+        <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item4">Voluntariados o actividades extra (si tienes)</span></li>
+      </ul>
+      <div class="relative flex justify-center mb-6">
+        <span class="onda"></span><span class="onda"></span><span class="onda"></span>
+        <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="4" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <textarea data-texto-paso="4" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
+      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <div class="flex flex-row gap-2 justify-center">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="3" data-i18n="boton_anterior">← Atrás</button>
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="5" data-i18n="boton_siguiente">Siguiente →</button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Tarjeta Paso 5: Foto (opcional) -->
+  <article class="paso" data-paso="5">
+    <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
+      <h2 class="font-display text-2xl sm:text-3xl mb-6" data-i18n="p5_titulo">Hazte una foto para tu currículum</h2>
+
+      <div class="flex justify-center mb-5">
+        <div class="visor-camara">
+          <video id="video-camara" class="hidden" autoplay playsinline muted></video>
+          <img id="foto-capturada" class="hidden" alt="Foto capturada">
+          <svg id="icono-sin-camara" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--musgo)" stroke-width="1.5">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+      </div>
+
+      <canvas id="lienzo-foto" class="hidden"></canvas>
+
+      <div id="controles-camara-inicial" class="flex flex-col sm:flex-row gap-3 justify-center mb-5">
+        <button id="btn-activar-camara" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_abrir_camara">📷 Abrir cámara</button>
+      </div>
+
+      <div id="controles-camara-activa" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
+        <button id="btn-capturar-foto" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)" data-i18n="boton_capturar">📸 Hacer foto</button>
+      </div>
+
+      <div id="controles-foto-lista" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
+        <button id="btn-repetir-foto" class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-i18n="boton_repetir">↺ Repetir foto</button>
+      </div>
+
+      <p id="aviso-camara" class="text-sm mb-2 hidden" style="color:#B23A3A"></p>
+
+      <div class="flex flex-row gap-2 justify-center mt-4">
+        <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="4" data-i18n="boton_anterior">← Atrás</button>
+        <button id="btn-saltar-foto" class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_saltar">Saltar este paso →</button>
+      </div>
+    </div>
+  </article>
+
+</section>
+
+<!-- ============== PANTALLA DE CARGA: LA IA ESTÁ REDACTANDO ============== -->
+<section id="pantalla-carga" class="hidden w-full max-w-md text-center py-16">
+  <div class="anillo-carga mx-auto mb-6"></div>
+  <p id="txt-mensaje-carga" class="font-display text-xl sm:text-2xl" style="color:var(--musgo)" data-i18n="mensaje_carga">La IA está organizando y redactando tu CV con estilo profesional…</p>
+  <p id="aviso-error-ia" class="hidden mt-5 text-sm rounded-2xl border-2 p-4" style="border-color:#E3A0A0; background:#FBEAEA; color:#8A2E2E"></p>
+  <!-- Solo visible si la IA falla: vuelve a la entrevista sin perder lo grabado -->
+  <button id="btn-volver-tras-error" class="hidden mt-4 px-6 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_anterior">← Atrás</button>
+</section>
+
+<!-- ============== PANTALLA FINAL: CV EDITABLE — DOS COLUMNAS ============== -->
+<section id="pantalla-cv" class="w-full hidden">
+
+  <div class="text-center mb-5 max-w-3xl mx-auto">
+    <h2 class="font-display text-2xl sm:text-3xl" style="color:var(--musgo)" data-i18n="cv_titulo">Tu currículum está listo</h2>
+    <p class="text-base" data-i18n="cv_ayuda">Toca cualquier texto para corregirlo antes de descargar.</p>
+  </div>
+
+  <!-- Carrusel unificado de 5 plantillas -->
+  <div id="carrusel-plantillas" class="mb-4 max-w-3xl mx-auto w-full">
+    <p class="text-sm font-bold mb-2" style="color:var(--musgo)" data-i18n="elige_estilo">Elige el diseño de tu currículum:</p>
+    <div class="flex gap-2 overflow-x-auto pb-2" style="-webkit-overflow-scrolling:touch; scrollbar-width:none">
+
+      <!-- 1. BÁSICO (GRATIS) -->
+      <button id="car-basico" onclick="seleccionarPlantilla('basico')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--ambar);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#FAFAF9;border:1px solid #e5e5e5">
+          <div style="display:flex;height:100%">
+            <div style="width:38%;background:#FAFAF9;border-right:1px solid #e5e5e5;padding:4px">
+              <div style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;margin:0 auto 3px"></div>
+              <div style="height:1.5px;width:80%;background:#ddd;border-radius:1px;margin:0 auto"></div>
+            </div>
+            <div style="width:62%;padding:4px">
+              <div style="height:1.5px;width:100%;background:#1a1a1a;margin-bottom:3px"></div>
+              <div style="height:1.5px;width:70%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:85%;background:#eee;border-radius:1px"></div>
+            </div>
+          </div>
+        </div>
+        <span class="car-nombre" data-i18n="diseno_basico">Clásico</span>
+        <span class="car-etiqueta" style="background:#64748B" data-i18n="etiqueta_gratis">GRATIS</span>
+      </button>
+
+      <!-- 2. EJECUTIVO -->
+      <button id="car-prem1" onclick="seleccionarPlantilla('prem1')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#0f172a">
+          <div style="display:flex;height:100%">
+            <div style="width:35%;background:#0f172a;border-right:1px solid #1e293b;padding:4px">
+              <div style="width:8px;height:8px;border-radius:50%;background:#475569;margin:0 auto 3px"></div>
+            </div>
+            <div style="width:65%;background:#fff;padding:4px">
+              <div style="height:2px;width:60%;background:#e2e8f0;border-radius:1px;margin-bottom:3px"></div>
+              <div style="height:1.5px;width:80%;background:#f1f5f9;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:70%;background:#f1f5f9;border-radius:1px"></div>
+            </div>
+          </div>
+        </div>
+        <span class="car-nombre" data-i18n="diseno_prem1">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
+      </button>
+
+      <!-- 3. EDITORIAL -->
+      <button id="car-prem2" onclick="seleccionarPlantilla('prem2')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff;border:1px solid #e5e5e5">
+          <div style="display:flex;align-items:center;gap:4px;padding:4px 5px">
+            <div style="width:12px;height:12px;border-radius:50%;background:#e0e0e0;flex-shrink:0"></div>
+            <div style="height:4px;width:35px;background:#1a1a1a;border-radius:1px"></div>
+          </div>
+          <div style="height:1.5px;background:#1a1a1a;margin:0 5px 3px"></div>
+          <div style="display:grid;grid-template-columns:20px 1fr;gap:3px;padding:0 5px">
+            <div style="height:1.5px;width:16px;background:#1a1a1a;border-radius:1px;margin-top:2px"></div>
+            <div>
+              <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
+            </div>
+          </div>
+        </div>
+        <span class="car-nombre" data-i18n="diseno_prem2">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
+      </button>
+
+      <!-- 4. ÁMBAR -->
+      <button id="car-prem3" onclick="seleccionarPlantilla('prem3')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff">
+          <div style="display:flex;height:100%">
+            <div style="width:36%;background:#FBF8F3;border-right:1px solid #f0e8d8;padding:4px">
+              <div style="width:10px;height:10px;border-radius:50%;background:#C4874A;margin:0 auto 3px"></div>
+              <div style="height:1.5px;width:70%;background:#C4874A;border-radius:1px;margin:0 auto"></div>
+            </div>
+            <div style="width:64%;padding:4px">
+              <div style="height:1.5px;width:40%;background:#C4874A;margin-bottom:3px"></div>
+              <div style="height:1.5px;width:75%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+              <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
+            </div>
+          </div>
+        </div>
+        <span class="car-nombre" data-i18n="diseno_prem3">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
+      </button>
+
+      <!-- 5. AZUL MARINO -->
+      <button id="car-prem4" onclick="seleccionarPlantilla('prem4')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff">
+          <div style="background:#1B3A5C;padding:4px 5px;display:flex;align-items:center;gap:4px;border-bottom:2px solid #2D6A9F">
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,255,255,.2)"></div>
+            <div style="height:1.5px;width:30px;background:rgba(255,255,255,.6);border-radius:1px"></div>
+          </div>
+          <div style="padding:3px 5px">
+            <div style="height:1.5px;width:40%;background:#2D6A9F;border-radius:1px;margin-bottom:2px"></div>
+            <div style="height:1.5px;width:80%;background:#eee;border-radius:1px;margin-bottom:2px"></div>
+            <div style="height:1.5px;width:65%;background:#eee;border-radius:1px"></div>
+          </div>
+        </div>
+        <span class="car-nombre" data-i18n="diseno_prem4">Diseño</span>
+        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
+      </button>
+
+    </div><!-- /flex carrusel -->
+  </div><!-- /carrusel-plantillas -->
+
+  <!-- Contenedor de las dos plantillas: solo una visible a la vez según el tab -->
+  <div id="contenedor-cvs">
+
+    <!-- Plantilla BÁSICA -->
+    <div id="hoja-cv" class="cv-oculto rounded-2xl shadow-2xl">
+
+      <!-- ===== Columna izquierda: foto + datos personales + otros datos ===== -->
+      <aside class="cv-col-izquierda">
+        <div class="cv-avatar" id="cv-foto-contenedor">
+          <img id="cv-foto-img" alt="Foto del candidato" class="hidden">
+          <svg id="cv-avatar-placeholder" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#B7AF9D" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
+        </div>
+        <h1 contenteditable="true" id="cv-nombre" class="cv-nombre pista-edicion">NOMBRE APELLIDO</h1>
+
+        <div class="cv-lateral-seccion" id="cv-seccion-datos-personales">
+          <p class="cv-lateral-titulo" data-i18n="cv_lateral_contacto">Datos personales</p>
+          <p class="cv-lateral-dato" id="cv-fila-telefono">
+            <span class="cv-etiqueta" id="cv-label-telefono" data-cv-label="label_telefono">Teléfono:</span>
+            <span contenteditable="true" id="cv-telefono" class="pista-edicion">—</span>
+          </p>
+          <p class="cv-lateral-dato" id="cv-fila-email">
+            <span class="cv-etiqueta" id="cv-label-email" data-cv-label="label_email">Email:</span>
+            <span contenteditable="true" id="cv-email" class="pista-edicion">—</span>
+          </p>
+          <p class="cv-lateral-dato" id="cv-fila-ubicacion">
+            <span class="cv-etiqueta" id="cv-label-ubicacion" data-cv-label="label_ubicacion">Ubicación:</span>
+            <span contenteditable="true" id="cv-ubicacion" class="pista-edicion">—</span>
+          </p>
+        </div>
+
+        <div class="cv-lateral-seccion hidden" id="cv-seccion-habilidades">
+          <p class="cv-lateral-titulo" data-i18n="cv_bloque_habilidades">Habilidades</p>
+          <ul contenteditable="true" id="cv-habilidades" class="cv-habilidades pista-edicion"></ul>
+        </div>
+
+        <div class="cv-lateral-seccion hidden" id="cv-seccion-otros-datos">
+          <p class="cv-lateral-titulo" data-i18n="cv_lateral_otros">Otros datos</p>
+          <div contenteditable="true" id="cv-otros" class="cv-lateral-dato pista-edicion"><p>—</p></div>
+        </div>
+      </aside>
+
+      <!-- ===== Columna derecha: perfil, experiencia y estudios ===== -->
+      <div class="cv-col-derecha">
+        <div class="cv-bloque hidden" id="cv-seccion-perfil">
+          <h3 class="cv-derecha-titulo" data-i18n="cv_bloque_perfil">Perfil profesional</h3>
+          <p contenteditable="true" id="cv-perfil" class="cv-perfil pista-edicion"></p>
+        </div>
+        <div class="cv-bloque hidden" id="cv-seccion-experiencia">
+          <h3 class="cv-derecha-titulo" data-i18n="cv_bloque_experiencia">Experiencia laboral</h3>
+          <div contenteditable="true" id="cv-experiencia" class="cv-bloque-contenido pista-edicion"></div>
+        </div>
+        <div class="cv-bloque hidden" id="cv-seccion-estudios">
+          <h3 class="cv-derecha-titulo" data-i18n="cv_bloque_estudios">Estudios y formación</h3>
+          <div contenteditable="true" id="cv-estudios" class="cv-bloque-contenido pista-edicion"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plantilla PREMIUM (cv-oculto por defecto — se muestra al seleccionar el tab premium) -->
+    <div id="hoja-cv-premium" class="cv-oculto rounded-2xl shadow-2xl">
+
+      <!-- Columna izquierda oscura -->
+      <div class="prem-izq">
+        <div class="prem-avatar">
+          <img id="prem-foto" alt="" class="hidden">
+          <svg id="prem-avatar-placeholder" width="46" height="46" viewBox="0 0 24 24" fill="#475569"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </div>
+
+        <h1 contenteditable="true" id="prem-nombre" class="prem-nombre">NOMBRE APELLIDO</h1>
+        <hr class="prem-hr">
+
+        <div style="display:flex; flex-direction:column; gap: calc(.75 * var(--u)); font-size:calc(.85 * var(--u));">
+          <div id="prem-fila-telefono">
+            <span class="prem-label" data-cv-label="label_telefono">Teléfono</span>
+            <span contenteditable="true" id="prem-telefono" class="prem-valor">—</span>
+          </div>
+          <div id="prem-fila-email">
+            <span class="prem-label" data-cv-label="label_email">Email</span>
+            <span contenteditable="true" id="prem-email" class="prem-valor prem-valor-azul">—</span>
+          </div>
+          <div id="prem-fila-ubicacion">
+            <span class="prem-label" data-cv-label="label_ubicacion">Ubicación</span>
+            <span contenteditable="true" id="prem-ubicacion" class="prem-valor">—</span>
+          </div>
+        </div>
+
+        <hr class="prem-hr" style="margin-top: calc(1.25 * var(--ue));">
+
+        <div id="prem-seccion-habilidades" class="hidden">
+          <p class="prem-seccion-titulo-izq" data-i18n="cv_bloque_habilidades">Habilidades</p>
+          <ul contenteditable="true" id="prem-habilidades" class="cv-habilidades"></ul>
+        </div>
+
+        <div id="prem-seccion-otros" class="hidden">
+          <p class="prem-seccion-titulo-izq" data-i18n="cv_lateral_otros">Otros datos</p>
+          <div contenteditable="true" id="prem-otros" style="font-size:calc(.78 * var(--u)); color:#94a3b8; line-height: calc(1.6 * var(--li));"></div>
+        </div>
+      </div>
+
+      <!-- Columna derecha blanca -->
+      <div class="prem-der">
+
+        <div id="prem-seccion-perfil" class="hidden">
+          <h2 class="prem-seccion-titulo-der" data-i18n="cv_bloque_perfil">Perfil profesional</h2>
+          <p contenteditable="true" id="prem-perfil" class="cv-perfil"></p>
+        </div>
+
+        <div id="prem-seccion-experiencia" class="hidden">
+          <h2 class="prem-seccion-titulo-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</h2>
+          <div contenteditable="true" id="prem-experiencia"></div>
+        </div>
+
+        <div id="prem-seccion-estudios" class="hidden">
+          <h2 class="prem-seccion-titulo-der" data-i18n="cv_bloque_estudios">Estudios y formación</h2>
+          <div contenteditable="true" id="prem-estudios"></div>
+        </div>
+
+      </div>
+    </div>
+
+  <!-- ===== PLANTILLA PREMIUM 2: EDITORIAL ===== -->
+  <div id="hoja-cv-prem2" class="cv-oculto">
+    <!-- Cabecera: foto grande + nombre -->
+    <div class="p2-head">
+      <div class="p2-avatar">
+        <img id="p2-foto" alt="Foto" class="hidden" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        <svg id="p2-avatar-placeholder" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div contenteditable="true" id="p2-nombre" class="p2-nombre pista-edicion">Nombre Apellido</div>
+        <div id="p2-cargo" class="p2-cargo"></div>
+      </div>
+    </div>
+    <!-- Banda de contacto -->
+    <div class="p2-contactband">
+      <div class="p2-citem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-.85a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span contenteditable="true" id="p2-telefono" class="pista-edicion">—</span>
+      </div>
+      <div class="p2-citem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span contenteditable="true" id="p2-email" class="pista-edicion">—</span>
+      </div>
+      <div class="p2-citem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span contenteditable="true" id="p2-ubicacion" class="pista-edicion">—</span>
+      </div>
+    </div>
+    <!-- Cuerpo: filas con etiqueta izquierda + contenido derecha -->
+    <div class="p2-body">
+      <div id="p2-sec-perfil" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_perfil">Perfil</div>
+        <div class="p2-contenido"><p contenteditable="true" id="p2-perfil" class="cv-perfil pista-edicion"></p></div>
+      </div>
+      <div id="p2-sec-est" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_estudios">Formación</div>
+        <div class="p2-contenido" contenteditable="true" id="p2-estudios"></div>
+      </div>
+      <div id="p2-sec-exp" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_experiencia">Experiencia</div>
+        <div class="p2-contenido" contenteditable="true" id="p2-experiencia"></div>
+      </div>
+      <div id="p2-sec-hab" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <div class="p2-contenido"><ul contenteditable="true" id="p2-habilidades" class="cv-habilidades"></ul></div>
+      </div>
+      <div id="p2-sec-otros" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div class="p2-contenido" contenteditable="true" id="p2-otros"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLANTILLA PREMIUM 3: ÁMBAR MODERNO ===== -->
+  <div id="hoja-cv-prem3" class="cv-oculto">
+    <div class="p3-izq">
+      <div class="p3-avatar">
+        <img id="p3-foto" alt="Foto" class="hidden">
+        <span id="p3-iniciales">SG</span>
+      </div>
+      <div contenteditable="true" id="p3-nombre" class="p3-nombre pista-edicion">Nombre Apellido</div>
+      <div id="p3-sub-cargo" class="p3-sub"></div>
+      <div class="p3-sec" data-i18n="cv_lateral_contacto">Contacto</div>
+      <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-telefono" class="pista-edicion">—</span></div>
+      <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-email" class="pista-edicion">—</span></div>
+      <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-ubicacion" class="pista-edicion">—</span></div>
+      <div id="p3-sec-hab" class="hidden">
+        <div class="p3-sec" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <ul contenteditable="true" id="p3-habilidades" class="cv-habilidades"></ul>
+      </div>
+      <div id="p3-sec-otros" class="hidden">
+        <div class="p3-sec" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div contenteditable="true" id="p3-otros" class="p3-valor pista-edicion"></div>
+      </div>
+    </div>
+    <div class="p3-der">
+      <div id="p3-sec-perfil" class="hidden">
+        <div class="p3-sec-der" data-i18n="cv_bloque_perfil">Perfil profesional</div>
+        <p contenteditable="true" id="p3-perfil" class="cv-perfil pista-edicion"></p>
+      </div>
+      <div id="p3-sec-exp" class="hidden">
+        <div class="p3-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
+        <div contenteditable="true" id="p3-experiencia" class="pista-edicion"></div>
+      </div>
+      <div id="p3-sec-est" class="hidden">
+        <div class="p3-sec-der" data-i18n="cv_bloque_estudios">Estudios y formación</div>
+        <div contenteditable="true" id="p3-estudios" class="pista-edicion"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLANTILLA PREMIUM 4: AZUL MARINO (una columna) ===== -->
+  <div id="hoja-cv-prem4" class="cv-oculto">
+    <!-- Cabecera con foto, nombre, cargo y contacto -->
+    <div class="p4-header">
+      <div class="p4-avatar">
+        <img id="p4-foto" alt="Foto" class="hidden">
+        <span id="p4-iniciales">SG</span>
+      </div>
+      <div class="p4-hinfo">
+        <div contenteditable="true" id="p4-nombre" class="p4-nombre pista-edicion">Nombre Apellido</div>
+        <div id="p4-sub-cargo" class="p4-sub"></div>
+        <div class="p4-contacts">
+          <span contenteditable="true" id="p4-telefono" class="p4-c pista-edicion">—</span>
+          <span contenteditable="true" id="p4-email" class="p4-c pista-edicion">—</span>
+          <span contenteditable="true" id="p4-ubicacion" class="p4-c pista-edicion">—</span>
+        </div>
+      </div>
+    </div>
+    <!-- Cuerpo: experiencia y estudios en una columna -->
+    <div class="p4-body">
+      <div id="p4-sec-perfil" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_perfil">Perfil profesional</div>
+        <p contenteditable="true" id="p4-perfil" class="cv-perfil pista-edicion"></p>
+      </div>
+      <div id="p4-sec-exp" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
+        <div contenteditable="true" id="p4-experiencia" class="pista-edicion"></div>
+      </div>
+      <div id="p4-sec-est" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_estudios">Estudios y formación</div>
+        <div contenteditable="true" id="p4-estudios" class="pista-edicion"></div>
+      </div>
+      <div id="p4-sec-hab" class="hidden">
+        <div class="p4-sec-der" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <ul contenteditable="true" id="p4-habilidades" class="cv-habilidades"></ul>
+      </div>
+    </div>
+    <!-- Footer: otros datos e idiomas al final -->
+    <div id="p4-sec-otros" class="p4-footer hidden">
+      <div class="p4-sec" data-i18n="cv_lateral_otros">Otros datos</div>
+      <div contenteditable="true" id="p4-otros" class="pista-edicion"></div>
+    </div>
+  </div>
+  </div><!-- /contenedor-cvs (contiene las 5 plantillas) -->
+
+  <!-- ===== Zona de descarga / monetización ===== -->
+  <div class="max-w-3xl mx-auto mt-4 mb-3 px-2">
+
+    <!-- BOTÓN PRINCIPAL DINÁMICO (arriba) -->
+    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-1" style="background:var(--musgo)">
+      <div class="flex items-center justify-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        <span class="text-base">DESCARGAR GRATIS</span>
+      </div>
+      <div class="text-xs font-normal opacity-80">(viendo un vídeo corto)</div>
+    </button>
+
+    <!-- Subtexto dinámico -->
+    <p id="txt-cta-sub" class="text-center text-xs mb-2" style="color:#6B6354"></p>
+
+    <!-- Opción secundaria sin anuncio (solo visible en modo gratis) -->
+    <p id="txt-cta-secundario" class="text-center text-xs underline cursor-pointer mb-4" style="color:var(--musgo)">
+      Descarga inmediata sin anuncio por 0,99 €
+    </p>
+
+    <div class="border-t mb-3" style="border-color:var(--linea)"></div>
+
+    <!-- Botones secundarios en horizontal -->
+    <div class="flex gap-2 mb-2">
+      <button id="btn-volver-editar" class="flex-1 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_rehacer">← Volver a grabar</button>
+      <div class="relative flex-1">
+        <button id="btn-traducir-cv" class="w-full py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_traducir_cv">🌐 Traducir CV</button>
+        <select id="select-idioma-traduccion" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 hidden w-56 rounded-2xl border-2 p-3 text-base shadow-lg bg-white" style="border-color:var(--linea); color:var(--tinta)" size="8"></select>
+      </div>
+    </div>
+
+    <p id="txt-traduccion-estado" class="text-center text-sm mb-4 hidden" style="color:var(--musgo)" data-i18n="traduciendo_cv">Traduciendo tu currículum…</p>
+    <p id="aviso-error-traduccion" class="hidden mb-10 text-sm rounded-2xl border-2 p-4 max-w-xl mx-auto" style="border-color:#E3A0A0; background:#FBEAEA; color:#8A2E2E"></p>
+
+  </div><!-- /max-w-3xl zona descarga -->
+</section>
+
+<!-- ===== Modal: fuera de la app no se descarga (solo la app tiene anuncios y pagos) ===== -->
+<div id="modal-app" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){this.classList.add('hidden')}">
+  <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full m-auto text-center flex flex-col gap-5">
+    <p class="font-display text-2xl font-bold" style="color:var(--musgo)" data-i18n="app_titulo">Descarga tu CV desde la app</p>
+    <p class="text-base" style="color:var(--tinta)" data-i18n="app_desc">La descarga del currículum en PDF está disponible en la app CVoice para Android.</p>
+    <a href="https://play.google.com/store/apps/details?id=com.illustratedstudio.cvoice" target="_blank" rel="noopener"
+       class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md" style="background:var(--musgo)" data-i18n="app_boton">Conseguir CVoice en Google Play</a>
+    <button class="text-sm" style="color:#6B6354; min-height:44px" onclick="document.getElementById('modal-app').classList.add('hidden')" data-i18n="cerrar">Cerrar</button>
+  </div>
+</div>
+
+<!-- ===== Modal: confirmación de pago ===== -->
+<div id="modal-pago" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){cerrarModalPago();productoPendiente=null;}">
+  <div class="bg-white rounded-3xl shadow-2xl p-6 max-w-sm w-full m-auto text-center flex flex-col gap-4" onclick="event.stopPropagation()">
+    <span id="modal-pago-insignia" class="hidden self-center text-xs font-bold px-3 py-1 rounded-full" style="background:var(--ambar-suave); color:#8a5a1f" data-i18n="insignia_recomendado">⭐ Recomendado</span>
+    <p id="modal-pago-titulo" class="font-display text-2xl font-bold" style="color:var(--musgo)"></p>
+    <!-- Vista previa del CV del propio usuario con el diseño elegido -->
+    <div id="modal-pago-vista" class="mx-auto rounded-lg overflow-hidden shadow-lg" style="width:150px; height:212px; background:#fff; border:1px solid var(--linea); pointer-events:none; text-align:left"></div>
+    <ul id="modal-pago-ventajas" class="text-left text-sm mx-auto flex flex-col gap-1" style="color:var(--tinta)"></ul>
+    <button id="btn-confirmar-pago" class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)"></button>
+    <p class="text-xs" style="color:#6B6354" data-i18n="pago_pie">Sin suscripciones · Pago seguro con Google Play</p>
+    <button id="btn-cancelar-pago" class="text-sm" style="color:#6B6354; min-height:44px" data-i18n="ahora_no">Ahora no</button>
+  </div>
+</div>
+
+<!-- Aviso para navegadores sin reconocimiento de voz -->
+<div id="aviso-sin-voz" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-red-50 border-2 border-red-300 text-red-800 px-5 py-3 rounded-xl shadow-lg text-sm max-w-md text-center"></div>
+
+<canvas id="lienzo-foto-existe-arriba" class="hidden"></canvas>
+
+<script>
+/* =========================================================================
+   CVoice — lógica de la aplicación
+   - Multiidioma con detección automática
+   - Reconocimiento de voz por pasos
+   - Foto opcional por cámara
+   - Redacción y traducción del CV con IA (Groq, vía proxy en Vercel)
+   - 5 plantillas editables con zoom táctil, exportables a PDF
+   ========================================================================= */
+
+// ---------- 1. Idiomas y textos ----------
+const IDIOMAS = {
+  es: { nombre:"Español",   bandera:"🇪🇸", lang:"es-ES", dir:"ltr" },
+  en: { nombre:"English",   bandera:"🇬🇧", lang:"en-US", dir:"ltr" },
+  fr: { nombre:"Français",  bandera:"🇫🇷", lang:"fr-FR", dir:"ltr" },
+  de: { nombre:"Deutsch",   bandera:"🇩🇪", lang:"de-DE", dir:"ltr" },
+  it: { nombre:"Italiano",  bandera:"🇮🇹", lang:"it-IT", dir:"ltr" },
+  pt: { nombre:"Português", bandera:"🇵🇹", lang:"pt-PT", dir:"ltr" },
+  ar: { nombre:"العربية",   bandera:"🇸🇦", lang:"ar-SA", dir:"rtl" },
+  zh: { nombre:"中文",       bandera:"🇨🇳", lang:"zh-CN", dir:"ltr" },
+  ja: { nombre:"日本語",     bandera:"🇯🇵", lang:"ja-JP", dir:"ltr" },
+  ro: { nombre:"Română",    bandera:"🇷🇴", lang:"ro-RO", dir:"ltr" },
+  pl: { nombre:"Polski",    bandera:"🇵🇱", lang:"pl-PL", dir:"ltr" },
+  uk: { nombre:"Українська",bandera:"🇺🇦", lang:"uk-UA", dir:"ltr" },
+  ru: { nombre:"Русский",   bandera:"🇷🇺", lang:"ru-RU", dir:"ltr" },
+};
+
+const IDIOMAS_SOPORTADOS = Object.keys(IDIOMAS);
+
+function detectarIdiomaNavegador(){
+  const codigosNavegador = navigator.languages && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language || navigator.userLanguage || "en"];
+  for (const codigo of codigosNavegador){
+    if (!codigo) continue;
+    const prefijo = codigo.toLowerCase().split("-")[0];
+    if (IDIOMAS_SOPORTADOS.includes(prefijo)) return prefijo;
+  }
+  return "en";
+}
+
+const TEXTOS = {
+  es: {
+    subtitulo: "Habla. Nosotros redactamos tu currículum.",
+    boton_cambiar_idioma: "Cambiar idioma",
+    p1_titulo: "Tus datos personales",
+    p2_titulo: "Tu experiencia de trabajo",
+    p3_titulo: "Tus estudios",
+    p4_titulo: "Otros datos",
+    p5_titulo: "Tu foto (opcional)",
+    boton_abrir_camara: "📷 Abrir cámara", boton_capturar: "📸 Hacer foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar este paso →", boton_continuar: "Continuar →",
+    camara_sin_permiso: "No hemos podido acceder a la cámara. Revisa los permisos del navegador.",
+    placeholder_texto: "Aquí verás lo que vas diciendo…",
+    puedes_corregir: "¿Algo está mal? Puedes escribir o corregir aquí mismo.",
+    boton_siguiente: "Siguiente →", boton_anterior: "← Atrás",
+    mensaje_carga: "La IA está organizando y redactando tu CV con estilo profesional…",
+    error_ia_generico: "No hemos podido redactar tu currículum automáticamente. Revisa tu conexión a internet e inténtalo de nuevo.",
+    cv_titulo: "Tu currículum está listo", cv_ayuda: "Toca cualquier texto para corregirlo antes de descargar.",
+    cv_lateral_contacto: "Datos personales",
+    cv_lateral_otros: "Otros datos",
+    cv_formacion_complementaria: "Formación complementaria",
+    label_telefono: "Teléfono:", label_email: "Email:", label_ubicacion: "Ubicación:",
+    cv_bloque_experiencia: "Experiencia laboral", cv_bloque_estudios: "Estudios",
+    boton_rehacer: "← Volver a grabar",
+    boton_traducir_cv: "🌐 Traducir CV", traduciendo_cv: "Traduciendo tu currículum…", error_traduccion_generico: "No hemos podido traducir el currículum. Revisa tu conexión e inténtalo de nuevo.",
+    nombre_predeterminado: "NOMBRE APELLIDO",
+    p1_instruccion: "Pulsa el micrófono y dinos:",
+    p1_item1: "Tu nombre completo",
+    p1_item2: "Tu número de teléfono",
+    p1_item3: "Tu correo electrónico",
+    p1_item4: "Tu ciudad o municipio",
+    p2_item1: "Nombre de la empresa o negocio",
+    p2_item2: "Tu puesto o cargo",
+    p2_item3: "Años o fechas en que trabajaste",
+    p2_item4: "Qué tareas o funciones hacías",
+    p3_item1: "Nombre del centro educativo",
+    p3_item2: "Título o certificado obtenido",
+    p3_item3: "Año en que terminaste",
+    p3_item4: "Cursos o formaciones extra (si tienes)",
+    p4_item1: "Idiomas que hablas y nivel",
+    p4_item2: "Carnet de conducir (si tienes)",
+    p4_item3: "Disponibilidad horaria",
+    p4_item4: "Voluntariados o actividades extra (si tienes)",
+    sin_voz: "Tu navegador no permite usar el micrófono para esto. Prueba con Google Chrome.",
+  },
+  en: {
+    subtitulo: "Speak. We write your résumé.",
+    boton_cambiar_idioma: "Change language",
+    p1_titulo: "Your personal details",
+    p2_titulo: "Your work experience",
+    p3_titulo: "Your education",
+    p4_titulo: "Other details",
+    p5_titulo: "Your photo (optional)",
+    boton_abrir_camara: "📷 Open camera", boton_capturar: "📸 Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip this step →", boton_continuar: "Continue →",
+    camara_sin_permiso: "We couldn't access the camera. Check your browser permissions.",
+    placeholder_texto: "You'll see what you're saying here…",
+    puedes_corregir: "Something wrong? You can type or fix it right here.",
+    boton_siguiente: "Next →", boton_anterior: "← Back",
+    mensaje_carga: "The AI is organising and writing your résumé with a professional touch…",
+    error_ia_generico: "We couldn't write your résumé automatically. Check your internet connection and try again.",
+    cv_titulo: "Your résumé is ready", cv_ayuda: "Tap any text to fix it before downloading.",
+    cv_lateral_contacto: "Personal details",
+    cv_lateral_otros: "Other details",
+    cv_formacion_complementaria: "Additional training",
+    label_telefono: "Phone:", label_email: "Email:", label_ubicacion: "Location:",
+    cv_bloque_experiencia: "Work experience", cv_bloque_estudios: "Education",
+    boton_rehacer: "← Record again",
+    boton_traducir_cv: "🌐 Translate CV", traduciendo_cv: "Translating your résumé…", error_traduccion_generico: "We couldn't translate your résumé. Check your connection and try again.",
+    nombre_predeterminado: "FULL NAME",
+    p1_instruccion: "Tap the microphone and tell us:",
+    p1_item1: "Your full name",
+    p1_item2: "Your phone number",
+    p1_item3: "Your email address",
+    p1_item4: "Your city or town",
+    p2_item1: "Company or business name",
+    p2_item2: "Your job title or role",
+    p2_item3: "Years or dates you worked there",
+    p2_item4: "Tasks or duties you carried out",
+    p3_item1: "Name of the school or institution",
+    p3_item2: "Qualification or certificate obtained",
+    p3_item3: "Year you finished",
+    p3_item4: "Extra courses or training (if any)",
+    p4_item1: "Languages you speak and level",
+    p4_item2: "Driving licence (if you have one)",
+    p4_item3: "Availability or working hours",
+    p4_item4: "Volunteering or extra activities (if any)",
+    sin_voz: "Your browser doesn't support this. Try Google Chrome.",
+  },
+  fr: {
+    subtitulo: "Parlez. Nous rédigeons votre CV.",
+    boton_cambiar_idioma: "Changer de langue",
+    p1_titulo: "Vos informations personnelles",
+    p2_titulo: "Votre expérience professionnelle",
+    p3_titulo: "Vos études",
+    p4_titulo: "Autres informations",
+    p5_titulo: "Votre photo (facultatif)",
+    boton_abrir_camara: "📷 Ouvrir la caméra", boton_capturar: "📸 Prendre la photo", boton_repetir: "↺ Reprendre la photo", boton_saltar: "Passer cette étape →", boton_continuar: "Continuer →",
+    camara_sin_permiso: "Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.",
+    placeholder_texto: "Vous verrez ici ce que vous dites…",
+    puedes_corregir: "Une erreur ? Vous pouvez écrire ou corriger ici.",
+    boton_siguiente: "Suivant →", boton_anterior: "← Retour",
+    mensaje_carga: "L'IA organise et rédige votre CV avec une touche professionnelle…",
+    error_ia_generico: "Nous n'avons pas pu rédiger votre CV automatiquement. Vérifiez votre connexion internet et réessayez.",
+    cv_titulo: "Votre CV est prêt", cv_ayuda: "Touchez un texte pour le corriger avant de télécharger.",
+    cv_lateral_contacto: "Informations personnelles",
+    cv_lateral_otros: "Autres informations",
+    cv_formacion_complementaria: "Formation complémentaire",
+    label_telefono: "Téléphone:", label_email: "E-mail:", label_ubicacion: "Lieu:",
+    cv_bloque_experiencia: "Expérience professionnelle", cv_bloque_estudios: "Études",
+    boton_rehacer: "← Réenregistrer",
+    boton_traducir_cv: "🌐 Traduire le CV", traduciendo_cv: "Traduction de votre CV en cours…", error_traduccion_generico: "Nous n'avons pas pu traduire le CV. Vérifiez votre connexion et réessayez.",
+    nombre_predeterminado: "NOM PRÉNOM",
+    p1_instruccion: "Appuyez sur le micro et dites-nous :",
+    p1_item1: "Votre nom complet",
+    p1_item2: "Votre numéro de téléphone",
+    p1_item3: "Votre adresse e-mail",
+    p1_item4: "Votre ville ou commune",
+    p2_item1: "Nom de l'entreprise ou du commerce",
+    p2_item2: "Votre poste ou fonction",
+    p2_item3: "Années ou dates de travail",
+    p2_item4: "Tâches ou fonctions exercées",
+    p3_item1: "Nom de l'école ou de l'établissement",
+    p3_item2: "Diplôme ou certificat obtenu",
+    p3_item3: "Année d'obtention",
+    p3_item4: "Formations complémentaires (si vous en avez)",
+    p4_item1: "Langues parlées et niveau",
+    p4_item2: "Permis de conduire (si vous en avez un)",
+    p4_item3: "Disponibilité ou horaires",
+    p4_item4: "Bénévolat ou activités extra (si vous en avez)",
+    sin_voz: "Votre navigateur ne le permet pas. Essayez Google Chrome.",
+  },
+  de: {
+    subtitulo: "Sprechen Sie. Wir schreiben Ihren Lebenslauf.",
+    boton_cambiar_idioma: "Sprache ändern",
+    p1_titulo: "Ihre persönlichen Daten",
+    p2_titulo: "Ihre Berufserfahrung",
+    p3_titulo: "Ihre Ausbildung",
+    p4_titulo: "Weitere Angaben",
+    p5_titulo: "Ihr Foto (optional)",
+    boton_abrir_camara: "📷 Kamera öffnen", boton_capturar: "📸 Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Diesen Schritt überspringen →", boton_continuar: "Weiter →",
+    camara_sin_permiso: "Kein Zugriff auf die Kamera möglich. Prüfen Sie die Browser-Berechtigungen.",
+    placeholder_texto: "Hier sehen Sie, was Sie sagen…",
+    puedes_corregir: "Etwas falsch? Hier tippen oder korrigieren.",
+    boton_siguiente: "Weiter →", boton_anterior: "← Zurück",
+    mensaje_carga: "Die KI organisiert und verfasst Ihren Lebenslauf mit professionellem Schliff…",
+    error_ia_generico: "Ihr Lebenslauf konnte nicht automatisch erstellt werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+    cv_titulo: "Ihr Lebenslauf ist fertig", cv_ayuda: "Tippen Sie auf Text, um ihn vor dem Download zu korrigieren.",
+    cv_lateral_contacto: "Persönliche Daten",
+    cv_lateral_otros: "Weitere Angaben",
+    cv_formacion_complementaria: "Zusätzliche Ausbildung",
+    label_telefono: "Telefon:", label_email: "E-Mail:", label_ubicacion: "Ort:",
+    cv_bloque_experiencia: "Berufserfahrung", cv_bloque_estudios: "Ausbildung",
+    boton_rehacer: "← Neu aufnehmen",
+    boton_traducir_cv: "🌐 Lebenslauf übersetzen", traduciendo_cv: "Ihr Lebenslauf wird übersetzt…", error_traduccion_generico: "Der Lebenslauf konnte nicht übersetzt werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    nombre_predeterminado: "VOR- UND NACHNAME",
+    p1_instruccion: "Tippen Sie auf das Mikrofon und nennen Sie uns:",
+    p1_item1: "Ihr vollständiger Name",
+    p1_item2: "Ihre Telefonnummer",
+    p1_item3: "Ihre E-Mail-Adresse",
+    p1_item4: "Ihre Stadt oder Gemeinde",
+    p2_item1: "Name des Unternehmens",
+    p2_item2: "Ihre Position oder Berufsbezeichnung",
+    p2_item3: "Jahre oder Zeitraum der Beschäftigung",
+    p2_item4: "Aufgaben und Tätigkeiten",
+    p3_item1: "Name der Schule oder Einrichtung",
+    p3_item2: "Abschluss oder Zertifikat",
+    p3_item3: "Abschlussjahr",
+    p3_item4: "Zusätzliche Kurse oder Weiterbildungen",
+    p4_item1: "Sprachen und Niveau",
+    p4_item2: "Führerschein (falls vorhanden)",
+    p4_item3: "Verfügbarkeit oder Arbeitszeiten",
+    p4_item4: "Ehrenamt oder Zusatzaktivitäten",
+    sin_voz: "Ihr Browser unterstützt dies nicht. Versuchen Sie Google Chrome.",
+  },
+  it: {
+    subtitulo: "Parla. Noi scriviamo il tuo curriculum.",
+    boton_cambiar_idioma: "Cambia lingua",
+    p1_titulo: "I tuoi dati personali",
+    p2_titulo: "La tua esperienza lavorativa",
+    p3_titulo: "I tuoi studi",
+    p4_titulo: "Altri dati",
+    p5_titulo: "La tua foto (facoltativa)",
+    boton_abrir_camara: "📷 Apri fotocamera", boton_capturar: "📸 Scatta foto", boton_repetir: "↺ Rifai la foto", boton_saltar: "Salta questo passaggio →", boton_continuar: "Continua →",
+    camara_sin_permiso: "Non siamo riusciti ad accedere alla fotocamera. Controlla i permessi del browser.",
+    placeholder_texto: "Qui vedrai quello che stai dicendo…",
+    puedes_corregir: "Qualcosa non va? Puoi scrivere o correggere qui.",
+    boton_siguiente: "Avanti →", boton_anterior: "← Indietro",
+    mensaje_carga: "L'IA sta organizzando e scrivendo il tuo curriculum con un tocco professionale…",
+    error_ia_generico: "Non siamo riusciti a creare automaticamente il tuo curriculum. Controlla la connessione e riprova.",
+    cv_titulo: "Il tuo curriculum è pronto", cv_ayuda: "Tocca un testo per correggerlo prima di scaricare.",
+    cv_lateral_contacto: "Dati personali",
+    cv_lateral_otros: "Altri dati",
+    cv_formacion_complementaria: "Formazione complementare",
+    label_telefono: "Telefono:", label_email: "Email:", label_ubicacion: "Località:",
+    cv_bloque_experiencia: "Esperienza lavorativa", cv_bloque_estudios: "Istruzione",
+    boton_rehacer: "← Registra di nuovo",
+    boton_traducir_cv: "🌐 Traduci CV", traduciendo_cv: "Traduzione del curriculum in corso…", error_traduccion_generico: "Non siamo riusciti a tradurre il curriculum. Controlla la connessione e riprova.",
+    nombre_predeterminado: "NOME COGNOME",
+    p1_instruccion: "Tocca il microfono e dicci:",
+    p1_item1: "Il tuo nome completo",
+    p1_item2: "Il tuo numero di telefono",
+    p1_item3: "Il tuo indirizzo e-mail",
+    p1_item4: "La tua città o comune",
+    p2_item1: "Nome dell'azienda o attività",
+    p2_item2: "La tua posizione o ruolo",
+    p2_item3: "Anni o periodo di lavoro",
+    p2_item4: "Compiti o funzioni svolte",
+    p3_item1: "Nome della scuola o istituto",
+    p3_item2: "Titolo o certificato ottenuto",
+    p3_item3: "Anno di conseguimento",
+    p3_item4: "Corsi extra o formazione aggiuntiva",
+    p4_item1: "Lingue parlate e livello",
+    p4_item2: "Patente di guida (se ce l'hai)",
+    p4_item3: "Disponibilità oraria",
+    p4_item4: "Volontariato o attività extra",
+    sin_voz: "Il tuo browser non lo supporta. Prova con Google Chrome.",
+  },
+  pt: {
+    subtitulo: "Fale. Nós escrevemos o seu currículo.",
+    boton_cambiar_idioma: "Mudar idioma",
+    p1_titulo: "Os seus dados pessoais",
+    p2_titulo: "A sua experiência profissional",
+    p3_titulo: "Os seus estudos",
+    p4_titulo: "Outros dados",
+    p5_titulo: "A sua foto (opcional)",
+    boton_abrir_camara: "📷 Abrir câmara", boton_capturar: "📸 Tirar foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar este passo →", boton_continuar: "Continuar →",
+    camara_sin_permiso: "Não foi possível aceder à câmara. Verifique as permissões do navegador.",
+    placeholder_texto: "Aqui verá o que está a dizer…",
+    puedes_corregir: "Algo errado? Pode escrever ou corrigir aqui mesmo.",
+    boton_siguiente: "Seguinte →", boton_anterior: "← Voltar",
+    mensaje_carga: "A IA está a organizar e a escrever o seu currículo com um toque profissional…",
+    error_ia_generico: "Não foi possível criar o seu currículo automaticamente. Verifique a sua ligação à internet e tente novamente.",
+    cv_titulo: "O seu currículo está pronto", cv_ayuda: "Toque em qualquer texto para corrigir antes de descarregar.",
+    cv_lateral_contacto: "Dados pessoais",
+    cv_lateral_otros: "Outros dados",
+    cv_formacion_complementaria: "Formação complementar",
+    label_telefono: "Telefone:", label_email: "E-mail:", label_ubicacion: "Localização:",
+    cv_bloque_experiencia: "Experiência profissional", cv_bloque_estudios: "Estudos",
+    boton_rehacer: "← Gravar novamente",
+    boton_traducir_cv: "🌐 Traduzir CV", traduciendo_cv: "A traduzir o seu currículo…", error_traduccion_generico: "Não foi possível traduzir o currículo. Verifique a sua ligação e tente novamente.",
+    nombre_predeterminado: "NOME COMPLETO",
+    p1_instruccion: "Toque no microfone e diga-nos:",
+    p1_item1: "O seu nome completo",
+    p1_item2: "O seu número de telefone",
+    p1_item3: "O seu endereço de e-mail",
+    p1_item4: "A sua cidade ou município",
+    p2_item1: "Nome da empresa ou negócio",
+    p2_item2: "O seu cargo ou função",
+    p2_item3: "Anos ou período de trabalho",
+    p2_item4: "Tarefas ou funções desempenhadas",
+    p3_item1: "Nome da escola ou instituição",
+    p3_item2: "Título ou certificado obtido",
+    p3_item3: "Ano de conclusão",
+    p3_item4: "Cursos extra ou formação adicional",
+    p4_item1: "Línguas e nível",
+    p4_item2: "Carta de condução (se tiver)",
+    p4_item3: "Disponibilidade horária",
+    p4_item4: "Voluntariado ou atividades extra",
+    sin_voz: "O seu navegador não suporta isto. Experimente o Google Chrome.",
+  },
+  ar: {
+    subtitulo: "تحدّث. ونحن نكتب سيرتك الذاتية.",
+    boton_cambiar_idioma: "تغيير اللغة",
+    p1_titulo: "بياناتك الشخصية",
+    p2_titulo: "خبرتك العملية",
+    p3_titulo: "دراستك",
+    p4_titulo: "بيانات أخرى",
+    p5_titulo: "صورتك (اختياري)",
+    boton_abrir_camara: "📷 فتح الكاميرا", boton_capturar: "📸 التقاط صورة", boton_repetir: "↺ إعادة التصوير", boton_saltar: "← تخطي هذه الخطوة", boton_continuar: "← متابعة",
+    camara_sin_permiso: "تعذّر الوصول إلى الكاميرا. تحقق من أذونات المتصفح.",
+    placeholder_texto: "سترى هنا ما تقوله…",
+    puedes_corregir: "هل هناك خطأ؟ يمكنك الكتابة أو التصحيح هنا.",
+    boton_siguiente: "التالي ←", boton_anterior: "→ السابق",
+    mensaje_carga: "الذكاء الاصطناعي ينظّم ويكتب سيرتك الذاتية بأسلوب مهني…",
+    error_ia_generico: "تعذّر إنشاء سيرتك الذاتية تلقائيًا. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
+    cv_titulo: "سيرتك الذاتية جاهزة", cv_ayuda: "اضغط على أي نص لتصحيحه قبل التحميل.",
+    cv_lateral_contacto: "البيانات الشخصية",
+    cv_lateral_otros: "بيانات أخرى",
+    cv_formacion_complementaria: "تدريب إضافي",
+    label_telefono: "هاتف:", label_email: "بريد:", label_ubicacion: "الموقع:",
+    cv_bloque_experiencia: "الخبرة العملية", cv_bloque_estudios: "الدراسة",
+    boton_rehacer: "→ التسجيل من جديد",
+    boton_traducir_cv: "🌐 ترجمة السيرة الذاتية", traduciendo_cv: "جارٍ ترجمة سيرتك الذاتية…", error_traduccion_generico: "تعذّر ترجمة السيرة الذاتية. تحقق من اتصالك وحاول مرة أخرى.",
+    nombre_predeterminado: "الاسم الكامل",
+    p1_instruccion: "اضغط على الميكروفون وأخبرنا:",
+    p1_item1: "اسمك الكامل",
+    p1_item2: "رقم هاتفك",
+    p1_item3: "بريدك الإلكتروني",
+    p1_item4: "مدينتك أو بلدتك",
+    p2_item1: "اسم الشركة أو العمل",
+    p2_item2: "منصبك أو وظيفتك",
+    p2_item3: "سنوات أو فترة العمل",
+    p2_item4: "المهام والوظائف التي أدّيتها",
+    p3_item1: "اسم المدرسة أو المؤسسة",
+    p3_item2: "الشهادة أو الدبلوم الحاصل عليه",
+    p3_item3: "سنة التخرج أو الإتمام",
+    p3_item4: "دورات إضافية أو تدريب (إن وجد)",
+    p4_item1: "اللغات التي تتحدثها ومستواها",
+    p4_item2: "رخصة القيادة (إن كانت لديك)",
+    p4_item3: "مدى التوفر أو ساعات العمل",
+    p4_item4: "تطوع أو أنشطة إضافية (إن وجدت)",
+    sin_voz: "متصفحك لا يدعم هذه الميزة. جرّب جوجل كروم.",
+  },
+  zh: {
+    subtitulo: "你只管说，简历我们来写。",
+    boton_cambiar_idioma: "更改语言",
+    p1_titulo: "个人资料",
+    p2_titulo: "工作经历",
+    p3_titulo: "教育经历",
+    p4_titulo: "其他信息",
+    p5_titulo: "你的照片（可选）",
+    boton_abrir_camara: "📷 打开相机", boton_capturar: "📸 拍照", boton_repetir: "↺ 重新拍照", boton_saltar: "跳过此步骤 →", boton_continuar: "继续 →",
+    camara_sin_permiso: "无法访问相机，请检查浏览器权限设置。",
+    placeholder_texto: "你说的内容会显示在这里…",
+    puedes_corregir: "有错误吗？你可以在这里直接输入或修改。",
+    boton_siguiente: "下一步 →", boton_anterior: "← 上一步",
+    mensaje_carga: "AI 正在以专业的方式整理和撰写你的简历…",
+    error_ia_generico: "无法自动生成简历。请检查网络连接后重试。",
+    cv_titulo: "你的简历已完成", cv_ayuda: "点击任意文字即可在下载前修改。",
+    cv_lateral_contacto: "个人信息",
+    cv_lateral_otros: "其他信息",
+    cv_formacion_complementaria: "补充培训",
+    label_telefono: "电话：", label_email: "邮箱：", label_ubicacion: "地点：",
+    cv_bloque_experiencia: "工作经历", cv_bloque_estudios: "教育经历",
+    boton_rehacer: "← 重新录制",
+    boton_traducir_cv: "🌐 翻译简历", traduciendo_cv: "正在翻译您的简历…", error_traduccion_generico: "无法翻译简历。请检查网络连接后重试。",
+    nombre_predeterminado: "姓名",
+    p1_instruccion: "点击麦克风，告诉我们：",
+    p1_item1: "你的全名",
+    p1_item2: "你的电话号码",
+    p1_item3: "你的电子邮箱",
+    p1_item4: "你所在的城市或地区",
+    p2_item1: "公司或企业名称",
+    p2_item2: "你的职位或岗位",
+    p2_item3: "工作年份或时间段",
+    p2_item4: "你承担的工作任务或职责",
+    p3_item1: "学校或机构名称",
+    p3_item2: "所获学历或证书",
+    p3_item3: "结业年份",
+    p3_item4: "额外课程或培训（如有）",
+    p4_item1: "会说的语言及水平",
+    p4_item2: "驾驶证（如有）",
+    p4_item3: "工作时间或可用性",
+    p4_item4: "志愿服务或其他活动（如有）",
+    sin_voz: "你的浏览器不支持此功能，请尝试使用 Google Chrome。",
+  },
+  ja: {
+    subtitulo: "話すだけ。履歴書は私たちが作ります。",
+    boton_cambiar_idioma: "言語を変更",
+    p1_titulo: "基本情報",
+    p2_titulo: "職務経歴",
+    p3_titulo: "学歴",
+    p4_titulo: "その他の情報",
+    p5_titulo: "写真（任意）",
+    boton_abrir_camara: "📷 カメラを開く", boton_capturar: "📸 撮影する", boton_repetir: "↺ 撮り直す", boton_saltar: "このステップを省略 →", boton_continuar: "続ける →",
+    camara_sin_permiso: "カメラにアクセスできませんでした。ブラウザの権限設定を確認してください。",
+    placeholder_texto: "話した内容がここに表示されます…",
+    puedes_corregir: "間違いがありますか？ここで直接入力・修正できます。",
+    boton_siguiente: "次へ →", boton_anterior: "← 戻る",
+    mensaje_carga: "AIがあなたの履歴書をプロフェッショナルな仕上がりに整理・執筆しています…",
+    error_ia_generico: "履歴書を自動作成できませんでした。インターネット接続を確認して再度お試しください。",
+    cv_titulo: "履歴書が完成しました", cv_ayuda: "ダウンロード前にテキストをタップして修正できます。",
+    cv_lateral_contacto: "個人情報",
+    cv_lateral_otros: "その他の情報",
+    cv_formacion_complementaria: "補足的な研修",
+    label_telefono: "電話：", label_email: "メール：", label_ubicacion: "所在地：",
+    cv_bloque_experiencia: "職務経歴", cv_bloque_estudios: "学歴",
+    boton_rehacer: "← 録音し直す",
+    boton_traducir_cv: "🌐 履歴書を翻訳", traduciendo_cv: "履歴書を翻訳しています…", error_traduccion_generico: "履歴書を翻訳できませんでした。接続を確認して再度お試しください。",
+    nombre_predeterminado: "氏名",
+    p1_instruccion: "マイクをタップして、次のことを話してください：",
+    p1_item1: "フルネーム",
+    p1_item2: "電話番号",
+    p1_item3: "メールアドレス",
+    p1_item4: "市区町村",
+    p2_item1: "会社名または事業所名",
+    p2_item2: "役職またはポジション",
+    p2_item3: "在籍期間または年数",
+    p2_item4: "担当した業務内容",
+    p3_item1: "学校または機関の名称",
+    p3_item2: "取得した学位または資格",
+    p3_item3: "修了・卒業年",
+    p3_item4: "追加コースや研修（あれば）",
+    p4_item1: "話せる言語とレベル",
+    p4_item2: "運転免許（あれば）",
+    p4_item3: "勤務可能な時間帯",
+    p4_item4: "ボランティアや課外活動（あれば）",
+    sin_voz: "お使いのブラウザでは対応していません。Google Chromeをお試しください。",
+  },
+  ro: {
+    subtitulo: "Vorbește. Noi scriem CV-ul tău.",
+    boton_cambiar_idioma: "Schimbă limba",
+    p1_titulo: "Datele tale personale",
+    p2_titulo: "Experiența ta profesională",
+    p3_titulo: "Studiile tale",
+    p4_titulo: "Alte date",
+    p5_titulo: "Fotografia ta (opțional)",
+    boton_abrir_camara: "📷 Deschide camera", boton_capturar: "📸 Fă poza", boton_repetir: "↺ Repetă poza", boton_saltar: "Sari peste acest pas →", boton_continuar: "Continuă →",
+    camara_sin_permiso: "Nu am putut accesa camera. Verifică permisiunile browserului.",
+    placeholder_texto: "Aici vei vedea ce spui…",
+    puedes_corregir: "Ceva e greșit? Poți scrie sau corecta chiar aici.",
+    boton_siguiente: "Continuă →", boton_anterior: "← Înapoi",
+    mensaje_carga: "IA organizează și redactează CV-ul tău cu o notă profesională…",
+    error_ia_generico: "Nu am putut crea automat CV-ul. Verifică conexiunea la internet și încearcă din nou.",
+    cv_titulo: "CV-ul tău este pregătit", cv_ayuda: "Apasă pe orice text pentru a-l corecta înainte de descărcare.",
+    cv_lateral_contacto: "Date personale",
+    cv_lateral_otros: "Alte date",
+    cv_formacion_complementaria: "Formare complementară",
+    label_telefono: "Telefon:", label_email: "Email:", label_ubicacion: "Locație:",
+    cv_bloque_experiencia: "Experiență profesională", cv_bloque_estudios: "Studii",
+    boton_rehacer: "← Înregistrează din nou",
+    boton_traducir_cv: "🌐 Tradu CV-ul", traduciendo_cv: "Se traduce CV-ul tău…", error_traduccion_generico: "Nu am putut traduce CV-ul. Verifică conexiunea și încearcă din nou.",
+    nombre_predeterminado: "NUME PRENUME",
+    p1_instruccion: "Apasă pe microfon și spune-ne:",
+    p1_item1: "Numele tău complet",
+    p1_item2: "Numărul tău de telefon",
+    p1_item3: "Adresa ta de e-mail",
+    p1_item4: "Orașul sau municipiul tău",
+    p2_item1: "Numele companiei sau afacerii",
+    p2_item2: "Funcția sau postul tău",
+    p2_item3: "Ani sau perioadă de lucru",
+    p2_item4: "Sarcini sau activități desfășurate",
+    p3_item1: "Numele școlii sau instituției",
+    p3_item2: "Diplomă sau certificat obținut",
+    p3_item3: "Anul absolvirii",
+    p3_item4: "Cursuri suplimentare sau formare (dacă există)",
+    p4_item1: "Limbi vorbite și nivel",
+    p4_item2: "Permis de conducere (dacă ai)",
+    p4_item3: "Disponibilitate sau program de lucru",
+    p4_item4: "Voluntariat sau activități extra",
+    sin_voz: "Browserul tău nu permite acest lucru. Încearcă Google Chrome.",
+  },
+  pl: {
+    subtitulo: "Mów. My napiszemy Twoje CV.",
+    boton_cambiar_idioma: "Zmień język",
+    p1_titulo: "Twoje dane osobowe",
+    p2_titulo: "Twoje doświadczenie zawodowe",
+    p3_titulo: "Twoja edukacja",
+    p4_titulo: "Inne informacje",
+    p5_titulo: "Twoje zdjęcie (opcjonalnie)",
+    boton_abrir_camara: "📷 Otwórz kamerę", boton_capturar: "📸 Zrób zdjęcie", boton_repetir: "↺ Powtórz zdjęcie", boton_saltar: "Pomiń ten krok →", boton_continuar: "Kontynuuj →",
+    camara_sin_permiso: "Nie udało się uzyskać dostępu do kamery. Sprawdź uprawnienia przeglądarki.",
+    placeholder_texto: "Tutaj zobaczysz, co mówisz…",
+    puedes_corregir: "Coś jest nie tak? Możesz tu pisać lub poprawiać.",
+    boton_siguiente: "Dalej →", boton_anterior: "← Wstecz",
+    mensaje_carga: "AI organizuje i pisze Twoje CV z profesjonalnym wyczuciem…",
+    error_ia_generico: "Nie udało się automatycznie utworzyć CV. Sprawdź połączenie internetowe i spróbuj ponownie.",
+    cv_titulo: "Twoje CV jest gotowe", cv_ayuda: "Dotknij dowolny tekst, aby go poprawić przed pobraniem.",
+    cv_lateral_contacto: "Dane osobowe",
+    cv_lateral_otros: "Inne informacje",
+    cv_formacion_complementaria: "Dodatkowe szkolenia",
+    label_telefono: "Telefon:", label_email: "Email:", label_ubicacion: "Lokalizacja:",
+    cv_bloque_experiencia: "Doświadczenie zawodowe", cv_bloque_estudios: "Edukacja",
+    boton_rehacer: "← Nagraj ponownie",
+    boton_traducir_cv: "🌐 Przetłumacz CV", traduciendo_cv: "Tłumaczenie CV…", error_traduccion_generico: "Nie udało się przetłumaczyć CV. Sprawdź połączenie i spróbuj ponownie.",
+    nombre_predeterminado: "IMIĘ I NAZWISKO",
+    p1_instruccion: "Naciśnij mikrofon i powiedz nam:",
+    p1_item1: "Twoje imię i nazwisko",
+    p1_item2: "Twój numer telefonu",
+    p1_item3: "Twój adres e-mail",
+    p1_item4: "Twoje miasto lub gmina",
+    p2_item1: "Nazwa firmy lub przedsiębiorstwa",
+    p2_item2: "Twoje stanowisko",
+    p2_item3: "Lata lub okres pracy",
+    p2_item4: "Wykonywane zadania i obowiązki",
+    p3_item1: "Nazwa szkoły lub instytucji",
+    p3_item2: "Uzyskany tytuł lub certyfikat",
+    p3_item3: "Rok ukończenia",
+    p3_item4: "Dodatkowe kursy lub szkolenia (jeśli są)",
+    p4_item1: "Języki i poziom zaawansowania",
+    p4_item2: "Prawo jazdy (jeśli masz)",
+    p4_item3: "Dyspozycyjność lub godziny pracy",
+    p4_item4: "Wolontariat lub dodatkowe aktywności",
+    sin_voz: "Twoja przeglądarka nie wspiera tej funkcji. Wypróbuj Google Chrome.",
+  },
+  uk: {
+    subtitulo: "Говоріть. Ми напишемо ваше резюме.",
+    boton_cambiar_idioma: "Змінити мову",
+    p1_titulo: "Ваші особисті дані",
+    p2_titulo: "Ваш досвід роботи",
+    p3_titulo: "Ваша освіта",
+    p4_titulo: "Інші дані",
+    p5_titulo: "Ваше фото (необов'язково)",
+    boton_abrir_camara: "📷 Відкрити камеру", boton_capturar: "📸 Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "← Пропустити цей крок", boton_continuar: "← Продовжити",
+    camara_sin_permiso: "Не вдалося отримати доступ до камери. Перевірте дозволи браузера.",
+    placeholder_texto: "Тут з'явиться те, що ви говорите…",
+    puedes_corregir: "Щось не так? Можете написати або виправити тут.",
+    boton_siguiente: "Далі →", boton_anterior: "← Назад",
+    mensaje_carga: "ШІ організовує та пише ваше резюме у професійному стилі…",
+    error_ia_generico: "Не вдалося автоматично створити резюме. Перевірте з'єднання з інтернетом і спробуйте ще раз.",
+    cv_titulo: "Ваше резюме готове", cv_ayuda: "Торкніться будь-якого тексту, щоб виправити перед завантаженням.",
+    cv_lateral_contacto: "Особисті дані",
+    cv_lateral_otros: "Інші дані",
+    cv_formacion_complementaria: "Додаткова підготовка",
+    label_telefono: "Телефон:", label_email: "Email:", label_ubicacion: "Місце:",
+    cv_bloque_experiencia: "Досвід роботи", cv_bloque_estudios: "Освіта",
+    boton_rehacer: "← Записати знову",
+    boton_traducir_cv: "🌐 Перекласти резюме", traduciendo_cv: "Перекладаємо ваше резюме…", error_traduccion_generico: "Не вдалося перекласти резюме. Перевірте з'єднання і спробуйте ще раз.",
+    nombre_predeterminado: "ІМ'Я ТА ПРІЗВИЩЕ",
+    p1_instruccion: "Натисніть на мікрофон і розкажіть нам:",
+    p1_item1: "Ваше повне ім'я",
+    p1_item2: "Ваш номер телефону",
+    p1_item3: "Ваша адреса електронної пошти",
+    p1_item4: "Ваше місто або населений пункт",
+    p2_item1: "Назва компанії або підприємства",
+    p2_item2: "Ваша посада",
+    p2_item3: "Роки або період роботи",
+    p2_item4: "Виконувані завдання та обов'язки",
+    p3_item1: "Назва закладу освіти",
+    p3_item2: "Отриманий диплом або сертифікат",
+    p3_item3: "Рік закінчення",
+    p3_item4: "Додаткові курси або навчання (якщо є)",
+    p4_item1: "Мови та рівень володіння",
+    p4_item2: "Водійське посвідчення (якщо є)",
+    p4_item3: "Доступність або графік роботи",
+    p4_item4: "Волонтерство або додаткові активності",
+    sin_voz: "Ваш браузер не підтримує цю функцію. Спробуйте Google Chrome.",
+  },
+  ru: {
+    subtitulo: "Говорите. Мы напишем ваше резюме.",
+    boton_cambiar_idioma: "Изменить язык",
+    p1_titulo: "Ваши личные данные",
+    p2_titulo: "Ваш опыт работы",
+    p3_titulo: "Ваше образование",
+    p4_titulo: "Другие данные",
+    p5_titulo: "Ваше фото (необязательно)",
+    boton_abrir_camara: "📷 Открыть камеру", boton_capturar: "📸 Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "← Пропустить этот шаг", boton_continuar: "← Продолжить",
+    camara_sin_permiso: "Не удалось получить доступ к камере. Проверьте разрешения браузера.",
+    placeholder_texto: "Здесь появится то, что вы говорите…",
+    puedes_corregir: "Что-то не так? Можете написать или исправить здесь.",
+    boton_siguiente: "Далее →", boton_anterior: "← Назад",
+    mensaje_carga: "ИИ организует и пишет ваше резюме в профессиональном стиле…",
+    error_ia_generico: "Не удалось автоматически создать резюме. Проверьте подключение к интернету и попробуйте снова.",
+    cv_titulo: "Ваше резюме готово", cv_ayuda: "Коснитесь любого текста, чтобы исправить его перед скачиванием.",
+    cv_lateral_contacto: "Личные данные",
+    cv_lateral_otros: "Другие данные",
+    cv_formacion_complementaria: "Дополнительное обучение",
+    label_telefono: "Телефон:", label_email: "Email:", label_ubicacion: "Место:",
+    cv_bloque_experiencia: "Опыт работы", cv_bloque_estudios: "Образование",
+    boton_rehacer: "← Записать снова",
+    boton_traducir_cv: "🌐 Перевести резюме", traduciendo_cv: "Переводим ваше резюме…", error_traduccion_generico: "Не удалось перевести резюме. Проверьте подключение и попробуйте снова.",
+    nombre_predeterminado: "ИМЯ ФАМИЛИЯ",
+    p1_instruccion: "Нажмите на микрофон и расскажите нам:",
+    p1_item1: "Ваше полное имя",
+    p1_item2: "Ваш номер телефона",
+    p1_item3: "Ваш адрес электронной почты",
+    p1_item4: "Ваш город или населённый пункт",
+    p2_item1: "Название компании или предприятия",
+    p2_item2: "Ваша должность",
+    p2_item3: "Годы или период работы",
+    p2_item4: "Выполняемые задачи и обязанности",
+    p3_item1: "Название учебного заведения",
+    p3_item2: "Полученный диплом или сертификат",
+    p3_item3: "Год окончания",
+    p3_item4: "Дополнительные курсы или обучение (если есть)",
+    p4_item1: "Языки и уровень владения",
+    p4_item2: "Водительские права (если есть)",
+    p4_item3: "Доступность или график работы",
+    p4_item4: "Волонтёрство или дополнительные занятия",
+    sin_voz: "Ваш браузер не поддерживает эту функцию. Попробуйте Google Chrome.",
+  },
+};
+
+// Textos de la pantalla final, venta y avisos en todos los idiomas.
+// {precio} y {diseno} se sustituyen al usarlos (ver tx()).
+const TEXTOS_EXTRA = {
+  es: {
+    cv_bloque_perfil: "Perfil profesional", cv_bloque_habilidades: "Habilidades",
+    elige_estilo: "Elige el diseño de tu currículum:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Clásico", diseno_prem1: "Ejecutivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    cta_gratis: "DESCARGAR GRATIS", cta_gratis_sub: "(viendo un vídeo corto)", cta_premium: "DESCARGAR · {precio}", cta_premium_sub: "Diseño {diseno} · Sin suscripciones · Sin anuncios",
+    cta_sin_anuncio: "Descarga inmediata sin anuncio por {precio}",
+    pago_titulo_premium: "Diseño {diseno}", pago_titulo_sin_anuncio: "Descarga sin anuncios", insignia_recomendado: "⭐ Recomendado",
+    pago_ventaja_premium_1: "Un diseño que destaca entre los candidatos", pago_ventaja_premium_2: "Listo para enviar a empresas en PDF", pago_ventaja_premium_3: "Sin anuncios",
+    pago_ventaja_basico_1: "Descarga inmediata", pago_ventaja_basico_2: "Sin ver ningún vídeo", pago_ventaja_basico_3: "Listo para enviar a empresas en PDF",
+    pago_pie: "Sin suscripciones · Pago seguro con Google Play", boton_pagar: "Descargar por {precio}", ahora_no: "Ahora no",
+    app_titulo: "Descarga tu CV desde la app", app_desc: "La descarga del currículum en PDF está disponible en la app CVoice para Android.", app_boton: "Conseguir CVoice en Google Play", cerrar: "Cerrar",
+    aviso_cargando_video: "Cargando el vídeo…", aviso_descargando: "Descargando tu currículum…", aviso_video_completo: "Para la descarga gratuita hay que ver el vídeo completo.",
+    aviso_pago_error: "No se ha podido completar el pago. Inténtalo de nuevo.", aviso_pago_pendiente: "Pago pendiente de confirmar. Cuando Google lo confirme, vuelve a pulsar descargar.",
+    aria_grabar: "Grabar voz",
+  },
+  en: {
+    cv_bloque_perfil: "Professional profile", cv_bloque_habilidades: "Skills",
+    elige_estilo: "Choose your résumé design:", etiqueta_gratis: "FREE", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate",
+    cta_gratis: "DOWNLOAD FREE", cta_gratis_sub: "(by watching a short video)", cta_premium: "DOWNLOAD · {precio}", cta_premium_sub: "{diseno} design · No subscription · No ads",
+    cta_sin_anuncio: "Instant download without ads for {precio}",
+    pago_titulo_premium: "{diseno} design", pago_titulo_sin_anuncio: "Download without ads", insignia_recomendado: "⭐ Recommended",
+    pago_ventaja_premium_1: "A design that stands out from other candidates", pago_ventaja_premium_2: "Ready to send to employers as a PDF", pago_ventaja_premium_3: "No ads",
+    pago_ventaja_basico_1: "Instant download", pago_ventaja_basico_2: "No video to watch", pago_ventaja_basico_3: "Ready to send to employers as a PDF",
+    pago_pie: "No subscription · Secure payment with Google Play", boton_pagar: "Download for {precio}", ahora_no: "Not now",
+    app_titulo: "Download your CV in the app", app_desc: "Downloading your résumé as a PDF is available in the CVoice app for Android.", app_boton: "Get CVoice on Google Play", cerrar: "Close",
+    aviso_cargando_video: "Loading the video…", aviso_descargando: "Downloading your résumé…", aviso_video_completo: "To download for free you need to watch the whole video.",
+    aviso_pago_error: "The payment could not be completed. Please try again.", aviso_pago_pendiente: "Payment pending confirmation. Once Google confirms it, tap download again.",
+    aria_grabar: "Record voice",
+  },
+  fr: {
+    cv_bloque_perfil: "Profil professionnel", cv_bloque_habilidades: "Compétences",
+    elige_estilo: "Choisissez le design de votre CV :", etiqueta_gratis: "GRATUIT", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Classique", diseno_prem1: "Exécutif", diseno_prem2: "Éditorial", diseno_prem3: "Moderne", diseno_prem4: "Entreprise",
+    cta_gratis: "TÉLÉCHARGER GRATUITEMENT", cta_gratis_sub: "(en regardant une courte vidéo)", cta_premium: "TÉLÉCHARGER · {precio}", cta_premium_sub: "Design {diseno} · Sans abonnement · Sans publicité",
+    cta_sin_anuncio: "Téléchargement immédiat sans publicité pour {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Téléchargement sans publicité", insignia_recomendado: "⭐ Recommandé",
+    pago_ventaja_premium_1: "Un design qui se démarque des autres candidats", pago_ventaja_premium_2: "Prêt à envoyer aux entreprises en PDF", pago_ventaja_premium_3: "Sans publicité",
+    pago_ventaja_basico_1: "Téléchargement immédiat", pago_ventaja_basico_2: "Aucune vidéo à regarder", pago_ventaja_basico_3: "Prêt à envoyer aux entreprises en PDF",
+    pago_pie: "Sans abonnement · Paiement sécurisé avec Google Play", boton_pagar: "Télécharger pour {precio}", ahora_no: "Pas maintenant",
+    app_titulo: "Téléchargez votre CV dans l'application", app_desc: "Le téléchargement du CV en PDF est disponible dans l'application CVoice pour Android.", app_boton: "Obtenir CVoice sur Google Play", cerrar: "Fermer",
+    aviso_cargando_video: "Chargement de la vidéo…", aviso_descargando: "Téléchargement de votre CV…", aviso_video_completo: "Pour le téléchargement gratuit, il faut regarder toute la vidéo.",
+    aviso_pago_error: "Le paiement n'a pas pu être effectué. Réessayez.", aviso_pago_pendiente: "Paiement en attente de confirmation. Quand Google le confirmera, appuyez de nouveau sur télécharger.",
+    aria_grabar: "Enregistrer la voix",
+  },
+  de: {
+    cv_bloque_perfil: "Berufsprofil", cv_bloque_habilidades: "Fähigkeiten",
+    elige_estilo: "Wähle das Design deines Lebenslaufs:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Klassisch", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Business",
+    cta_gratis: "KOSTENLOS HERUNTERLADEN", cta_gratis_sub: "(mit einem kurzen Video)", cta_premium: "HERUNTERLADEN · {precio}", cta_premium_sub: "Design {diseno} · Kein Abo · Ohne Werbung",
+    cta_sin_anuncio: "Sofort ohne Werbung herunterladen für {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download ohne Werbung", insignia_recomendado: "⭐ Empfohlen",
+    pago_ventaja_premium_1: "Ein Design, das unter den Bewerbern auffällt", pago_ventaja_premium_2: "Als PDF bereit für Arbeitgeber", pago_ventaja_premium_3: "Ohne Werbung",
+    pago_ventaja_basico_1: "Sofortiger Download", pago_ventaja_basico_2: "Kein Video ansehen", pago_ventaja_basico_3: "Als PDF bereit für Arbeitgeber",
+    pago_pie: "Kein Abo · Sichere Zahlung über Google Play", boton_pagar: "Für {precio} herunterladen", ahora_no: "Jetzt nicht",
+    app_titulo: "Lade deinen Lebenslauf in der App herunter", app_desc: "Der Download des Lebenslaufs als PDF ist in der CVoice-App für Android verfügbar.", app_boton: "CVoice bei Google Play holen", cerrar: "Schließen",
+    aviso_cargando_video: "Video wird geladen…", aviso_descargando: "Dein Lebenslauf wird heruntergeladen…", aviso_video_completo: "Für den kostenlosen Download musst du das ganze Video ansehen.",
+    aviso_pago_error: "Die Zahlung konnte nicht abgeschlossen werden. Bitte versuche es erneut.", aviso_pago_pendiente: "Zahlung wartet auf Bestätigung. Sobald Google sie bestätigt, tippe erneut auf Herunterladen.",
+    aria_grabar: "Sprache aufnehmen",
+  },
+  it: {
+    cv_bloque_perfil: "Profilo professionale", cv_bloque_habilidades: "Competenze",
+    elige_estilo: "Scegli il design del tuo curriculum:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Classico", diseno_prem1: "Executive", diseno_prem2: "Editoriale", diseno_prem3: "Moderno", diseno_prem4: "Aziendale",
+    cta_gratis: "SCARICA GRATIS", cta_gratis_sub: "(guardando un breve video)", cta_premium: "SCARICA · {precio}", cta_premium_sub: "Design {diseno} · Nessun abbonamento · Senza pubblicità",
+    cta_sin_anuncio: "Download immediato senza pubblicità per {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download senza pubblicità", insignia_recomendado: "⭐ Consigliato",
+    pago_ventaja_premium_1: "Un design che si distingue tra i candidati", pago_ventaja_premium_2: "Pronto da inviare alle aziende in PDF", pago_ventaja_premium_3: "Senza pubblicità",
+    pago_ventaja_basico_1: "Download immediato", pago_ventaja_basico_2: "Nessun video da guardare", pago_ventaja_basico_3: "Pronto da inviare alle aziende in PDF",
+    pago_pie: "Nessun abbonamento · Pagamento sicuro con Google Play", boton_pagar: "Scarica per {precio}", ahora_no: "Non ora",
+    app_titulo: "Scarica il tuo CV dall'app", app_desc: "Il download del curriculum in PDF è disponibile nell'app CVoice per Android.", app_boton: "Scarica CVoice da Google Play", cerrar: "Chiudi",
+    aviso_cargando_video: "Caricamento del video…", aviso_descargando: "Download del tuo curriculum…", aviso_video_completo: "Per il download gratuito devi guardare tutto il video.",
+    aviso_pago_error: "Non è stato possibile completare il pagamento. Riprova.", aviso_pago_pendiente: "Pagamento in attesa di conferma. Quando Google lo confermerà, tocca di nuovo scarica.",
+    aria_grabar: "Registra voce",
+  },
+  pt: {
+    cv_bloque_perfil: "Perfil profissional", cv_bloque_habilidades: "Competências",
+    elige_estilo: "Escolhe o design do teu currículo:", etiqueta_gratis: "GRÁTIS", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Clássico", diseno_prem1: "Executivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    cta_gratis: "DESCARREGAR GRÁTIS", cta_gratis_sub: "(vendo um vídeo curto)", cta_premium: "DESCARREGAR · {precio}", cta_premium_sub: "Design {diseno} · Sem subscrição · Sem anúncios",
+    cta_sin_anuncio: "Download imediato sem anúncios por {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download sem anúncios", insignia_recomendado: "⭐ Recomendado",
+    pago_ventaja_premium_1: "Um design que se destaca entre os candidatos", pago_ventaja_premium_2: "Pronto a enviar às empresas em PDF", pago_ventaja_premium_3: "Sem anúncios",
+    pago_ventaja_basico_1: "Download imediato", pago_ventaja_basico_2: "Sem ver nenhum vídeo", pago_ventaja_basico_3: "Pronto a enviar às empresas em PDF",
+    pago_pie: "Sem subscrição · Pagamento seguro com Google Play", boton_pagar: "Descarregar por {precio}", ahora_no: "Agora não",
+    app_titulo: "Descarrega o teu CV na app", app_desc: "O download do currículo em PDF está disponível na app CVoice para Android.", app_boton: "Obter CVoice no Google Play", cerrar: "Fechar",
+    aviso_cargando_video: "A carregar o vídeo…", aviso_descargando: "A descarregar o teu currículo…", aviso_video_completo: "Para o download grátis é preciso ver o vídeo completo.",
+    aviso_pago_error: "Não foi possível concluir o pagamento. Tenta novamente.", aviso_pago_pendiente: "Pagamento pendente de confirmação. Quando a Google o confirmar, volta a tocar em descarregar.",
+    aria_grabar: "Gravar voz",
+  },
+  ar: {
+    cv_bloque_perfil: "الملف المهني", cv_bloque_habilidades: "المهارات",
+    elige_estilo: "اختر تصميم سيرتك الذاتية:", etiqueta_gratis: "مجاني", etiqueta_premium: "مميز",
+    diseno_basico: "كلاسيكي", diseno_prem1: "تنفيذي", diseno_prem2: "تحريري", diseno_prem3: "عصري", diseno_prem4: "مؤسسي",
+    cta_gratis: "تنزيل مجاني", cta_gratis_sub: "(بمشاهدة فيديو قصير)", cta_premium: "تنزيل · {precio}", cta_premium_sub: "تصميم {diseno} · بدون اشتراك · بدون إعلانات",
+    cta_sin_anuncio: "تنزيل فوري بدون إعلانات مقابل {precio}",
+    pago_titulo_premium: "تصميم {diseno}", pago_titulo_sin_anuncio: "تنزيل بدون إعلانات", insignia_recomendado: "⭐ موصى به",
+    pago_ventaja_premium_1: "تصميم يميزك بين المرشحين", pago_ventaja_premium_2: "جاهز للإرسال إلى الشركات بصيغة PDF", pago_ventaja_premium_3: "بدون إعلانات",
+    pago_ventaja_basico_1: "تنزيل فوري", pago_ventaja_basico_2: "بدون مشاهدة أي فيديو", pago_ventaja_basico_3: "جاهز للإرسال إلى الشركات بصيغة PDF",
+    pago_pie: "بدون اشتراك · دفع آمن عبر Google Play", boton_pagar: "تنزيل مقابل {precio}", ahora_no: "ليس الآن",
+    app_titulo: "نزّل سيرتك الذاتية من التطبيق", app_desc: "تنزيل السيرة الذاتية بصيغة PDF متاح في تطبيق CVoice لنظام Android.", app_boton: "احصل على CVoice من Google Play", cerrar: "إغلاق",
+    aviso_cargando_video: "جارٍ تحميل الفيديو…", aviso_descargando: "جارٍ تنزيل سيرتك الذاتية…", aviso_video_completo: "للتنزيل المجاني يجب مشاهدة الفيديو كاملاً.",
+    aviso_pago_error: "تعذّر إتمام الدفع. حاول مرة أخرى.", aviso_pago_pendiente: "الدفع بانتظار التأكيد. عندما تؤكده Google، اضغط على التنزيل مرة أخرى.",
+    aria_grabar: "تسجيل الصوت",
+  },
+  zh: {
+    cv_bloque_perfil: "个人简介", cv_bloque_habilidades: "技能",
+    elige_estilo: "选择简历设计：", etiqueta_gratis: "免费", etiqueta_premium: "高级",
+    diseno_basico: "经典", diseno_prem1: "商务", diseno_prem2: "杂志", diseno_prem3: "现代", diseno_prem4: "企业",
+    cta_gratis: "免费下载", cta_gratis_sub: "（观看一段短视频）", cta_premium: "下载 · {precio}", cta_premium_sub: "{diseno}设计 · 无订阅 · 无广告",
+    cta_sin_anuncio: "无广告立即下载，仅需 {precio}",
+    pago_titulo_premium: "{diseno}设计", pago_titulo_sin_anuncio: "无广告下载", insignia_recomendado: "⭐ 推荐",
+    pago_ventaja_premium_1: "让你在求职者中脱颖而出的设计", pago_ventaja_premium_2: "PDF 格式，可直接发送给企业", pago_ventaja_premium_3: "无广告",
+    pago_ventaja_basico_1: "立即下载", pago_ventaja_basico_2: "无需观看视频", pago_ventaja_basico_3: "PDF 格式，可直接发送给企业",
+    pago_pie: "无订阅 · 通过 Google Play 安全支付", boton_pagar: "以 {precio} 下载", ahora_no: "暂不",
+    app_titulo: "在应用中下载你的简历", app_desc: "PDF 简历下载功能仅在 Android 版 CVoice 应用中提供。", app_boton: "在 Google Play 获取 CVoice", cerrar: "关闭",
+    aviso_cargando_video: "正在加载视频…", aviso_descargando: "正在下载你的简历…", aviso_video_completo: "免费下载需要看完整个视频。",
+    aviso_pago_error: "付款未能完成，请重试。", aviso_pago_pendiente: "付款待确认。Google 确认后，请再次点击下载。",
+    aria_grabar: "录音",
+  },
+  ja: {
+    cv_bloque_perfil: "プロフィール", cv_bloque_habilidades: "スキル",
+    elige_estilo: "履歴書のデザインを選んでください：", etiqueta_gratis: "無料", etiqueta_premium: "プレミアム",
+    diseno_basico: "クラシック", diseno_prem1: "エグゼクティブ", diseno_prem2: "エディトリアル", diseno_prem3: "モダン", diseno_prem4: "コーポレート",
+    cta_gratis: "無料でダウンロード", cta_gratis_sub: "（短い動画を見る）", cta_premium: "ダウンロード · {precio}", cta_premium_sub: "{diseno}デザイン · サブスクなし · 広告なし",
+    cta_sin_anuncio: "{precio}で広告なしですぐにダウンロード",
+    pago_titulo_premium: "{diseno}デザイン", pago_titulo_sin_anuncio: "広告なしでダウンロード", insignia_recomendado: "⭐ おすすめ",
+    pago_ventaja_premium_1: "他の応募者と差がつくデザイン", pago_ventaja_premium_2: "PDFで企業にそのまま送れます", pago_ventaja_premium_3: "広告なし",
+    pago_ventaja_basico_1: "すぐにダウンロード", pago_ventaja_basico_2: "動画を見る必要なし", pago_ventaja_basico_3: "PDFで企業にそのまま送れます",
+    pago_pie: "サブスクなし · Google Play で安全にお支払い", boton_pagar: "{precio}でダウンロード", ahora_no: "あとで",
+    app_titulo: "アプリで履歴書をダウンロード", app_desc: "PDF での履歴書ダウンロードは Android 版 CVoice アプリで利用できます。", app_boton: "Google Play で CVoice を入手", cerrar: "閉じる",
+    aviso_cargando_video: "動画を読み込んでいます…", aviso_descargando: "履歴書をダウンロードしています…", aviso_video_completo: "無料ダウンロードには動画を最後まで見る必要があります。",
+    aviso_pago_error: "支払いを完了できませんでした。もう一度お試しください。", aviso_pago_pendiente: "支払いの確認待ちです。Google が確認したら、もう一度ダウンロードを押してください。",
+    aria_grabar: "音声を録音",
+  },
+  ro: {
+    cv_bloque_perfil: "Profil profesional", cv_bloque_habilidades: "Competențe",
+    elige_estilo: "Alege designul CV-ului tău:", etiqueta_gratis: "GRATUIT", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Clasic", diseno_prem1: "Executiv", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporativ",
+    cta_gratis: "DESCARCĂ GRATUIT", cta_gratis_sub: "(urmărind un videoclip scurt)", cta_premium: "DESCARCĂ · {precio}", cta_premium_sub: "Design {diseno} · Fără abonament · Fără reclame",
+    cta_sin_anuncio: "Descărcare imediată fără reclame pentru {precio}",
+    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Descărcare fără reclame", insignia_recomendado: "⭐ Recomandat",
+    pago_ventaja_premium_1: "Un design care iese în evidență printre candidați", pago_ventaja_premium_2: "Gata de trimis la firme în PDF", pago_ventaja_premium_3: "Fără reclame",
+    pago_ventaja_basico_1: "Descărcare imediată", pago_ventaja_basico_2: "Fără niciun videoclip", pago_ventaja_basico_3: "Gata de trimis la firme în PDF",
+    pago_pie: "Fără abonament · Plată sigură prin Google Play", boton_pagar: "Descarcă pentru {precio}", ahora_no: "Nu acum",
+    app_titulo: "Descarcă CV-ul din aplicație", app_desc: "Descărcarea CV-ului în PDF este disponibilă în aplicația CVoice pentru Android.", app_boton: "Obține CVoice pe Google Play", cerrar: "Închide",
+    aviso_cargando_video: "Se încarcă videoclipul…", aviso_descargando: "Se descarcă CV-ul tău…", aviso_video_completo: "Pentru descărcarea gratuită trebuie să urmărești tot videoclipul.",
+    aviso_pago_error: "Plata nu a putut fi finalizată. Încearcă din nou.", aviso_pago_pendiente: "Plata așteaptă confirmarea. Când Google o confirmă, apasă din nou pe descarcă.",
+    aria_grabar: "Înregistrează vocea",
+  },
+  pl: {
+    cv_bloque_perfil: "Profil zawodowy", cv_bloque_habilidades: "Umiejętności",
+    elige_estilo: "Wybierz wygląd swojego CV:", etiqueta_gratis: "ZA DARMO", etiqueta_premium: "PREMIUM",
+    diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny",
+    cta_gratis: "POBIERZ ZA DARMO", cta_gratis_sub: "(po obejrzeniu krótkiego filmu)", cta_premium: "POBIERZ · {precio}", cta_premium_sub: "Wzór {diseno} · Bez subskrypcji · Bez reklam",
+    cta_sin_anuncio: "Natychmiastowe pobranie bez reklam za {precio}",
+    pago_titulo_premium: "Wzór {diseno}", pago_titulo_sin_anuncio: "Pobieranie bez reklam", insignia_recomendado: "⭐ Polecany",
+    pago_ventaja_premium_1: "Wygląd, który wyróżnia cię spośród kandydatów", pago_ventaja_premium_2: "Gotowe do wysłania firmom w PDF", pago_ventaja_premium_3: "Bez reklam",
+    pago_ventaja_basico_1: "Natychmiastowe pobranie", pago_ventaja_basico_2: "Bez oglądania filmu", pago_ventaja_basico_3: "Gotowe do wysłania firmom w PDF",
+    pago_pie: "Bez subskrypcji · Bezpieczna płatność przez Google Play", boton_pagar: "Pobierz za {precio}", ahora_no: "Nie teraz",
+    app_titulo: "Pobierz CV w aplikacji", app_desc: "Pobieranie CV w PDF jest dostępne w aplikacji CVoice na Androida.", app_boton: "Pobierz CVoice z Google Play", cerrar: "Zamknij",
+    aviso_cargando_video: "Ładowanie filmu…", aviso_descargando: "Pobieranie twojego CV…", aviso_video_completo: "Aby pobrać za darmo, trzeba obejrzeć cały film.",
+    aviso_pago_error: "Nie udało się dokończyć płatności. Spróbuj ponownie.", aviso_pago_pendiente: "Płatność czeka na potwierdzenie. Gdy Google ją potwierdzi, ponownie naciśnij pobierz.",
+    aria_grabar: "Nagraj głos",
+  },
+  uk: {
+    cv_bloque_perfil: "Професійний профіль", cv_bloque_habilidades: "Навички",
+    elige_estilo: "Оберіть дизайн резюме:", etiqueta_gratis: "БЕЗКОШТОВНО", etiqueta_premium: "ПРЕМІУМ",
+    diseno_basico: "Класичний", diseno_prem1: "Діловий", diseno_prem2: "Редакційний", diseno_prem3: "Сучасний", diseno_prem4: "Корпоративний",
+    cta_gratis: "ЗАВАНТАЖИТИ БЕЗКОШТОВНО", cta_gratis_sub: "(переглянувши коротке відео)", cta_premium: "ЗАВАНТАЖИТИ · {precio}", cta_premium_sub: "Дизайн «{diseno}» · Без підписки · Без реклами",
+    cta_sin_anuncio: "Миттєве завантаження без реклами за {precio}",
+    pago_titulo_premium: "Дизайн «{diseno}»", pago_titulo_sin_anuncio: "Завантаження без реклами", insignia_recomendado: "⭐ Рекомендовано",
+    pago_ventaja_premium_1: "Дизайн, що вирізняє вас серед кандидатів", pago_ventaja_premium_2: "Готове до надсилання компаніям у PDF", pago_ventaja_premium_3: "Без реклами",
+    pago_ventaja_basico_1: "Миттєве завантаження", pago_ventaja_basico_2: "Без перегляду відео", pago_ventaja_basico_3: "Готове до надсилання компаніям у PDF",
+    pago_pie: "Без підписки · Безпечна оплата через Google Play", boton_pagar: "Завантажити за {precio}", ahora_no: "Не зараз",
+    app_titulo: "Завантажте резюме в застосунку", app_desc: "Завантаження резюме у PDF доступне в застосунку CVoice для Android.", app_boton: "Отримати CVoice у Google Play", cerrar: "Закрити",
+    aviso_cargando_video: "Завантаження відео…", aviso_descargando: "Завантаження вашого резюме…", aviso_video_completo: "Для безкоштовного завантаження потрібно переглянути відео повністю.",
+    aviso_pago_error: "Не вдалося завершити оплату. Спробуйте ще раз.", aviso_pago_pendiente: "Оплата очікує підтвердження. Коли Google її підтвердить, знову натисніть «Завантажити».",
+    aria_grabar: "Записати голос",
+  },
+  ru: {
+    cv_bloque_perfil: "Профессиональный профиль", cv_bloque_habilidades: "Навыки",
+    elige_estilo: "Выберите дизайн резюме:", etiqueta_gratis: "БЕСПЛАТНО", etiqueta_premium: "ПРЕМИУМ",
+    diseno_basico: "Классический", diseno_prem1: "Деловой", diseno_prem2: "Редакционный", diseno_prem3: "Современный", diseno_prem4: "Корпоративный",
+    cta_gratis: "СКАЧАТЬ БЕСПЛАТНО", cta_gratis_sub: "(посмотрев короткое видео)", cta_premium: "СКАЧАТЬ · {precio}", cta_premium_sub: "Дизайн «{diseno}» · Без подписки · Без рекламы",
+    cta_sin_anuncio: "Мгновенная загрузка без рекламы за {precio}",
+    pago_titulo_premium: "Дизайн «{diseno}»", pago_titulo_sin_anuncio: "Загрузка без рекламы", insignia_recomendado: "⭐ Рекомендуем",
+    pago_ventaja_premium_1: "Дизайн, который выделит вас среди кандидатов", pago_ventaja_premium_2: "Готово к отправке работодателям в PDF", pago_ventaja_premium_3: "Без рекламы",
+    pago_ventaja_basico_1: "Мгновенная загрузка", pago_ventaja_basico_2: "Без просмотра видео", pago_ventaja_basico_3: "Готово к отправке работодателям в PDF",
+    pago_pie: "Без подписки · Безопасная оплата через Google Play", boton_pagar: "Скачать за {precio}", ahora_no: "Не сейчас",
+    app_titulo: "Скачайте резюме в приложении", app_desc: "Скачивание резюме в PDF доступно в приложении CVoice для Android.", app_boton: "Скачать CVoice в Google Play", cerrar: "Закрыть",
+    aviso_cargando_video: "Загрузка видео…", aviso_descargando: "Скачиваем ваше резюме…", aviso_video_completo: "Для бесплатной загрузки нужно досмотреть видео до конца.",
+    aviso_pago_error: "Не удалось завершить оплату. Попробуйте ещё раз.", aviso_pago_pendiente: "Оплата ожидает подтверждения. Когда Google её подтвердит, снова нажмите «Скачать».",
+    aria_grabar: "Записать голос",
+  },
+};
+Object.keys(TEXTOS_EXTRA).forEach(l => Object.assign(TEXTOS[l], TEXTOS_EXTRA[l]));
+
+// Texto traducido con sustituciones: tx("boton_pagar", {precio: "0,99 €"})
+function tx(clave, datos = {}, idioma = idiomaActual){
+  const texto = (TEXTOS[idioma] && TEXTOS[idioma][clave]) || TEXTOS.es[clave] || "";
+  return texto.replace(/\{(\w+)\}/g, (_, k) => datos[k] ?? "");
+}
+// Precio con el formato del idioma del teléfono (0,99 € / €0.99 …)
+function precioLocal(euros){
+  try { return new Intl.NumberFormat(IDIOMAS[idiomaActual].lang, { style: "currency", currency: "EUR" }).format(euros); }
+  catch(e){ return euros.toFixed(2).replace(".", ",") + " €"; }
+}
+const PRECIOS = { basico_099: 0.99, premium_299: 2.99 };
+// Precios reales de Google Play en la moneda del usuario (los da la app Android con
+// AndroidBilling.obtenerPrecios() o window.preciosPlay); si no llegan, se muestran en euros.
+let preciosPlay = {};
+try {
+  if (window.AndroidBilling && typeof window.AndroidBilling.obtenerPrecios === "function"){
+    preciosPlay = JSON.parse(window.AndroidBilling.obtenerPrecios() || "{}") || {};
+  }
+} catch(e){ preciosPlay = {}; }
+function precioDe(producto){ return preciosPlay[producto] || precioLocal(PRECIOS[producto]); }
+
+const PLANTILLA_PASO = {
+  es: (n,t) => `Paso ${n} de ${t}`,
+  en: (n,t) => `Step ${n} of ${t}`,
+  fr: (n,t) => `Étape ${n} sur ${t}`,
+  de: (n,t) => `Schritt ${n} von ${t}`,
+  it: (n,t) => `Passo ${n} di ${t}`,
+  pt: (n,t) => `Passo ${n} de ${t}`,
+  ar: (n,t) => `الخطوة ${n} من ${t}`,
+  zh: (n,t) => `第 ${n} 步（共 ${t} 步）`,
+  ja: (n,t) => `ステップ ${n}／${t}`,
+  ro: (n,t) => `Pasul ${n} din ${t}`,
+  pl: (n,t) => `Krok ${n} z ${t}`,
+  uk: (n,t) => `Крок ${n} із ${t}`,
+  ru: (n,t) => `Шаг ${n} из ${t}`,
+};
+
+// ---------- 2. Estado de la aplicación ----------
+let idiomaActual = detectarIdiomaNavegador(); // idioma de la interfaz
+let idiomaCV = idiomaActual;                   // idioma del contenido del CV (cambia al traducir)
+let pasoActual = 1;
+let reconocimiento = null;
+let micEscuchandoEl = null;
+
+// ---------- 3. Selector de idioma ----------
+const selectIdioma = document.getElementById("select-idioma");
+Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
+  const opcion = document.createElement("option");
+  opcion.value = codigo;
+  opcion.textContent = `${datos.bandera}  ${datos.nombre}`;
+  selectIdioma.appendChild(opcion);
+});
+selectIdioma.value = idiomaActual;
+
+const btnCambiarIdioma = document.getElementById("btn-cambiar-idioma");
+btnCambiarIdioma.addEventListener("click", () => {
+  selectIdioma.classList.toggle("hidden");
+});
+selectIdioma.addEventListener("change", () => {
+  elegirIdioma(selectIdioma.value);
+  selectIdioma.classList.add("hidden");
+});
+
+function elegirIdioma(codigo){
+  idiomaActual = codigo;
+  document.documentElement.lang = codigo;
+  document.documentElement.dir = IDIOMAS[codigo].dir;
+  aplicarTextos();
+}
+
+document.addEventListener("click", (evento) => {
+  const tocoIdioma = btnCambiarIdioma.contains(evento.target) || selectIdioma.contains(evento.target);
+  if (!tocoIdioma) selectIdioma.classList.add("hidden");
+});
+
+// ---------- 4. Aplicar traducciones al DOM ----------
+function aplicarTextos(){
+  const t = TEXTOS[idiomaActual];
+  document.getElementById("txt-subtitulo").textContent = t.subtitulo;
+
+  // Excluimos las 5 hojas de CV: sus etiquetas van en el idioma del CV (idiomaCV),
+  // gestionado por traducirEtiquetasCV(), independiente del idioma de la interfaz.
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    if (el.closest("#contenedor-cvs")) return;
+    const clave = el.getAttribute("data-i18n");
+    if (t[clave]) el.textContent = t[clave];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const clave = el.getAttribute("data-i18n-placeholder");
+    if (t[clave]) el.placeholder = t[clave];
+  });
+  // Etiquetas para lectores de pantalla (accesibilidad)
+  document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+    const clave = el.getAttribute("data-i18n-aria");
+    if (t[clave]) el.setAttribute("aria-label", t[clave]);
+  });
+  const btnSaltarFoto = document.getElementById("btn-saltar-foto");
+  if (btnSaltarFoto){
+    btnSaltarFoto.textContent = fotoCapturadaDataURL ? t.boton_continuar : t.boton_saltar;
+  }
+  actualizarContador();
+  // Botón de descarga (texto y precio en el idioma de la interfaz)
+  if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
+}
+
+// ---------- 5. Reconocimiento de voz (Web Speech API) ----------
+// Reinicio automático al detectar pausas largas (comportamiento normal en Android WebView).
+
+// En Android WebView se usa continuous=false y se reinicia en cada pausa con un objeto
+// NUEVO (reutilizarlo duplica resultados). Los resultados parciales se muestran mientras
+// se habla; en Android a veces llegan acumulados ("hola", "hola qué tal"), así que un
+// fragmento que contiene al anterior lo sustituye en vez de sumarse.
+const ES_ANDROID = /Android/.test(navigator.userAgent);
+window.__voz = [];
+
+function unirFragmentos(fragmentos){
+  let texto = "";
+  for (const f of fragmentos){
+    if (!f) continue;
+    const a = texto.toLowerCase(), b = f.toLowerCase();
+    if (b.startsWith(a)) texto = f;            // acumulado: el nuevo ya incluye lo anterior
+    else if (a.endsWith(b)) continue;          // repetido
+    else texto = texto ? texto + " " + f : f;
+  }
+  return texto;
+}
+
+function iniciarEscucha(boton){
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec){
+    const aviso = document.getElementById("aviso-sin-voz");
+    aviso.textContent = TEXTOS[idiomaActual].sin_voz;
+    aviso.classList.remove("hidden");
+    setTimeout(() => aviso.classList.add("hidden"), 4000);
+    return;
+  }
+
+  // Si ya está escuchando, el usuario está pulsando para apagar
+  if (micEscuchandoEl){
+    detenerEscucha();
+    return;
+  }
+
+  const numeroPaso = boton.getAttribute("data-paso-objetivo");
+  const caja = document.querySelector(`[data-texto-paso="${numeroPaso}"]`);
+  // Texto acumulado de ESTA escucha (local: si se apaga y se enciende el micro rápido,
+  // los últimos resultados de la sesión anterior no se mezclan con la nueva).
+  // Parte de lo que ya hubiera en la caja (escrito a mano o de escuchas previas).
+  let acumulado = caja.value ? caja.value.trim() + " " : "";
+
+  function nuevaSesion(){
+    const rec = new SpeechRec();
+    rec.lang = IDIOMAS[idiomaActual].lang;
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.maxAlternatives = 1;
+
+    rec.onresult = (evento) => {
+      const finales = [], parciales = [];
+      for (let i = 0; i < evento.results.length; i++){
+        const fragmento = evento.results[i][0].transcript.trim();
+        (evento.results[i].isFinal ? finales : parciales).push(fragmento);
+      }
+      if (window.__voz.length < 200) window.__voz.push({ f: finales, p: parciales });
+      const final = unirFragmentos(finales);
+      if (final && !acumulado.endsWith(final + " ")) acumulado += final + " ";
+      caja.value = (acumulado + unirFragmentos(parciales)).trim();
+    };
+
+    rec.onerror = (ev) => {
+      if (ev.error === "no-speech" || ev.error === "audio-capture") return;
+      if (rec === reconocimiento) detenerEscucha();
+    };
+
+    // Pausa larga → la sesión termina sola: reiniciamos, salvo que ya no sea la activa
+    // (el usuario apagó el micro, cambió de paso o inició otra escucha).
+    rec.onend = () => {
+      if (rec !== reconocimiento) return;
+      try {
+        reconocimiento = nuevaSesion();
+        reconocimiento.start();
+      } catch(e){
+        detenerEscucha();
+      }
+    };
+
+    return rec;
+  }
+
+  try {
+    reconocimiento = nuevaSesion();
+    reconocimiento.start();
+  } catch(e){
+    reconocimiento = null;
+    return;
+  }
+  boton.classList.add("escuchando");
+  boton.parentElement.classList.add("escuchando");
+  micEscuchandoEl = boton;
+}
+
+function detenerEscucha(){
+  const rec = reconocimiento;
+  // Se libera el estado YA: el onend de 'rec' verá que ya no es la sesión activa y no reiniciará
+  reconocimiento = null;
+  if (micEscuchandoEl){
+    micEscuchandoEl.classList.remove("escuchando");
+    micEscuchandoEl.parentElement.classList.remove("escuchando");
+    micEscuchandoEl = null;
+  }
+  if (rec){ try { rec.stop(); } catch(e) {} }
+}
+
+document.querySelectorAll("[data-mic]").forEach(boton => {
+  boton.addEventListener("click", () => iniciarEscucha(boton));
+});
+
+// ---------- 7. Navegación entre pasos ----------
+function irAPaso(numero){
+  detenerEscucha();
+  if (pasoActual === 5 && numero !== 5) detenerCamara();
+  document.querySelectorAll(".paso").forEach(p => p.classList.remove("activo"));
+  document.querySelector(`.paso[data-paso="${numero}"]`).classList.add("activo");
+  pasoActual = numero;
+  actualizarContador();
+  // El selector de idioma solo es visible en el paso 1
+  const zonaIdioma = document.getElementById("zona-idioma");
+  if (zonaIdioma) zonaIdioma.classList.toggle("hidden", numero !== 1);
+}
+
+function actualizarContador(){
+  document.getElementById("barra-relleno").style.width = (pasoActual * 20) + "%";
+  const generarTexto = PLANTILLA_PASO[idiomaActual] || PLANTILLA_PASO.en;
+  document.getElementById("txt-paso-contador").textContent = generarTexto(pasoActual, 5);
+}
+
+document.querySelectorAll("[data-siguiente]").forEach(btn => {
+  btn.addEventListener("click", () => irAPaso(parseInt(btn.getAttribute("data-siguiente"))));
+});
+document.querySelectorAll("[data-anterior]").forEach(btn => {
+  btn.addEventListener("click", () => irAPaso(parseInt(btn.getAttribute("data-anterior"))));
+});
+
+// ---------- 8. Cámara en vivo para la foto del CV (paso 5, opcional) ----------
+let streamCamara = null;
+let fotoCapturadaDataURL = null;
+
+const videoCamara       = document.getElementById("video-camara");
+const imgFotoCapturada  = document.getElementById("foto-capturada");
+const iconoSinCamara    = document.getElementById("icono-sin-camara");
+const lienzoFoto        = document.getElementById("lienzo-foto");
+const avisoCamara       = document.getElementById("aviso-camara");
+
+const controlesInicial  = document.getElementById("controles-camara-inicial");
+const controlesActiva   = document.getElementById("controles-camara-activa");
+const controlesListos   = document.getElementById("controles-foto-lista");
+
+async function activarCamara(){
+  avisoCamara.classList.add("hidden");
+  try {
+    streamCamara = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+    videoCamara.srcObject = streamCamara;
+    videoCamara.classList.remove("hidden");
+    imgFotoCapturada.classList.add("hidden");
+    iconoSinCamara.classList.add("hidden");
+    controlesInicial.classList.add("hidden");
+    controlesActiva.classList.remove("hidden");
+    controlesListos.classList.add("hidden");
+  } catch (error){
+    avisoCamara.textContent = TEXTOS[idiomaActual].camara_sin_permiso;
+    avisoCamara.classList.remove("hidden");
+  }
+}
+
+function detenerCamara(){
+  if (streamCamara){
+    streamCamara.getTracks().forEach(pista => pista.stop());
+    streamCamara = null;
+  }
+}
+
+function capturarFoto(){
+  const ancho = videoCamara.videoWidth;
+  const alto = videoCamara.videoHeight;
+  if (!ancho || !alto) return;
+
+  lienzoFoto.width = ancho;
+  lienzoFoto.height = alto;
+  const contexto = lienzoFoto.getContext("2d");
+  contexto.translate(ancho, 0);
+  contexto.scale(-1, 1);
+  contexto.drawImage(videoCamara, 0, 0, ancho, alto);
+
+  fotoCapturadaDataURL = lienzoFoto.toDataURL("image/jpeg", 0.92);
+  imgFotoCapturada.src = fotoCapturadaDataURL;
+
+  detenerCamara();
+  videoCamara.classList.add("hidden");
+  imgFotoCapturada.classList.remove("hidden");
+  controlesActiva.classList.add("hidden");
+  controlesListos.classList.remove("hidden");
+
+  // Ya hay foto: el botón inferior pasa de "Saltar este paso" a "Continuar", porque ya no se está saltando nada
+  document.getElementById("btn-saltar-foto").textContent = TEXTOS[idiomaActual].boton_continuar;
+}
+
+function repetirFoto(){
+  fotoCapturadaDataURL = null;
+  imgFotoCapturada.classList.add("hidden");
+  controlesListos.classList.add("hidden");
+  activarCamara();
+
+  // Sin foto de nuevo: el botón inferior vuelve a decir "Saltar este paso"
+  document.getElementById("btn-saltar-foto").textContent = TEXTOS[idiomaActual].boton_saltar;
+}
+
+document.getElementById("btn-activar-camara").addEventListener("click", activarCamara);
+document.getElementById("btn-capturar-foto").addEventListener("click", capturarFoto);
+document.getElementById("btn-repetir-foto").addEventListener("click", repetirFoto);
+document.getElementById("btn-saltar-foto").addEventListener("click", () => {
+  // Importante: NO reseteamos fotoCapturadaDataURL aquí. Este mismo botón sirve tanto
+  // para "Saltar este paso" (sin foto, fotoCapturadaDataURL ya es null) como para
+  // "Continuar" (con foto ya capturada) — si la reseteábamos siempre, la foto se
+  // perdía justo antes de generar el CV, aunque el usuario sí se la hubiera hecho.
+  detenerCamara();
+  generarCV();
+});
+
+// ---------- 9. Generación inteligente del CV con la API de Groq ----------
+
+// URL del proxy serverless en Vercel — la clave de Groq vive allí como
+// variable de entorno, nunca en este archivo ni en el APK de Android.
+const PROXY_URL = "https://cvoice-proxy.vercel.app/api/groq";
+const MODELO_GROQ = "openai/gpt-oss-120b";
+const TIMEOUT_IA_MS = 60000;
+
+// Llamada común a la IA (generación y traducción). Devuelve el JSON ya parseado.
+// Si Groq rechaza la respuesta por JSON inválido (error 400 "json_validate_failed",
+// el modelo a veces genera JSON mal formado), se reintenta una vez.
+async function llamarIA(promptSistema, promptUsuario, temperatura, reintentos = 1){
+  try {
+    return await llamarIAUnaVez(promptSistema, promptUsuario, temperatura);
+  } catch(error){
+    if (reintentos > 0 && error.jsonInvalido) return llamarIA(promptSistema, promptUsuario, temperatura, reintentos - 1);
+    throw error;
+  }
+}
+
+// Texto breve para el usuario: el detalle técnico completo va a la consola
+function mensajeErrorCorto(error){
+  return error.status ? ` (error ${error.status})` : "";
+}
+
+async function llamarIAUnaVez(promptSistema, promptUsuario, temperatura){
+  const control = new AbortController();
+  const temporizador = setTimeout(() => control.abort(), TIMEOUT_IA_MS);
+  try {
+    const respuesta = await fetch(PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: control.signal,
+      body: JSON.stringify({
+        model: MODELO_GROQ,
+        temperature: temperatura,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: promptSistema },
+          { role: "user", content: promptUsuario },
+        ],
+      }),
+    });
+    if (!respuesta.ok){
+      const detalle = await respuesta.text().catch(() => "");
+      const error = new Error(`Groq respondió con error ${respuesta.status}. ${detalle}`);
+      error.status = respuesta.status;
+      error.jsonInvalido = /json_validate_failed|Failed to validate JSON/i.test(detalle);
+      throw error;
+    }
+    const cuerpo = await respuesta.json();
+    const texto = cuerpo.choices?.[0]?.message?.content || "";
+    try {
+      return JSON.parse(texto.replace(/```json|```/g, "").trim());
+    } catch(e){
+      const error = new Error("La IA devolvió un JSON no válido");
+      error.jsonInvalido = true;
+      throw error;
+    }
+  } catch(error){
+    if (error.name === "AbortError") throw new Error("La IA tardó demasiado en responder");
+    throw error;
+  } finally {
+    clearTimeout(temporizador);
+  }
+}
+
+const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 años de experiencia en RRHH y selección de personal. Recibirás texto hablado por voz, desestructurado y coloquial. Tu misión es transformarlo en un CV impecable y profesional. Sigue estas reglas estrictamente:
+
+1. EXTRACCIÓN: Extrae solo información útil. Ignora muletillas, repeticiones, "pues", "o sea", "tipo", "bueno", etc.
+
+2. FORMATO DE DATOS: Convierte números hablados a cifras (seis seis seis → 666). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
+
+3. TONO PROFESIONAL: Reescribe las funciones laborales usando verbos de acción e impacto en infinitivo: "Coordinar", "Gestionar", "Supervisar", "Implementar", "Optimizar", "Liderar", "Desarrollar", "Ejecutar". Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
+
+4. EXPERIENCIA LABORAL: Ordena cronológico inverso (lo más reciente primero). Para cada puesto incluye: título del puesto (profesional y específico), empresa/ciudad, fechas (si no las dice, estima "20XX – actualidad" o "20XX – 20XX" de forma coherente), y 3-4 viñetas con funciones concretas usando verbos de acción.
+
+5. ESTUDIOS: Separa título oficial, centro educativo, año. Agrupa cursos cortos como "Formación complementaria".
+
+6. CALIDAD: Si la descripción de funciones es vaga ("trabajaba allí", "hacía cosas"), infiere funciones típicas del puesto mencionado y redáctalas de forma profesional. Prioriza siempre la claridad y el impacto sobre el relleno.
+
+7. SECCIONES VACÍAS: Si el usuario dice explícitamente que no tiene algo, devuelve array vacío [] o cadena vacía "".
+
+8. FORMATO DE SALIDA: Devuelve ESTRICTAMENTE el JSON solicitado. Nunca HTML libre, nunca explicaciones adicionales, nunca texto fuera del JSON.`;
+
+function construirPromptUsuario(datos){
+  const nombreIdioma = IDIOMAS[idiomaActual]?.nombre || "español";
+  return `Aquí están los textos en bruto, dictados por voz, recogidos en una entrevista de 4 pasos. Devuélvelos procesados.
+
+IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro. Esto incluye las etiquetas <strong> de "otros_html" (Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad…) y valores como "Sí"/"No": tradúcelos también al ${nombreIdioma}. Los ejemplos de este mensaje están en español solo como referencia de formato.
+
+PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
+"""${datos.datosPersonales || "(no se ha dicho nada)"}"""
+
+PASO 2 — Experiencia laboral, tal como se dijo:
+"""${datos.experiencia || "(no se ha dicho nada)"}"""
+
+PASO 3 — Estudios, tal como se dijo:
+"""${datos.estudios || "(no se ha dicho nada)"}"""
+
+PASO 4 — Otros datos (idiomas con nivel, carnet de conducir, vehículo propio, disponibilidad horaria, voluntariados), tal como se dijo:
+"""${datos.otros || "(no se ha dicho nada)"}"""
+
+Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin bloque de código markdown, con esta forma EXACTA:
+{
+  "nombre": "NOMBRE COMPLETO EN MAYÚSCULAS, o cadena vacía si no se dijo",
+  "telefono": "teléfono formateado en formato legible, o cadena vacía si no se dijo",
+  "email": "email corregido a formato válido (arroba -> @, punto -> .), o cadena vacía si no se dijo",
+  "ubicacion": "Ciudad, Provincia si se mencionó, o cadena vacía si no se dijo",
+  "experiencia": [
+    {
+      "puesto": "nombre del puesto, ej. Camarera",
+      "empresa": "nombre de la empresa y/o ciudad, ej. Bar Pepe, Madrid",
+      "fechas": "rango de fechas o duración, ej. 2019–2022, o cadena vacía si no se mencionó",
+      "funciones": ["viñeta 1 con verbo de acción", "viñeta 2", "viñeta 3 (máximo 4 en total)"]
+    }
+  ],
+  "estudios": [
+    {
+      "titulo": "título oficial obtenido, ej. Grado Medio en Comercio",
+      "centro": "centro educativo y/o ciudad, ej. IES Lope de Vega, Madrid",
+      "año": "año de finalización, o cadena vacía si no se mencionó"
+    }
+  ],
+  "formacion_complementaria": ["curso corto 1 con su año si se mencionó", "curso corto 2"],
+  "otros_html": "HTML breve usando <ul><li>...</li></ul> con idiomas (indicando nivel si se mencionó), carnet de conducir, vehículo propio, disponibilidad horaria y voluntariados; usa <strong> solo para la etiqueta del dato (ej. <strong>Idiomas:</strong> Español nativo, inglés básico). Cadena vacía si no se dijo nada en este apartado.",
+  "perfil": "Perfil profesional de 2 o 3 frases (máximo 50 palabras) que redactas TÚ a partir de todo lo anterior: a qué se dedica la persona, años de experiencia si se deducen de las fechas, sus puntos fuertes y lo que aporta a una empresa. Tono profesional y positivo, sin primera persona (ej. 'Repartidor con 4 años de experiencia en entregas a domicilio, puntual y orientado al cliente...'). Cadena vacía solo si no hay ningún dato con el que redactarlo.",
+  "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
+}
+Reglas estrictas:
+- Si el usuario indica que NO tiene experiencia laboral, el array "experiencia" debe ser exactamente [].
+- Si el usuario indica que NO tiene estudios, el array "estudios" debe ser exactamente [].
+- Si no hay cursos cortos o formación no oficial, "formacion_complementaria" debe ser exactamente [].
+- Si no se dijo nada en el paso 4, "otros_html" debe ser cadena vacía "".
+- Nunca inventes datos que no se mencionaron (empresas, fechas, títulos, cifras); deja el campo vacío en ese caso.
+- "perfil" y "habilidades" sí son tu redacción profesional, pero basadas solo en lo que se dijo: no añadas experiencia, títulos ni certificados que no existan.
+- El array "funciones" de cada experiencia debe tener entre 1 y 4 viñetas, nunca más de 4.`;
+}
+
+// ---------- 10. Generar el CV final (orquesta: carga → IA → pintado) ----------
+function generarCV(){
+  detenerEscucha();
+  detenerCamara();
+
+  const datos = {
+    datosPersonales: document.querySelector('[data-texto-paso="1"]').value.trim(),
+    experiencia:     document.querySelector('[data-texto-paso="2"]').value.trim(),
+    estudios:        document.querySelector('[data-texto-paso="3"]').value.trim(),
+    otros:           document.querySelector('[data-texto-paso="4"]').value.trim(),
+  };
+
+  const t = TEXTOS[idiomaActual];
+  const avisoErrorIA = document.getElementById("aviso-error-ia");
+  const txtCarga = document.getElementById("txt-mensaje-carga");
+  const anillo = document.querySelector(".anillo-carga");
+  const btnVolver = document.getElementById("btn-volver-tras-error");
+  avisoErrorIA.classList.add("hidden");
+  btnVolver.classList.add("hidden");
+  txtCarga.classList.remove("hidden");
+  anillo.classList.remove("hidden");
+
+  document.getElementById("pantalla-entrevista").classList.add("hidden");
+  document.getElementById("pantalla-carga").classList.remove("hidden");
+  window.scrollTo({top:0, behavior:"smooth"});
+
+  llamarIA(PROMPT_SISTEMA, construirPromptUsuario(datos), 0.4)
+    .then(pintarCV)
+    .catch(error => {
+      console.error(error);
+      avisoErrorIA.textContent = t.error_ia_generico + mensajeErrorCorto(error);
+      avisoErrorIA.classList.remove("hidden");
+      btnVolver.classList.remove("hidden");
+      txtCarga.classList.add("hidden");
+      anillo.classList.add("hidden");
+    });
+}
+
+// Tras un error de la IA: volver a la entrevista (paso 5) conservando textos y foto
+document.getElementById("btn-volver-tras-error").addEventListener("click", () => {
+  document.getElementById("pantalla-carga").classList.add("hidden");
+  document.getElementById("pantalla-entrevista").classList.remove("hidden");
+  irAPaso(5);
+});
+
+// Escapa caracteres HTML especiales para insertar texto de la IA de forma segura como texto plano
+function escaparHTML(texto){
+  const div = document.createElement("div");
+  div.textContent = texto == null ? "" : String(texto);
+  return div.innerHTML;
+}
+
+// Limpia caracteres de viñeta que la IA a veces pone literalmente al inicio de los textos:
+// asteriscos (*), bullets (•), guiones al inicio (-), etc.
+// Solo los elimina al comienzo de la cadena, no en mitad del texto.
+function limpiarTextoIA(texto){
+  if (!texto) return "";
+  let s = String(texto).trim();
+  s = s.replace(/^\s*[•\*\-–—]\s*/, "");   // viñetas al inicio
+  s = s.replace(/\s*\*+\s*$/, "");           // asteriscos al final
+  s = s.replace(/\*\*([^*]+)\*\*/g, "$1");  // **negrita**
+  s = s.replace(/\*([^*]+)\*/g, "$1");       // *cursiva*
+  return s.trim();
+}
+
+// Filtra el bloque de "otros datos" devuelto por la IA:
+// elimina los <li> cuyo contenido indica ausencia de información
+// (ej. "Vehículo propio: No posee", "Carnet: No", "N/A", etc.)
+// Devuelve el HTML limpio, o cadena vacía si no queda nada útil.
+function filtrarOtrosHTML(html){
+  if (!html || !html.trim()) return "";
+
+  const PATRONES_NEGATIVOS = [
+    /:\s*(no\b|ninguno|ninguna|n\/a|no\s+posee|no\s+tiene|no\s+aplica|no\s+disponible|sin\s+información|-)\s*$/i,
+    /^(no\s+posee|no\s+tiene|no\s+aplica|n\/a|ninguno|ninguna|sin\s+datos)$/i,
+  ];
+
+  const div = document.createElement("div");
+  div.innerHTML = html;
+
+  // Limpiar asteriscos y markdown de todos los nodos de texto dentro del bloque
+  div.querySelectorAll("li, p, span, strong").forEach(el => {
+    // Limpiar solo nodos hoja de texto (sin hijos elementos)
+    if (el.children.length === 0){
+      el.textContent = limpiarTextoIA(el.textContent);
+    }
+  });
+
+  // Eliminar li con contenido negativo
+  div.querySelectorAll("li").forEach(li => {
+    const texto = li.textContent.trim();
+    if (!texto || PATRONES_NEGATIVOS.some(p => p.test(texto))) li.remove();
+  });
+
+  // Eliminar listas vacías
+  div.querySelectorAll("ul, ol").forEach(lista => {
+    if (!lista.querySelector("li")) lista.remove();
+  });
+
+  const soloEtiquetas = div.textContent.trim() === "";
+  return soloEtiquetas ? "" : div.innerHTML.trim();
+}
+
+
+function construirHTMLExperiencia(lista){
+  if (!Array.isArray(lista) || lista.length === 0) return "";
+  return lista.map(item => {
+    const puesto  = escaparHTML(limpiarTextoIA(item.puesto  || ""));
+    const empresa = escaparHTML(limpiarTextoIA(item.empresa || ""));
+    const fechas  = escaparHTML(limpiarTextoIA(item.fechas  || ""));
+    const funciones = Array.isArray(item.funciones) ? item.funciones.slice(0, 4) : [];
+    const funcionesHTML = funciones.length
+      ? `<ul class="cv-experiencia-funciones">${funciones.map(f => `<li>${escaparHTML(limpiarTextoIA(f))}</li>`).join("")}</ul>`
+      : "";
+    return `<div class="cv-experiencia-item">
+      <div class="cv-experiencia-cabecera">
+        <span class="cv-experiencia-puesto">${puesto}</span>
+        ${fechas ? `<span class="cv-experiencia-fechas">${fechas}</span>` : ""}
+      </div>
+      ${empresa ? `<div class="cv-experiencia-empresa">${empresa}</div>` : ""}
+      ${funcionesHTML}
+    </div>`;
+  }).join("");
+}
+
+function construirHTMLEstudios(listaEstudios, listaFormacionComplementaria){
+  const estudios = Array.isArray(listaEstudios) ? listaEstudios : [];
+  const complementaria = Array.isArray(listaFormacionComplementaria) ? listaFormacionComplementaria : [];
+  if (estudios.length === 0 && complementaria.length === 0) return "";
+
+  const estudiosHTML = estudios.map(item => {
+    const titulo = escaparHTML(limpiarTextoIA(item.titulo || ""));
+    const centro = escaparHTML(limpiarTextoIA(item.centro || ""));
+    const anio   = escaparHTML(limpiarTextoIA(item.año || item.anio || ""));
+    const centroYAnio = [centro, anio].filter(Boolean).join(" · ");
+    return `<div class="cv-estudio-item">
+      <div class="cv-estudio-titulo">${titulo}</div>
+      ${centroYAnio ? `<div class="cv-estudio-centro">${centroYAnio}</div>` : ""}
+    </div>`;
+  }).join("");
+
+  const complementariaHTML = complementaria.length
+    ? `<div class="cv-formacion-complementaria">
+        <p class="cv-formacion-complementaria-titulo" data-i18n="cv_formacion_complementaria">Formación complementaria</p>
+        <ul class="cv-formacion-complementaria-lista">${complementaria.map(c => `<li>${escaparHTML(limpiarTextoIA(c))}</li>`).join("")}</ul>
+      </div>`
+    : "";
+
+  return estudiosHTML + complementariaHTML;
+}
+
+function pintarCV(resultado){
+  const t = TEXTOS[idiomaActual];
+
+  document.getElementById("cv-nombre").textContent = (resultado.nombre || t.nombre_predeterminado).toUpperCase();
+
+  // --- Datos personales: cada fila se oculta individualmente si está vacía ---
+  const filaTelefono = document.getElementById("cv-fila-telefono");
+  const filaEmail = document.getElementById("cv-fila-email");
+  const filaUbicacion = document.getElementById("cv-fila-ubicacion");
+
+  if (resultado.telefono){ document.getElementById("cv-telefono").textContent = resultado.telefono; filaTelefono.classList.remove("hidden"); }
+  else filaTelefono.classList.add("hidden");
+
+  if (resultado.email){ document.getElementById("cv-email").textContent = resultado.email; filaEmail.classList.remove("hidden"); }
+  else filaEmail.classList.add("hidden");
+
+  if (resultado.ubicacion){ document.getElementById("cv-ubicacion").textContent = resultado.ubicacion; filaUbicacion.classList.remove("hidden"); }
+  else filaUbicacion.classList.add("hidden");
+
+  // --- Experiencia laboral: se oculta el bloque entero si no hay datos ---
+  const htmlExperiencia = construirHTMLExperiencia(resultado.experiencia);
+  const seccionExperiencia = document.getElementById("cv-seccion-experiencia");
+  if (htmlExperiencia){
+    document.getElementById("cv-experiencia").innerHTML = htmlExperiencia;
+    seccionExperiencia.classList.remove("hidden");
+  } else {
+    seccionExperiencia.classList.add("hidden");
+  }
+
+  // --- Estudios y formación complementaria: se oculta el bloque entero si no hay datos ---
+  const htmlEstudios = construirHTMLEstudios(resultado.estudios, resultado.formacion_complementaria);
+  const seccionEstudios = document.getElementById("cv-seccion-estudios");
+  if (htmlEstudios){
+    document.getElementById("cv-estudios").innerHTML = htmlEstudios;
+    seccionEstudios.classList.remove("hidden");
+  } else {
+    seccionEstudios.classList.add("hidden");
+  }
+
+  // --- Otros datos: se oculta el bloque entero si no hay datos ---
+  const seccionOtros = document.getElementById("cv-seccion-otros-datos");
+  const otrosFiltrado = filtrarOtrosHTML(resultado.otros_html || "");
+  if (otrosFiltrado){
+    document.getElementById("cv-otros").innerHTML = otrosFiltrado;
+    seccionOtros.classList.remove("hidden");
+  } else {
+    seccionOtros.classList.add("hidden");
+  }
+
+  // --- Perfil profesional (redactado por la IA) y habilidades (deducidas por la IA) ---
+  const perfil = limpiarTextoIA(resultado.perfil || "");
+  document.getElementById("cv-perfil").textContent = perfil;
+  document.getElementById("cv-seccion-perfil").classList.toggle("hidden", !perfil);
+  const habilidades = (Array.isArray(resultado.habilidades) ? resultado.habilidades : [])
+    .map(h => limpiarTextoIA(String(h))).filter(Boolean).slice(0, 8);
+  document.getElementById("cv-habilidades").innerHTML = habilidades.map(h => `<li>${escaparHTML(h)}</li>`).join("");
+  document.getElementById("cv-seccion-habilidades").classList.toggle("hidden", !habilidades.length);
+
+  const imgFoto = document.getElementById("cv-foto-img");
+  const placeholderFoto = document.getElementById("cv-avatar-placeholder");
+  if (fotoCapturadaDataURL){
+    imgFoto.src = fotoCapturadaDataURL;
+    imgFoto.classList.remove("hidden");
+    placeholderFoto.classList.add("hidden");
+  } else {
+    imgFoto.classList.add("hidden");
+    placeholderFoto.classList.remove("hidden");
+  }
+
+  // Títulos y etiquetas de las 5 plantillas en el idioma en que se ha redactado el CV
+  traducirEtiquetasCV(idiomaActual);
+
+  // Al mostrar el CV siempre empezamos en el básico
+  disenoPremActivo = "prem1";
+  seleccionarPlantilla("basico");
+
+  document.getElementById("pantalla-carga").classList.add("hidden");
+  document.getElementById("pantalla-cv").classList.remove("hidden");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+// ---------- 11. Traducción del CV final antes de descargar ----------
+const selectIdiomaTraduccion = document.getElementById("select-idioma-traduccion");
+Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
+  const opcion = document.createElement("option");
+  opcion.value = codigo;
+  opcion.textContent = `${datos.bandera}  ${datos.nombre}`;
+  selectIdiomaTraduccion.appendChild(opcion);
+});
+
+const btnTraducirCV = document.getElementById("btn-traducir-cv");
+btnTraducirCV.addEventListener("click", () => {
+  selectIdiomaTraduccion.classList.toggle("hidden");
+});
+document.addEventListener("click", (evento) => {
+  const tocoTraduccion = btnTraducirCV.contains(evento.target) || selectIdiomaTraduccion.contains(evento.target);
+  if (!tocoTraduccion) selectIdiomaTraduccion.classList.add("hidden");
+});
+
+// Traducción por fragmentos: se envía a la IA solo la lista de textos visibles del CV
+// (tal como está en pantalla, con las correcciones del usuario) y cada traducción se
+// vuelve a poner en su sitio. La estructura HTML nunca pasa por la IA, así que no puede
+// romperse, y el JSON de respuesta es una simple lista de cadenas.
+const PROMPT_SISTEMA_TRADUCCION = "Eres un traductor profesional especializado en currículums. Recibes una lista JSON de fragmentos de texto de un CV y devuelves su traducción al idioma indicado, con el mismo tono profesional. Reglas: traduce cada fragmento por separado y en el mismo orden; nunca unas, dividas, añadas ni omitas fragmentos; no traduzcas nombres propios de personas, empresas ni marcas; conserva números, fechas, emails y la puntuación final (por ejemplo los dos puntos de 'Idiomas:'). Devuelve solo el JSON pedido.";
+
+// Nodos de texto traducibles del CV básico (las plantillas premium se copian de él).
+// Se excluyen los títulos con data-i18n: esos se traducen con el diccionario TEXTOS.
+function nodosTraduciblesCV(){
+  const nodos = [];
+  ["cv-ubicacion", "cv-perfil", "cv-experiencia", "cv-estudios", "cv-habilidades", "cv-otros"].forEach(id => {
+    const recorrido = document.createTreeWalker(document.getElementById(id), NodeFilter.SHOW_TEXT);
+    let nodo;
+    while ((nodo = recorrido.nextNode())){
+      if (nodo.nodeValue.trim() && !nodo.parentElement.closest("[data-i18n]")) nodos.push(nodo);
+    }
+  });
+  return nodos;
+}
+
+async function traducirCV(codigoDestino){
+  const nodos = nodosTraduciblesCV();
+  if (nodos.length){
+    const textos = nodos.map(n => n.nodeValue.trim());
+    const promptUsuario = `Idioma destino: ${IDIOMAS[codigoDestino].nombre}.
+Fragmentos (${textos.length}): ${JSON.stringify(textos)}
+Devuelve exactamente {"traducciones": [...]} con ${textos.length} cadenas, en el mismo orden.`;
+    const resultado = await llamarIA(PROMPT_SISTEMA_TRADUCCION, promptUsuario, 0.2);
+    const traducciones = resultado && resultado.traducciones;
+    if (!Array.isArray(traducciones) || traducciones.length !== textos.length){
+      throw new Error("La IA devolvió una traducción incompleta");
+    }
+    nodos.forEach((nodo, i) => {
+      const traducido = limpiarTextoIA(String(traducciones[i] ?? ""));
+      if (!traducido) return;
+      // Conservar los espacios de alrededor del fragmento original
+      const [, antes, , despues] = nodo.nodeValue.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      nodo.nodeValue = antes + traducido + despues;
+    });
+  }
+  // Títulos y etiquetas de las plantillas al idioma destino (la interfaz de la app no cambia)
+  traducirEtiquetasCV(codigoDestino);
+  // Si hay una plantilla premium a la vista, volver a copiarle el contenido traducido
+  if (plantillaActiva !== "basico") rellenarPlantilla(plantillaActiva);
+  // El texto traducido tiene otra longitud: reajustar al A4
+  ajustarCVaA4(cvActivo());
+}
+
+// Pone los títulos de sección (data-i18n) y las etiquetas de contacto (data-cv-label)
+// de las 5 plantillas en el idioma indicado, y lo recuerda como idioma del CV.
+function traducirEtiquetasCV(codigo){
+  const t = TEXTOS[codigo];
+  if (!t) return;
+  idiomaCV = codigo;
+  document.querySelectorAll("#contenedor-cvs [data-i18n]").forEach(el => {
+    const texto = t[el.dataset.i18n];
+    if (texto) el.textContent = texto;
+  });
+  document.querySelectorAll("#contenedor-cvs [data-cv-label]").forEach(el => {
+    const texto = t[el.dataset.cvLabel];
+    // En el premium la etiqueta va sola en su línea: sin los dos puntos finales
+    if (texto) el.textContent = el.classList.contains("prem-label") ? texto.replace(/\s*:\s*$/, "") : texto;
+  });
+}
+
+selectIdiomaTraduccion.addEventListener("change", () => {
+  const codigoDestino = selectIdiomaTraduccion.value;
+  selectIdiomaTraduccion.classList.add("hidden");
+
+  const t = TEXTOS[idiomaActual];
+  const estadoTexto = document.getElementById("txt-traduccion-estado");
+  const avisoErrorTraduccion = document.getElementById("aviso-error-traduccion");
+
+  avisoErrorTraduccion.classList.add("hidden");
+  estadoTexto.textContent = t.traduciendo_cv;
+  estadoTexto.classList.remove("hidden");
+  btnTraducirCV.disabled = true;
+  document.getElementById("btn-cta-principal").disabled = true;
+
+  traducirCV(codigoDestino)
+    .then(() => estadoTexto.classList.add("hidden"))
+    .catch(error => {
+      console.error(error);
+      avisoErrorTraduccion.textContent = t.error_traduccion_generico + mensajeErrorCorto(error);
+      avisoErrorTraduccion.classList.remove("hidden");
+      estadoTexto.classList.add("hidden");
+    })
+    .finally(() => {
+      btnTraducirCV.disabled = false;
+      document.getElementById("btn-cta-principal").disabled = false;
+    });
+});
+
+// ---------- 11. Volver a grabar ----------
+document.getElementById("btn-volver-editar").addEventListener("click", () => {
+  detenerCamara();
+  fotoCapturadaDataURL = null;
+  controlesActiva.classList.add("hidden");
+  controlesListos.classList.add("hidden");
+  controlesInicial.classList.remove("hidden");
+  videoCamara.classList.add("hidden");
+  imgFotoCapturada.classList.add("hidden");
+  iconoSinCamara.classList.remove("hidden");
+  document.getElementById("btn-saltar-foto").textContent = TEXTOS[idiomaActual].boton_saltar;
+
+  document.getElementById("pantalla-cv").classList.add("hidden");
+  document.getElementById("pantalla-carga").classList.add("hidden");
+  document.getElementById("pantalla-entrevista").classList.remove("hidden");
+  irAPaso(1);
+});
+
+// ---------- 12. Carrusel de plantillas ----------
+// Solo una de las 5 hojas está visible a la vez; todas siguen en el DOM
+// (y en #contenedor-cvs) para conservar lo editado y permitir el zoom táctil.
+
+const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem2", prem3:"hoja-cv-prem3", prem4:"hoja-cv-prem4" };
+const CV_IDS  = Object.values(CV_MAP);
+
+let plantillaActiva = "basico";   // "basico" | "prem1" | "prem2" | "prem3" | "prem4"
+let disenoPremActivo = "prem1";   // último diseño premium seleccionado (el que se compra)
+
+function seleccionarPlantilla(plantilla){
+  plantillaActiva = plantilla;
+  const esBasico = plantilla === "basico";
+  if (!esBasico){
+    disenoPremActivo = plantilla;
+    rellenarPlantilla(plantilla);
+  }
+
+  // Mostrar solo la hoja elegida y marcar su botón en el carrusel
+  Object.entries(CV_MAP).forEach(([p, id]) => {
+    const activa = p === plantilla;
+    document.getElementById(id).classList.toggle("cv-oculto", !activa);
+    const btn = document.getElementById(`car-${p}`);
+    btn.style.borderColor = activa ? "var(--ambar)" : "var(--linea)";
+    btn.style.boxShadow   = activa ? "0 0 0 2px rgba(255,85,51,0.3)" : "none";
+  });
+
+  // Actualizar el botón principal dinámico
+  actualizarCTA(esBasico);
+
+  // Ajustar el tamaño del contenido para que la hoja llene un A4
+  ajustarCVaA4(document.getElementById(CV_MAP[plantilla]));
+
+  // Recalcular escala
+  requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
+}
+
+function actualizarCTA(esBasico){
+  const btnCTA = document.getElementById("btn-cta-principal");
+  const txtSub = document.getElementById("txt-cta-sub");
+  const txtSec = document.getElementById("txt-cta-secundario");
+  if (!btnCTA) return;
+
+  const svgFlecha = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 5v14M5 12l7 7 7-7"/></svg>`;
+
+  // Mismo formato en los dos botones: flecha pegada al título en una línea + subtítulo
+  const contenido = (titulo, subtitulo) => `
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800;white-space:nowrap">${svgFlecha}${titulo}</div>
+      <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">${subtitulo}</div>`;
+
+  if (esBasico){
+    btnCTA.innerHTML = contenido(tx("cta_gratis"), tx("cta_gratis_sub"));
+    btnCTA.style.background = "var(--musgo)";
+    if (txtSec){
+      txtSec.textContent = tx("cta_sin_anuncio", { precio: precioDe("basico_099") });
+      txtSec.style.display = "";
+    }
+  } else {
+    btnCTA.innerHTML = contenido(tx("cta_premium", { precio: precioDe("premium_299") }),
+                                 tx("cta_premium_sub", { diseno: tx("diseno_" + plantillaActiva) }));
+    btnCTA.style.background = "var(--ambar)";
+    if (txtSec) txtSec.style.display = "none";
+  }
+  if (txtSub) txtSub.textContent = "";
+}
+
+// ---------- 12b. Monetización y descarga del CV en PDF ----------
+
+let productoPendiente = null; // "basico_099" | "premium_299"
+
+// ---- Referencias al modal de pago ----
+const modalPago             = document.getElementById("modal-pago");
+const modalPagoTitulo       = document.getElementById("modal-pago-titulo");
+const btnConfirmarPago      = document.getElementById("btn-confirmar-pago");
+const btnCancelarPago       = document.getElementById("btn-cancelar-pago");
+
+// =============================================================================
+// GENERACIÓN DEL PDF
+// =============================================================================
+
+// El CV se maqueta a 900px de ancho; una página A4 a ese ancho mide 900 × 1273 px.
+const PDF_ANCHO_PX = 900;
+const PDF_ALTO_PX  = 1273;
+let generandoPDF = false; // evita PDFs duplicados por doble pulsación
+
+// ---------- Ajuste automático del CV a una página A4 ----------
+// Las medidas de las hojas dependen de tres variables (ver CSS):
+//   --u    → letra y elementos (16px = tamaño de diseño)
+//   --li   → multiplica el interlineado
+//   --aire → multiplica solo los espacios VERTICALES (entre experiencias, estudios, secciones)
+// Se mide un clon de la hoja a 900px de ancho y:
+//   1. si el contenido no cabe a tamaño de diseño, se compacta la letra (--u) lo justo,
+//      sin bajar de un tamaño legible (si aun así no cabe, el PDF pasa a una 2ª página);
+//   2. si sobra hoja, la letra apenas crece: el hueco se reparte con más interlineado y
+//      más separación vertical entre bloques, hasta llenar el A4 sin pasarse.
+const U_MIN = 13, U_DISENO = 16, U_MAX = 17;   // px
+const LI_MAX = 1.3;    // interlineado máximo: 1.5 → 1.95
+const AIRE_MAX = 3.2;  // separación vertical máxima entre bloques
+
+async function ajustarCVaA4(hoja){
+  if (!hoja) return;
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+  const caja = document.createElement("div");
+  caja.className = "medidor-a4";
+  caja.style.cssText = `position:absolute;left:-20000px;top:0;width:${PDF_ANCHO_PX}px;visibility:hidden;pointer-events:none`;
+  const clon = hoja.cloneNode(true);
+  clon.classList.remove("cv-oculto");
+  Object.assign(clon.style, { zoom: "1", width: PDF_ANCHO_PX + "px", maxWidth: "none", minHeight: "0", margin: "0" });
+  caja.appendChild(clon);
+  document.body.appendChild(caja);
+
+  const cabe = (u, li, aire) => {
+    clon.style.setProperty("--u", u + "px");
+    clon.style.setProperty("--li", li);
+    clon.style.setProperty("--aire", aire);
+    // Margen de seguridad: si queda demasiado justo, el PDF puede abrir una 2ª página vacía
+    return clon.offsetHeight <= PDF_ALTO_PX - 24;
+  };
+  // Mayor valor en [min, max] que cumple cabe(v) (búsqueda binaria)
+  const mayorQueCabe = (min, max, precision, cabeCon) => {
+    if (cabeCon(max)) return max;
+    let bajo = min, alto = max;
+    while (alto - bajo > precision){
+      const medio = (bajo + alto) / 2;
+      if (cabeCon(medio)) bajo = medio; else alto = medio;
+    }
+    return bajo;
+  };
+
+  let u = U_DISENO, li = 1, aire = 1;
+  if (!cabe(U_DISENO, 1, 1)){
+    // Demasiado contenido: compactar la letra lo justo
+    u = mayorQueCabe(U_MIN, U_DISENO, 0.25, v => cabe(v, 1, 1));
+  } else {
+    // Sobra hoja: interlineado y separación vertical crecen a la vez (t de 0 a 1) y la
+    // letra solo un poco (hasta U_MAX), para que el CV respire y llene el A4
+    const t = mayorQueCabe(0, 1, 0.01, v => cabe(U_DISENO + (U_MAX - U_DISENO) * v, 1 + (LI_MAX - 1) * v, 1 + (AIRE_MAX - 1) * v));
+    u = U_DISENO + (U_MAX - U_DISENO) * t;
+    li = 1 + (LI_MAX - 1) * t;
+    aire = 1 + (AIRE_MAX - 1) * t;
+    // Si aun con todo al máximo sobra mucho, seguir separando bloques (no la letra)
+    // (con tope, para no dejar saltos exagerados entre secciones en CV muy cortos)
+    if (t === 1) aire = mayorQueCabe(AIRE_MAX, AIRE_MAX * 1.4, 0.05, v => cabe(u, li, v));
+  }
+  caja.remove();
+  hoja.style.setProperty("--u", u.toFixed(2) + "px");
+  hoja.style.setProperty("--li", li.toFixed(3));
+  hoja.style.setProperty("--aire", aire.toFixed(2));
+}
+
+// ---------- Capa de texto invisible del PDF ----------
+// El PDF lleva el CV como imagen (idéntico a la pantalla). Encima se escribe el mismo texto
+// en modo invisible y en su misma posición: no cambia nada a la vista, pero el texto se puede
+// seleccionar/copiar y lo leen los programas de selección de personal (ATS).
+// Se mide la posición de cada palabra en una copia del CV y se agrupan por líneas.
+function medirCapaDeTexto(clon){
+  const caja = document.createElement("div");
+  caja.className = "medidor-a4";
+  caja.style.cssText = `position:absolute;left:-20000px;top:0;width:${PDF_ANCHO_PX}px;visibility:hidden;pointer-events:none`;
+  caja.appendChild(clon);
+  document.body.appendChild(caja);
+  const base = clon.getBoundingClientRect();
+  const lineas = new Map();
+  const rango = document.createRange();
+  const recorrido = document.createTreeWalker(clon, NodeFilter.SHOW_TEXT);
+  let nodo, n = 0;
+  while ((nodo = recorrido.nextNode())){
+    n++;
+    const texto = nodo.nodeValue;
+    if (!texto.trim()) continue;
+    const tam = parseFloat(getComputedStyle(nodo.parentElement).fontSize) || 12;
+    for (const m of texto.matchAll(/\S+/g)){
+      rango.setStart(nodo, m.index);
+      rango.setEnd(nodo, m.index + m[0].length);
+      const r = rango.getBoundingClientRect();
+      if (!r.width) continue; // palabra oculta
+      const clave = n + ":" + Math.round(r.top);
+      const linea = lineas.get(clave);
+      if (linea) linea.texto += " " + m[0];
+      else lineas.set(clave, { texto: m[0], x: r.left - base.left, y: r.bottom - base.top - tam * 0.22, tam });
+    }
+  }
+  caja.remove();
+  clon.remove();
+  return [...lineas.values()];
+}
+
+function escribirCapaDeTexto(pdf, lineas){
+  const paginas = pdf.internal.getNumberOfPages();
+  pdf.setFont("helvetica");
+  for (const l of lineas){
+    // Las fuentes estándar de PDF solo cubren el alfabeto latino: el resto se omite
+    if (/[^\u0000-ÿ€–—‘’“”•…·]/.test(l.texto)) continue;
+    const pagina = Math.floor(l.y / PDF_ALTO_PX);
+    if (pagina >= paginas) continue;
+    pdf.setPage(pagina + 1);
+    pdf.setFontSize(l.tam * 0.75); // px → pt
+    pdf.text(l.texto, l.x, l.y - pagina * PDF_ALTO_PX, { renderingMode: "invisible" });
+  }
+}
+
+async function descargarHojaComoPDF(elemento, nombreArchivo){
+  if (generandoPDF) return;
+  generandoPDF = true;
+  // Reajustar justo antes: el usuario puede haber editado textos
+  try { await ajustarCVaA4(elemento); } catch(e) { console.error("Ajuste A4:", e); }
+
+  // NO capturamos el elemento visible: tiene zoom CSS (zoomBase × escalaZoom) y puede
+  // estar oculto o dentro de un contenedor con scroll; html2canvas lo pinta en blanco.
+  // En su lugar capturamos un CLON limpio: sin zoom, sin transform, 900px, visible.
+  // (El bundle de html2pdf no expone html2canvas ni jsPDF como globales: usamos html2pdf().)
+  const clon = elemento.cloneNode(true);
+  clon.classList.remove("cv-oculto", "shadow-2xl", "rounded-2xl");
+  Object.assign(clon.style, {
+    zoom: "1", transform: "none", position: "static", left: "", top: "",
+    visibility: "visible", width: PDF_ANCHO_PX + "px", maxWidth: "none",
+    minHeight: (PDF_ALTO_PX - 3) + "px", margin: "0", borderRadius: "0", boxShadow: "none"
+  });
+  clon.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
+
+  const estiloTemp = document.createElement("style");
+  estiloTemp.id = "estilo-pdf-temp";
+  estiloTemp.textContent =
+    ".pista-edicion::after{display:none!important;}" +
+    "[contenteditable]{outline:none!important;}" +
+    ".html2pdf__container *{animation:none!important;transition:none!important;}" +
+    "* {-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}";
+  document.head.appendChild(estiloTemp);
+
+  const opciones = {
+    margin: 0,
+    filename: nombreArchivo + ".pdf",
+    image: { type: "jpeg", quality: 0.95 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      // scrollX/Y = 0: si la página está desplazada, html2canvas captura una zona vacía
+      scrollX: 0,
+      scrollY: 0,
+      // Sin windowWidth: la copia que pinta html2canvas debe tener el mismo ancho que la
+      // ventana real, o en pantallas de más de 900px el CV sale desplazado y recortado
+      logging: false
+    },
+    // Página con proporción A4 y exactamente 900px de ancho, para que el CV no se recorte
+    jsPDF: { unit: "px", format: [PDF_ANCHO_PX, PDF_ALTO_PX], orientation: "portrait", hotfixes: ["px_scaling"] },
+    pagebreak: { mode: ["css", "legacy"], avoid: ["li", "p", "h1", "h2", "h3", "img"] }
+  };
+
+  const limpiar = () => {
+    estiloTemp.remove();
+    generandoPDF = false;
+  };
+
+  let capa = [];
+  try { capa = medirCapaDeTexto(clon); } catch(e) { console.error("Capa de texto:", e); }
+
+  return html2pdf().set(opciones).from(clon).toPdf().get("pdf")
+    .then(pdf => { try { escribirCapaDeTexto(pdf, capa); } catch(e) { console.error("Capa de texto:", e); } })
+    .save()
+    .then(limpiar)
+    .catch(err => { limpiar(); console.error("Error generando PDF:", err); });
+}
+
+function nombreCVActual(){
+  return (document.getElementById("cv-nombre").textContent || "CV").trim().replace(/\s+/g, "_");
+}
+
+// Descarga el CV básico (el actual de dos columnas)
+function generarYDescargarPDF(){
+  descargarHojaComoPDF(document.getElementById("hoja-cv"), nombreCVActual());
+}
+
+// Rellena la plantilla premium con los datos del CV básico y la descarga
+function generarYDescargarPDFPremium(){
+  // Si el usuario ha editado directamente la plantilla premium visible, no la
+  // sobrescribimos con los datos del básico: solo rellenamos si no está a la vista.
+  const hojaPrem = document.getElementById(CV_MAP[disenoPremActivo]);
+  if (hojaPrem.classList.contains("cv-oculto")) rellenarPlantilla(disenoPremActivo);
+  // descargarHojaComoPDF trabaja sobre un clon, así que da igual que esté oculta
+  descargarHojaComoPDF(hojaPrem, nombreCVActual() + "_premium");
+}
+
+// Copia los datos del CV básico (fuente única: lo que generó/tradujo la IA más las
+// correcciones del usuario) a la plantilla premium indicada.
+function rellenarPlantilla(modelo){
+  const prefijos = { prem1: "prem", prem2: "p2", prem3: "p3", prem4: "p4" };
+  const p = prefijos[modelo];
+  if (!p) return;
+  const $ = id => document.getElementById(id);
+  // prem1 usa nombres de ID distintos para las secciones
+  const idSec = (prem1, otros) => modelo === "prem1" ? `prem-seccion-${prem1}` : `${p}-sec-${otros}`;
+
+  // Nombre e iniciales (los avatares de p3 y p4 las muestran si no hay foto)
+  const nombre = $("cv-nombre").textContent.trim();
+  const elNombre = $(`${p}-nombre`);
+  if (elNombre) elNombre.textContent = nombre || TEXTOS[idiomaCV].nombre_predeterminado;
+  const elIniciales = $(`${p}-iniciales`);
+  if (elIniciales){
+    const iniciales = nombre.split(/\s+/).filter(Boolean).map(w => w[0]).join("").substring(0, 2).toUpperCase();
+    elIniciales.textContent = iniciales || "—";
+  }
+
+  // Datos de contacto: si en el básico están ocultos o vacíos, se oculta la fila entera
+  ["telefono", "email", "ubicacion"].forEach(campo => {
+    const el = $(`${p}-${campo}`);
+    if (!el) return;
+    const valor = $(`cv-fila-${campo}`).classList.contains("hidden") ? "" : $(`cv-${campo}`).textContent.trim();
+    el.textContent = valor;
+    const fila = el.closest(".p2-citem, .p3-valor, [id^='prem-fila-']") || el;
+    fila.classList.toggle("cv-vacio", !valor);
+  });
+
+  // Foto
+  const fotoEl = $(`${p}-foto`);
+  if (fotoEl){
+    const hayFoto = !!fotoCapturadaDataURL;
+    if (hayFoto) fotoEl.src = fotoCapturadaDataURL;
+    fotoEl.classList.toggle("hidden", !hayFoto);
+    if (elIniciales) elIniciales.style.display = hayFoto ? "none" : "";
+    const placEl = $(`${p}-avatar-placeholder`);
+    if (placEl) placEl.classList.toggle("hidden", hayFoto);
+  }
+
+  // Secciones: se copia el contenido y se ocultan las que están ocultas en el básico
+  const copiarSeccion = (secOrigen, contOrigen, secDestino, contDestino) => {
+    const sd = $(secDestino), cd = $(contDestino);
+    if (!sd || !cd) return;
+    const visible = !$(secOrigen).classList.contains("hidden");
+    if (visible) cd.innerHTML = $(contOrigen).innerHTML;
+    sd.classList.toggle("hidden", !visible);
+  };
+  copiarSeccion("cv-seccion-experiencia", "cv-experiencia", idSec("experiencia", "exp"), `${p}-experiencia`);
+  copiarSeccion("cv-seccion-estudios", "cv-estudios", idSec("estudios", "est"), `${p}-estudios`);
+  copiarSeccion("cv-seccion-otros-datos", "cv-otros", idSec("otros", "otros"), `${p}-otros`);
+  copiarSeccion("cv-seccion-perfil", "cv-perfil", idSec("perfil", "perfil"), `${p}-perfil`);
+  copiarSeccion("cv-seccion-habilidades", "cv-habilidades", idSec("habilidades", "hab"), `${p}-habilidades`);
+
+  // Subtítulo/cargo en prem2, prem3 y prem4: el primer puesto de la experiencia
+  const subEl = $(`${p}-sub-cargo`) || $(`${p}-cargo`);
+  if (subEl){
+    const primerPuesto = document.querySelector("#cv-experiencia .cv-experiencia-puesto");
+    subEl.textContent = primerPuesto ? primerPuesto.textContent.trim() : "";
+  }
+}
+
+// =============================================================================
+// DESCARGA: solo dentro de la app Android, que es la que tiene anuncios (AdMob)
+// y pagos (Google Play). En un navegador normal se invita a instalar la app.
+// (La app inyecta window.AndroidAds y window.AndroidBilling desde Java.)
+// =============================================================================
+const EN_APP = !!(window.AndroidAds && window.AndroidBilling);
+
+function mostrarModalApp(){
+  document.getElementById("modal-app").classList.remove("hidden");
+}
+
+// Mensaje breve flotante (reutiliza el aviso inferior). Por defecto con estilo neutro;
+// con error = true, en rojo.
+function avisoBreve(texto, ms = 4500, error = false){
+  const aviso = document.getElementById("aviso-sin-voz");
+  aviso.textContent = texto;
+  aviso.style.cssText = error ? "" : "background:#1F2A24; color:#fff; border-color:#1F2A24";
+  aviso.classList.remove("hidden");
+  clearTimeout(avisoBreve.temporizador);
+  avisoBreve.temporizador = setTimeout(() => aviso.classList.add("hidden"), ms);
+}
+
+// ---------- Descarga gratis con vídeo recompensado ----------
+// El vídeo de AdMob ocupa toda la pantalla: no hace falta ningún modal intermedio.
+let anuncioEnCurso = false; // evita lanzar dos vídeos con dos pulsaciones seguidas
+
+function lanzarAnuncio(){
+  if (anuncioEnCurso) return;
+  anuncioEnCurso = true;
+  avisoBreve(tx("aviso_cargando_video"), 3000);
+  window.AndroidAds.mostrarRecompensado();
+}
+
+// Callbacks del anuncio recompensado (los llama AnunciosBridge.java)
+// Vídeo visto entero: se descarga el CV directamente
+window.recompensaCompletada = function(){
+  anuncioEnCurso = false;
+  generarYDescargarPDF();
+  avisoBreve(tx("aviso_descargando"), 3000);
+};
+// Cerrado antes de terminar: sin recompensa, se puede volver a intentar o pagar
+window.anuncioCerrado = function(){
+  anuncioEnCurso = false;
+  avisoBreve(tx("aviso_video_completo"));
+};
+// No hay anuncio disponible (sin conexión, sin inventario…): no se bloquea al usuario
+window.anuncioNoDisponible = function(){
+  window.recompensaCompletada();
+};
+
+// ---------- Descargas de pago ----------
+// Ventana de pago: nombre del diseño elegido, vista previa con el CV del propio usuario,
+// ventajas y botón con el precio en el formato del idioma del teléfono
+function abrirModalPago(producto){
+  productoPendiente = producto;
+  const premium = producto === "premium_299";
+  const plantilla = premium ? disenoPremActivo : "basico";
+  const precio = precioDe(producto);
+
+  modalPagoTitulo.textContent = premium ? tx("pago_titulo_premium", { diseno: tx("diseno_" + plantilla) })
+                                        : tx("pago_titulo_sin_anuncio");
+  document.getElementById("modal-pago-insignia").classList.toggle("hidden", plantilla !== "prem1");
+  const ventajas = premium ? ["pago_ventaja_premium_1", "pago_ventaja_premium_2", "pago_ventaja_premium_3"]
+                           : ["pago_ventaja_basico_1", "pago_ventaja_basico_2", "pago_ventaja_basico_3"];
+  document.getElementById("modal-pago-ventajas").innerHTML =
+    ventajas.map(k => `<li><span style="color:var(--musgo);font-weight:800">✓</span> ${escaparHTML(tx(k))}</li>`).join("");
+  btnConfirmarPago.textContent = tx("boton_pagar", { precio });
+
+  // Miniatura del CV real del usuario (copia de la hoja, sin edición, escalada al ancho de la vista)
+  const vista = document.getElementById("modal-pago-vista");
+  vista.innerHTML = "";
+  const hoja = document.getElementById(CV_MAP[plantilla]);
+  if (premium && hoja.classList.contains("cv-oculto")) rellenarPlantilla(plantilla);
+  const mini = hoja.cloneNode(true);
+  mini.removeAttribute("contenteditable");
+  mini.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
+  mini.classList.remove("cv-oculto", "shadow-2xl", "rounded-2xl");
+  Object.assign(mini.style, { zoom: String(150 / PDF_ANCHO_PX), width: PDF_ANCHO_PX + "px", maxWidth: "none",
+                              minHeight: PDF_ALTO_PX + "px", margin: "0", borderRadius: "0" });
+  vista.appendChild(mini);
+
+  modalPago.classList.remove("hidden");
+}
+
+function cerrarModalPago(){
+  modalPago.classList.add("hidden");
+  document.getElementById("modal-pago-vista").innerHTML = ""; // quitar la copia (ids duplicados)
+}
+
+// Botón principal: gratis con vídeo (básico) o pago (premium)
+document.getElementById("btn-cta-principal").addEventListener("click", () => {
+  if (!EN_APP) return mostrarModalApp();
+  if (plantillaActiva === "basico") lanzarAnuncio();
+  else abrirModalPago("premium_299");
+});
+
+// Opción secundaria: básico sin anuncio por 0,99 €
+document.getElementById("txt-cta-secundario").addEventListener("click", () => {
+  if (!EN_APP) return mostrarModalApp();
+  abrirModalPago("basico_099");
+});
+
+// Confirmación de pago: abre Google Play; responde con pagoCompletado / pagoCancelado / pagoPendiente
+btnConfirmarPago.addEventListener("click", () => {
+  if (!EN_APP) return mostrarModalApp();
+  btnConfirmarPago.disabled = true;
+  window.AndroidBilling.iniciarPago(productoPendiente);
+});
+
+// Callbacks del pago (los llama PagosBridge.java)
+window.pagoCompletado = function(productoId){
+  btnConfirmarPago.disabled = false;
+  cerrarModalPago();
+  if (productoId === "premium_299"){
+    generarYDescargarPDFPremium();
+  } else {
+    generarYDescargarPDF();
+  }
+  avisoBreve(tx("aviso_descargando"), 3000);
+};
+// mensaje vacío = lo canceló el usuario (no se muestra nada)
+window.pagoCancelado = function(mensaje){
+  btnConfirmarPago.disabled = false;
+  cerrarModalPago();
+  if (mensaje) avisoBreve(tx("aviso_pago_error"), 4500, true);
+};
+window.pagoPendiente = function(){
+  btnConfirmarPago.disabled = false;
+  cerrarModalPago();
+  avisoBreve(tx("aviso_pago_pendiente"), 7000);
+};
+// Precios de Google Play en la moneda del usuario ({ basico_099: "0,89 US$", … }):
+// llegan al arrancar la app y se reflejan en el botón de descarga
+window.preciosPlay = function(precios){
+  if (!precios || typeof precios !== "object") return;
+  preciosPlay = precios;
+  if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
+};
+
+btnCancelarPago.addEventListener("click", () => {
+  cerrarModalPago();
+  productoPendiente = null;
+});
+
+// ---------- 13. Escala y zoom táctil del CV en pantalla ----------
+// Zoom compuesto: zoom CSS = zoomBase (encaje en pantalla) × escalaZoomEdicion (pinch).
+// Con 'zoom' (no transform) el layout del CV sigue siendo de 900px: el texto no se
+// amontona, la altura del contenedor se ajusta sola y el ancho sobrante se recorre
+// con scroll horizontal en #contenedor-cvs.
+let escalaZoomEdicion = 1;
+
+// Encaja el CV de 900px en el ancho de la pantalla (88%, sin ampliar en escritorio)
+// y vuelve al tamaño encajado (cambio de plantilla, CV nuevo, giro de pantalla).
+function aplicarEscalaCV(){
+  const escala = Math.min((window.innerWidth * 0.88) / 900, 1);
+  escalaZoomEdicion = 1;
+  CV_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    el.dataset.zoomBase = escala;
+    el.style.zoom = escala < 1 ? String(escala) : "";
+  });
+  document.getElementById("contenedor-cvs").scrollLeft = 0;
+}
+
+// Solo si cambia el ANCHO (giro de pantalla): el teclado al editar cambia la altura
+// y no debe deshacer el zoom de edición.
+let anchoAnterior = window.innerWidth;
+window.addEventListener("resize", () => {
+  if (window.innerWidth === anchoAnterior) return;
+  anchoAnterior = window.innerWidth;
+  aplicarEscalaCV();
+});
+
+// Devuelve la hoja de CV de la plantilla seleccionada en el carrusel
+function cvActivo(){
+  return document.getElementById(CV_MAP[plantillaActiva]);
+}
+
+// Al terminar de editar un texto del CV (no mientras se escribe), reajustar al A4
+document.getElementById("contenedor-cvs").addEventListener("focusout", e => {
+  if (e.target.isContentEditable) ajustarCVaA4(cvActivo());
+});
+
+(function(){
+  const ZOOM_MIN = 1, ZOOM_MAX = 3;
+  const contEl = document.getElementById("contenedor-cvs");
+  let distanciaInicial = 0;
+  let escalaInicial = 1;
+  let origenX = 0;
+  let huboPinch = false;  // el gesto actual ha usado dos dedos
+  let tapInicio = null;   // {x, y} del toque con un dedo; null si se ha desplazado
+  let ultimoTap = 0;
+
+  const distancia = (t1, t2) => Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+
+  function aplicarZoom(escala){
+    const el = cvActivo();
+    const anterior = escalaZoomEdicion;
+    escalaZoomEdicion = Math.min(Math.max(escala, ZOOM_MIN), ZOOM_MAX);
+    const zoomTotal = (parseFloat(el.dataset.zoomBase) || 1) * escalaZoomEdicion;
+    el.style.zoom = zoomTotal === 1 ? "" : String(zoomTotal);
+    // Mantener bajo los dedos el punto donde empezó el gesto (eje horizontal)
+    const factor = escalaZoomEdicion / anterior;
+    contEl.scrollLeft = (contEl.scrollLeft + origenX) * factor - origenX;
+  }
+
+  contEl.addEventListener("touchstart", e => {
+    if (e.touches.length === 1){
+      huboPinch = false;
+      tapInicio = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else if (e.touches.length === 2){
+      huboPinch = true;
+      tapInicio = null;
+      distanciaInicial = distancia(e.touches[0], e.touches[1]) || 1;
+      escalaInicial = escalaZoomEdicion;
+      origenX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - contEl.getBoundingClientRect().left;
+    }
+  }, { passive: true });
+
+  contEl.addEventListener("touchmove", e => {
+    if (e.touches.length === 2 && distanciaInicial > 0){
+      aplicarZoom(escalaInicial * (distancia(e.touches[0], e.touches[1]) / distanciaInicial));
+    } else if (tapInicio && e.touches.length === 1){
+      // Si el dedo se desplaza es un scroll, no un toque
+      const t = e.touches[0];
+      if (Math.abs(t.clientX - tapInicio.x) > 10 || Math.abs(t.clientY - tapInicio.y) > 10) tapInicio = null;
+    }
+  }, { passive: true });
+
+  // Doble toque (dos toques cortos, sin pinch ni scroll): volver al zoom encajado
+  contEl.addEventListener("touchend", e => {
+    if (e.touches.length > 0) return;
+    distanciaInicial = 0;
+    if (huboPinch || !tapInicio){ ultimoTap = 0; return; }
+    const ahora = Date.now();
+    if (ahora - ultimoTap < 300 && escalaZoomEdicion !== 1){
+      origenX = 0;
+      aplicarZoom(1);
+      contEl.scrollLeft = 0;
+      ultimoTap = 0;
+    } else {
+      ultimoTap = ahora;
+    }
+  }, { passive: true });
+})();
+
+// ---------- 14. Inicialización ----------
+document.documentElement.lang = idiomaActual;
+document.documentElement.dir = IDIOMAS[idiomaActual].dir;
+aplicarTextos();
+</script>
+
+</body>
+</html>
