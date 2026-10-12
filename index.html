@@ -1076,7 +1076,6 @@
     <!-- Vista previa del CV del propio usuario con el diseño elegido -->
     <div id="modal-pago-vista" class="mx-auto rounded-lg overflow-hidden shadow-lg" style="width:150px; height:212px; background:#fff; border:1px solid var(--linea); pointer-events:none; text-align:left"></div>
     <ul id="modal-pago-ventajas" class="text-left text-sm mx-auto flex flex-col gap-1" style="color:var(--tinta)"></ul>
-    <p id="modal-pago-precio" class="text-3xl font-bold" style="color:var(--ambar)"></p>
     <button id="btn-confirmar-pago" class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)"></button>
     <p class="text-xs" style="color:#6B6354" data-i18n="pago_pie">Pago único · Sin suscripciones · Pago seguro con Google Play</p>
     <button id="btn-cancelar-pago" class="text-sm" style="color:#6B6354; min-height:44px" data-i18n="ahora_no">Ahora no</button>
@@ -2757,7 +2756,6 @@ let productoPendiente = null; // "basico_099" | "premium_299"
 // ---- Referencias al modal de pago ----
 const modalPago             = document.getElementById("modal-pago");
 const modalPagoTitulo       = document.getElementById("modal-pago-titulo");
-const modalPagoPrecio       = document.getElementById("modal-pago-precio");
 const btnConfirmarPago      = document.getElementById("btn-confirmar-pago");
 const btnCancelarPago       = document.getElementById("btn-cancelar-pago");
 
@@ -3084,7 +3082,7 @@ window.anuncioNoDisponible = function(){
 
 // ---------- Descargas de pago ----------
 // Ventana de pago: nombre del diseño elegido, vista previa con el CV del propio usuario,
-// ventajas y precio en el formato del idioma del teléfono
+// ventajas y botón con el precio en el formato del idioma del teléfono
 function abrirModalPago(producto){
   productoPendiente = producto;
   const premium = producto === "premium_299";
@@ -3098,7 +3096,6 @@ function abrirModalPago(producto){
                            : ["pago_ventaja_basico_1", "pago_ventaja_basico_2", "pago_ventaja_basico_3"];
   document.getElementById("modal-pago-ventajas").innerHTML =
     ventajas.map(k => `<li><span style="color:var(--musgo);font-weight:800">✓</span> ${escaparHTML(tx(k))}</li>`).join("");
-  modalPagoPrecio.textContent = precio;
   btnConfirmarPago.textContent = tx("boton_pagar", { precio });
 
   // Miniatura del CV real del usuario (copia de la hoja, sin edición, escalada al ancho de la vista)
