@@ -2272,7 +2272,7 @@ function construirPromptUsuario(datos){
   const nombreIdioma = IDIOMAS[idiomaActual]?.nombre || "español";
   return `Aquí están los textos en bruto, dictados por voz, recogidos en una entrevista de 4 pasos. Devuélvelos procesados.
 
-IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro.
+IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro. Esto incluye las etiquetas <strong> de "otros_html" (Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad…) y valores como "Sí"/"No": tradúcelos también al ${nombreIdioma}. Los ejemplos de este mensaje están en español solo como referencia de formato.
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
