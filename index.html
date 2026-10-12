@@ -2001,8 +2001,22 @@ function aplicarTextos(){
 // Reinicio automático al detectar pausas largas (comportamiento normal en Android WebView).
 
 // En Android WebView se usa continuous=false y se reinicia en cada pausa con un objeto
-// NUEVO (reutilizarlo duplica resultados); sin resultados parciales, que también duplican.
+// NUEVO (reutilizarlo duplica resultados). Los resultados parciales se muestran mientras
+// se habla; en Android a veces llegan acumulados ("hola", "hola qué tal"), así que un
+// fragmento que contiene al anterior lo sustituye en vez de sumarse.
 const ES_ANDROID = /Android/.test(navigator.userAgent);
+
+function unirFragmentos(fragmentos){
+  let texto = "";
+  for (const f of fragmentos){
+    if (!f) continue;
+    const a = texto.toLowerCase(), b = f.toLowerCase();
+    if (b.startsWith(a)) texto = f;            // acumulado: el nuevo ya incluye lo anterior
+    else if (a.endsWith(b)) continue;          // repetido
+    else texto = texto ? texto + " " + f : f;
+  }
+  return texto;
+}
 
 function iniciarEscucha(boton){
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2031,20 +2045,18 @@ function iniciarEscucha(boton){
     const rec = new SpeechRec();
     rec.lang = IDIOMAS[idiomaActual].lang;
     rec.continuous = false;
-    rec.interimResults = !ES_ANDROID;
+    rec.interimResults = true;
     rec.maxAlternatives = 1;
 
     rec.onresult = (evento) => {
-      let parcial = "";
+      const finales = [], parciales = [];
       for (let i = 0; i < evento.results.length; i++){
         const fragmento = evento.results[i][0].transcript.trim();
-        if (evento.results[i].isFinal){
-          if (!acumulado.endsWith(fragmento + " ")) acumulado += fragmento + " ";
-        } else {
-          parcial += fragmento + " ";
-        }
+        (evento.results[i].isFinal ? finales : parciales).push(fragmento);
       }
-      caja.value = (acumulado + parcial).trim();
+      const final = unirFragmentos(finales);
+      if (final && !acumulado.endsWith(final + " ")) acumulado += final + " ";
+      caja.value = (acumulado + unirFragmentos(parciales)).trim();
     };
 
     rec.onerror = (ev) => {
