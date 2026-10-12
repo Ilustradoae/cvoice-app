@@ -2319,6 +2319,9 @@ async function llamarIAUnaVez(promptSistema, promptUsuario, temperatura){
       signal: control.signal,
       body: JSON.stringify({
         model: MODELO_GROQ,
+        // Razonamiento bajo: CVs de la misma calidad (comparado en 3 casos) con ~17 % menos
+        // tokens, lo que deja más CVs dentro del cupo gratuito de Groq, y más rápido
+        reasoning_effort: "low",
         temperature: temperatura,
         response_format: { type: "json_object" },
         messages: [
@@ -2335,7 +2338,9 @@ async function llamarIAUnaVez(promptSistema, promptUsuario, temperatura){
       // 429 de Groq (límite de la cuenta, compartido por todos y de segundos): se reintenta.
       // El proxy también responde 429 cuando UNA persona hace demasiadas peticiones
       // ("Demasiadas peticiones"): ese bloqueo dura minutos y reintentar lo alarga.
-      error.saturacionGroq = respuesta.status === 429 && /rate limit|tokens per minute|requests per minute/i.test(detalle);
+      // Solo el límite por minuto se libera en segundos; si se agotó el cupo del día
+      // (en los dos modelos), esperar no sirve
+      error.saturacionGroq = respuesta.status === 429 && /per minute/i.test(detalle);
       if (error.saturacionGroq) error.esperaMs = esperaTrasSaturacion(respuesta.headers.get("retry-after"), detalle);
       throw error;
     }
@@ -2532,9 +2537,27 @@ function filtrarOtrosHTML(html){
 }
 
 
+// Experiencia en orden cronológico inverso aunque la IA la devuelva desordenada:
+// "actualidad/present/…" primero; después, el año más alto de las fechas. Si algún puesto
+// no tiene año, se respeta el orden de la IA.
+const PALABRAS_ACTUALIDAD = /actual|present|now|hoy|aujourd|heute|oggi|atual|prezent|obecn|теперішн|настоящ|现在|至今|現在|الآن|حتى الآن/i;
+function claveFecha(item){
+  const fechas = String(item.fechas || "");
+  if (PALABRAS_ACTUALIDAD.test(fechas)) return 9999;
+  const anios = fechas.match(/\b(19|20)\d{2}\b/g);
+  return anios ? Math.max(...anios.map(Number)) : null;
+}
+function ordenarExperiencia(lista){
+  const claves = lista.map(claveFecha);
+  if (claves.some(c => c === null)) return lista;
+  return lista.map((item, i) => ({ item, i, c: claves[i] }))
+    .sort((a, b) => b.c - a.c || a.i - b.i)
+    .map(x => x.item);
+}
+
 function construirHTMLExperiencia(lista){
   if (!Array.isArray(lista) || lista.length === 0) return "";
-  return lista.map(item => {
+  return ordenarExperiencia(lista).map(item => {
     const puesto  = escaparHTML(limpiarTextoIA(item.puesto  || ""));
     const empresa = escaparHTML(limpiarTextoIA(item.empresa || ""));
     const fechas  = escaparHTML(limpiarTextoIA(item.fechas  || ""));
