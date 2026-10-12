@@ -1889,6 +1889,15 @@ function precioLocal(euros){
   catch(e){ return euros.toFixed(2).replace(".", ",") + " €"; }
 }
 const PRECIOS = { basico_099: 0.99, premium_299: 2.99 };
+// Precios reales de Google Play en la moneda del usuario (los da la app Android con
+// AndroidBilling.obtenerPrecios() o window.preciosPlay); si no llegan, se muestran en euros.
+let preciosPlay = {};
+try {
+  if (window.AndroidBilling && typeof window.AndroidBilling.obtenerPrecios === "function"){
+    preciosPlay = JSON.parse(window.AndroidBilling.obtenerPrecios() || "{}") || {};
+  }
+} catch(e){ preciosPlay = {}; }
+function precioDe(producto){ return preciosPlay[producto] || precioLocal(PRECIOS[producto]); }
 
 const PLANTILLA_PASO = {
   es: (n,t) => `Paso ${n} de ${t}`,
@@ -2737,11 +2746,11 @@ function actualizarCTA(esBasico){
     btnCTA.innerHTML = contenido(tx("cta_gratis"), tx("cta_gratis_sub"));
     btnCTA.style.background = "var(--musgo)";
     if (txtSec){
-      txtSec.textContent = tx("cta_sin_anuncio", { precio: precioLocal(PRECIOS.basico_099) });
+      txtSec.textContent = tx("cta_sin_anuncio", { precio: precioDe("basico_099") });
       txtSec.style.display = "";
     }
   } else {
-    btnCTA.innerHTML = contenido(tx("cta_premium", { precio: precioLocal(PRECIOS.premium_299) }),
+    btnCTA.innerHTML = contenido(tx("cta_premium", { precio: precioDe("premium_299") }),
                                  tx("cta_premium_sub", { diseno: tx("diseno_" + plantillaActiva) }));
     btnCTA.style.background = "var(--ambar)";
     if (txtSec) txtSec.style.display = "none";
@@ -3087,7 +3096,7 @@ function abrirModalPago(producto){
   productoPendiente = producto;
   const premium = producto === "premium_299";
   const plantilla = premium ? disenoPremActivo : "basico";
-  const precio = precioLocal(PRECIOS[producto]);
+  const precio = precioDe(producto);
 
   modalPagoTitulo.textContent = premium ? tx("pago_titulo_premium", { diseno: tx("diseno_" + plantilla) })
                                         : tx("pago_titulo_sin_anuncio");
@@ -3160,6 +3169,13 @@ window.pagoPendiente = function(){
   btnConfirmarPago.disabled = false;
   cerrarModalPago();
   avisoBreve(tx("aviso_pago_pendiente"), 7000);
+};
+// Precios de Google Play en la moneda del usuario ({ basico_099: "0,89 US$", … }):
+// llegan al arrancar la app y se reflejan en el botón de descarga
+window.preciosPlay = function(precios){
+  if (!precios || typeof precios !== "object") return;
+  preciosPlay = precios;
+  if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
 };
 
 btnCancelarPago.addEventListener("click", () => {
