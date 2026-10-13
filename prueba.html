@@ -2502,6 +2502,32 @@ function limpiarTextoIA(texto){
 // elimina los <li> cuyo contenido indica ausencia de información
 // (ej. "Vehículo propio: No posee", "Carnet: No", "N/A", etc.)
 // Devuelve el HTML limpio, o cadena vacía si no queda nada útil.
+// El HTML que devuelve la IA no se inserta tal cual: se analiza en un documento inerte
+// (DOMParser no ejecuta scripts ni atributos como onerror) y se reconstruye solo con las
+// etiquetas que usa el CV, sin ningún atributo. Lo demás se convierte en texto.
+const ETIQUETAS_PERMITIDAS = new Set(["UL", "OL", "LI", "STRONG", "B", "EM", "I", "P", "BR", "SPAN"]);
+function sanitizarHTML(html){
+  const origen = new DOMParser().parseFromString(String(html), "text/html").body;
+  const destino = document.createElement("div");
+  const copiar = (desde, hacia) => {
+    for (const nodo of desde.childNodes){
+      if (nodo.nodeType === Node.TEXT_NODE){
+        hacia.appendChild(document.createTextNode(nodo.nodeValue));
+      } else if (nodo.nodeType === Node.ELEMENT_NODE){
+        if (ETIQUETAS_PERMITIDAS.has(nodo.tagName)){
+          const limpio = document.createElement(nodo.tagName.toLowerCase());
+          copiar(nodo, limpio);
+          hacia.appendChild(limpio);
+        } else if (!["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "SVG", "MATH", "TEMPLATE"].includes(nodo.tagName)){
+          copiar(nodo, hacia); // etiqueta desconocida: se conserva solo su contenido
+        }
+      }
+    }
+  };
+  copiar(origen, destino);
+  return destino;
+}
+
 function filtrarOtrosHTML(html){
   if (!html || !html.trim()) return "";
 
@@ -2510,8 +2536,7 @@ function filtrarOtrosHTML(html){
     /^(no\s+posee|no\s+tiene|no\s+aplica|n\/a|ninguno|ninguna|sin\s+datos)$/i,
   ];
 
-  const div = document.createElement("div");
-  div.innerHTML = html;
+  const div = sanitizarHTML(html);
 
   // Limpiar asteriscos y markdown de todos los nodos de texto dentro del bloque
   div.querySelectorAll("li, p, span, strong").forEach(el => {
