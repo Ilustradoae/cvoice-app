@@ -2702,6 +2702,8 @@ function pintarCV(resultado){
     imgFoto.classList.add("hidden");
     placeholderFoto.classList.remove("hidden");
   }
+  // Sin foto no se deja el hueco: un círculo vacío en el CV queda poco profesional
+  document.getElementById("cv-foto-contenedor").classList.toggle("hidden", !fotoCapturadaDataURL);
 
   // Títulos y etiquetas de las 5 plantillas en el idioma en que se ha redactado el CV
   traducirEtiquetasCV(idiomaActual);
@@ -3218,6 +3220,8 @@ function rellenarPlantilla(modelo){
     if (elIniciales) elIniciales.style.display = hayFoto ? "none" : "";
     const placEl = $(`${p}-avatar-placeholder`);
     if (placEl) placEl.classList.toggle("hidden", hayFoto);
+    // Sin foto se quita el recuadro entero (ni silueta ni iniciales)
+    fotoEl.parentElement.classList.toggle("hidden", !hayFoto);
   }
 
   // Secciones: se copia el contenido y se ocultan las que están ocultas en el básico
