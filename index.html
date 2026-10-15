@@ -3125,6 +3125,9 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
       // Sin windowWidth: la copia que pinta html2canvas debe tener el mismo ancho que la
       // ventana real, o en pantallas de más de 900px el CV sale desplazado y recortado
       logging: false,
+      // Ancho fijo: con el papel A4 en puntos, html2pdf mete el CV en una caja de 794px y,
+      // sin esto, la captura cortaba el lado derecho de la hoja de 900px
+      width: PDF_ANCHO_PX,
       ...(unaPagina ? { height: PDF_ALTO_PX } : {})
     },
     jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
