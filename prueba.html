@@ -121,7 +121,11 @@
   .pista-edicion::after{
     content: "✎"; display:inline-block; font-size:.7rem; color:var(--cv-acento);
     margin-left:5px; opacity:.7; vertical-align:middle;
+    /* Flota sin ocupar sitio: la hoja en pantalla mide lo mismo que el PDF */
+    position:absolute; line-height:1; pointer-events:none;
   }
+  .pista-edicion:not(span){ position:relative; }
+  .pista-edicion:not(span)::after{ top:2px; right:2px; margin-left:0; }
 
   ::selection{ background: var(--ambar-suave); }
 
@@ -161,6 +165,9 @@
     font-size: var(--u);
     /* Interlineado base (antes heredado: 1.5) escalado por --li */
     line-height: calc(1.5 * var(--li));
+    /* En pantalla, la hoja tiene la altura de un A4 (900 × 1273): se ve igual que el PDF,
+       con el mismo blanco abajo si el CV es corto y las columnas de color hasta el final */
+    min-height: 1273px;
   }
   /* Emails largos: el generador de PDF (html2canvas) solo los parte con break-all */
   #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
