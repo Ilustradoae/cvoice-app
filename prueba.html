@@ -2920,6 +2920,11 @@ const btnCancelarPago       = document.getElementById("btn-cancelar-pago");
 // El CV se maqueta a 900px de ancho; una página A4 a ese ancho mide 900 × 1273 px.
 const PDF_ANCHO_PX = 900;
 const PDF_ALTO_PX  = 1273;
+// El PDF es un A4 real (21 × 29,7 cm = 595,28 × 841,89 pt) para que se imprima a tamaño
+// real sin recortes: la hoja de 900px se escala a esa página de borde a borde.
+const A4_ANCHO_PT = 595.28;
+const A4_ALTO_PT  = 841.89;
+const PT_POR_PX   = A4_ANCHO_PT / PDF_ANCHO_PX;
 let generandoPDF = false; // evita PDFs duplicados por doble pulsación
 
 // ---------- Ajuste automático del CV a una página A4 ----------
@@ -3025,18 +3030,35 @@ function medirCapaDeTexto(clon){
   return [...lineas.values()];
 }
 
+// Las posiciones se miden en px de la hoja (900px de ancho) y se pasan a pt del A4
 function escribirCapaDeTexto(pdf, lineas){
   const paginas = pdf.internal.getNumberOfPages();
+  const altoPaginaPx = A4_ALTO_PT / PT_POR_PX;
   pdf.setFont("helvetica");
   for (const l of lineas){
     // Las fuentes estándar de PDF solo cubren el alfabeto latino: el resto se omite
     if (/[^\u0000-ÿ€–—‘’“”•…·]/.test(l.texto)) continue;
-    const pagina = Math.floor(l.y / PDF_ALTO_PX);
+    const pagina = Math.floor(l.y / altoPaginaPx);
     if (pagina >= paginas) continue;
     pdf.setPage(pagina + 1);
-    pdf.setFontSize(l.tam * 0.75); // px → pt
-    pdf.text(l.texto, l.x, l.y - pagina * PDF_ALTO_PX, { renderingMode: "invisible" });
+    pdf.setFontSize(l.tam * PT_POR_PX);
+    pdf.text(l.texto, l.x * PT_POR_PX, (l.y - pagina * altoPaginaPx) * PT_POR_PX, { renderingMode: "invisible" });
   }
+}
+
+// Alto real del contenido de la hoja (sin altura mínima), medido fuera de la vista
+function altoContenido(clon){
+  const caja = document.createElement("div");
+  caja.style.cssText = `position:absolute;left:-20000px;top:0;width:${PDF_ANCHO_PX}px;visibility:hidden;pointer-events:none`;
+  const alturaMinima = clon.style.minHeight;
+  clon.style.minHeight = "0";
+  caja.appendChild(clon);
+  document.body.appendChild(caja);
+  const alto = clon.offsetHeight;
+  caja.remove();
+  clon.remove();
+  clon.style.minHeight = alturaMinima;
+  return alto;
 }
 
 // Devuelve true si el PDF se generó y se entregó a la descarga, false si falló
@@ -3059,9 +3081,14 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
   Object.assign(clon.style, {
     zoom: "1", transform: "none", position: "static", left: "", top: "",
     visibility: "visible", width: PDF_ANCHO_PX + "px", maxWidth: "none",
-    minHeight: (PDF_ALTO_PX - 3) + "px", margin: "0", borderRadius: "0", boxShadow: "none"
+    minHeight: PDF_ALTO_PX + "px", margin: "0", borderRadius: "0", boxShadow: "none"
   });
   clon.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
+  // Lo normal (ajustarCVaA4) es que el CV quepa en una página: la hoja se captura con la
+  // altura exacta del A4, para que las columnas de color lleguen hasta el borde inferior
+  // sin dejar una franja blanca. Si no cabe ni con la letra mínima, va en varias páginas.
+  const unaPagina = altoContenido(clon) <= PDF_ALTO_PX;
+  if (unaPagina) Object.assign(clon.style, { height: PDF_ALTO_PX + "px", overflow: "hidden" });
   // La foto (data URL) debe estar decodificada antes de pintar, o sale un hueco en blanco
   await Promise.all([...clon.querySelectorAll("img")].filter(i => i.getAttribute("src"))
     .map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {})));
@@ -3088,10 +3115,10 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
       scrollY: 0,
       // Sin windowWidth: la copia que pinta html2canvas debe tener el mismo ancho que la
       // ventana real, o en pantallas de más de 900px el CV sale desplazado y recortado
-      logging: false
+      logging: false,
+      ...(unaPagina ? { height: PDF_ALTO_PX } : {})
     },
-    // Página con proporción A4 y exactamente 900px de ancho, para que el CV no se recorte
-    jsPDF: { unit: "px", format: [PDF_ANCHO_PX, PDF_ALTO_PX], orientation: "portrait", hotfixes: ["px_scaling"] },
+    jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
     pagebreak: { mode: ["css", "legacy"], avoid: ["li", "p", "h1", "h2", "h3", "img"] }
   };
 
@@ -3099,7 +3126,18 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
   try { capa = medirCapaDeTexto(clon); } catch(e) { console.error("Capa de texto:", e); }
 
   const generar = html2pdf().set(opciones).from(clon).toPdf().get("pdf")
-    .then(pdf => { try { escribirCapaDeTexto(pdf, capa); } catch(e) { console.error("Capa de texto:", e); } })
+    .then(function(pdf){
+      // CV de una página: se cambia la página que monta html2pdf por la imagen ocupando el
+      // A4 completo (su proporción es la del A4: solo se evita el redondeo de 1px que deja
+      // una línea blanca abajo). `this` es el worker de html2pdf, que guarda el canvas.
+      if (unaPagina && this.prop && this.prop.canvas){
+        const imagen = this.prop.canvas.toDataURL("image/jpeg", 0.95);
+        while (pdf.internal.getNumberOfPages() > 0) pdf.deletePage(1);
+        pdf.addPage("a4", "portrait");
+        pdf.addImage(imagen, "JPEG", 0, 0, A4_ANCHO_PT, A4_ALTO_PT);
+      }
+      try { escribirCapaDeTexto(pdf, capa); } catch(e) { console.error("Capa de texto:", e); }
+    })
     .save();
   // Si algo se queda colgado (memoria, WebView antiguo…), no bloquear la descarga para siempre
   const tiempoAgotado = new Promise((_, rechazar) => setTimeout(() => rechazar(new Error("tiempo agotado")), 60000));
@@ -3232,12 +3270,42 @@ function avisoBreve(texto, ms = 4500, error = false){
 // ---------- Descarga gratis con vídeo recompensado ----------
 // El vídeo de AdMob ocupa toda la pantalla: no hace falta ningún modal intermedio.
 let anuncioEnCurso = false; // evita lanzar dos vídeos con dos pulsaciones seguidas
+let sesionAnuncio = 0;
+let limpiarEsperaAnuncio = () => {};
 
+// Plan B para no dejar a nadie atascado en "Cargando el vídeo…": en algunos países AdMob
+// tarda muchísimo o no llega a tener vídeo, y a veces la app no recibe el aviso de cierre.
+// - Si en 15 s el vídeo no ha tapado la pantalla, se da la descarga gratis igualmente.
+// - Si el vídeo sí se mostró pero al volver no llega ningún aviso en 3 s, también.
+// Un aviso que llegue después ya no descarga otra vez.
 function lanzarAnuncio(){
   if (anuncioEnCurso) return;
   anuncioEnCurso = true;
+  const sesion = ++sesionAnuncio;
   avisoBreve(tx("aviso_cargando_video"), 3000);
+  let tapado = false;
+  const temporizador = setTimeout(() => resolverAnuncioSinAviso(sesion), 15000);
+  const alPerderFoco = () => { tapado = true; clearTimeout(temporizador); };
+  const alVolver = () => { if (tapado) setTimeout(() => resolverAnuncioSinAviso(sesion), 3000); };
+  window.addEventListener("blur", alPerderFoco, { once: true });
+  window.addEventListener("focus", alVolver, { once: true });
+  limpiarEsperaAnuncio = () => {
+    clearTimeout(temporizador);
+    window.removeEventListener("blur", alPerderFoco);
+    window.removeEventListener("focus", alVolver);
+  };
   window.AndroidAds.mostrarRecompensado();
+}
+
+function terminarAnuncio(){
+  anuncioEnCurso = false;
+  limpiarEsperaAnuncio();
+}
+
+function resolverAnuncioSinAviso(sesion){
+  if (!anuncioEnCurso || sesion !== sesionAnuncio) return;
+  terminarAnuncio();
+  entregarDescarga("basico");
 }
 
 // ---------- Entrega de la descarga ya ganada (vídeo visto o pago hecho) ----------
@@ -3276,12 +3344,14 @@ function pendienteSirve(premium){
 // Callbacks del anuncio recompensado (los llama AnunciosBridge.java)
 // Vídeo visto entero: se descarga el CV directamente
 window.recompensaCompletada = function(){
-  anuncioEnCurso = false;
+  if (!anuncioEnCurso) return; // ya resuelto por el plan B
+  terminarAnuncio();
   entregarDescarga("basico");
 };
 // Cerrado antes de terminar: sin recompensa, se puede volver a intentar o pagar
 window.anuncioCerrado = function(){
-  anuncioEnCurso = false;
+  if (!anuncioEnCurso) return;
+  terminarAnuncio();
   avisoBreve(tx("aviso_video_completo"));
 };
 // No hay anuncio disponible (sin conexión, sin inventario…): no se bloquea al usuario
