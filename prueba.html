@@ -171,6 +171,12 @@
   }
   /* Emails largos: el generador de PDF (html2canvas) solo los parte con break-all */
   #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
+  /* Email y teléfono se leen siempre de izquierda a derecha, también en un CV en árabe
+     (si no, "nombre06@gmail.com" se desordena como "gmail.com@nombre06") */
+  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email,
+  #cv-telefono, #prem-telefono, #p2-telefono, #p3-telefono, #p4-telefono{
+    direction: ltr; unicode-bidi: isolate;
+  }
   /* Al medir para el A4 se mide como en el PDF: sin los iconos ✎ de edición */
   .medidor-a4 .pista-edicion::after{ display: none !important; }
 
@@ -3145,6 +3151,12 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
     pagebreak: { mode: ["css", "legacy"], avoid: ["li", "p", "h1", "h2", "h3", "img"] }
   };
 
+  // Con la interfaz en árabe (página de derecha a izquierda) html2canvas calcula mal la
+  // posición de la hoja y el PDF sale desplazado y cortado por la izquierda. Durante la
+  // captura la página va de izquierda a derecha; la hoja conserva su propio dir.
+  const dirPagina = document.documentElement.dir;
+  document.documentElement.dir = "ltr";
+
   let capa = [];
   try { capa = medirCapaDeTexto(clon); } catch(e) { console.error("Capa de texto:", e); }
 
@@ -3171,6 +3183,7 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
     console.error("Error generando PDF:", err);
     return false;
   } finally {
+    document.documentElement.dir = dirPagina;
     estiloTemp.remove();
     generandoPDF = false;
   }
