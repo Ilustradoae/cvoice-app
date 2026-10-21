@@ -477,7 +477,7 @@
 
   /* ===== Interfaz más legible (feedback de testers: mucha gente con poca vista o poca
      soltura con el móvil). Solo la interfaz: las hojas del CV no se tocan. ===== */
-  #pantalla-entrevista .paso ul{ font-size: 1.125rem; line-height: 1.6rem; }
+  #pantalla-entrevista .paso ul{ font-size: 1.0625rem; line-height: 1.5rem; }
   #txt-paso-contador, #btn-cambiar-idioma{ font-size: 1rem; }
   /* Atrás / Siguiente / Saltar / Repetir y botones secundarios: más grandes y fáciles de pulsar */
   .paso button[data-siguiente], .paso button[data-anterior], #btn-saltar-foto, #btn-repetir-foto,
@@ -487,9 +487,9 @@
   /* "Aquí aparece lo que dices. Tócalo para corregirlo", justo encima del cuadro de texto */
   .ayuda-editar{ font-size: 1rem; line-height: 1.4rem; font-weight: 700; color: var(--musgo); margin: 0 0 .5rem; text-align: start; }
   /* Aviso tranquilizador del paso 1 */
-  .aviso-tranquilo{ background: var(--musgo-claro); border: 2px solid var(--linea); border-radius: 1rem;
-    padding: .75rem 1rem; margin: 0 0 1.25rem; text-align: start; font-size: 1rem; line-height: 1.45rem; color: var(--tinta); }
-  .aviso-tranquilo .aviso-voz{ margin-top: .4rem; font-size: .9375rem; color: var(--musgo); }
+  .aviso-tranquilo{ background: var(--ambar-suave); border-radius: 1rem;
+    padding: .6rem .9rem; margin: 0 0 1rem; text-align: start; font-size: .9375rem; line-height: 1.35rem; color: var(--tinta); }
+  .aviso-tranquilo .aviso-voz{ margin-top: .3rem; color: var(--musgo); }
   /* Pantalla del CV */
   #carrusel-plantillas > p{ font-size: 1rem; }
   #txt-cta-sub{ font-size: .9375rem; }
@@ -547,16 +547,17 @@
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item3">Tu correo electrónico</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item4">Tu ciudad o municipio</span></li>
       </ul>
-      <!-- Para quitar el miedo a equivocarse al hablar (feedback de testers) -->
-      <div class="aviso-tranquilo">
-        <p><span aria-hidden="true">🙂</span> <span data-i18n="aviso_tranquilo">No te preocupes por equivocarte: podrás revisar y cambiar todo antes de descargar tu CV.</span></p>
-        <p class="aviso-voz"><span aria-hidden="true">🔒</span> <span data-i18n="aviso_voz_privada">CVoice no guarda grabaciones de tu voz.</span></p>
-      </div>
       <div class="relative flex justify-center mb-6">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
         <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="1" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
+      </div>
+      <!-- Para quitar el miedo a equivocarse al hablar (feedback de testers). Debajo del
+           micrófono, para que el botón principal siga a la vista sin bajar la pantalla. -->
+      <div class="aviso-tranquilo">
+        <p><span aria-hidden="true">🙂</span> <span data-i18n="aviso_tranquilo">No te preocupes por equivocarte: podrás revisar y cambiar todo antes de descargar tu CV.</span></p>
+        <p class="aviso-voz"><span aria-hidden="true">🔒</span> <span data-i18n="aviso_voz_privada">CVoice no guarda grabaciones de tu voz.</span></p>
       </div>
       <p class="ayuda-editar" data-i18n="puedes_corregir">✏️ Aquí aparece lo que dices. Tócalo para corregirlo.</p>
       <textarea data-texto-paso="1" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-5" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
