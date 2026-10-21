@@ -173,6 +173,9 @@
   #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
   /* Email y teléfono se leen siempre de izquierda a derecha, también en un CV en árabe
      (si no, "nombre06@gmail.com" se desordena como "gmail.com@nombre06") */
+  /* El árabe se escribe con las letras unidas: sin espaciado entre letras en los CV en
+     árabe (los títulos en mayúsculas espaciadas salían con las letras sueltas) */
+  [id^="hoja-cv"][dir="rtl"], [id^="hoja-cv"][dir="rtl"] *{ letter-spacing: normal !important; }
   #cv-email, #prem-email, #p2-email, #p3-email, #p4-email,
   #cv-telefono, #prem-telefono, #p2-telefono, #p3-telefono, #p4-telefono{
     direction: ltr; unicode-bidi: isolate;
@@ -411,10 +414,10 @@
   .cv-bloque-contenido p{ margin-bottom: calc(.45 * var(--u)); }
   .cv-bloque-contenido ul{ list-style:none; padding: 0; margin: 0; }
   .cv-bloque-contenido li{
-    position:relative; padding-left: calc(1 * var(--u)); margin-bottom: calc(.4 * var(--u));
+    position:relative; padding-inline-start: calc(1 * var(--u)); margin-bottom: calc(.4 * var(--u));
   }
   .cv-bloque-contenido li::before{
-    content:"–"; position:absolute; left:0; color: #888; font-weight:700;
+    content:"–"; position:absolute; inset-inline-start:0; color: #888; font-weight:700;
   }
   .cv-bloque-contenido strong{ font-family:'Inter', sans-serif; font-weight:600; font-size:calc(.9 * var(--u)); }
 
@@ -429,8 +432,8 @@
   .cv-experiencia-fechas{ font-size:calc(.72 * var(--u)); color:#888; white-space:nowrap; }
   .cv-experiencia-empresa{ font-size:calc(.82 * var(--u)); font-style:italic; color:#666; margin-bottom: calc(.4 * var(--u)); }
   .cv-experiencia-funciones{ list-style:none; padding: 0; margin: 0; }
-  .cv-experiencia-funciones li{ position:relative; padding-left: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height: calc(1.6 * var(--li)); }
-  .cv-experiencia-funciones li::before{ content:"–"; position:absolute; left:0; color:#888; font-weight:700; }
+  .cv-experiencia-funciones li{ position:relative; padding-inline-start: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height: calc(1.6 * var(--li)); }
+  .cv-experiencia-funciones li::before{ content:"–"; position:absolute; inset-inline-start:0; color:#888; font-weight:700; }
 
   /* ---- Estudios: título oficial + formación complementaria agrupada ---- */
   .cv-estudio-item{ margin-bottom: calc(1 * var(--ue)); }
@@ -440,8 +443,8 @@
   .cv-formacion-complementaria{ margin-top: calc(1.1 * var(--ue)); padding-top: calc(1 * var(--u)); border-top:1px dashed var(--cv-linea); }
   .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:calc(.78 * var(--u)); letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom: calc(.5 * var(--u)); }
   .cv-formacion-complementaria-lista{ list-style:none; padding: 0; margin: 0; }
-  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height: calc(1.6 * var(--li)); margin-bottom: calc(.3 * var(--u)); position:relative; padding-left: calc(1 * var(--u)); }
-  .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; left:0; color:var(--cv-acento); }
+  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height: calc(1.6 * var(--li)); margin-bottom: calc(.3 * var(--u)); position:relative; padding-inline-start: calc(1 * var(--u)); }
+  .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; inset-inline-start:0; color:var(--cv-acento); }
 
   /* ---- Perfil profesional (lo redacta la IA) y habilidades (las deduce la IA) ---- */
   .cv-perfil{ font-size: calc(.88 * var(--u)); line-height: calc(1.65 * var(--li)); color: #333; margin: 0; }
@@ -2437,7 +2440,7 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
   ],
   "formacion_complementaria": ["curso corto 1 con su año si se mencionó", "curso corto 2"],
   "otros_html": "HTML breve usando <ul><li>...</li></ul> con idiomas (indicando nivel si se mencionó), carnet de conducir, vehículo propio, disponibilidad horaria y voluntariados; usa <strong> solo para la etiqueta del dato (ej. <strong>Idiomas:</strong> Español nativo, inglés básico). Cadena vacía si no se dijo nada en este apartado.",
-  "perfil": "Perfil profesional de 2 o 3 frases (máximo 50 palabras) que redactas TÚ a partir de todo lo anterior: a qué se dedica la persona, años de experiencia si se deducen de las fechas, sus puntos fuertes y lo que aporta a una empresa. Tono profesional y positivo, sin primera persona (ej. 'Repartidor con 4 años de experiencia en entregas a domicilio, puntual y orientado al cliente...'). Cadena vacía solo si no hay ningún dato con el que redactarlo.",
+  "perfil": "Perfil profesional de 2 o 3 frases (máximo 50 palabras) que redactas TÚ a partir de todo lo anterior: a qué se dedica la persona, años de experiencia si se deducen de las fechas, sus puntos fuertes y lo que aporta a una empresa. Tono profesional y positivo, en el estilo impersonal propio de un CV: ni primera persona ('yo', 'soy', 'tengo') ni tercera persona (nunca 'él', 'ella', 'posee', 'es', 'tiene', 'cuenta con'); usa frases nominales que empiecen por la profesión (ej. 'Repartidor con 4 años de experiencia en entregas a domicilio. Puntual, organizado y orientado al cliente.'). Cadena vacía solo si no hay ningún dato con el que redactarlo.",
   "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
 }
 Reglas estrictas:
@@ -2749,7 +2752,7 @@ document.addEventListener("click", (evento) => {
 // (tal como está en pantalla, con las correcciones del usuario) y cada traducción se
 // vuelve a poner en su sitio. La estructura HTML nunca pasa por la IA, así que no puede
 // romperse, y el JSON de respuesta es una simple lista de cadenas.
-const PROMPT_SISTEMA_TRADUCCION = "Eres un traductor profesional especializado en currículums. Recibes una lista JSON de fragmentos de texto de un CV y devuelves su traducción al idioma indicado, con el mismo tono profesional. Reglas: traduce cada fragmento por separado y en el mismo orden; nunca unas, dividas, añadas ni omitas fragmentos; no traduzcas nombres propios de personas, empresas ni marcas; conserva números, fechas, emails y la puntuación final (por ejemplo los dos puntos de 'Idiomas:'). Devuelve solo el JSON pedido.";
+const PROMPT_SISTEMA_TRADUCCION = "Eres un traductor profesional especializado en currículums. Recibes una lista JSON de fragmentos de texto de un CV y devuelves su traducción al idioma indicado, con el mismo tono profesional. Reglas: traduce cada fragmento por separado y en el mismo orden; nunca unas, dividas, añadas ni omitas fragmentos; no traduzcas nombres propios de personas, empresas ni marcas; conserva números, fechas, emails y la puntuación final (por ejemplo los dos puntos de 'Idiomas:'). Devuelve solo el JSON pedido. Si un fragmento describe a la persona (su perfil profesional), tradúcelo en el estilo impersonal propio de un CV: sin primera ni tercera persona (nada de 'yo', 'soy', 'él', 'ella', 'posee', 'es', 'tiene'), con frases nominales que empiecen por la profesión, sin cambiar los datos.";
 
 // Nodos de texto traducibles del CV básico (las plantillas premium se copian de él).
 // Se excluyen los títulos con data-i18n: esos se traducen con el diccionario TEXTOS.
@@ -3089,6 +3092,30 @@ function altoContenido(clon){
 
 // Devuelve true si el PDF se generó y se entregó a la descarga, false si falló
 // y null si ya había otra descarga en curso
+// html2canvas parte el texto árabe en trozos y a veces lo dibuja letra a letra (letras sin
+// unir) o se come los espacios entre palabras. Cada palabra árabe va en su propia cajita
+// inline-block, que se dibuja entera, y con marcas RLM invisibles para que la puntuación
+// pegada ("سوسة،") quede en su lado. Solo en el clon del PDF.
+const LETRAS_ARABES = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
+function prepararTextoArabePDF(raiz){
+  const nodos = [];
+  const recorrido = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT);
+  let nodo;
+  while ((nodo = recorrido.nextNode())) if (LETRAS_ARABES.test(nodo.nodeValue)) nodos.push(nodo);
+  nodos.forEach(texto => {
+    const trozos = document.createDocumentFragment();
+    texto.nodeValue.split(/(\s+)/).forEach(trozo => {
+      if (!trozo) return;
+      if (/^\s+$/.test(trozo) || !LETRAS_ARABES.test(trozo)){ trozos.appendChild(document.createTextNode(trozo)); return; }
+      const palabra = document.createElement("span");
+      palabra.style.display = "inline-block";
+      palabra.textContent = "‏" + trozo + "‏";
+      trozos.appendChild(palabra);
+    });
+    texto.parentNode.replaceChild(trozos, texto);
+  });
+}
+
 async function descargarHojaComoPDF(elemento, nombreArchivo){
   if (generandoPDF) return null;
   generandoPDF = true;
@@ -3110,6 +3137,7 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
     minHeight: PDF_ALTO_PX + "px", margin: "0", borderRadius: "0", boxShadow: "none"
   });
   clon.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
+  if (elemento.dir === "rtl") prepararTextoArabePDF(clon);
   // Lo normal (ajustarCVaA4) es que el CV quepa en una página: la hoja se captura con la
   // altura exacta del A4, para que las columnas de color lleguen hasta el borde inferior
   // sin dejar una franja blanca. Si no cabe ni con la letra mínima, va en varias páginas.
