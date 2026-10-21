@@ -2776,8 +2776,15 @@ Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
 });
 
 const btnTraducirCV = document.getElementById("btn-traducir-cv");
+// La lista se despliega bajo el botón, al final de la página: al abrirla se baja la
+// pantalla lo justo para que se vea entera
+function abrirListaTraduccion(){
+  selectIdiomaTraduccion.classList.remove("hidden");
+  selectIdiomaTraduccion.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
 btnTraducirCV.addEventListener("click", () => {
-  selectIdiomaTraduccion.classList.toggle("hidden");
+  if (selectIdiomaTraduccion.classList.contains("hidden")) abrirListaTraduccion();
+  else selectIdiomaTraduccion.classList.add("hidden");
 });
 document.addEventListener("click", (evento) => {
   const tocoTraduccion = btnTraducirCV.contains(evento.target) || selectIdiomaTraduccion.contains(evento.target);
@@ -2793,8 +2800,7 @@ function actualizarAvisoIdiomaCV(){
 // Atajo desde ese aviso: lleva al botón "Traducir CV" y abre la lista de idiomas
 // (con retardo, porque el clic en el documento la cierra justo después)
 document.getElementById("btn-invita-traducir").addEventListener("click", () => {
-  btnTraducirCV.scrollIntoView({ behavior: "smooth", block: "center" });
-  setTimeout(() => selectIdiomaTraduccion.classList.remove("hidden"), 450);
+  setTimeout(abrirListaTraduccion, 0);
 });
 
 // Traducción por fragmentos: se envía a la IA solo la lista de textos visibles del CV

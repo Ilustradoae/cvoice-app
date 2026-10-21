@@ -474,6 +474,29 @@
   }
   @keyframes girar{ to{ transform:rotate(360deg); } }
   @media (prefers-reduced-motion: reduce){ .anillo-carga{ animation: girar 2.4s linear infinite; } }
+
+  /* ===== Interfaz más legible (feedback de testers: mucha gente con poca vista o poca
+     soltura con el móvil). Solo la interfaz: las hojas del CV no se tocan. ===== */
+  #pantalla-entrevista .paso ul{ font-size: 1.0625rem; line-height: 1.5rem; }
+  #txt-paso-contador, #btn-cambiar-idioma{ font-size: 1rem; }
+  /* Atrás / Siguiente / Saltar / Repetir y botones secundarios: más grandes y fáciles de pulsar */
+  .paso button[data-siguiente], .paso button[data-anterior], #btn-saltar-foto, #btn-repetir-foto,
+  #btn-volver-tras-error, #btn-volver-editar, #btn-traducir-cv{
+    font-size: 1.125rem; line-height: 1.5rem; min-height: 56px; padding-top: .875rem; padding-bottom: .875rem;
+  }
+  /* "Aquí aparece lo que dices. Tócalo para corregirlo", justo encima del cuadro de texto */
+  .ayuda-editar{ font-size: 1rem; line-height: 1.4rem; font-weight: 700; color: var(--musgo); margin: 0 0 .5rem; text-align: start; }
+  /* Aviso tranquilizador del paso 1 */
+  .aviso-tranquilo{ background: var(--ambar-suave); border-radius: 1rem;
+    padding: .6rem .9rem; margin: 0 0 1rem; text-align: start; font-size: .9375rem; line-height: 1.35rem; color: var(--tinta); }
+  .aviso-tranquilo .aviso-voz{ margin-top: .3rem; color: var(--musgo); }
+  /* Pantalla del CV */
+  #carrusel-plantillas > p{ font-size: 1rem; }
+  #txt-cta-sub{ font-size: .9375rem; }
+  #txt-cta-secundario{ font-size: 1rem; line-height: 1.4rem; padding: .6rem 0; }
+  .cv-idioma-aviso{ margin-top: .75rem; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 0 .5rem; padding: .25rem 1rem; border-radius: 1.25rem; background: var(--ambar-suave); font-size: 1rem; color: var(--tinta); }
+  #btn-invita-traducir{ font-weight: 700; text-decoration: underline; color: var(--musgo); min-height: 44px; }
 </style>
 <!-- Tailwind CSS v3.4.17 compilado (solo las clases que usa esta página). Antes se usaba el CDN
      de desarrollo (cdn.tailwindcss.com), que compila en el móvil en cada carga. Si se añaden clases
@@ -530,8 +553,14 @@
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
-      <textarea data-texto-paso="1" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
-      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <!-- Para quitar el miedo a equivocarse al hablar (feedback de testers). Debajo del
+           micrófono, para que el botón principal siga a la vista sin bajar la pantalla. -->
+      <div class="aviso-tranquilo">
+        <p><span aria-hidden="true">🙂</span> <span data-i18n="aviso_tranquilo">No te preocupes por equivocarte: podrás revisar y cambiar todo antes de descargar tu CV.</span></p>
+        <p class="aviso-voz"><span aria-hidden="true">🔒</span> <span data-i18n="aviso_voz_privada">CVoice no guarda grabaciones de tu voz.</span></p>
+      </div>
+      <p class="ayuda-editar" data-i18n="puedes_corregir">✏️ Aquí aparece lo que dices. Tócalo para corregirlo.</p>
+      <textarea data-texto-paso="1" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-5" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <div class="flex flex-row gap-2 justify-center">
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="2" data-i18n="boton_siguiente">Siguiente →</button>
       </div>
@@ -554,8 +583,8 @@
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
-      <textarea data-texto-paso="2" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
-      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <p class="ayuda-editar" data-i18n="puedes_corregir">✏️ Aquí aparece lo que dices. Tócalo para corregirlo.</p>
+      <textarea data-texto-paso="2" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-5" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <div class="flex flex-row gap-2 justify-center">
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="1" data-i18n="boton_anterior">← Atrás</button>
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="3" data-i18n="boton_siguiente">Siguiente →</button>
@@ -579,8 +608,8 @@
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
-      <textarea data-texto-paso="3" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
-      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <p class="ayuda-editar" data-i18n="puedes_corregir">✏️ Aquí aparece lo que dices. Tócalo para corregirlo.</p>
+      <textarea data-texto-paso="3" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-5" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <div class="flex flex-row gap-2 justify-center">
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="2" data-i18n="boton_anterior">← Atrás</button>
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="4" data-i18n="boton_siguiente">Siguiente →</button>
@@ -604,8 +633,8 @@
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
-      <textarea data-texto-paso="4" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-2" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
-      <p class="text-sm mb-5" style="color:var(--musgo)" data-i18n="puedes_corregir">¿Algo está mal? Puedes escribir o corregir aquí mismo.</p>
+      <p class="ayuda-editar" data-i18n="puedes_corregir">✏️ Aquí aparece lo que dices. Tócalo para corregirlo.</p>
+      <textarea data-texto-paso="4" rows="4" class="w-full rounded-2xl border-2 p-4 text-lg mb-5" style="border-color:var(--linea); background:var(--musgo-claro)" placeholder="Aquí verás lo que vas diciendo…" data-i18n-placeholder="placeholder_texto"></textarea>
       <div class="flex flex-row gap-2 justify-center">
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="3" data-i18n="boton_anterior">← Atrás</button>
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-siguiente="5" data-i18n="boton_siguiente">Siguiente →</button>
@@ -669,6 +698,12 @@
   <div class="text-center mb-5 max-w-3xl mx-auto">
     <h2 class="font-display text-2xl sm:text-3xl" style="color:var(--musgo)" data-i18n="cv_titulo">Tu currículum está listo</h2>
     <p class="text-base" data-i18n="cv_ayuda">Toca cualquier texto para corregirlo antes de descargar.</p>
+    <!-- Idioma del CV siempre a la vista + atajo a la traducción (hablar en tu idioma y
+         tener el CV en el del país es de lo que más vende a quien acaba de llegar) -->
+    <p class="cv-idioma-aviso">
+      <span id="txt-cv-idioma">Tu currículum está en 🇪🇸 Español.</span>
+      <button id="btn-invita-traducir" type="button" data-i18n="cv_traducir_invita">¿Lo necesitas en otro idioma? Tradúcelo</button>
+    </p>
   </div>
 
   <!-- Carrusel unificado de 5 plantillas -->
@@ -1162,7 +1197,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Abrir cámara", boton_capturar: "📸 Hacer foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar este paso →", boton_continuar: "Continuar →",
     camara_sin_permiso: "No hemos podido acceder a la cámara. Revisa los permisos del navegador.",
     placeholder_texto: "Aquí verás lo que vas diciendo…",
-    puedes_corregir: "¿Algo está mal? Puedes escribir o corregir aquí mismo.",
+    puedes_corregir: "✏️ Aquí aparece lo que dices. Tócalo para corregirlo.", aviso_tranquilo: "No te preocupes por equivocarte: podrás revisar y cambiar todo antes de descargar tu CV.", aviso_voz_privada: "CVoice no guarda grabaciones de tu voz.", cv_idioma_actual: "Tu currículum está en {idioma}.", cv_traducir_invita: "¿Lo necesitas en otro idioma? Tradúcelo",
     boton_siguiente: "Siguiente →", boton_anterior: "← Atrás",
     mensaje_carga: "La IA está organizando y redactando tu CV con estilo profesional…",
     error_ia_generico: "No hemos podido redactar tu currículum automáticamente. Revisa tu conexión a internet e inténtalo de nuevo.",
@@ -1206,7 +1241,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Open camera", boton_capturar: "📸 Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip this step →", boton_continuar: "Continue →",
     camara_sin_permiso: "We couldn't access the camera. Check your browser permissions.",
     placeholder_texto: "You'll see what you're saying here…",
-    puedes_corregir: "Something wrong? You can type or fix it right here.",
+    puedes_corregir: "✏️ What you say appears here. Tap it to fix it.", aviso_tranquilo: "Don't worry about mistakes: you can review and change everything before downloading your résumé.", aviso_voz_privada: "CVoice doesn't keep recordings of your voice.", cv_idioma_actual: "Your résumé is in {idioma}.", cv_traducir_invita: "Need it in another language? Translate it",
     boton_siguiente: "Next →", boton_anterior: "← Back",
     mensaje_carga: "The AI is organising and writing your résumé with a professional touch…",
     error_ia_generico: "We couldn't write your résumé automatically. Check your internet connection and try again.",
@@ -1250,7 +1285,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Ouvrir la caméra", boton_capturar: "📸 Prendre la photo", boton_repetir: "↺ Reprendre la photo", boton_saltar: "Passer cette étape →", boton_continuar: "Continuer →",
     camara_sin_permiso: "Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.",
     placeholder_texto: "Vous verrez ici ce que vous dites…",
-    puedes_corregir: "Une erreur ? Vous pouvez écrire ou corriger ici.",
+    puedes_corregir: "✏️ Ce que vous dites s'affiche ici. Touchez-le pour le corriger.", aviso_tranquilo: "Pas d'inquiétude si vous vous trompez : vous pourrez tout vérifier et modifier avant de télécharger votre CV.", aviso_voz_privada: "CVoice ne conserve pas d'enregistrements de votre voix.", cv_idioma_actual: "Votre CV est en {idioma}.", cv_traducir_invita: "Besoin d'une autre langue ? Traduisez-le",
     boton_siguiente: "Suivant →", boton_anterior: "← Retour",
     mensaje_carga: "L'IA organise et rédige votre CV avec une touche professionnelle…",
     error_ia_generico: "Nous n'avons pas pu rédiger votre CV automatiquement. Vérifiez votre connexion internet et réessayez.",
@@ -1294,7 +1329,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Kamera öffnen", boton_capturar: "📸 Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Diesen Schritt überspringen →", boton_continuar: "Weiter →",
     camara_sin_permiso: "Kein Zugriff auf die Kamera möglich. Prüfen Sie die Browser-Berechtigungen.",
     placeholder_texto: "Hier sehen Sie, was Sie sagen…",
-    puedes_corregir: "Etwas falsch? Hier tippen oder korrigieren.",
+    puedes_corregir: "✏️ Hier erscheint, was Sie sagen. Tippen Sie darauf, um es zu korrigieren.", aviso_tranquilo: "Keine Sorge wegen Fehlern: Sie können vor dem Download alles prüfen und ändern.", aviso_voz_privada: "CVoice speichert keine Aufnahmen Ihrer Stimme.", cv_idioma_actual: "Ihr Lebenslauf ist auf {idioma}.", cv_traducir_invita: "In einer anderen Sprache? Übersetzen",
     boton_siguiente: "Weiter →", boton_anterior: "← Zurück",
     mensaje_carga: "Die KI organisiert und verfasst Ihren Lebenslauf mit professionellem Schliff…",
     error_ia_generico: "Ihr Lebenslauf konnte nicht automatisch erstellt werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
@@ -1338,7 +1373,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Apri fotocamera", boton_capturar: "📸 Scatta foto", boton_repetir: "↺ Rifai la foto", boton_saltar: "Salta questo passaggio →", boton_continuar: "Continua →",
     camara_sin_permiso: "Non siamo riusciti ad accedere alla fotocamera. Controlla i permessi del browser.",
     placeholder_texto: "Qui vedrai quello che stai dicendo…",
-    puedes_corregir: "Qualcosa non va? Puoi scrivere o correggere qui.",
+    puedes_corregir: "✏️ Qui appare ciò che dici. Toccalo per correggerlo.", aviso_tranquilo: "Non preoccuparti di sbagliare: potrai rivedere e cambiare tutto prima di scaricare il tuo CV.", aviso_voz_privada: "CVoice non conserva registrazioni della tua voce.", cv_idioma_actual: "Il tuo CV è in {idioma}.", cv_traducir_invita: "Ti serve in un'altra lingua? Traducilo",
     boton_siguiente: "Avanti →", boton_anterior: "← Indietro",
     mensaje_carga: "L'IA sta organizzando e scrivendo il tuo curriculum con un tocco professionale…",
     error_ia_generico: "Non siamo riusciti a creare automaticamente il tuo curriculum. Controlla la connessione e riprova.",
@@ -1382,7 +1417,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Abrir câmara", boton_capturar: "📸 Tirar foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar este passo →", boton_continuar: "Continuar →",
     camara_sin_permiso: "Não foi possível aceder à câmara. Verifique as permissões do navegador.",
     placeholder_texto: "Aqui verá o que está a dizer…",
-    puedes_corregir: "Algo errado? Pode escrever ou corrigir aqui mesmo.",
+    puedes_corregir: "✏️ Aqui aparece o que diz. Toque para corrigir.", aviso_tranquilo: "Não se preocupe com erros: poderá rever e alterar tudo antes de descarregar o seu currículo.", aviso_voz_privada: "O CVoice não guarda gravações da sua voz.", cv_idioma_actual: "O seu currículo está em {idioma}.", cv_traducir_invita: "Precisa noutro idioma? Traduza-o",
     boton_siguiente: "Seguinte →", boton_anterior: "← Voltar",
     mensaje_carga: "A IA está a organizar e a escrever o seu currículo com um toque profissional…",
     error_ia_generico: "Não foi possível criar o seu currículo automaticamente. Verifique a sua ligação à internet e tente novamente.",
@@ -1426,7 +1461,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 فتح الكاميرا", boton_capturar: "📸 التقاط صورة", boton_repetir: "↺ إعادة التصوير", boton_saltar: "← تخطي هذه الخطوة", boton_continuar: "← متابعة",
     camara_sin_permiso: "تعذّر الوصول إلى الكاميرا. تحقق من أذونات المتصفح.",
     placeholder_texto: "سترى هنا ما تقوله…",
-    puedes_corregir: "هل هناك خطأ؟ يمكنك الكتابة أو التصحيح هنا.",
+    puedes_corregir: "✏️ يظهر هنا ما تقوله. اضغط عليه لتصحيحه.", aviso_tranquilo: "لا تقلق من الأخطاء: يمكنك مراجعة كل شيء وتغييره قبل تحميل سيرتك الذاتية.", aviso_voz_privada: "لا يحتفظ CVoice بتسجيلات لصوتك.", cv_idioma_actual: "لغة سيرتك الذاتية: {idioma}.", cv_traducir_invita: "تحتاجها بلغة أخرى؟ ترجمها",
     boton_siguiente: "التالي ←", boton_anterior: "→ السابق",
     mensaje_carga: "الذكاء الاصطناعي ينظّم ويكتب سيرتك الذاتية بأسلوب مهني…",
     error_ia_generico: "تعذّر إنشاء سيرتك الذاتية تلقائيًا. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
@@ -1470,7 +1505,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 打开相机", boton_capturar: "📸 拍照", boton_repetir: "↺ 重新拍照", boton_saltar: "跳过此步骤 →", boton_continuar: "继续 →",
     camara_sin_permiso: "无法访问相机，请检查浏览器权限设置。",
     placeholder_texto: "你说的内容会显示在这里…",
-    puedes_corregir: "有错误吗？你可以在这里直接输入或修改。",
+    puedes_corregir: "✏️ 你说的话会显示在这里。点击即可修改。", aviso_tranquilo: "不用担心出错：下载简历前你可以检查并修改所有内容。", aviso_voz_privada: "CVoice 不保存你的语音录音。", cv_idioma_actual: "你的简历语言：{idioma}。", cv_traducir_invita: "需要其他语言？翻译简历",
     boton_siguiente: "下一步 →", boton_anterior: "← 上一步",
     mensaje_carga: "AI 正在以专业的方式整理和撰写你的简历…",
     error_ia_generico: "无法自动生成简历。请检查网络连接后重试。",
@@ -1514,7 +1549,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 カメラを開く", boton_capturar: "📸 撮影する", boton_repetir: "↺ 撮り直す", boton_saltar: "このステップを省略 →", boton_continuar: "続ける →",
     camara_sin_permiso: "カメラにアクセスできませんでした。ブラウザの権限設定を確認してください。",
     placeholder_texto: "話した内容がここに表示されます…",
-    puedes_corregir: "間違いがありますか？ここで直接入力・修正できます。",
+    puedes_corregir: "✏️ 話した内容がここに表示されます。タップして修正できます。", aviso_tranquilo: "間違えても大丈夫：ダウンロード前にすべて確認・変更できます。", aviso_voz_privada: "CVoiceはあなたの声の録音を保存しません。", cv_idioma_actual: "履歴書の言語：{idioma}", cv_traducir_invita: "他の言語が必要ですか？翻訳する",
     boton_siguiente: "次へ →", boton_anterior: "← 戻る",
     mensaje_carga: "AIがあなたの履歴書をプロフェッショナルな仕上がりに整理・執筆しています…",
     error_ia_generico: "履歴書を自動作成できませんでした。インターネット接続を確認して再度お試しください。",
@@ -1558,7 +1593,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Deschide camera", boton_capturar: "📸 Fă poza", boton_repetir: "↺ Repetă poza", boton_saltar: "Sari peste acest pas →", boton_continuar: "Continuă →",
     camara_sin_permiso: "Nu am putut accesa camera. Verifică permisiunile browserului.",
     placeholder_texto: "Aici vei vedea ce spui…",
-    puedes_corregir: "Ceva e greșit? Poți scrie sau corecta chiar aici.",
+    puedes_corregir: "✏️ Aici apare ce spui. Apasă pe text pentru a-l corecta.", aviso_tranquilo: "Nu-ți face griji dacă greșești: poți verifica și schimba totul înainte de a descărca CV-ul.", aviso_voz_privada: "CVoice nu păstrează înregistrări ale vocii tale.", cv_idioma_actual: "CV-ul tău este în {idioma}.", cv_traducir_invita: "Ai nevoie de altă limbă? Tradu-l",
     boton_siguiente: "Continuă →", boton_anterior: "← Înapoi",
     mensaje_carga: "IA organizează și redactează CV-ul tău cu o notă profesională…",
     error_ia_generico: "Nu am putut crea automat CV-ul. Verifică conexiunea la internet și încearcă din nou.",
@@ -1602,7 +1637,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Otwórz kamerę", boton_capturar: "📸 Zrób zdjęcie", boton_repetir: "↺ Powtórz zdjęcie", boton_saltar: "Pomiń ten krok →", boton_continuar: "Kontynuuj →",
     camara_sin_permiso: "Nie udało się uzyskać dostępu do kamery. Sprawdź uprawnienia przeglądarki.",
     placeholder_texto: "Tutaj zobaczysz, co mówisz…",
-    puedes_corregir: "Coś jest nie tak? Możesz tu pisać lub poprawiać.",
+    puedes_corregir: "✏️ Tutaj pojawia się to, co mówisz. Dotknij, aby poprawić.", aviso_tranquilo: "Nie martw się błędami: przed pobraniem CV możesz wszystko sprawdzić i zmienić.", aviso_voz_privada: "CVoice nie przechowuje nagrań Twojego głosu.", cv_idioma_actual: "Język Twojego CV: {idioma}.", cv_traducir_invita: "Potrzebujesz innego języka? Przetłumacz",
     boton_siguiente: "Dalej →", boton_anterior: "← Wstecz",
     mensaje_carga: "AI organizuje i pisze Twoje CV z profesjonalnym wyczuciem…",
     error_ia_generico: "Nie udało się automatycznie utworzyć CV. Sprawdź połączenie internetowe i spróbuj ponownie.",
@@ -1646,7 +1681,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Відкрити камеру", boton_capturar: "📸 Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "← Пропустити цей крок", boton_continuar: "← Продовжити",
     camara_sin_permiso: "Не вдалося отримати доступ до камери. Перевірте дозволи браузера.",
     placeholder_texto: "Тут з'явиться те, що ви говорите…",
-    puedes_corregir: "Щось не так? Можете написати або виправити тут.",
+    puedes_corregir: "✏️ Тут з'являється те, що ви кажете. Торкніться, щоб виправити.", aviso_tranquilo: "Не хвилюйтеся через помилки: перед завантаженням резюме ви зможете все перевірити й змінити.", aviso_voz_privada: "CVoice не зберігає записи вашого голосу.", cv_idioma_actual: "Мова вашого резюме: {idioma}.", cv_traducir_invita: "Потрібна інша мова? Перекласти",
     boton_siguiente: "Далі →", boton_anterior: "← Назад",
     mensaje_carga: "ШІ організовує та пише ваше резюме у професійному стилі…",
     error_ia_generico: "Не вдалося автоматично створити резюме. Перевірте з'єднання з інтернетом і спробуйте ще раз.",
@@ -1690,7 +1725,7 @@ const TEXTOS = {
     boton_abrir_camara: "📷 Открыть камеру", boton_capturar: "📸 Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "← Пропустить этот шаг", boton_continuar: "← Продолжить",
     camara_sin_permiso: "Не удалось получить доступ к камере. Проверьте разрешения браузера.",
     placeholder_texto: "Здесь появится то, что вы говорите…",
-    puedes_corregir: "Что-то не так? Можете написать или исправить здесь.",
+    puedes_corregir: "✏️ Здесь появляется то, что вы говорите. Коснитесь, чтобы исправить.", aviso_tranquilo: "Не бойтесь ошибиться: перед скачиванием резюме вы сможете всё проверить и изменить.", aviso_voz_privada: "CVoice не хранит записи вашего голоса.", cv_idioma_actual: "Язык вашего резюме: {idioma}.", cv_traducir_invita: "Нужен другой язык? Перевести",
     boton_siguiente: "Далее →", boton_anterior: "← Назад",
     mensaje_carga: "ИИ организует и пишет ваше резюме в профессиональном стиле…",
     error_ia_generico: "Не удалось автоматически создать резюме. Проверьте подключение к интернету и попробуйте снова.",
@@ -2042,6 +2077,7 @@ function aplicarTextos(){
   actualizarContador();
   // Botón de descarga (texto y precio en el idioma de la interfaz)
   if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
+  try { actualizarAvisoIdiomaCV(); } catch(e) {}
 }
 
 // ---------- 5. Reconocimiento de voz (Web Speech API) ----------
@@ -2740,12 +2776,31 @@ Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
 });
 
 const btnTraducirCV = document.getElementById("btn-traducir-cv");
+// La lista se despliega bajo el botón, al final de la página: al abrirla se baja la
+// pantalla lo justo para que se vea entera
+function abrirListaTraduccion(){
+  selectIdiomaTraduccion.classList.remove("hidden");
+  selectIdiomaTraduccion.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
 btnTraducirCV.addEventListener("click", () => {
-  selectIdiomaTraduccion.classList.toggle("hidden");
+  if (selectIdiomaTraduccion.classList.contains("hidden")) abrirListaTraduccion();
+  else selectIdiomaTraduccion.classList.add("hidden");
 });
 document.addEventListener("click", (evento) => {
   const tocoTraduccion = btnTraducirCV.contains(evento.target) || selectIdiomaTraduccion.contains(evento.target);
   if (!tocoTraduccion) selectIdiomaTraduccion.classList.add("hidden");
+});
+
+// Aviso "Tu currículum está en …" bajo el título de la pantalla del CV
+function actualizarAvisoIdiomaCV(){
+  const aviso = document.getElementById("txt-cv-idioma");
+  const idioma = IDIOMAS[idiomaCV] || IDIOMAS[idiomaActual];
+  if (aviso && idioma) aviso.textContent = tx("cv_idioma_actual", { idioma: `${idioma.bandera} ${idioma.nombre}` });
+}
+// Atajo desde ese aviso: lleva al botón "Traducir CV" y abre la lista de idiomas
+// (con retardo, porque el clic en el documento la cierra justo después)
+document.getElementById("btn-invita-traducir").addEventListener("click", () => {
+  setTimeout(abrirListaTraduccion, 0);
 });
 
 // Traducción por fragmentos: se envía a la IA solo la lista de textos visibles del CV
@@ -2811,6 +2866,7 @@ function traducirEtiquetasCV(codigo){
     hoja.dir = IDIOMAS[codigo].dir || "ltr";
     hoja.lang = codigo;
   });
+  actualizarAvisoIdiomaCV();
   document.querySelectorAll("#contenedor-cvs [data-i18n]").forEach(el => {
     const texto = t[el.dataset.i18n];
     if (texto) el.textContent = texto;
