@@ -3416,25 +3416,37 @@ let sesionAnuncio = 0;
 let limpiarEsperaAnuncio = () => {};
 
 // Plan B para no dejar a nadie atascado en "Cargando el vídeo…": en algunos países AdMob
-// tarda muchísimo o no llega a tener vídeo, y a veces la app no recibe el aviso de cierre.
-// - Si en 15 s el vídeo no ha tapado la pantalla, se da la descarga gratis igualmente.
-// - Si el vídeo sí se mostró pero al volver no llega ningún aviso en 3 s, también.
+// tarda muchísimo o no llega a tener vídeo.
+// Mientras el anuncio está delante la web no recibe ningún evento (ni blur ni
+// visibilitychange: medido en el móvil), así que solo la app sabe si el vídeo salió:
+// - App 1.3.0+ (AndroidAds.avisaAlMostrar): avisa con window.anuncioMostrado(). Si en 15 s
+//   el vídeo no ha salido, descarga gratis; si salió, hay que verlo (llega recompensaCompletada
+//   o anuncioCerrado) y solo si en 2 min no llega nada se da la descarga.
+// - Apps anteriores: no avisan; el plan B espera 90 s, más que cualquier vídeo, para no
+//   regalar la descarga mientras se está viendo el anuncio.
 // Un aviso que llegue después ya no descarga otra vez.
+const ESPERA_VIDEO_MS = 15000;
+const ESPERA_VIDEO_SIN_AVISO_MS = 90000;
+const ESPERA_FIN_VIDEO_MS = 120000;
+let alMostrarseAnuncio = () => {};
+window.anuncioMostrado = function(){ alMostrarseAnuncio(); };
+
 function lanzarAnuncio(){
   if (anuncioEnCurso) return;
   anuncioEnCurso = true;
   const sesion = ++sesionAnuncio;
   avisoBreve(tx("aviso_cargando_video"), 3000);
-  let tapado = false;
-  const temporizador = setTimeout(() => resolverAnuncioSinAviso(sesion), 15000);
-  const alPerderFoco = () => { tapado = true; clearTimeout(temporizador); };
-  const alVolver = () => { if (tapado) setTimeout(() => resolverAnuncioSinAviso(sesion), 3000); };
-  window.addEventListener("blur", alPerderFoco, { once: true });
-  window.addEventListener("focus", alVolver, { once: true });
+  const appAvisa = typeof window.AndroidAds.avisaAlMostrar === "function";
+  let temporizador = setTimeout(() => resolverAnuncioSinAviso(sesion),
+    appAvisa ? ESPERA_VIDEO_MS : ESPERA_VIDEO_SIN_AVISO_MS);
+  alMostrarseAnuncio = () => {
+    if (sesion !== sesionAnuncio) return;
+    clearTimeout(temporizador);
+    temporizador = setTimeout(() => resolverAnuncioSinAviso(sesion), ESPERA_FIN_VIDEO_MS);
+  };
   limpiarEsperaAnuncio = () => {
     clearTimeout(temporizador);
-    window.removeEventListener("blur", alPerderFoco);
-    window.removeEventListener("focus", alVolver);
+    alMostrarseAnuncio = () => {};
   };
   window.AndroidAds.mostrarRecompensado();
 }
