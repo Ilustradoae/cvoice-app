@@ -2752,13 +2752,15 @@ document.addEventListener("click", (evento) => {
 // (tal como está en pantalla, con las correcciones del usuario) y cada traducción se
 // vuelve a poner en su sitio. La estructura HTML nunca pasa por la IA, así que no puede
 // romperse, y el JSON de respuesta es una simple lista de cadenas.
-const PROMPT_SISTEMA_TRADUCCION = "Eres un traductor profesional especializado en currículums. Recibes una lista JSON de fragmentos de texto de un CV y devuelves su traducción al idioma indicado, con el mismo tono profesional. Reglas: traduce cada fragmento por separado y en el mismo orden; nunca unas, dividas, añadas ni omitas fragmentos; no traduzcas nombres propios de personas, empresas ni marcas; conserva números, fechas, emails y la puntuación final (por ejemplo los dos puntos de 'Idiomas:'). Devuelve solo el JSON pedido. Si un fragmento describe a la persona (su perfil profesional), tradúcelo en el estilo impersonal propio de un CV: sin primera ni tercera persona (nada de 'yo', 'soy', 'él', 'ella', 'posee', 'es', 'tiene'), con frases nominales que empiecen por la profesión, sin cambiar los datos.";
+const PROMPT_SISTEMA_TRADUCCION = "Eres un traductor profesional especializado en currículums. Recibes una lista JSON de fragmentos de texto de un CV y devuelves su traducción al idioma indicado, con el mismo tono profesional. Reglas: traduce cada fragmento por separado y en el mismo orden; nunca unas, dividas, añadas ni omitas fragmentos; no traduzcas nombres propios de personas, empresas ni marcas; conserva números, fechas, emails y la puntuación final (por ejemplo los dos puntos de 'Idiomas:'). Devuelve solo el JSON pedido. Si un fragmento describe a la persona (su perfil profesional), tradúcelo en el estilo impersonal propio de un CV: sin primera ni tercera persona (nada de 'yo', 'soy', 'él', 'ella', 'posee', 'es', 'tiene'), con frases nominales que empiecen por la profesión, sin cambiar los datos. Si el idioma destino usa el alfabeto latino y un nombre propio (persona, ciudad, empresa) está escrito en otro alfabeto, transcríbelo al alfabeto latino con su forma habitual (ej. 'مكرم عايد' → 'Makrem Ayed', 'سوسة، تونس' → 'Sousse, Túnez'); si ya está en alfabeto latino, déjalo igual.";
 
 // Nodos de texto traducibles del CV básico (las plantillas premium se copian de él).
 // Se excluyen los títulos con data-i18n: esos se traducen con el diccionario TEXTOS.
 function nodosTraduciblesCV(){
   const nodos = [];
-  ["cv-ubicacion", "cv-perfil", "cv-experiencia", "cv-estudios", "cv-habilidades", "cv-otros"].forEach(id => {
+  // El nombre va también: si está en otro alfabeto (p. ej. árabe) y el CV se traduce a un
+  // idioma con alfabeto latino, la IA lo transcribe (مكرم عايد → Makrem Ayed)
+  ["cv-nombre", "cv-ubicacion", "cv-perfil", "cv-experiencia", "cv-estudios", "cv-habilidades", "cv-otros"].forEach(id => {
     const recorrido = document.createTreeWalker(document.getElementById(id), NodeFilter.SHOW_TEXT);
     let nodo;
     while ((nodo = recorrido.nextNode())){
