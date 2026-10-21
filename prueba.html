@@ -2213,12 +2213,16 @@ function capturarFoto(){
   const alto = videoCamara.videoHeight;
   if (!ancho || !alto) return;
 
-  lienzoFoto.width = ancho;
-  lienzoFoto.height = alto;
+  // La foto se guarda ya recortada en cuadrado (centro de la imagen): los huecos de foto
+  // de todos los diseños son cuadrados o redondos, y el generador del PDF no entiende
+  // object-fit y estiraba la foto rectangular de la cámara
+  const lado = Math.min(ancho, alto);
+  lienzoFoto.width = lado;
+  lienzoFoto.height = lado;
   const contexto = lienzoFoto.getContext("2d");
-  contexto.translate(ancho, 0);
+  contexto.translate(lado, 0);
   contexto.scale(-1, 1);
-  contexto.drawImage(videoCamara, 0, 0, ancho, alto);
+  contexto.drawImage(videoCamara, (ancho - lado) / 2, (alto - lado) / 2, lado, lado, 0, 0, lado, lado);
 
   fotoCapturadaDataURL = lienzoFoto.toDataURL("image/jpeg", 0.92);
   imgFotoCapturada.src = fotoCapturadaDataURL;
@@ -2789,6 +2793,13 @@ function traducirEtiquetasCV(codigo){
   const t = TEXTOS[codigo];
   if (!t) return;
   idiomaCV = codigo;
+  // La dirección de lectura del CV va con el idioma del CV, no con el de la interfaz:
+  // un CV hecho con la app en árabe y traducido al español se lee de izquierda a derecha.
+  // Se pone en cada hoja para que el clon del PDF la lleve consigo.
+  document.querySelectorAll('#contenedor-cvs [id^="hoja-cv"]').forEach(hoja => {
+    hoja.dir = IDIOMAS[codigo].dir || "ltr";
+    hoja.lang = codigo;
+  });
   document.querySelectorAll("#contenedor-cvs [data-i18n]").forEach(el => {
     const texto = t[el.dataset.i18n];
     if (texto) el.textContent = texto;
