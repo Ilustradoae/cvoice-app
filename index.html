@@ -480,7 +480,7 @@
   [dir="rtl"] .icono-espejo{ transform: scaleX(-1); }
   /* "Aquí aparece lo que dices. Tócalo para corregirlo", justo encima del cuadro de texto */
   /* Mismo aspecto que tenía el texto de ejemplo del cuadro ("Aquí verás lo que vas diciendo…") */
-  .ayuda-editar{ font-size: .9375rem; line-height: 1.3rem; font-weight: 400; color: #9ca3af; text-align: center;
+  .ayuda-editar{ font-size: .8125rem; line-height: 1.15rem; font-weight: 400; color: #9ca3af; text-align: center;
     margin: 0; padding: .45rem .9rem; background: var(--musgo-claro); border: 2px solid var(--linea); border-bottom: 0;
     border-radius: 1rem 1rem 0 0; }
   /* El mismo lápiz ✎ que marca los textos editables del CV */
@@ -1244,6 +1244,7 @@ const TEXTOS = {
     p4_item4: "Voluntariados o actividades extra (si tienes)",
     sin_voz: "Tu navegador no permite usar el micrófono para esto. Prueba con Google Chrome.",
     mic_sin_permiso: "No podemos usar el micrófono. Permite el micrófono para CVoice en los ajustes del móvil.",
+    aviso_salir: "Pulsa Atrás otra vez para salir de CVoice.",
   },
   en: {
     subtitulo: "Speak. We write your résumé.",
@@ -1288,6 +1289,7 @@ const TEXTOS = {
     p4_item4: "Volunteering or extra activities (if any)",
     sin_voz: "Your browser doesn't support this. Try Google Chrome.",
     mic_sin_permiso: "We can't use the microphone. Allow microphone access for CVoice in your phone settings.",
+    aviso_salir: "Press Back again to exit CVoice.",
   },
   fr: {
     subtitulo: "Parlez. Nous rédigeons votre CV.",
@@ -1332,6 +1334,7 @@ const TEXTOS = {
     p4_item4: "Bénévolat ou activités extra (si vous en avez)",
     sin_voz: "Votre navigateur ne le permet pas. Essayez Google Chrome.",
     mic_sin_permiso: "Impossible d'utiliser le micro. Autorisez le micro pour CVoice dans les réglages du téléphone.",
+    aviso_salir: "Appuyez à nouveau sur Retour pour quitter CVoice.",
   },
   de: {
     subtitulo: "Sprechen Sie. Wir schreiben Ihren Lebenslauf.",
@@ -1376,6 +1379,7 @@ const TEXTOS = {
     p4_item4: "Ehrenamt oder Zusatzaktivitäten",
     sin_voz: "Ihr Browser unterstützt dies nicht. Versuchen Sie Google Chrome.",
     mic_sin_permiso: "Das Mikrofon kann nicht verwendet werden. Erlauben Sie CVoice den Mikrofonzugriff in den Handy-Einstellungen.",
+    aviso_salir: "Drücken Sie erneut Zurück, um CVoice zu verlassen.",
   },
   it: {
     subtitulo: "Parla. Noi scriviamo il tuo curriculum.",
@@ -1420,6 +1424,7 @@ const TEXTOS = {
     p4_item4: "Volontariato o attività extra",
     sin_voz: "Il tuo browser non lo supporta. Prova con Google Chrome.",
     mic_sin_permiso: "Non possiamo usare il microfono. Consenti il microfono per CVoice nelle impostazioni del telefono.",
+    aviso_salir: "Premi di nuovo Indietro per uscire da CVoice.",
   },
   pt: {
     subtitulo: "Fale. Nós escrevemos o seu currículo.",
@@ -1464,6 +1469,7 @@ const TEXTOS = {
     p4_item4: "Voluntariado ou atividades extra",
     sin_voz: "O seu navegador não suporta isto. Experimente o Google Chrome.",
     mic_sin_permiso: "Não conseguimos usar o microfone. Permita o microfone para o CVoice nas definições do telemóvel.",
+    aviso_salir: "Prima Voltar novamente para sair do CVoice.",
   },
   ar: {
     subtitulo: "تحدّث. ونحن نكتب سيرتك الذاتية.",
@@ -1508,6 +1514,7 @@ const TEXTOS = {
     p4_item4: "تطوع أو أنشطة إضافية (إن وجدت)",
     sin_voz: "متصفحك لا يدعم هذه الميزة. جرّب جوجل كروم.",
     mic_sin_permiso: "لا يمكننا استخدام الميكروفون. اسمح لتطبيق CVoice باستخدام الميكروفون من إعدادات الهاتف.",
+    aviso_salir: "اضغط على رجوع مرة أخرى للخروج من CVoice.",
   },
   zh: {
     subtitulo: "你只管说，简历我们来写。",
@@ -1552,6 +1559,7 @@ const TEXTOS = {
     p4_item4: "志愿服务或其他活动（如有）",
     sin_voz: "你的浏览器不支持此功能，请尝试使用 Google Chrome。",
     mic_sin_permiso: "无法使用麦克风。请在手机设置中允许 CVoice 使用麦克风。",
+    aviso_salir: "再按一次返回键即可退出 CVoice。",
   },
   ja: {
     subtitulo: "話すだけ。履歴書は私たちが作ります。",
@@ -1596,6 +1604,7 @@ const TEXTOS = {
     p4_item4: "ボランティアや課外活動（あれば）",
     sin_voz: "お使いのブラウザでは対応していません。Google Chromeをお試しください。",
     mic_sin_permiso: "マイクを使用できません。スマートフォンの設定で CVoice にマイクの使用を許可してください。",
+    aviso_salir: "もう一度「戻る」を押すと CVoice を終了します。",
   },
   ro: {
     subtitulo: "Vorbește. Noi scriem CV-ul tău.",
@@ -1640,6 +1649,7 @@ const TEXTOS = {
     p4_item4: "Voluntariat sau activități extra",
     sin_voz: "Browserul tău nu permite acest lucru. Încearcă Google Chrome.",
     mic_sin_permiso: "Nu putem folosi microfonul. Permite accesul la microfon pentru CVoice din setările telefonului.",
+    aviso_salir: "Apasă din nou Înapoi pentru a ieși din CVoice.",
   },
   pl: {
     subtitulo: "Mów. My napiszemy Twoje CV.",
@@ -1684,6 +1694,7 @@ const TEXTOS = {
     p4_item4: "Wolontariat lub dodatkowe aktywności",
     sin_voz: "Twoja przeglądarka nie wspiera tej funkcji. Wypróbuj Google Chrome.",
     mic_sin_permiso: "Nie możemy użyć mikrofonu. Zezwól aplikacji CVoice na dostęp do mikrofonu w ustawieniach telefonu.",
+    aviso_salir: "Naciśnij ponownie Wstecz, aby wyjść z CVoice.",
   },
   uk: {
     subtitulo: "Говоріть. Ми напишемо ваше резюме.",
@@ -1728,6 +1739,7 @@ const TEXTOS = {
     p4_item4: "Волонтерство або додаткові активності",
     sin_voz: "Ваш браузер не підтримує цю функцію. Спробуйте Google Chrome.",
     mic_sin_permiso: "Не вдається використати мікрофон. Дозвольте CVoice доступ до мікрофона в налаштуваннях телефона.",
+    aviso_salir: "Натисніть «Назад» ще раз, щоб вийти з CVoice.",
   },
   ru: {
     subtitulo: "Говорите. Мы напишем ваше резюме.",
@@ -1772,6 +1784,7 @@ const TEXTOS = {
     p4_item4: "Волонтёрство или дополнительные занятия",
     sin_voz: "Ваш браузер не поддерживает эту функцию. Попробуйте Google Chrome.",
     mic_sin_permiso: "Не удаётся использовать микрофон. Разрешите CVoice доступ к микрофону в настройках телефона.",
+    aviso_salir: "Нажмите «Назад» ещё раз, чтобы выйти из CVoice.",
   },
 };
 
@@ -3786,6 +3799,35 @@ document.getElementById("contenedor-cvs").addEventListener("focusout", e => {
     }
   }, { passive: true });
 })();
+
+// ---------- 13b. Botón Atrás de Android ----------
+// La app (1.3.1+) llama a window.botonAtras() y solo cierra si devuelve false. Antes, Atrás
+// cerraba la app al momento y se perdía todo lo dictado.
+let ultimoAtrasParaSalir = 0;
+// Primer toque: aviso; segundo toque en 2,5 s: salir
+function confirmarSalida(){
+  const ahora = Date.now();
+  if (ahora - ultimoAtrasParaSalir < 2500) return false;
+  ultimoAtrasParaSalir = ahora;
+  avisoBreve(tx("aviso_salir"), 2500);
+  return true;
+}
+window.botonAtras = function(){
+  const visible = id => !document.getElementById(id).classList.contains("hidden");
+  if (visible("modal-pago")){ cerrarModalPago(); productoPendiente = null; return true; }
+  if (visible("modal-app")){ document.getElementById("modal-app").classList.add("hidden"); return true; }
+  if (visible("select-idioma")){ selectIdioma.classList.add("hidden"); return true; }
+  if (visible("select-idioma-traduccion")){ selectIdiomaTraduccion.classList.add("hidden"); return true; }
+  if (visible("pantalla-carga")){
+    // Con error: volver a la entrevista; mientras se redacta, no se sale
+    if (visible("btn-volver-tras-error")) document.getElementById("btn-volver-tras-error").click();
+    return true;
+  }
+  if (visible("pantalla-cv")) return confirmarSalida();
+  if (pasoActual > 1){ irAPaso(pasoActual - 1); window.scrollTo({ top: 0 }); return true; }
+  const hayTexto = [...document.querySelectorAll("[data-texto-paso]")].some(t => t.value.trim());
+  return hayTexto ? confirmarSalida() : false;
+};
 
 // ---------- 14. Inicialización ----------
 document.documentElement.lang = idiomaActual;
