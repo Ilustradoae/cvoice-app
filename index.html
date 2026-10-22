@@ -511,9 +511,10 @@
   .bv-cabecera::before{ width: 16rem; height: 16rem; right: -6rem; top: -7rem; background: rgba(251,247,238,.07); }
   .bv-cabecera::after{ width: 12rem; height: 12rem; left: -5rem; bottom: -7rem; background: rgba(217,139,63,.2); }
   .bv-cabecera > *{ position: relative; }
-  .bv-marca{ display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.2rem; }
-  .bv-marca svg{ width: 2.6rem; height: 2.6rem; border-radius: .7rem; box-shadow: 0 0 0 2px rgba(251,247,238,.22); }
-  .bv-marca span{ font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.4rem; letter-spacing: .01em; }
+  /* Versión corta (al volver a grabar o con Atrás desde el paso 1): quien ya conoce la app
+     solo ve "Elige tus idiomas" y Empezar, sin la presentación ni los 3 pasos */
+  #pantalla-bienvenida.solo-idiomas .bv-cabecera, #pantalla-bienvenida.solo-idiomas .bv-pasos{ display: none; }
+  #pantalla-bienvenida.solo-idiomas .bv-idiomas{ border-top: 0; padding-top: .4rem; }
   .bv-titulo{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 2.05rem; line-height: 1.15; margin: 0 0 .8rem; }
   .bv-sub{ font-size: 1.0625rem; line-height: 1.55; color: rgba(251,247,238,.9); margin: 0 auto; max-width: 26rem; }
   .bv-cuerpo{ padding: 1.7rem 1.4rem 1.5rem; }
@@ -586,10 +587,6 @@
 <section id="pantalla-bienvenida">
   <div class="bv-tarjeta">
     <div class="bv-cabecera">
-      <div class="bv-marca">
-        <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#2F5D4F"/><path d="M196 78H296L330 112V243A75 75 0 0 1 180 243V94Q180 78 196 78Z" fill="#FAF6EF"/><path d="M296 78V104Q296 112 304 112H330Z" fill="#D9CFBF"/><rect x="194" y="95" width="48" height="60" rx="5" fill="#F3DDBC"/><circle cx="218" cy="116" r="12" fill="#D98B3F"/><path d="M198 155C204 137 232 137 238 155Z" fill="#D98B3F"/><g fill="#D98B3F"><rect x="255" y="97" width="40" height="13" rx="6.5"/><rect x="194" y="173" width="62" height="14" rx="7"/><rect x="194" y="251" width="66" height="14" rx="7"/></g><g fill="#E2DACB"><rect x="255" y="126" width="52" height="12" rx="6"/><rect x="194" y="199" width="124" height="13" rx="6.5"/><rect x="194" y="223" width="92" height="12" rx="6"/><rect x="202" y="277" width="110" height="13" rx="6.5"/></g><path d="M138 240A118 118 0 0 0 374 240M256 358V418M192 418H320" stroke="#fff" stroke-width="24" fill="none" stroke-linecap="round"/></svg>
-        <span>CVoice</span>
-      </div>
       <h1 class="bv-titulo" data-i18n="bv_titulo">Tu currículum, solo hablando</h1>
       <p class="bv-sub" data-i18n="bv_sub">Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.</p>
     </div>
@@ -2341,10 +2338,12 @@ function elegirIdioma(codigo){
   aplicarTextos();
 }
 
-function mostrarBienvenida(){
+// soloIdiomas: versión corta para quien ya ha usado la app (volver a grabar, Atrás desde el paso 1)
+function mostrarBienvenida(soloIdiomas){
   detenerEscucha();
   detenerCamara();
-  document.getElementById("pantalla-entrevista").classList.add("hidden");
+  document.getElementById("pantalla-bienvenida").classList.toggle("solo-idiomas", !!soloIdiomas);
+  ["pantalla-entrevista", "pantalla-carga", "pantalla-cv"].forEach(id => document.getElementById(id).classList.add("hidden"));
   document.querySelector("body > header").classList.add("hidden");
   document.getElementById("pantalla-bienvenida").classList.remove("hidden");
   window.scrollTo({ top: 0 });
@@ -3175,10 +3174,9 @@ document.getElementById("btn-volver-editar").addEventListener("click", () => {
   iconoSinCamara.classList.remove("hidden");
   ponerTextoBoton(document.getElementById("btn-saltar-foto"), TEXTOS[idiomaActual].boton_saltar);
 
-  document.getElementById("pantalla-cv").classList.add("hidden");
-  document.getElementById("pantalla-carga").classList.add("hidden");
-  document.getElementById("pantalla-entrevista").classList.remove("hidden");
-  irAPaso(1);
+  // Antes de volver a grabar se pueden cambiar los idiomas (solo esa parte de la bienvenida);
+  // "Empezar" lleva al paso 1 con lo dictado conservado
+  mostrarBienvenida(true);
 });
 
 // ---------- 12. Carrusel de plantillas ----------
@@ -4028,7 +4026,7 @@ window.botonAtras = function(){
   if (visible("pantalla-bienvenida")) return false;
   if (pasoActual > 1){ irAPaso(pasoActual - 1); window.scrollTo({ top: 0 }); return true; }
   // Desde el paso 1 se vuelve a la bienvenida (ahí se pueden cambiar los idiomas); lo dictado se conserva
-  mostrarBienvenida();
+  mostrarBienvenida(true);
   return true;
 };
 
