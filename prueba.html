@@ -141,7 +141,7 @@
   /* Ningún contenido (p. ej. un mensaje de error largo) debe ensanchar la página:
      en el WebView eso desplaza la vista y descentra los modales */
   html, body{ overflow-x: hidden; }
-  #aviso-error-ia, #aviso-error-traduccion{ overflow-wrap: anywhere; }
+  #aviso-error-ia{ overflow-wrap: anywhere; }
 
   .cv-oculto{ display: none !important; }
 
@@ -476,6 +476,9 @@
   }
   /* Flecha en la misma línea que el texto, a su lado; el texto nunca se parte en dos líneas
      (si no cabe, ajustarBotonesConIcono() reduce el relleno y, si hace falta, la letra) */
+  /* Siguiente / Saltar: borde del mismo verde que el fondo, para medir exactamente lo mismo
+     que Atrás (que tiene borde de 2px) */
+  .paso button[data-siguiente], #btn-saltar-foto{ border: 2px solid var(--musgo); }
   .btn-con-icono{ display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .45rem; white-space: nowrap;
     min-width: 0; /* Atrás y Siguiente siempre igual de anchos, aunque un texto sea más largo */ }
   .icono-boton{ width: 24px; height: 24px; flex-shrink: 0; }
@@ -494,8 +497,60 @@
   #carrusel-plantillas > p{ font-size: 1rem; }
   #txt-cta-secundario{ font-size: 1rem; line-height: 1.4rem; padding: .6rem 0; }
   .cv-ayuda-final{ text-align: center; font-size: 1rem; line-height: 1.4rem; color: var(--tinta); margin: 0 0 .75rem; }
-  #btn-traducir-cv{ font-size: 1rem; }
-  #btn-traducir-cv:disabled{ opacity: .5; }
+
+  /* ===================== BIENVENIDA (paso cero) =====================
+     Carta de presentación: qué hace la app, cómo funciona en 3 pasos y en qué idiomas
+     se va a hablar y se quiere el CV. Cabecera verde de marca, cuerpo blanco, CTA ámbar. */
+  #pantalla-bienvenida{ width: 100%; max-width: 36rem; }
+  .bv-tarjeta{ background: #fff; border: 1px solid var(--linea); border-radius: 1.75rem; overflow: hidden;
+    box-shadow: 0 22px 45px -22px rgba(31,42,36,.45); }
+  .bv-cabecera{ position: relative; overflow: hidden; background: var(--musgo); color: var(--papel); text-align: center;
+    padding: 2rem 1.5rem 2.2rem; }
+  /* Dos círculos suaves de fondo: profundidad sin recargar */
+  .bv-cabecera::before, .bv-cabecera::after{ content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+  .bv-cabecera::before{ width: 16rem; height: 16rem; right: -6rem; top: -7rem; background: rgba(251,247,238,.07); }
+  .bv-cabecera::after{ width: 12rem; height: 12rem; left: -5rem; bottom: -7rem; background: rgba(217,139,63,.2); }
+  .bv-cabecera > *{ position: relative; }
+  .bv-marca{ display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.2rem; }
+  .bv-marca svg{ width: 2.6rem; height: 2.6rem; border-radius: .7rem; box-shadow: 0 0 0 2px rgba(251,247,238,.22); }
+  .bv-marca span{ font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.4rem; letter-spacing: .01em; }
+  .bv-titulo{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 2.05rem; line-height: 1.15; margin: 0 0 .8rem; }
+  .bv-sub{ font-size: 1.0625rem; line-height: 1.55; color: rgba(251,247,238,.9); margin: 0 auto; max-width: 26rem; }
+  .bv-cuerpo{ padding: 1.7rem 1.4rem 1.5rem; }
+  .bv-pasos{ list-style: none; margin: 0 0 1.7rem; padding: 0; display: flex; flex-direction: column; gap: 1.1rem; }
+  .bv-pasos li{ display: flex; align-items: flex-start; gap: 1rem; }
+  .bv-icono{ position: relative; flex-shrink: 0; width: 3.1rem; height: 3.1rem; border-radius: 1rem;
+    background: var(--musgo-claro); color: var(--musgo); display: flex; align-items: center; justify-content: center; }
+  .bv-icono svg{ width: 1.55rem; height: 1.55rem; }
+  .bv-num{ position: absolute; top: -.45rem; right: -.45rem; width: 1.4rem; height: 1.4rem; border-radius: 50%;
+    background: var(--ambar); color: #fff; font-size: .75rem; font-weight: 700; line-height: 1;
+    display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+  [dir="rtl"] .bv-num{ right: auto; left: -.45rem; }
+  .bv-paso-t{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.22rem; line-height: 1.3; color: var(--tinta); margin: .15rem 0 .2rem; }
+  .bv-paso-d{ font-size: 1rem; line-height: 1.45; color: #56625B; margin: 0; }
+  .bv-idiomas{ border-top: 1px solid var(--linea); padding-top: 1.5rem; }
+  .bv-h2{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.35rem; color: var(--musgo); text-align: center; margin: 0 0 1.1rem; }
+  .bv-campo{ display: block; margin-bottom: 1rem; }
+  .bv-etiqueta{ display: flex; align-items: center; gap: .5rem; font-size: 1rem; font-weight: 700; color: var(--tinta); margin-bottom: .45rem; }
+  .bv-etiqueta svg{ width: 1.2rem; height: 1.2rem; color: var(--ambar); flex-shrink: 0; }
+  .bv-select{ width: 100%; min-height: 58px; appearance: none; -webkit-appearance: none; cursor: pointer;
+    background: var(--papel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F5D4F' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 1rem center / 1.2rem;
+    border: 2px solid var(--linea); border-radius: 1rem; padding: .8rem 2.9rem .8rem 1rem;
+    font-size: 1.0625rem !important; font-weight: 700; color: var(--tinta); }
+  [dir="rtl"] .bv-select{ background-position: left 1rem center; padding: .8rem 1rem .8rem 2.9rem; }
+  .bv-select:focus{ border-color: var(--musgo); outline: none; }
+  .bv-listo{ display: flex; align-items: center; gap: .85rem; background: var(--musgo-claro); border-radius: 1.1rem;
+    padding: .95rem 1rem; margin: 1.2rem 0 1.3rem; }
+  .bv-check{ flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--musgo); color: #fff;
+    display: flex; align-items: center; justify-content: center; }
+  .bv-check svg{ width: 1.35rem; height: 1.35rem; }
+  .bv-listo-t{ font-weight: 700; font-size: 1.0625rem; color: var(--musgo); margin: 0; }
+  .bv-listo-d{ font-size: .95rem; line-height: 1.4; color: var(--tinta); margin: .15rem 0 0; }
+  #btn-empezar{ width: 100%; min-height: 64px; border-radius: 9999px; border: 0; background: var(--ambar); color: #fff;
+    font-size: 1.25rem; font-weight: 700; padding: 0 1.25rem; box-shadow: 0 12px 24px -12px rgba(217,139,63,.9);
+    transition: transform .15s ease, box-shadow .15s ease; }
+  #btn-empezar:active{ transform: scale(.98); box-shadow: 0 6px 14px -8px rgba(217,139,63,.9); }
+  @media (max-width: 380px){ .bv-titulo{ font-size: 1.75rem; } .bv-cabecera{ padding: 1.7rem 1.2rem 1.9rem; } .bv-cuerpo{ padding: 1.4rem 1.1rem 1.3rem; } }
   /* Panel tras guardar el CV: título y dos botones iguales (enviar / abrir) */
   #panel-cv-guardado{ background: var(--musgo-claro); border: 2px solid var(--musgo); border-radius: 1.25rem;
     padding: 1rem; margin: 0 0 1rem; text-align: center; }
@@ -520,23 +575,67 @@
 <!-- ============== CABECERA ============== -->
 <!-- Sin logo dentro de la app (un tester: así parece una web y no una utilidad). La marca
      se ve en la pantalla de arranque (splash) de la app Android. -->
-<header class="w-full max-w-2xl text-center mb-4">
+<header class="w-full max-w-2xl text-center mb-4 hidden">
   <p id="txt-subtitulo" class="text-base sm:text-lg">Habla. Nosotros redactamos tu currículum.</p>
 </header>
 
-<!-- ============== ENTREVISTA POR PASOS ============== -->
-<section id="pantalla-entrevista" class="w-full max-w-xl">
+<!-- ============== BIENVENIDA (paso cero) ==============
+     Lo pidió un tester: explicar en una pantalla qué hace la app y cómo, y preguntar al
+     empezar en qué idioma se va a hablar (también será el de la app) y en cuál se quiere el CV.
+     Los dos idiomas vienen ya puestos (el del móvil o el elegido la vez anterior). -->
+<section id="pantalla-bienvenida">
+  <div class="bv-tarjeta">
+    <div class="bv-cabecera">
+      <div class="bv-marca">
+        <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#2F5D4F"/><path d="M196 78H296L330 112V243A75 75 0 0 1 180 243V94Q180 78 196 78Z" fill="#FAF6EF"/><path d="M296 78V104Q296 112 304 112H330Z" fill="#D9CFBF"/><rect x="194" y="95" width="48" height="60" rx="5" fill="#F3DDBC"/><circle cx="218" cy="116" r="12" fill="#D98B3F"/><path d="M198 155C204 137 232 137 238 155Z" fill="#D98B3F"/><g fill="#D98B3F"><rect x="255" y="97" width="40" height="13" rx="6.5"/><rect x="194" y="173" width="62" height="14" rx="7"/><rect x="194" y="251" width="66" height="14" rx="7"/></g><g fill="#E2DACB"><rect x="255" y="126" width="52" height="12" rx="6"/><rect x="194" y="199" width="124" height="13" rx="6.5"/><rect x="194" y="223" width="92" height="12" rx="6"/><rect x="202" y="277" width="110" height="13" rx="6.5"/></g><path d="M138 240A118 118 0 0 0 374 240M256 358V418M192 418H320" stroke="#fff" stroke-width="24" fill="none" stroke-linecap="round"/></svg>
+        <span>CVoice</span>
+      </div>
+      <h1 class="bv-titulo" data-i18n="bv_titulo">Tu currículum, solo hablando</h1>
+      <p class="bv-sub" data-i18n="bv_sub">Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.</p>
+    </div>
 
-  <!-- Selector de idioma: visible solo en el paso 1 -->
-  <div id="zona-idioma" class="flex items-center justify-center gap-2 mb-4">
-    <div class="relative inline-block">
-      <button id="btn-cambiar-idioma" class="inline-flex items-center gap-2 px-4 py-3 rounded-full border-2 text-sm font-bold transition hover:shadow-sm" style="border-color:var(--linea); color:var(--musgo); background:white; min-height:44px">
-        <span aria-hidden="true">🌐</span>
-        <span id="txt-boton-idioma" data-i18n="boton_cambiar_idioma">Cambiar idioma</span>
-      </button>
-      <select id="select-idioma" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 hidden w-56 rounded-2xl border-2 p-3 text-base shadow-lg bg-white" style="border-color:var(--linea); color:var(--tinta)" size="8"></select>
+    <div class="bv-cuerpo">
+      <!-- Cómo funciona -->
+      <ol class="bv-pasos">
+        <li>
+          <span class="bv-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg><span class="bv-num">1</span></span>
+          <div><p class="bv-paso-t" data-i18n="bv_p1_t">Habla</p><p class="bv-paso-d" data-i18n="bv_p1_d">Responde a unas preguntas sencillas, como en una conversación.</p></div>
+        </li>
+        <li>
+          <span class="bv-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="bv-num">2</span></span>
+          <div><p class="bv-paso-t" data-i18n="bv_p2_t">Lo redactamos</p><p class="bv-paso-d" data-i18n="bv_p2_d">Ordenamos lo que dices y lo escribimos con estilo profesional.</p></div>
+        </li>
+        <li>
+          <span class="bv-icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg><span class="bv-num">3</span></span>
+          <div><p class="bv-paso-t" data-i18n="bv_p3_t">Descárgalo</p><p class="bv-paso-d" data-i18n="bv_p3_d">Elige un diseño y llévate tu CV en PDF, listo para enviar.</p></div>
+        </li>
+      </ol>
+
+      <!-- Idiomas -->
+      <div class="bv-idiomas">
+        <h2 class="bv-h2" data-i18n="bv_idiomas">Elige tus idiomas</h2>
+        <label class="bv-campo" for="select-idioma-hablar">
+          <span class="bv-etiqueta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg><span data-i18n="bv_hablar">Idioma en el que vas a hablar</span></span>
+          <select id="select-idioma-hablar" class="bv-select"></select>
+        </label>
+        <label class="bv-campo" for="select-idioma-cv">
+          <span class="bv-etiqueta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span data-i18n="bv_cv">Idioma de tu currículum</span></span>
+          <select id="select-idioma-cv" class="bv-select"></select>
+        </label>
+
+        <div class="bv-listo" role="status">
+          <span class="bv-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <div><p class="bv-listo-t" data-i18n="bv_listo_t">¡Felicidades, todo listo!</p><p class="bv-listo-d" id="txt-bv-listo"></p></div>
+        </div>
+
+        <button id="btn-empezar" type="button" data-i18n="boton_empezar">Empezar</button>
+      </div>
     </div>
   </div>
+</section>
+
+<!-- ============== ENTREVISTA POR PASOS ============== -->
+<section id="pantalla-entrevista" class="w-full max-w-xl hidden">
 
   <div class="mb-5">
     <div class="barra-progreso w-full h-3 rounded-full overflow-hidden" style="background:var(--musgo-claro)">
@@ -1072,23 +1171,8 @@
   <!-- ===== Zona de descarga / monetización ===== -->
   <div class="max-w-3xl mx-auto mt-4 mb-3 px-2">
 
-    <!-- Justo antes de descargar: último repaso del texto y del idioma del CV -->
-    <!-- Idioma del CV a la vista + traducción (hablar en tu idioma y tener el CV en el del
-         país es de lo que más vende a quien acaba de llegar) -->
-    <p class="cv-ayuda-final"><span id="txt-cv-idioma">Tu currículum está en Español.</span> <span data-i18n="cv_traducir_invita">¿Lo necesitas en otro idioma?</span></p>
-    <!-- Mismo estilo que "Cambiar idioma" de la primera pantalla -->
-    <div class="flex justify-center mb-4">
-      <div class="relative inline-block">
-        <button id="btn-traducir-cv" type="button" class="inline-flex items-center gap-2 px-4 py-3 rounded-full border-2 text-sm font-bold transition hover:shadow-sm" style="border-color:var(--linea); color:var(--musgo); background:white; min-height:44px">
-          <span aria-hidden="true">🌐</span>
-          <span data-i18n="boton_traducir_cv">Traducir CV</span>
-        </button>
-        <select id="select-idioma-traduccion" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 hidden w-56 rounded-2xl border-2 p-3 text-base shadow-lg bg-white" style="border-color:var(--linea); color:var(--tinta)" size="8"></select>
-      </div>
-    </div>
+    <!-- Justo antes de descargar: último repaso del texto (el idioma del CV se elige en la bienvenida) -->
     <p class="cv-ayuda-final" data-i18n="cv_ayuda">Toca cualquier texto de tu CV para corregirlo antes de descargar.</p>
-    <p id="txt-traduccion-estado" class="text-center text-sm mb-4 hidden" style="color:var(--musgo)" data-i18n="traduciendo_cv">Traduciendo tu currículum…</p>
-    <p id="aviso-error-traduccion" class="hidden mb-4 text-sm rounded-2xl border-2 p-4 max-w-xl mx-auto" style="border-color:#E3A0A0; background:#FBEAEA; color:#8A2E2E"></p>
 
     <!-- BOTÓN PRINCIPAL DINÁMICO (arriba) -->
     <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-1" style="background:var(--musgo); padding-left:14px; padding-right:14px">
@@ -1206,7 +1290,6 @@ function detectarIdiomaNavegador(){
 const TEXTOS = {
   es: {
     subtitulo: "Habla. Nosotros redactamos tu currículum.",
-    boton_cambiar_idioma: "Cambiar idioma",
     p1_titulo: "Tus datos personales",
     p2_titulo: "Tu experiencia de trabajo",
     p3_titulo: "Tus estudios",
@@ -1214,7 +1297,7 @@ const TEXTOS = {
     p5_titulo: "Tu foto (opcional)",
     boton_abrir_camara: "Abrir cámara", boton_capturar: "Hacer foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
     camara_sin_permiso: "No hemos podido acceder a la cámara. Revisa los permisos del navegador.",
-    puedes_corregir: "Aquí verás lo que vas diciendo. Tócalo para corregirlo.", cv_idioma_actual: "Tu currículum está en {idioma}.", cv_traducir_invita: "¿Lo necesitas en otro idioma?", boton_abrir_cv: "Abrir mi CV", boton_compartir_cv: "Enviar por WhatsApp o email", compartir_titulo: "Enviar mi CV",
+    puedes_corregir: "Aquí verás lo que vas diciendo. Tócalo para corregirlo.", boton_abrir_cv: "Abrir mi CV", boton_compartir_cv: "Enviar por WhatsApp o email", compartir_titulo: "Enviar mi CV",
     boton_siguiente: "Siguiente →", boton_anterior: "← Atrás",
     mensaje_carga: "Estamos redactando tu currículum con estilo profesional…",
     error_ia_generico: "No hemos podido redactar tu currículum automáticamente. Revisa tu conexión a internet e inténtalo de nuevo.",
@@ -1225,7 +1308,6 @@ const TEXTOS = {
     label_telefono: "Teléfono:", label_email: "Email:", label_ubicacion: "Ubicación:",
     cv_bloque_experiencia: "Experiencia laboral", cv_bloque_estudios: "Estudios",
     boton_rehacer: "← Volver a grabar",
-    boton_traducir_cv: "Traducir CV", traduciendo_cv: "Traduciendo tu currículum…", error_traduccion_generico: "No hemos podido traducir el currículum. Revisa tu conexión e inténtalo de nuevo.",
     ia_mucha_demanda: "Hay mucha gente usando CVoice ahora mismo. Un momento, seguimos con tu currículum…",
     nombre_predeterminado: "NOMBRE APELLIDO",
     p1_instruccion: "Pulsa el micrófono y dinos:",
@@ -1248,10 +1330,23 @@ const TEXTOS = {
     sin_voz: "Tu navegador no permite usar el micrófono para esto. Prueba con Google Chrome.",
     mic_sin_permiso: "No podemos usar el micrófono. Permite el micrófono para CVoice en los ajustes del móvil.",
     aviso_salir: "Pulsa Atrás otra vez para salir de CVoice.",
+    bv_titulo: "Tu currículum, solo hablando",
+    bv_sub: "Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.",
+    bv_p1_t: "Habla",
+    bv_p1_d: "Responde a unas preguntas sencillas, como en una conversación.",
+    bv_p2_t: "Lo redactamos",
+    bv_p2_d: "Ordenamos lo que dices y lo escribimos con estilo profesional.",
+    bv_p3_t: "Descárgalo",
+    bv_p3_d: "Elige un diseño y llévate tu CV en PDF, listo para enviar.",
+    bv_idiomas: "Elige tus idiomas",
+    bv_hablar: "Idioma en el que vas a hablar",
+    bv_cv: "Idioma de tu currículum",
+    bv_listo_t: "¡Felicidades, todo listo!",
+    bv_listo_d: "Hablarás en {hablar} y tu currículum estará en {cv}.",
+    boton_empezar: "Empezar",
   },
   en: {
     subtitulo: "Speak. We write your résumé.",
-    boton_cambiar_idioma: "Change language",
     p1_titulo: "Your personal details",
     p2_titulo: "Your work experience",
     p3_titulo: "Your education",
@@ -1259,7 +1354,7 @@ const TEXTOS = {
     p5_titulo: "Your photo (optional)",
     boton_abrir_camara: "Open camera", boton_capturar: "Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip", boton_continuar: "Continue →",
     camara_sin_permiso: "We couldn't access the camera. Check your browser permissions.",
-    puedes_corregir: "You'll see what you're saying here. Tap it to fix it.", cv_idioma_actual: "Your résumé is in {idioma}.", cv_traducir_invita: "Need it in another language?", boton_abrir_cv: "Open my résumé", boton_compartir_cv: "Send by WhatsApp or email", compartir_titulo: "Send my résumé",
+    puedes_corregir: "You'll see what you're saying here. Tap it to fix it.", boton_abrir_cv: "Open my résumé", boton_compartir_cv: "Send by WhatsApp or email", compartir_titulo: "Send my résumé",
     boton_siguiente: "Next →", boton_anterior: "← Back",
     mensaje_carga: "We're writing your résumé with a professional touch…",
     error_ia_generico: "We couldn't write your résumé automatically. Check your internet connection and try again.",
@@ -1270,7 +1365,6 @@ const TEXTOS = {
     label_telefono: "Phone:", label_email: "Email:", label_ubicacion: "Location:",
     cv_bloque_experiencia: "Work experience", cv_bloque_estudios: "Education",
     boton_rehacer: "← Record again",
-    boton_traducir_cv: "Translate CV", traduciendo_cv: "Translating your résumé…", error_traduccion_generico: "We couldn't translate your résumé. Check your connection and try again.",
     ia_mucha_demanda: "Lots of people are using CVoice right now. One moment, we're still working on your résumé…",
     nombre_predeterminado: "FULL NAME",
     p1_instruccion: "Tap the microphone and tell us:",
@@ -1293,10 +1387,23 @@ const TEXTOS = {
     sin_voz: "Your browser doesn't support this. Try Google Chrome.",
     mic_sin_permiso: "We can't use the microphone. Allow microphone access for CVoice in your phone settings.",
     aviso_salir: "Press Back again to exit CVoice.",
+    bv_titulo: "Your résumé, just by talking",
+    bv_sub: "Tell us about your experience out loud. We turn it into a professional résumé, ready to send.",
+    bv_p1_t: "Talk",
+    bv_p1_d: "Answer a few simple questions, like in a conversation.",
+    bv_p2_t: "We write it",
+    bv_p2_d: "We organise what you say and write it in a professional style.",
+    bv_p3_t: "Download it",
+    bv_p3_d: "Choose a design and get your résumé as a PDF, ready to send.",
+    bv_idiomas: "Choose your languages",
+    bv_hablar: "Language you'll speak",
+    bv_cv: "Language of your résumé",
+    bv_listo_t: "Congratulations, you're all set!",
+    bv_listo_d: "You'll speak in {hablar} and your résumé will be in {cv}.",
+    boton_empezar: "Start",
   },
   fr: {
     subtitulo: "Parlez. Nous rédigeons votre CV.",
-    boton_cambiar_idioma: "Changer de langue",
     p1_titulo: "Vos informations personnelles",
     p2_titulo: "Votre expérience professionnelle",
     p3_titulo: "Vos études",
@@ -1304,7 +1411,7 @@ const TEXTOS = {
     p5_titulo: "Votre photo (facultatif)",
     boton_abrir_camara: "Ouvrir la caméra", boton_capturar: "Prendre la photo", boton_repetir: "↺ Reprendre la photo", boton_saltar: "Passer", boton_continuar: "Continuer →",
     camara_sin_permiso: "Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.",
-    puedes_corregir: "Vous verrez ici ce que vous dites. Touchez-le pour le corriger.", cv_idioma_actual: "Votre CV est en {idioma}.", cv_traducir_invita: "Besoin d'une autre langue ?", boton_abrir_cv: "Ouvrir mon CV", boton_compartir_cv: "Envoyer par WhatsApp ou e-mail", compartir_titulo: "Envoyer mon CV",
+    puedes_corregir: "Vous verrez ici ce que vous dites. Touchez-le pour le corriger.", boton_abrir_cv: "Ouvrir mon CV", boton_compartir_cv: "Envoyer par WhatsApp ou e-mail", compartir_titulo: "Envoyer mon CV",
     boton_siguiente: "Suivant →", boton_anterior: "← Retour",
     mensaje_carga: "Nous rédigeons votre CV avec une touche professionnelle…",
     error_ia_generico: "Nous n'avons pas pu rédiger votre CV automatiquement. Vérifiez votre connexion internet et réessayez.",
@@ -1315,7 +1422,6 @@ const TEXTOS = {
     label_telefono: "Téléphone:", label_email: "E-mail:", label_ubicacion: "Lieu:",
     cv_bloque_experiencia: "Expérience professionnelle", cv_bloque_estudios: "Études",
     boton_rehacer: "← Réenregistrer",
-    boton_traducir_cv: "Traduire le CV", traduciendo_cv: "Traduction de votre CV en cours…", error_traduccion_generico: "Nous n'avons pas pu traduire le CV. Vérifiez votre connexion et réessayez.",
     ia_mucha_demanda: "Beaucoup de personnes utilisent CVoice en ce moment. Un instant, nous continuons avec votre CV…",
     nombre_predeterminado: "NOM PRÉNOM",
     p1_instruccion: "Appuyez sur le micro et dites-nous :",
@@ -1338,10 +1444,23 @@ const TEXTOS = {
     sin_voz: "Votre navigateur ne le permet pas. Essayez Google Chrome.",
     mic_sin_permiso: "Impossible d'utiliser le micro. Autorisez le micro pour CVoice dans les réglages du téléphone.",
     aviso_salir: "Appuyez à nouveau sur Retour pour quitter CVoice.",
+    bv_titulo: "Votre CV, simplement en parlant",
+    bv_sub: "Racontez votre expérience à voix haute. Nous la transformons en un CV professionnel, prêt à envoyer.",
+    bv_p1_t: "Parlez",
+    bv_p1_d: "Répondez à quelques questions simples, comme dans une conversation.",
+    bv_p2_t: "Nous le rédigeons",
+    bv_p2_d: "Nous organisons ce que vous dites et le rédigeons de façon professionnelle.",
+    bv_p3_t: "Téléchargez-le",
+    bv_p3_d: "Choisissez un modèle et obtenez votre CV en PDF, prêt à envoyer.",
+    bv_idiomas: "Choisissez vos langues",
+    bv_hablar: "Langue dans laquelle vous parlerez",
+    bv_cv: "Langue de votre CV",
+    bv_listo_t: "Félicitations, tout est prêt !",
+    bv_listo_d: "Vous parlerez en {hablar} et votre CV sera en {cv}.",
+    boton_empezar: "Commencer",
   },
   de: {
     subtitulo: "Sprechen Sie. Wir schreiben Ihren Lebenslauf.",
-    boton_cambiar_idioma: "Sprache ändern",
     p1_titulo: "Ihre persönlichen Daten",
     p2_titulo: "Ihre Berufserfahrung",
     p3_titulo: "Ihre Ausbildung",
@@ -1349,7 +1468,7 @@ const TEXTOS = {
     p5_titulo: "Ihr Foto (optional)",
     boton_abrir_camara: "Kamera öffnen", boton_capturar: "Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Überspringen", boton_continuar: "Weiter →",
     camara_sin_permiso: "Kein Zugriff auf die Kamera möglich. Prüfen Sie die Browser-Berechtigungen.",
-    puedes_corregir: "Hier sehen Sie, was Sie sagen. Tippen Sie darauf, um es zu korrigieren.", cv_idioma_actual: "Ihr Lebenslauf ist auf {idioma}.", cv_traducir_invita: "In einer anderen Sprache?", boton_abrir_cv: "Lebenslauf öffnen", boton_compartir_cv: "Per WhatsApp oder E-Mail senden", compartir_titulo: "Lebenslauf senden",
+    puedes_corregir: "Hier sehen Sie, was Sie sagen. Tippen Sie darauf, um es zu korrigieren.", boton_abrir_cv: "Lebenslauf öffnen", boton_compartir_cv: "Per WhatsApp oder E-Mail senden", compartir_titulo: "Lebenslauf senden",
     boton_siguiente: "Weiter →", boton_anterior: "← Zurück",
     mensaje_carga: "Wir schreiben Ihren Lebenslauf mit professionellem Schliff…",
     error_ia_generico: "Ihr Lebenslauf konnte nicht automatisch erstellt werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
@@ -1360,7 +1479,6 @@ const TEXTOS = {
     label_telefono: "Telefon:", label_email: "E-Mail:", label_ubicacion: "Ort:",
     cv_bloque_experiencia: "Berufserfahrung", cv_bloque_estudios: "Ausbildung",
     boton_rehacer: "← Neu aufnehmen",
-    boton_traducir_cv: "Lebenslauf übersetzen", traduciendo_cv: "Ihr Lebenslauf wird übersetzt…", error_traduccion_generico: "Der Lebenslauf konnte nicht übersetzt werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
     ia_mucha_demanda: "Gerade nutzen sehr viele Menschen CVoice. Einen Moment, wir arbeiten weiter an Ihrem Lebenslauf…",
     nombre_predeterminado: "VOR- UND NACHNAME",
     p1_instruccion: "Tippen Sie auf das Mikrofon und nennen Sie uns:",
@@ -1383,10 +1501,23 @@ const TEXTOS = {
     sin_voz: "Ihr Browser unterstützt dies nicht. Versuchen Sie Google Chrome.",
     mic_sin_permiso: "Das Mikrofon kann nicht verwendet werden. Erlauben Sie CVoice den Mikrofonzugriff in den Handy-Einstellungen.",
     aviso_salir: "Drücken Sie erneut Zurück, um CVoice zu verlassen.",
+    bv_titulo: "Ihr Lebenslauf – einfach sprechen",
+    bv_sub: "Erzählen Sie uns von Ihrer Erfahrung. Wir machen daraus einen professionellen Lebenslauf, bereit zum Versenden.",
+    bv_p1_t: "Sprechen",
+    bv_p1_d: "Beantworten Sie ein paar einfache Fragen – wie in einem Gespräch.",
+    bv_p2_t: "Wir schreiben ihn",
+    bv_p2_d: "Wir ordnen, was Sie sagen, und formulieren es professionell.",
+    bv_p3_t: "Herunterladen",
+    bv_p3_d: "Wählen Sie ein Design und erhalten Sie Ihren Lebenslauf als PDF.",
+    bv_idiomas: "Wählen Sie Ihre Sprachen",
+    bv_hablar: "Sprache, in der Sie sprechen",
+    bv_cv: "Sprache Ihres Lebenslaufs",
+    bv_listo_t: "Glückwunsch, alles bereit!",
+    bv_listo_d: "Sie sprechen: {hablar} · Ihr Lebenslauf: {cv}",
+    boton_empezar: "Los geht's",
   },
   it: {
     subtitulo: "Parla. Noi scriviamo il tuo curriculum.",
-    boton_cambiar_idioma: "Cambia lingua",
     p1_titulo: "I tuoi dati personali",
     p2_titulo: "La tua esperienza lavorativa",
     p3_titulo: "I tuoi studi",
@@ -1394,7 +1525,7 @@ const TEXTOS = {
     p5_titulo: "La tua foto (facoltativa)",
     boton_abrir_camara: "Apri fotocamera", boton_capturar: "Scatta foto", boton_repetir: "↺ Rifai la foto", boton_saltar: "Salta", boton_continuar: "Continua →",
     camara_sin_permiso: "Non siamo riusciti ad accedere alla fotocamera. Controlla i permessi del browser.",
-    puedes_corregir: "Qui vedrai quello che stai dicendo. Toccalo per correggerlo.", cv_idioma_actual: "Il tuo CV è in {idioma}.", cv_traducir_invita: "Ti serve in un'altra lingua?", boton_abrir_cv: "Apri il mio CV", boton_compartir_cv: "Invia via WhatsApp o email", compartir_titulo: "Invia il mio CV",
+    puedes_corregir: "Qui vedrai quello che stai dicendo. Toccalo per correggerlo.", boton_abrir_cv: "Apri il mio CV", boton_compartir_cv: "Invia via WhatsApp o email", compartir_titulo: "Invia il mio CV",
     boton_siguiente: "Avanti →", boton_anterior: "← Indietro",
     mensaje_carga: "Stiamo scrivendo il tuo curriculum con un tocco professionale…",
     error_ia_generico: "Non siamo riusciti a creare automaticamente il tuo curriculum. Controlla la connessione e riprova.",
@@ -1405,7 +1536,6 @@ const TEXTOS = {
     label_telefono: "Telefono:", label_email: "Email:", label_ubicacion: "Località:",
     cv_bloque_experiencia: "Esperienza lavorativa", cv_bloque_estudios: "Istruzione",
     boton_rehacer: "← Registra di nuovo",
-    boton_traducir_cv: "Traduci CV", traduciendo_cv: "Traduzione del curriculum in corso…", error_traduccion_generico: "Non siamo riusciti a tradurre il curriculum. Controlla la connessione e riprova.",
     ia_mucha_demanda: "Molte persone stanno usando CVoice in questo momento. Un attimo, continuiamo con il tuo curriculum…",
     nombre_predeterminado: "NOME COGNOME",
     p1_instruccion: "Tocca il microfono e dicci:",
@@ -1428,10 +1558,23 @@ const TEXTOS = {
     sin_voz: "Il tuo browser non lo supporta. Prova con Google Chrome.",
     mic_sin_permiso: "Non possiamo usare il microfono. Consenti il microfono per CVoice nelle impostazioni del telefono.",
     aviso_salir: "Premi di nuovo Indietro per uscire da CVoice.",
+    bv_titulo: "Il tuo curriculum, solo parlando",
+    bv_sub: "Raccontaci la tua esperienza a voce. Noi la trasformiamo in un curriculum professionale, pronto da inviare.",
+    bv_p1_t: "Parla",
+    bv_p1_d: "Rispondi ad alcune domande semplici, come in una conversazione.",
+    bv_p2_t: "Lo scriviamo noi",
+    bv_p2_d: "Ordiniamo quello che dici e lo scriviamo in stile professionale.",
+    bv_p3_t: "Scaricalo",
+    bv_p3_d: "Scegli un design e ottieni il tuo CV in PDF, pronto da inviare.",
+    bv_idiomas: "Scegli le tue lingue",
+    bv_hablar: "Lingua in cui parlerai",
+    bv_cv: "Lingua del tuo curriculum",
+    bv_listo_t: "Congratulazioni, è tutto pronto!",
+    bv_listo_d: "Parlerai in {hablar} e il tuo curriculum sarà in {cv}.",
+    boton_empezar: "Inizia",
   },
   pt: {
     subtitulo: "Fale. Nós escrevemos o seu currículo.",
-    boton_cambiar_idioma: "Mudar idioma",
     p1_titulo: "Os seus dados pessoais",
     p2_titulo: "A sua experiência profissional",
     p3_titulo: "Os seus estudos",
@@ -1439,7 +1582,7 @@ const TEXTOS = {
     p5_titulo: "A sua foto (opcional)",
     boton_abrir_camara: "Abrir câmara", boton_capturar: "Tirar foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
     camara_sin_permiso: "Não foi possível aceder à câmara. Verifique as permissões do navegador.",
-    puedes_corregir: "Aqui verá o que está a dizer. Toque para corrigir.", cv_idioma_actual: "O seu currículo está em {idioma}.", cv_traducir_invita: "Precisa noutro idioma?", boton_abrir_cv: "Abrir o meu currículo", boton_compartir_cv: "Enviar por WhatsApp ou email", compartir_titulo: "Enviar o meu currículo",
+    puedes_corregir: "Aqui verá o que está a dizer. Toque para corrigir.", boton_abrir_cv: "Abrir o meu currículo", boton_compartir_cv: "Enviar por WhatsApp ou email", compartir_titulo: "Enviar o meu currículo",
     boton_siguiente: "Seguinte →", boton_anterior: "← Voltar",
     mensaje_carga: "Estamos a escrever o seu currículo com um toque profissional…",
     error_ia_generico: "Não foi possível criar o seu currículo automaticamente. Verifique a sua ligação à internet e tente novamente.",
@@ -1450,7 +1593,6 @@ const TEXTOS = {
     label_telefono: "Telefone:", label_email: "E-mail:", label_ubicacion: "Localização:",
     cv_bloque_experiencia: "Experiência profissional", cv_bloque_estudios: "Estudos",
     boton_rehacer: "← Gravar novamente",
-    boton_traducir_cv: "Traduzir CV", traduciendo_cv: "A traduzir o seu currículo…", error_traduccion_generico: "Não foi possível traduzir o currículo. Verifique a sua ligação e tente novamente.",
     ia_mucha_demanda: "Há muitas pessoas a usar o CVoice neste momento. Um momento, continuamos com o seu currículo…",
     nombre_predeterminado: "NOME COMPLETO",
     p1_instruccion: "Toque no microfone e diga-nos:",
@@ -1473,10 +1615,23 @@ const TEXTOS = {
     sin_voz: "O seu navegador não suporta isto. Experimente o Google Chrome.",
     mic_sin_permiso: "Não conseguimos usar o microfone. Permita o microfone para o CVoice nas definições do telemóvel.",
     aviso_salir: "Prima Voltar novamente para sair do CVoice.",
+    bv_titulo: "O seu currículo, só a falar",
+    bv_sub: "Conte-nos a sua experiência em voz alta. Nós transformamo-la num currículo profissional, pronto a enviar.",
+    bv_p1_t: "Fale",
+    bv_p1_d: "Responda a algumas perguntas simples, como numa conversa.",
+    bv_p2_t: "Nós escrevemos",
+    bv_p2_d: "Organizamos o que diz e escrevemo-lo com estilo profissional.",
+    bv_p3_t: "Descarregue",
+    bv_p3_d: "Escolha um design e receba o seu currículo em PDF, pronto a enviar.",
+    bv_idiomas: "Escolha os seus idiomas",
+    bv_hablar: "Idioma em que vai falar",
+    bv_cv: "Idioma do seu currículo",
+    bv_listo_t: "Parabéns, está tudo pronto!",
+    bv_listo_d: "Vai falar em {hablar} e o seu currículo ficará em {cv}.",
+    boton_empezar: "Começar",
   },
   ar: {
     subtitulo: "تحدّث. ونحن نكتب سيرتك الذاتية.",
-    boton_cambiar_idioma: "تغيير اللغة",
     p1_titulo: "بياناتك الشخصية",
     p2_titulo: "خبرتك العملية",
     p3_titulo: "دراستك",
@@ -1484,7 +1639,7 @@ const TEXTOS = {
     p5_titulo: "صورتك (اختياري)",
     boton_abrir_camara: "فتح الكاميرا", boton_capturar: "التقاط صورة", boton_repetir: "↺ إعادة التصوير", boton_saltar: "تخطٍّ", boton_continuar: "← متابعة",
     camara_sin_permiso: "تعذّر الوصول إلى الكاميرا. تحقق من أذونات المتصفح.",
-    puedes_corregir: "سترى هنا ما تقوله. اضغط عليه لتصحيحه.", cv_idioma_actual: "لغة سيرتك الذاتية: {idioma}.", cv_traducir_invita: "تحتاجها بلغة أخرى؟", boton_abrir_cv: "افتح سيرتي الذاتية", boton_compartir_cv: "أرسلها عبر واتساب أو البريد الإلكتروني", compartir_titulo: "إرسال سيرتي الذاتية",
+    puedes_corregir: "سترى هنا ما تقوله. اضغط عليه لتصحيحه.", boton_abrir_cv: "افتح سيرتي الذاتية", boton_compartir_cv: "أرسلها عبر واتساب أو البريد الإلكتروني", compartir_titulo: "إرسال سيرتي الذاتية",
     boton_siguiente: "التالي ←", boton_anterior: "→ السابق",
     mensaje_carga: "نحن نكتب سيرتك الذاتية بأسلوب مهني…",
     error_ia_generico: "تعذّر إنشاء سيرتك الذاتية تلقائيًا. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
@@ -1495,7 +1650,6 @@ const TEXTOS = {
     label_telefono: "هاتف:", label_email: "بريد:", label_ubicacion: "الموقع:",
     cv_bloque_experiencia: "الخبرة العملية", cv_bloque_estudios: "الدراسة",
     boton_rehacer: "→ التسجيل من جديد",
-    boton_traducir_cv: "ترجمة السيرة الذاتية", traduciendo_cv: "جارٍ ترجمة سيرتك الذاتية…", error_traduccion_generico: "تعذّر ترجمة السيرة الذاتية. تحقق من اتصالك وحاول مرة أخرى.",
     ia_mucha_demanda: "يستخدم الكثيرون CVoice الآن. لحظة من فضلك، ما زلنا نعمل على سيرتك الذاتية…",
     nombre_predeterminado: "الاسم الكامل",
     p1_instruccion: "اضغط على الميكروفون وأخبرنا:",
@@ -1518,10 +1672,23 @@ const TEXTOS = {
     sin_voz: "متصفحك لا يدعم هذه الميزة. جرّب جوجل كروم.",
     mic_sin_permiso: "لا يمكننا استخدام الميكروفون. اسمح لتطبيق CVoice باستخدام الميكروفون من إعدادات الهاتف.",
     aviso_salir: "اضغط على رجوع مرة أخرى للخروج من CVoice.",
+    bv_titulo: "سيرتك الذاتية بمجرد الكلام",
+    bv_sub: "حدّثنا عن خبرتك بصوتك، ونحن نحوّلها إلى سيرة ذاتية احترافية جاهزة للإرسال.",
+    bv_p1_t: "تحدّث",
+    bv_p1_d: "أجب عن بعض الأسئلة البسيطة، كأنها محادثة.",
+    bv_p2_t: "نحن نكتبها",
+    bv_p2_d: "ننظّم ما تقوله ونكتبه بأسلوب مهني.",
+    bv_p3_t: "حمّلها",
+    bv_p3_d: "اختر تصميمًا واحصل على سيرتك الذاتية بصيغة PDF جاهزة للإرسال.",
+    bv_idiomas: "اختر لغاتك",
+    bv_hablar: "اللغة التي ستتحدث بها",
+    bv_cv: "لغة سيرتك الذاتية",
+    bv_listo_t: "تهانينا، كل شيء جاهز!",
+    bv_listo_d: "ستتحدث: {hablar} · سيرتك الذاتية: {cv}",
+    boton_empezar: "ابدأ",
   },
   zh: {
     subtitulo: "你只管说，简历我们来写。",
-    boton_cambiar_idioma: "更改语言",
     p1_titulo: "个人资料",
     p2_titulo: "工作经历",
     p3_titulo: "教育经历",
@@ -1529,7 +1696,7 @@ const TEXTOS = {
     p5_titulo: "你的照片（可选）",
     boton_abrir_camara: "打开相机", boton_capturar: "拍照", boton_repetir: "↺ 重新拍照", boton_saltar: "跳过", boton_continuar: "继续 →",
     camara_sin_permiso: "无法访问相机，请检查浏览器权限设置。",
-    puedes_corregir: "你说的内容会显示在这里。点击即可修改。", cv_idioma_actual: "你的简历语言：{idioma}。", cv_traducir_invita: "需要其他语言？", boton_abrir_cv: "打开我的简历", boton_compartir_cv: "通过 WhatsApp 或邮件发送", compartir_titulo: "发送我的简历",
+    puedes_corregir: "你说的内容会显示在这里。点击即可修改。", boton_abrir_cv: "打开我的简历", boton_compartir_cv: "通过 WhatsApp 或邮件发送", compartir_titulo: "发送我的简历",
     boton_siguiente: "下一步 →", boton_anterior: "← 上一步",
     mensaje_carga: "我们正在以专业的方式撰写你的简历…",
     error_ia_generico: "无法自动生成简历。请检查网络连接后重试。",
@@ -1540,7 +1707,6 @@ const TEXTOS = {
     label_telefono: "电话：", label_email: "邮箱：", label_ubicacion: "地点：",
     cv_bloque_experiencia: "工作经历", cv_bloque_estudios: "教育经历",
     boton_rehacer: "← 重新录制",
-    boton_traducir_cv: "翻译简历", traduciendo_cv: "正在翻译您的简历…", error_traduccion_generico: "无法翻译简历。请检查网络连接后重试。",
     ia_mucha_demanda: "目前使用 CVoice 的人很多。请稍候，我们仍在处理您的简历…",
     nombre_predeterminado: "姓名",
     p1_instruccion: "点击麦克风，告诉我们：",
@@ -1563,10 +1729,23 @@ const TEXTOS = {
     sin_voz: "你的浏览器不支持此功能，请尝试使用 Google Chrome。",
     mic_sin_permiso: "无法使用麦克风。请在手机设置中允许 CVoice 使用麦克风。",
     aviso_salir: "再按一次返回键即可退出 CVoice。",
+    bv_titulo: "只需说话，简历就完成",
+    bv_sub: "用声音告诉我们你的经历，我们把它变成一份专业的简历，可以直接发送。",
+    bv_p1_t: "说",
+    bv_p1_d: "像聊天一样，回答几个简单的问题。",
+    bv_p2_t: "我们来写",
+    bv_p2_d: "我们整理你说的内容，并用专业的方式写出来。",
+    bv_p3_t: "下载",
+    bv_p3_d: "选择一个设计，获取 PDF 格式的简历，即可发送。",
+    bv_idiomas: "选择语言",
+    bv_hablar: "你说话的语言",
+    bv_cv: "简历的语言",
+    bv_listo_t: "恭喜，一切就绪！",
+    bv_listo_d: "说话：{hablar} · 简历：{cv}",
+    boton_empezar: "开始",
   },
   ja: {
     subtitulo: "話すだけ。履歴書は私たちが作ります。",
-    boton_cambiar_idioma: "言語を変更",
     p1_titulo: "基本情報",
     p2_titulo: "職務経歴",
     p3_titulo: "学歴",
@@ -1574,7 +1753,7 @@ const TEXTOS = {
     p5_titulo: "写真（任意）",
     boton_abrir_camara: "カメラを開く", boton_capturar: "撮影する", boton_repetir: "↺ 撮り直す", boton_saltar: "スキップ", boton_continuar: "続ける →",
     camara_sin_permiso: "カメラにアクセスできませんでした。ブラウザの権限設定を確認してください。",
-    puedes_corregir: "話した内容がここに表示されます。タップして修正できます。", cv_idioma_actual: "履歴書の言語：{idioma}", cv_traducir_invita: "他の言語が必要ですか？", boton_abrir_cv: "履歴書を開く", boton_compartir_cv: "WhatsAppやメールで送る", compartir_titulo: "履歴書を送る",
+    puedes_corregir: "話した内容がここに表示されます。タップして修正できます。", boton_abrir_cv: "履歴書を開く", boton_compartir_cv: "WhatsAppやメールで送る", compartir_titulo: "履歴書を送る",
     boton_siguiente: "次へ →", boton_anterior: "← 戻る",
     mensaje_carga: "あなたの履歴書をプロフェッショナルな仕上がりで作成しています…",
     error_ia_generico: "履歴書を自動作成できませんでした。インターネット接続を確認して再度お試しください。",
@@ -1585,7 +1764,6 @@ const TEXTOS = {
     label_telefono: "電話：", label_email: "メール：", label_ubicacion: "所在地：",
     cv_bloque_experiencia: "職務経歴", cv_bloque_estudios: "学歴",
     boton_rehacer: "← 録音し直す",
-    boton_traducir_cv: "履歴書を翻訳", traduciendo_cv: "履歴書を翻訳しています…", error_traduccion_generico: "履歴書を翻訳できませんでした。接続を確認して再度お試しください。",
     ia_mucha_demanda: "ただいま CVoice が混み合っています。少々お待ちください。履歴書の作成を続けています…",
     nombre_predeterminado: "氏名",
     p1_instruccion: "マイクをタップして、次のことを話してください：",
@@ -1608,10 +1786,23 @@ const TEXTOS = {
     sin_voz: "お使いのブラウザでは対応していません。Google Chromeをお試しください。",
     mic_sin_permiso: "マイクを使用できません。スマートフォンの設定で CVoice にマイクの使用を許可してください。",
     aviso_salir: "もう一度「戻る」を押すと CVoice を終了します。",
+    bv_titulo: "話すだけで、あなたの履歴書",
+    bv_sub: "あなたの経験を声で教えてください。すぐに送れる、プロらしい履歴書に仕上げます。",
+    bv_p1_t: "話す",
+    bv_p1_d: "会話のように、いくつかの簡単な質問に答えるだけ。",
+    bv_p2_t: "私たちが作成",
+    bv_p2_d: "話した内容を整理し、プロらしい文章にまとめます。",
+    bv_p3_t: "ダウンロード",
+    bv_p3_d: "デザインを選んで、PDFの履歴書を受け取りましょう。",
+    bv_idiomas: "言語を選ぶ",
+    bv_hablar: "話す言語",
+    bv_cv: "履歴書の言語",
+    bv_listo_t: "おめでとうございます。準備完了です！",
+    bv_listo_d: "話す言語：{hablar} · 履歴書：{cv}",
+    boton_empezar: "はじめる",
   },
   ro: {
     subtitulo: "Vorbește. Noi scriem CV-ul tău.",
-    boton_cambiar_idioma: "Schimbă limba",
     p1_titulo: "Datele tale personale",
     p2_titulo: "Experiența ta profesională",
     p3_titulo: "Studiile tale",
@@ -1619,7 +1810,7 @@ const TEXTOS = {
     p5_titulo: "Fotografia ta (opțional)",
     boton_abrir_camara: "Deschide camera", boton_capturar: "Fă poza", boton_repetir: "↺ Repetă poza", boton_saltar: "Sari peste", boton_continuar: "Continuă →",
     camara_sin_permiso: "Nu am putut accesa camera. Verifică permisiunile browserului.",
-    puedes_corregir: "Aici vei vedea ce spui. Apasă pe text pentru a-l corecta.", cv_idioma_actual: "CV-ul tău este în {idioma}.", cv_traducir_invita: "Ai nevoie de altă limbă?", boton_abrir_cv: "Deschide CV-ul meu", boton_compartir_cv: "Trimite pe WhatsApp sau e-mail", compartir_titulo: "Trimite CV-ul meu",
+    puedes_corregir: "Aici vei vedea ce spui. Apasă pe text pentru a-l corecta.", boton_abrir_cv: "Deschide CV-ul meu", boton_compartir_cv: "Trimite pe WhatsApp sau e-mail", compartir_titulo: "Trimite CV-ul meu",
     boton_siguiente: "Continuă →", boton_anterior: "← Înapoi",
     mensaje_carga: "Îți redactăm CV-ul cu o notă profesională…",
     error_ia_generico: "Nu am putut crea automat CV-ul. Verifică conexiunea la internet și încearcă din nou.",
@@ -1630,7 +1821,6 @@ const TEXTOS = {
     label_telefono: "Telefon:", label_email: "Email:", label_ubicacion: "Locație:",
     cv_bloque_experiencia: "Experiență profesională", cv_bloque_estudios: "Studii",
     boton_rehacer: "← Înregistrează din nou",
-    boton_traducir_cv: "Tradu CV-ul", traduciendo_cv: "Se traduce CV-ul tău…", error_traduccion_generico: "Nu am putut traduce CV-ul. Verifică conexiunea și încearcă din nou.",
     ia_mucha_demanda: "Multe persoane folosesc CVoice acum. Un moment, continuăm cu CV-ul tău…",
     nombre_predeterminado: "NUME PRENUME",
     p1_instruccion: "Apasă pe microfon și spune-ne:",
@@ -1653,10 +1843,23 @@ const TEXTOS = {
     sin_voz: "Browserul tău nu permite acest lucru. Încearcă Google Chrome.",
     mic_sin_permiso: "Nu putem folosi microfonul. Permite accesul la microfon pentru CVoice din setările telefonului.",
     aviso_salir: "Apasă din nou Înapoi pentru a ieși din CVoice.",
+    bv_titulo: "CV-ul tău, doar vorbind",
+    bv_sub: "Povestește-ne experiența ta cu vocea. Noi o transformăm într-un CV profesional, gata de trimis.",
+    bv_p1_t: "Vorbește",
+    bv_p1_d: "Răspunde la câteva întrebări simple, ca într-o conversație.",
+    bv_p2_t: "Noi îl redactăm",
+    bv_p2_d: "Organizăm ce spui și scriem totul în stil profesional.",
+    bv_p3_t: "Descarcă-l",
+    bv_p3_d: "Alege un design și primește CV-ul în PDF, gata de trimis.",
+    bv_idiomas: "Alege limbile",
+    bv_hablar: "Limba în care vei vorbi",
+    bv_cv: "Limba CV-ului tău",
+    bv_listo_t: "Felicitări, totul este gata!",
+    bv_listo_d: "Vei vorbi în {hablar}, iar CV-ul tău va fi în {cv}.",
+    boton_empezar: "Începe",
   },
   pl: {
     subtitulo: "Mów. My napiszemy Twoje CV.",
-    boton_cambiar_idioma: "Zmień język",
     p1_titulo: "Twoje dane osobowe",
     p2_titulo: "Twoje doświadczenie zawodowe",
     p3_titulo: "Twoja edukacja",
@@ -1664,7 +1867,7 @@ const TEXTOS = {
     p5_titulo: "Twoje zdjęcie (opcjonalnie)",
     boton_abrir_camara: "Otwórz kamerę", boton_capturar: "Zrób zdjęcie", boton_repetir: "↺ Powtórz zdjęcie", boton_saltar: "Pomiń", boton_continuar: "Kontynuuj →",
     camara_sin_permiso: "Nie udało się uzyskać dostępu do kamery. Sprawdź uprawnienia przeglądarki.",
-    puedes_corregir: "Tutaj zobaczysz, co mówisz. Dotknij, aby poprawić.", cv_idioma_actual: "Język Twojego CV: {idioma}.", cv_traducir_invita: "Potrzebujesz innego języka?", boton_abrir_cv: "Otwórz moje CV", boton_compartir_cv: "Wyślij przez WhatsApp lub e-mail", compartir_titulo: "Wyślij moje CV",
+    puedes_corregir: "Tutaj zobaczysz, co mówisz. Dotknij, aby poprawić.", boton_abrir_cv: "Otwórz moje CV", boton_compartir_cv: "Wyślij przez WhatsApp lub e-mail", compartir_titulo: "Wyślij moje CV",
     boton_siguiente: "Dalej →", boton_anterior: "← Wstecz",
     mensaje_carga: "Piszemy Twoje CV z profesjonalnym wyczuciem…",
     error_ia_generico: "Nie udało się automatycznie utworzyć CV. Sprawdź połączenie internetowe i spróbuj ponownie.",
@@ -1675,7 +1878,6 @@ const TEXTOS = {
     label_telefono: "Telefon:", label_email: "Email:", label_ubicacion: "Lokalizacja:",
     cv_bloque_experiencia: "Doświadczenie zawodowe", cv_bloque_estudios: "Edukacja",
     boton_rehacer: "← Nagraj ponownie",
-    boton_traducir_cv: "Przetłumacz CV", traduciendo_cv: "Tłumaczenie CV…", error_traduccion_generico: "Nie udało się przetłumaczyć CV. Sprawdź połączenie i spróbuj ponownie.",
     ia_mucha_demanda: "Wiele osób korzysta teraz z CVoice. Chwileczkę, nadal pracujemy nad Twoim CV…",
     nombre_predeterminado: "IMIĘ I NAZWISKO",
     p1_instruccion: "Naciśnij mikrofon i powiedz nam:",
@@ -1698,10 +1900,23 @@ const TEXTOS = {
     sin_voz: "Twoja przeglądarka nie wspiera tej funkcji. Wypróbuj Google Chrome.",
     mic_sin_permiso: "Nie możemy użyć mikrofonu. Zezwól aplikacji CVoice na dostęp do mikrofonu w ustawieniach telefonu.",
     aviso_salir: "Naciśnij ponownie Wstecz, aby wyjść z CVoice.",
+    bv_titulo: "Twoje CV – wystarczy mówić",
+    bv_sub: "Opowiedz nam o swoim doświadczeniu. Zamienimy to w profesjonalne CV, gotowe do wysłania.",
+    bv_p1_t: "Mów",
+    bv_p1_d: "Odpowiedz na kilka prostych pytań, jak w rozmowie.",
+    bv_p2_t: "My je piszemy",
+    bv_p2_d: "Porządkujemy to, co mówisz, i piszemy profesjonalnie.",
+    bv_p3_t: "Pobierz",
+    bv_p3_d: "Wybierz projekt i pobierz CV w PDF, gotowe do wysłania.",
+    bv_idiomas: "Wybierz języki",
+    bv_hablar: "Język, w którym mówisz",
+    bv_cv: "Język Twojego CV",
+    bv_listo_t: "Gratulacje, wszystko gotowe!",
+    bv_listo_d: "Mówisz: {hablar} · Twoje CV: {cv}",
+    boton_empezar: "Zacznij",
   },
   uk: {
     subtitulo: "Говоріть. Ми напишемо ваше резюме.",
-    boton_cambiar_idioma: "Змінити мову",
     p1_titulo: "Ваші особисті дані",
     p2_titulo: "Ваш досвід роботи",
     p3_titulo: "Ваша освіта",
@@ -1709,7 +1924,7 @@ const TEXTOS = {
     p5_titulo: "Ваше фото (необов'язково)",
     boton_abrir_camara: "Відкрити камеру", boton_capturar: "Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "Пропустити", boton_continuar: "← Продовжити",
     camara_sin_permiso: "Не вдалося отримати доступ до камери. Перевірте дозволи браузера.",
-    puedes_corregir: "Тут з'явиться те, що ви говорите. Торкніться, щоб виправити.", cv_idioma_actual: "Мова вашого резюме: {idioma}.", cv_traducir_invita: "Потрібна інша мова?", boton_abrir_cv: "Відкрити моє резюме", boton_compartir_cv: "Надіслати через WhatsApp або email", compartir_titulo: "Надіслати резюме",
+    puedes_corregir: "Тут з'явиться те, що ви говорите. Торкніться, щоб виправити.", boton_abrir_cv: "Відкрити моє резюме", boton_compartir_cv: "Надіслати через WhatsApp або email", compartir_titulo: "Надіслати резюме",
     boton_siguiente: "Далі →", boton_anterior: "← Назад",
     mensaje_carga: "Ми пишемо ваше резюме у професійному стилі…",
     error_ia_generico: "Не вдалося автоматично створити резюме. Перевірте з'єднання з інтернетом і спробуйте ще раз.",
@@ -1720,7 +1935,6 @@ const TEXTOS = {
     label_telefono: "Телефон:", label_email: "Email:", label_ubicacion: "Місце:",
     cv_bloque_experiencia: "Досвід роботи", cv_bloque_estudios: "Освіта",
     boton_rehacer: "← Записати знову",
-    boton_traducir_cv: "Перекласти резюме", traduciendo_cv: "Перекладаємо ваше резюме…", error_traduccion_generico: "Не вдалося перекласти резюме. Перевірте з'єднання і спробуйте ще раз.",
     ia_mucha_demanda: "Зараз CVoice користується багато людей. Хвилинку, ми продовжуємо працювати над вашим резюме…",
     nombre_predeterminado: "ІМ'Я ТА ПРІЗВИЩЕ",
     p1_instruccion: "Натисніть на мікрофон і розкажіть нам:",
@@ -1743,10 +1957,23 @@ const TEXTOS = {
     sin_voz: "Ваш браузер не підтримує цю функцію. Спробуйте Google Chrome.",
     mic_sin_permiso: "Не вдається використати мікрофон. Дозвольте CVoice доступ до мікрофона в налаштуваннях телефона.",
     aviso_salir: "Натисніть «Назад» ще раз, щоб вийти з CVoice.",
+    bv_titulo: "Ваше резюме — просто голосом",
+    bv_sub: "Розкажіть про свій досвід уголос. Ми перетворимо його на професійне резюме, готове до надсилання.",
+    bv_p1_t: "Говоріть",
+    bv_p1_d: "Дайте відповідь на кілька простих запитань, як у розмові.",
+    bv_p2_t: "Ми пишемо",
+    bv_p2_d: "Ми впорядковуємо сказане і пишемо у професійному стилі.",
+    bv_p3_t: "Завантажте",
+    bv_p3_d: "Оберіть дизайн і отримайте резюме у PDF, готове до надсилання.",
+    bv_idiomas: "Оберіть мови",
+    bv_hablar: "Мова, якою ви говоритимете",
+    bv_cv: "Мова вашого резюме",
+    bv_listo_t: "Вітаємо, усе готово!",
+    bv_listo_d: "Ви говорите: {hablar} · Ваше резюме: {cv}",
+    boton_empezar: "Почати",
   },
   ru: {
     subtitulo: "Говорите. Мы напишем ваше резюме.",
-    boton_cambiar_idioma: "Изменить язык",
     p1_titulo: "Ваши личные данные",
     p2_titulo: "Ваш опыт работы",
     p3_titulo: "Ваше образование",
@@ -1754,7 +1981,7 @@ const TEXTOS = {
     p5_titulo: "Ваше фото (необязательно)",
     boton_abrir_camara: "Открыть камеру", boton_capturar: "Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "Пропустить", boton_continuar: "← Продолжить",
     camara_sin_permiso: "Не удалось получить доступ к камере. Проверьте разрешения браузера.",
-    puedes_corregir: "Здесь появится то, что вы говорите. Коснитесь, чтобы исправить.", cv_idioma_actual: "Язык вашего резюме: {idioma}.", cv_traducir_invita: "Нужен другой язык?", boton_abrir_cv: "Открыть моё резюме", boton_compartir_cv: "Отправить в WhatsApp или по email", compartir_titulo: "Отправить резюме",
+    puedes_corregir: "Здесь появится то, что вы говорите. Коснитесь, чтобы исправить.", boton_abrir_cv: "Открыть моё резюме", boton_compartir_cv: "Отправить в WhatsApp или по email", compartir_titulo: "Отправить резюме",
     boton_siguiente: "Далее →", boton_anterior: "← Назад",
     mensaje_carga: "Мы пишем ваше резюме в профессиональном стиле…",
     error_ia_generico: "Не удалось автоматически создать резюме. Проверьте подключение к интернету и попробуйте снова.",
@@ -1765,7 +1992,6 @@ const TEXTOS = {
     label_telefono: "Телефон:", label_email: "Email:", label_ubicacion: "Место:",
     cv_bloque_experiencia: "Опыт работы", cv_bloque_estudios: "Образование",
     boton_rehacer: "← Записать снова",
-    boton_traducir_cv: "Перевести резюме", traduciendo_cv: "Переводим ваше резюме…", error_traduccion_generico: "Не удалось перевести резюме. Проверьте подключение и попробуйте снова.",
     ia_mucha_demanda: "Сейчас CVoice пользуется много людей. Минутку, мы продолжаем работу над вашим резюме…",
     nombre_predeterminado: "ИМЯ ФАМИЛИЯ",
     p1_instruccion: "Нажмите на микрофон и расскажите нам:",
@@ -1788,6 +2014,20 @@ const TEXTOS = {
     sin_voz: "Ваш браузер не поддерживает эту функцию. Попробуйте Google Chrome.",
     mic_sin_permiso: "Не удаётся использовать микрофон. Разрешите CVoice доступ к микрофону в настройках телефона.",
     aviso_salir: "Нажмите «Назад» ещё раз, чтобы выйти из CVoice.",
+    bv_titulo: "Ваше резюме — просто голосом",
+    bv_sub: "Расскажите о своём опыте вслух. Мы превратим его в профессиональное резюме, готовое к отправке.",
+    bv_p1_t: "Говорите",
+    bv_p1_d: "Ответьте на несколько простых вопросов, как в разговоре.",
+    bv_p2_t: "Мы пишем",
+    bv_p2_d: "Мы упорядочиваем сказанное и пишем в профессиональном стиле.",
+    bv_p3_t: "Скачайте",
+    bv_p3_d: "Выберите дизайн и получите резюме в PDF, готовое к отправке.",
+    bv_idiomas: "Выберите языки",
+    bv_hablar: "Язык, на котором вы будете говорить",
+    bv_cv: "Язык вашего резюме",
+    bv_listo_t: "Поздравляем, всё готово!",
+    bv_listo_d: "Вы говорите: {hablar} · Ваше резюме: {cv}",
+    boton_empezar: "Начать",
   },
 };
 
@@ -2043,30 +2283,56 @@ const PLANTILLA_PASO = {
 };
 
 // ---------- 2. Estado de la aplicación ----------
-let idiomaActual = detectarIdiomaNavegador(); // idioma de la interfaz
-let idiomaCV = idiomaActual;                   // idioma del contenido del CV (cambia al traducir)
+// Los idiomas elegidos en la bienvenida se recuerdan para la próxima vez (si el navegador
+// no deja guardar, se vuelve a usar el del móvil)
+const GUARDADO_HABLAR = "cvoice_idioma_hablar", GUARDADO_CV = "cvoice_idioma_cv";
+function leerIdiomaGuardado(clave){
+  try { const v = localStorage.getItem(clave); return IDIOMAS[v] ? v : null; } catch(e){ return null; }
+}
+function guardarIdioma(clave, codigo){
+  try { localStorage.setItem(clave, codigo); } catch(e){}
+}
+let idiomaActual = leerIdiomaGuardado(GUARDADO_HABLAR) || detectarIdiomaNavegador(); // en el que se habla = el de la app
+let idiomaCVDestino = leerIdiomaGuardado(GUARDADO_CV) || idiomaActual;               // en el que se redacta el CV
+let idiomaCV = idiomaCVDestino;  // idioma de las etiquetas que tienen ahora las hojas del CV
 let pasoActual = 1;
 let reconocimiento = null;
 let micEscuchandoEl = null;
 
-// ---------- 3. Selector de idioma ----------
-const selectIdioma = document.getElementById("select-idioma");
-Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
-  const opcion = document.createElement("option");
-  opcion.value = codigo;
-  opcion.textContent = `${datos.bandera}  ${datos.nombre}`;
-  selectIdioma.appendChild(opcion);
+// ---------- 3. Bienvenida: idiomas ----------
+const selectIdiomaHablar = document.getElementById("select-idioma-hablar");
+const selectIdiomaCV = document.getElementById("select-idioma-cv");
+[selectIdiomaHablar, selectIdiomaCV].forEach(select => {
+  Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
+    const opcion = document.createElement("option");
+    opcion.value = codigo;
+    opcion.textContent = `${datos.bandera}  ${datos.nombre}`;
+    select.appendChild(opcion);
+  });
 });
-selectIdioma.value = idiomaActual;
+selectIdiomaHablar.value = idiomaActual;
+selectIdiomaCV.value = idiomaCVDestino;
+// Mientras no se elija a mano otro idioma para el CV, sigue al idioma en el que se habla
+let idiomaCVElegidoAMano = idiomaCVDestino !== idiomaActual;
 
-const btnCambiarIdioma = document.getElementById("btn-cambiar-idioma");
-btnCambiarIdioma.addEventListener("click", () => {
-  selectIdioma.classList.toggle("hidden");
+selectIdiomaHablar.addEventListener("change", () => {
+  if (!idiomaCVElegidoAMano){
+    idiomaCVDestino = selectIdiomaHablar.value;
+    selectIdiomaCV.value = idiomaCVDestino;
+  }
+  elegirIdioma(selectIdiomaHablar.value);
 });
-selectIdioma.addEventListener("change", () => {
-  elegirIdioma(selectIdioma.value);
-  selectIdioma.classList.add("hidden");
+selectIdiomaCV.addEventListener("change", () => {
+  idiomaCVDestino = selectIdiomaCV.value;
+  idiomaCVElegidoAMano = idiomaCVDestino !== idiomaActual;
+  actualizarResumenIdiomas();
 });
+
+// "Hablarás en Español y tu currículum estará en English."
+function actualizarResumenIdiomas(){
+  document.getElementById("txt-bv-listo").textContent =
+    tx("bv_listo_d", { hablar: IDIOMAS[idiomaActual].nombre, cv: IDIOMAS[idiomaCVDestino].nombre });
+}
 
 function elegirIdioma(codigo){
   idiomaActual = codigo;
@@ -2075,9 +2341,22 @@ function elegirIdioma(codigo){
   aplicarTextos();
 }
 
-document.addEventListener("click", (evento) => {
-  const tocoIdioma = btnCambiarIdioma.contains(evento.target) || selectIdioma.contains(evento.target);
-  if (!tocoIdioma) selectIdioma.classList.add("hidden");
+function mostrarBienvenida(){
+  detenerEscucha();
+  detenerCamara();
+  document.getElementById("pantalla-entrevista").classList.add("hidden");
+  document.querySelector("body > header").classList.add("hidden");
+  document.getElementById("pantalla-bienvenida").classList.remove("hidden");
+  window.scrollTo({ top: 0 });
+}
+
+document.getElementById("btn-empezar").addEventListener("click", () => {
+  guardarIdioma(GUARDADO_HABLAR, idiomaActual);
+  guardarIdioma(GUARDADO_CV, idiomaCVDestino);
+  document.getElementById("pantalla-bienvenida").classList.add("hidden");
+  document.getElementById("pantalla-entrevista").classList.remove("hidden");
+  irAPaso(1);
+  window.scrollTo({ top: 0 });
 });
 
 // ---------- 4. Aplicar traducciones al DOM ----------
@@ -2101,24 +2380,24 @@ function aplicarTextos(){
   if (btnSaltarFoto){
     ponerTextoBoton(btnSaltarFoto, fotoCapturadaDataURL ? t.boton_continuar : t.boton_saltar);
   }
-  // Atrás / Siguiente / Volver a grabar: texto arriba y flecha gruesa debajo
+  // Empezar / Atrás / Siguiente / Volver a grabar: texto y flecha gruesa en la misma línea
   document.querySelectorAll("[data-icono]").forEach(b => {
     if (b.id !== "btn-saltar-foto") ponerTextoBoton(b, b.textContent);
   });
   actualizarContador();
+  actualizarResumenIdiomas();
   // Botón de descarga (texto y precio en el idioma de la interfaz)
   if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
-  try { actualizarAvisoIdiomaCV(); } catch(e) {}
 }
 
-// Botones con el icono debajo del texto: flechas SVG gruesas en vez de los caracteres
+// Botones con flecha junto al texto: flechas SVG gruesas en vez de los caracteres
 // "→ ←" de las traducciones (que se quitan). En árabe las flechas se invierten (CSS).
 const ICONOS_BOTON = {
   adelante: '<path d="M5 12h14M13 6l6 6-6 6"/>',
   atras: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
   rehacer: '<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-4"/>'  // flecha de retorno
 };
-document.querySelectorAll("[data-siguiente], #btn-saltar-foto").forEach(b => { b.dataset.icono = "adelante"; });
+document.querySelectorAll("[data-siguiente], #btn-saltar-foto, #btn-empezar").forEach(b => { b.dataset.icono = "adelante"; });
 document.querySelectorAll("[data-anterior], #btn-volver-tras-error").forEach(b => { b.dataset.icono = "atras"; });
 document.getElementById("btn-volver-editar").dataset.icono = "rehacer";
 
@@ -2279,9 +2558,6 @@ function irAPaso(numero){
   document.querySelector(`.paso[data-paso="${numero}"]`).classList.add("activo");
   pasoActual = numero;
   actualizarContador();
-  // El selector de idioma solo es visible en el paso 1
-  const zonaIdioma = document.getElementById("zona-idioma");
-  if (zonaIdioma) zonaIdioma.classList.toggle("hidden", numero !== 1);
   // "Habla. Nosotros redactamos tu currículum." es la instrucción de la primera pantalla
   document.querySelector("body > header").classList.toggle("hidden", numero !== 1);
   ajustarBotonesConIcono();
@@ -2437,12 +2713,10 @@ function esperaTrasSaturacion(retryAfter, detalle){
   return Math.min(20000, Math.max(2000, ms)) + Math.random() * 1500;
 }
 
-// Mientras se espera por saturación, el texto de carga (o el de "Traduciendo…") lo explica
+// Mientras se espera por saturación, el texto de carga lo explica
 function avisoSaturacion(activo){
   const t = TEXTOS[idiomaActual];
-  const enCarga = !document.getElementById("pantalla-carga").classList.contains("hidden");
-  const el = document.getElementById(enCarga ? "txt-mensaje-carga" : "txt-traduccion-estado");
-  if (el) el.textContent = activo ? t.ia_mucha_demanda : (enCarga ? t.mensaje_carga : t.traduciendo_cv);
+  document.getElementById("txt-mensaje-carga").textContent = activo ? t.ia_mucha_demanda : t.mensaje_carga;
 }
 
 // Texto breve para el usuario: el detalle técnico completo va a la consola
@@ -2521,10 +2795,15 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 8. FORMATO DE SALIDA: Devuelve ESTRICTAMENTE el JSON solicitado. Nunca HTML libre, nunca explicaciones adicionales, nunca texto fuera del JSON.`;
 
 function construirPromptUsuario(datos){
-  const nombreIdioma = IDIOMAS[idiomaActual]?.nombre || "español";
+  // El CV se redacta directamente en el idioma elegido en la bienvenida, que puede no ser
+  // el idioma en el que se ha hablado
+  const nombreIdioma = IDIOMAS[idiomaCVDestino]?.nombre || "español";
+  const idiomaHablado = IDIOMAS[idiomaActual]?.nombre || nombreIdioma;
   return `Aquí están los textos en bruto, dictados por voz, recogidos en una entrevista de 4 pasos. Devuélvelos procesados.
 
 IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro. Esto incluye las etiquetas <strong> de "otros_html" (Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad…) y valores como "Sí"/"No": tradúcelos también al ${nombreIdioma}. Los ejemplos de este mensaje están en español solo como referencia de formato.
+
+La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, traduce todo con naturalidad y vocabulario profesional al ${nombreIdioma}, sin cambiar los datos. Si un nombre propio (persona, ciudad, empresa) está escrito en un alfabeto distinto del que usa el ${nombreIdioma}, transcríbelo con su forma habitual en ese alfabeto (ej. 'مكرم عايد' → 'Makrem Ayed', 'سوسة، تونس' → 'Sousse, Túnez' para un CV en español).
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
@@ -2770,7 +3049,7 @@ function construirHTMLEstudios(listaEstudios, listaFormacionComplementaria){
 }
 
 function pintarCV(resultado){
-  const t = TEXTOS[idiomaActual];
+  const t = TEXTOS[idiomaCVDestino];  // textos del documento: en el idioma del CV
 
   document.getElementById("cv-nombre").textContent = String(resultado.nombre || t.nombre_predeterminado).toUpperCase();
   // CV nuevo: el panel "CV guardado" (Abrir / Enviar) era del PDF anterior
@@ -2846,7 +3125,7 @@ function pintarCV(resultado){
   document.getElementById("cv-foto-contenedor").classList.toggle("hidden", !fotoCapturadaDataURL);
 
   // Títulos y etiquetas de las 5 plantillas en el idioma en que se ha redactado el CV
-  traducirEtiquetasCV(idiomaActual);
+  traducirEtiquetasCV(idiomaCVDestino);
 
   // Al mostrar el CV siempre empezamos en el básico
   disenoPremActivo = "prem1";
@@ -2859,88 +3138,7 @@ function pintarCV(resultado){
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
-// ---------- 11. Traducción del CV final antes de descargar ----------
-const selectIdiomaTraduccion = document.getElementById("select-idioma-traduccion");
-Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
-  const opcion = document.createElement("option");
-  opcion.value = codigo;
-  opcion.textContent = `${datos.bandera}  ${datos.nombre}`;
-  selectIdiomaTraduccion.appendChild(opcion);
-});
-
-const btnTraducirCV = document.getElementById("btn-traducir-cv");
-// La lista se despliega bajo el botón, al final de la página: al abrirla se baja la
-// pantalla lo justo para que se vea entera
-function abrirListaTraduccion(){
-  selectIdiomaTraduccion.classList.remove("hidden");
-  selectIdiomaTraduccion.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
-btnTraducirCV.addEventListener("click", () => {
-  if (selectIdiomaTraduccion.classList.contains("hidden")) abrirListaTraduccion();
-  else selectIdiomaTraduccion.classList.add("hidden");
-});
-document.addEventListener("click", (evento) => {
-  const tocoTraduccion = btnTraducirCV.contains(evento.target) || selectIdiomaTraduccion.contains(evento.target);
-  if (!tocoTraduccion) selectIdiomaTraduccion.classList.add("hidden");
-});
-
-// Aviso "Tu currículum está en …" bajo el título de la pantalla del CV
-function actualizarAvisoIdiomaCV(){
-  const aviso = document.getElementById("txt-cv-idioma");
-  const idioma = IDIOMAS[idiomaCV] || IDIOMAS[idiomaActual];
-  if (aviso && idioma) aviso.textContent = tx("cv_idioma_actual", { idioma: idioma.nombre });
-}
-
-// Traducción por fragmentos: se envía a la IA solo la lista de textos visibles del CV
-// (tal como está en pantalla, con las correcciones del usuario) y cada traducción se
-// vuelve a poner en su sitio. La estructura HTML nunca pasa por la IA, así que no puede
-// romperse, y el JSON de respuesta es una simple lista de cadenas.
-const PROMPT_SISTEMA_TRADUCCION = "Eres un traductor profesional especializado en currículums. Recibes una lista JSON de fragmentos de texto de un CV y devuelves su traducción al idioma indicado, con el mismo tono profesional. Reglas: traduce cada fragmento por separado y en el mismo orden; nunca unas, dividas, añadas ni omitas fragmentos; no traduzcas nombres propios de personas, empresas ni marcas; conserva números, fechas, emails y la puntuación final (por ejemplo los dos puntos de 'Idiomas:'). Devuelve solo el JSON pedido. Si un fragmento describe a la persona (su perfil profesional), tradúcelo en el estilo impersonal propio de un CV: sin primera ni tercera persona (nada de 'yo', 'soy', 'él', 'ella', 'posee', 'es', 'tiene'), con frases nominales que empiecen por la profesión, sin cambiar los datos. Si el idioma destino usa el alfabeto latino y un nombre propio (persona, ciudad, empresa) está escrito en otro alfabeto, transcríbelo al alfabeto latino con su forma habitual (ej. 'مكرم عايد' → 'Makrem Ayed', 'سوسة، تونس' → 'Sousse, Túnez'); si ya está en alfabeto latino, déjalo igual.";
-
-// Nodos de texto traducibles del CV básico (las plantillas premium se copian de él).
-// Se excluyen los títulos con data-i18n: esos se traducen con el diccionario TEXTOS.
-function nodosTraduciblesCV(){
-  const nodos = [];
-  // El nombre va también: si está en otro alfabeto (p. ej. árabe) y el CV se traduce a un
-  // idioma con alfabeto latino, la IA lo transcribe (مكرم عايد → Makrem Ayed)
-  ["cv-nombre", "cv-ubicacion", "cv-perfil", "cv-experiencia", "cv-estudios", "cv-habilidades", "cv-otros"].forEach(id => {
-    const recorrido = document.createTreeWalker(document.getElementById(id), NodeFilter.SHOW_TEXT);
-    let nodo;
-    while ((nodo = recorrido.nextNode())){
-      if (nodo.nodeValue.trim() && !nodo.parentElement.closest("[data-i18n]")) nodos.push(nodo);
-    }
-  });
-  return nodos;
-}
-
-async function traducirCV(codigoDestino){
-  const nodos = nodosTraduciblesCV();
-  if (nodos.length){
-    const textos = nodos.map(n => n.nodeValue.trim());
-    const promptUsuario = `Idioma destino: ${IDIOMAS[codigoDestino].nombre}.
-Fragmentos (${textos.length}): ${JSON.stringify(textos)}
-Devuelve exactamente {"traducciones": [...]} con ${textos.length} cadenas, en el mismo orden.`;
-    const resultado = await llamarIA(PROMPT_SISTEMA_TRADUCCION, promptUsuario, 0.2);
-    const traducciones = resultado && resultado.traducciones;
-    if (!Array.isArray(traducciones) || traducciones.length !== textos.length){
-      throw new Error("La IA devolvió una traducción incompleta");
-    }
-    nodos.forEach((nodo, i) => {
-      const traducido = limpiarTextoIA(String(traducciones[i] ?? ""));
-      if (!traducido) return;
-      // Conservar los espacios de alrededor del fragmento original
-      const [, antes, , despues] = nodo.nodeValue.match(/^(\s*)([\s\S]*?)(\s*)$/);
-      nodo.nodeValue = antes + traducido + despues;
-    });
-  }
-  // Títulos y etiquetas de las plantillas al idioma destino (la interfaz de la app no cambia)
-  traducirEtiquetasCV(codigoDestino);
-  // Si hay una plantilla premium a la vista, volver a copiarle el contenido traducido
-  if (plantillaActiva !== "basico") rellenarPlantilla(plantillaActiva);
-  // El texto traducido tiene otra longitud: reajustar al A4
-  ajustarCVaA4(cvActivo());
-}
-
+// ---------- 11. Idioma del CV ----------
 // Pone los títulos de sección (data-i18n) y las etiquetas de contacto (data-cv-label)
 // de las 5 plantillas en el idioma indicado, y lo recuerda como idioma del CV.
 function traducirEtiquetasCV(codigo){
@@ -2954,7 +3152,6 @@ function traducirEtiquetasCV(codigo){
     hoja.dir = IDIOMAS[codigo].dir || "ltr";
     hoja.lang = codigo;
   });
-  actualizarAvisoIdiomaCV();
   document.querySelectorAll("#contenedor-cvs [data-i18n]").forEach(el => {
     const texto = t[el.dataset.i18n];
     if (texto) el.textContent = texto;
@@ -2965,37 +3162,6 @@ function traducirEtiquetasCV(codigo){
     if (texto) el.textContent = el.classList.contains("prem-label") ? texto.replace(/\s*:\s*$/, "") : texto;
   });
 }
-
-selectIdiomaTraduccion.addEventListener("change", () => {
-  const codigoDestino = selectIdiomaTraduccion.value;
-  selectIdiomaTraduccion.classList.add("hidden");
-  // Sin selección: si la traducción falla, volver a elegir el mismo idioma la reintenta
-  // (con la opción aún marcada, tocarla no lanzaba "change" y no pasaba nada)
-  selectIdiomaTraduccion.selectedIndex = -1;
-
-  const t = TEXTOS[idiomaActual];
-  const estadoTexto = document.getElementById("txt-traduccion-estado");
-  const avisoErrorTraduccion = document.getElementById("aviso-error-traduccion");
-
-  avisoErrorTraduccion.classList.add("hidden");
-  estadoTexto.textContent = t.traduciendo_cv;
-  estadoTexto.classList.remove("hidden");
-  btnTraducirCV.disabled = true;
-  document.getElementById("btn-cta-principal").disabled = true;
-
-  traducirCV(codigoDestino)
-    .then(() => estadoTexto.classList.add("hidden"))
-    .catch(error => {
-      console.error(error);
-      avisoErrorTraduccion.textContent = t.error_traduccion_generico + mensajeErrorCorto(error);
-      avisoErrorTraduccion.classList.remove("hidden");
-      estadoTexto.classList.add("hidden");
-    })
-    .finally(() => {
-      btnTraducirCV.disabled = false;
-      document.getElementById("btn-cta-principal").disabled = false;
-    });
-});
 
 // ---------- 11b. Volver a grabar ----------
 document.getElementById("btn-volver-editar").addEventListener("click", () => {
@@ -3852,17 +4018,18 @@ window.botonAtras = function(){
   const visible = id => !document.getElementById(id).classList.contains("hidden");
   if (visible("modal-pago")){ cerrarModalPago(); productoPendiente = null; return true; }
   if (visible("modal-app")){ document.getElementById("modal-app").classList.add("hidden"); return true; }
-  if (visible("select-idioma")){ selectIdioma.classList.add("hidden"); return true; }
-  if (visible("select-idioma-traduccion")){ selectIdiomaTraduccion.classList.add("hidden"); return true; }
   if (visible("pantalla-carga")){
     // Con error: volver a la entrevista; mientras se redacta, no se sale
     if (visible("btn-volver-tras-error")) document.getElementById("btn-volver-tras-error").click();
     return true;
   }
   if (visible("pantalla-cv")) return confirmarSalida();
+  // En la bienvenida, Atrás sale de la app
+  if (visible("pantalla-bienvenida")) return false;
   if (pasoActual > 1){ irAPaso(pasoActual - 1); window.scrollTo({ top: 0 }); return true; }
-  const hayTexto = [...document.querySelectorAll("[data-texto-paso]")].some(t => t.value.trim());
-  return hayTexto ? confirmarSalida() : false;
+  // Desde el paso 1 se vuelve a la bienvenida (ahí se pueden cambiar los idiomas); lo dictado se conserva
+  mostrarBienvenida();
+  return true;
 };
 
 // ---------- 14. Inicialización ----------
