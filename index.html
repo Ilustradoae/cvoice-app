@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>CVoice — Tu currículum hablando</title>
 
-<!-- html2pdf.js para exportar el CV final -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- html2pdf.js (exportar el CV a PDF) se carga más tarde: ver cargarHtml2pdf() -->
 
 <!-- Tipografías: Fraunces (display cálida, marca de la app) + Atkinson Hyperlegible (interfaz, máxima legibilidad)
      + Source Serif 4 (cuerpo del CV final: una serif de currículum ejecutivo, distinta de las dos anteriores) -->
@@ -196,8 +195,6 @@
     background: #fff;
     overflow: hidden;
     border-radius: calc(1 * var(--u));
-    /* min-height solo se añade en JS justo antes de exportar a PDF,
-       para que en pantalla el CV se ajuste al contenido real */
   }
   .prem-izq{
     width: 33.333%;
@@ -389,20 +386,10 @@
     font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.58 * var(--u)); letter-spacing:.18em;
     text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.5 * var(--u));
   }
-  .cv-lateral-dato .cv-etiqueta{
-    display: block;
-    font-size: calc(.58 * var(--u));
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: #888;
-    margin-bottom: calc(.1 * var(--u));
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-  }
-
   .cv-lateral-dato{ font-size:calc(.92 * var(--u)); line-height: calc(1.6 * var(--li)); word-break:break-word; margin-bottom: calc(.35 * var(--u)); }
   .cv-lateral-dato:last-child{ margin-bottom: 0; }
-  .cv-lateral-dato .cv-etiqueta{ display:block; font-size:calc(.68 * var(--u)); text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom: calc(.1 * var(--u)); }
+  .cv-lateral-dato .cv-etiqueta{ display:block; font-family:'Inter', sans-serif; font-weight:600; font-size:calc(.68 * var(--u));
+    text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom: calc(.1 * var(--u)); }
 
   .cv-derecha-titulo{
     font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.6 * var(--u)); letter-spacing:.18em;
@@ -502,12 +489,11 @@
   .ayuda-editar + textarea{ border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
   /* Pantalla del CV */
   #carrusel-plantillas > p{ font-size: 1rem; }
-  #txt-cta-sub{ font-size: .9375rem; }
   #txt-cta-secundario{ font-size: 1rem; line-height: 1.4rem; padding: .6rem 0; }
   .cv-ayuda-final{ text-align: center; font-size: 1rem; line-height: 1.4rem; color: var(--tinta); margin: 0 0 .75rem; }
   #btn-traducir-cv{ font-size: 1rem; }
   #btn-traducir-cv:disabled{ opacity: .5; }
-  /* Panel tras guardar el CV: título con carpeta y dos botones iguales (enviar / abrir) */
+  /* Panel tras guardar el CV: título y dos botones iguales (enviar / abrir) */
   #panel-cv-guardado{ background: var(--musgo-claro); border: 2px solid var(--musgo); border-radius: 1.25rem;
     padding: 1rem; margin: 0 0 1rem; text-align: center; }
   .panel-cv-guardado-titulo{ font-size: 1.0625rem; font-weight: 700; color: var(--musgo); margin: 0 0 .85rem; }
@@ -690,7 +676,7 @@
 
       <div class="flex flex-row gap-2 justify-center mt-4">
         <button class="flex-1 px-4 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo)" data-anterior="4" data-i18n="boton_anterior">← Atrás</button>
-        <button id="btn-saltar-foto" class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_saltar">Saltar este paso →</button>
+        <button id="btn-saltar-foto" class="flex-1 px-4 py-3 rounded-full text-sm font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_saltar">Saltar →</button>
       </div>
     </div>
   </article>
@@ -700,7 +686,7 @@
 <!-- ============== PANTALLA DE CARGA: LA IA ESTÁ REDACTANDO ============== -->
 <section id="pantalla-carga" class="hidden w-full max-w-md text-center py-16">
   <div class="anillo-carga mx-auto mb-6"></div>
-  <p id="txt-mensaje-carga" class="font-display text-xl sm:text-2xl" style="color:var(--musgo)" data-i18n="mensaje_carga">La IA está organizando y redactando tu CV con estilo profesional…</p>
+  <p id="txt-mensaje-carga" class="font-display text-xl sm:text-2xl" style="color:var(--musgo)" data-i18n="mensaje_carga">Estamos redactando tu currículum con estilo profesional…</p>
   <p id="aviso-error-ia" class="hidden mt-5 text-sm rounded-2xl border-2 p-4" style="border-color:#E3A0A0; background:#FBEAEA; color:#8A2E2E"></p>
   <!-- Solo visible si la IA falla: vuelve a la entrevista sin perder lo grabado -->
   <button id="btn-volver-tras-error" class="hidden mt-4 px-6 py-3 rounded-full text-sm font-bold border-2 transition hover:bg-gray-50" style="border-color:var(--musgo); color:var(--musgo); background:white" data-i18n="boton_anterior">← Atrás</button>
@@ -824,7 +810,7 @@
     </div><!-- /flex carrusel -->
   </div><!-- /carrusel-plantillas -->
 
-  <!-- Contenedor de las dos plantillas: solo una visible a la vez según el tab -->
+  <!-- Contenedor de las 5 plantillas: solo una visible a la vez según el carrusel -->
   <div id="contenedor-cvs">
 
     <!-- Plantilla BÁSICA -->
@@ -1110,9 +1096,6 @@
       <div class="text-xs font-normal opacity-80">(viendo un vídeo corto)</div>
     </button>
 
-    <!-- Subtexto dinámico -->
-    <p id="txt-cta-sub" class="text-center text-xs mb-2" style="color:#6B6354"></p>
-
     <!-- Opción secundaria sin anuncio (solo visible en modo gratis) -->
     <p id="txt-cta-secundario" class="text-center text-xs underline cursor-pointer mb-4" style="color:var(--musgo)">
       Descarga inmediata sin anuncio por 0,99 €
@@ -1226,12 +1209,11 @@ const TEXTOS = {
     p3_titulo: "Tus estudios",
     p4_titulo: "Otros datos",
     p5_titulo: "Tu foto (opcional)",
-    boton_abrir_camara: "📷 Abrir cámara", boton_capturar: "📸 Hacer foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar este paso →", boton_continuar: "Continuar →",
+    boton_abrir_camara: "📷 Abrir cámara", boton_capturar: "📸 Hacer foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
     camara_sin_permiso: "No hemos podido acceder a la cámara. Revisa los permisos del navegador.",
-    placeholder_texto: "Aquí verás lo que vas diciendo…",
-    puedes_corregir: "Aquí verás lo que vas diciendo. Tócalo para corregirlo.", aviso_tranquilo: "No te preocupes por equivocarte: podrás revisar y cambiar todo antes de descargar tu CV.", aviso_voz_privada: "CVoice no guarda grabaciones de tu voz.", cv_idioma_actual: "Tu currículum está en {idioma}.", cv_traducir_invita: "¿Lo necesitas en otro idioma?", boton_traducelo: "Tradúcelo", boton_abrir_cv: "Abrir mi CV", boton_compartir_cv: "Enviar por WhatsApp o email", compartir_titulo: "Enviar mi CV",
+    puedes_corregir: "Aquí verás lo que vas diciendo. Tócalo para corregirlo.", cv_idioma_actual: "Tu currículum está en {idioma}.", cv_traducir_invita: "¿Lo necesitas en otro idioma?", boton_abrir_cv: "Abrir mi CV", boton_compartir_cv: "Enviar por WhatsApp o email", compartir_titulo: "Enviar mi CV",
     boton_siguiente: "Siguiente →", boton_anterior: "← Atrás",
-    mensaje_carga: "La IA está organizando y redactando tu CV con estilo profesional…",
+    mensaje_carga: "Estamos redactando tu currículum con estilo profesional…",
     error_ia_generico: "No hemos podido redactar tu currículum automáticamente. Revisa tu conexión a internet e inténtalo de nuevo.",
     cv_titulo: "Tu currículum está listo", cv_ayuda: "Toca cualquier texto de tu CV para corregirlo antes de descargar.",
     cv_lateral_contacto: "Datos personales",
@@ -1261,6 +1243,7 @@ const TEXTOS = {
     p4_item3: "Disponibilidad horaria",
     p4_item4: "Voluntariados o actividades extra (si tienes)",
     sin_voz: "Tu navegador no permite usar el micrófono para esto. Prueba con Google Chrome.",
+    mic_sin_permiso: "No podemos usar el micrófono. Permite el micrófono para CVoice en los ajustes del móvil.",
   },
   en: {
     subtitulo: "Speak. We write your résumé.",
@@ -1270,12 +1253,11 @@ const TEXTOS = {
     p3_titulo: "Your education",
     p4_titulo: "Other details",
     p5_titulo: "Your photo (optional)",
-    boton_abrir_camara: "📷 Open camera", boton_capturar: "📸 Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip this step →", boton_continuar: "Continue →",
+    boton_abrir_camara: "📷 Open camera", boton_capturar: "📸 Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip", boton_continuar: "Continue →",
     camara_sin_permiso: "We couldn't access the camera. Check your browser permissions.",
-    placeholder_texto: "You'll see what you're saying here…",
-    puedes_corregir: "You'll see what you're saying here. Tap it to fix it.", aviso_tranquilo: "Don't worry about mistakes: you can review and change everything before downloading your résumé.", aviso_voz_privada: "CVoice doesn't keep recordings of your voice.", cv_idioma_actual: "Your résumé is in {idioma}.", cv_traducir_invita: "Need it in another language?", boton_traducelo: "Translate it", boton_abrir_cv: "Open my résumé", boton_compartir_cv: "Send by WhatsApp or email", compartir_titulo: "Send my résumé",
+    puedes_corregir: "You'll see what you're saying here. Tap it to fix it.", cv_idioma_actual: "Your résumé is in {idioma}.", cv_traducir_invita: "Need it in another language?", boton_abrir_cv: "Open my résumé", boton_compartir_cv: "Send by WhatsApp or email", compartir_titulo: "Send my résumé",
     boton_siguiente: "Next →", boton_anterior: "← Back",
-    mensaje_carga: "The AI is organising and writing your résumé with a professional touch…",
+    mensaje_carga: "We're writing your résumé with a professional touch…",
     error_ia_generico: "We couldn't write your résumé automatically. Check your internet connection and try again.",
     cv_titulo: "Your résumé is ready", cv_ayuda: "Tap any text in your résumé to fix it before downloading.",
     cv_lateral_contacto: "Personal details",
@@ -1305,6 +1287,7 @@ const TEXTOS = {
     p4_item3: "Availability or working hours",
     p4_item4: "Volunteering or extra activities (if any)",
     sin_voz: "Your browser doesn't support this. Try Google Chrome.",
+    mic_sin_permiso: "We can't use the microphone. Allow microphone access for CVoice in your phone settings.",
   },
   fr: {
     subtitulo: "Parlez. Nous rédigeons votre CV.",
@@ -1314,12 +1297,11 @@ const TEXTOS = {
     p3_titulo: "Vos études",
     p4_titulo: "Autres informations",
     p5_titulo: "Votre photo (facultatif)",
-    boton_abrir_camara: "📷 Ouvrir la caméra", boton_capturar: "📸 Prendre la photo", boton_repetir: "↺ Reprendre la photo", boton_saltar: "Passer cette étape →", boton_continuar: "Continuer →",
+    boton_abrir_camara: "📷 Ouvrir la caméra", boton_capturar: "📸 Prendre la photo", boton_repetir: "↺ Reprendre la photo", boton_saltar: "Passer", boton_continuar: "Continuer →",
     camara_sin_permiso: "Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.",
-    placeholder_texto: "Vous verrez ici ce que vous dites…",
-    puedes_corregir: "Vous verrez ici ce que vous dites. Touchez-le pour le corriger.", aviso_tranquilo: "Pas d'inquiétude si vous vous trompez : vous pourrez tout vérifier et modifier avant de télécharger votre CV.", aviso_voz_privada: "CVoice ne conserve pas d'enregistrements de votre voix.", cv_idioma_actual: "Votre CV est en {idioma}.", cv_traducir_invita: "Besoin d'une autre langue ?", boton_traducelo: "Traduisez-le", boton_abrir_cv: "Ouvrir mon CV", boton_compartir_cv: "Envoyer par WhatsApp ou e-mail", compartir_titulo: "Envoyer mon CV",
+    puedes_corregir: "Vous verrez ici ce que vous dites. Touchez-le pour le corriger.", cv_idioma_actual: "Votre CV est en {idioma}.", cv_traducir_invita: "Besoin d'une autre langue ?", boton_abrir_cv: "Ouvrir mon CV", boton_compartir_cv: "Envoyer par WhatsApp ou e-mail", compartir_titulo: "Envoyer mon CV",
     boton_siguiente: "Suivant →", boton_anterior: "← Retour",
-    mensaje_carga: "L'IA organise et rédige votre CV avec une touche professionnelle…",
+    mensaje_carga: "Nous rédigeons votre CV avec une touche professionnelle…",
     error_ia_generico: "Nous n'avons pas pu rédiger votre CV automatiquement. Vérifiez votre connexion internet et réessayez.",
     cv_titulo: "Votre CV est prêt", cv_ayuda: "Touchez n'importe quel texte de votre CV pour le corriger avant de télécharger.",
     cv_lateral_contacto: "Informations personnelles",
@@ -1349,6 +1331,7 @@ const TEXTOS = {
     p4_item3: "Disponibilité ou horaires",
     p4_item4: "Bénévolat ou activités extra (si vous en avez)",
     sin_voz: "Votre navigateur ne le permet pas. Essayez Google Chrome.",
+    mic_sin_permiso: "Impossible d'utiliser le micro. Autorisez le micro pour CVoice dans les réglages du téléphone.",
   },
   de: {
     subtitulo: "Sprechen Sie. Wir schreiben Ihren Lebenslauf.",
@@ -1358,12 +1341,11 @@ const TEXTOS = {
     p3_titulo: "Ihre Ausbildung",
     p4_titulo: "Weitere Angaben",
     p5_titulo: "Ihr Foto (optional)",
-    boton_abrir_camara: "📷 Kamera öffnen", boton_capturar: "📸 Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Diesen Schritt überspringen →", boton_continuar: "Weiter →",
+    boton_abrir_camara: "📷 Kamera öffnen", boton_capturar: "📸 Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Überspringen", boton_continuar: "Weiter →",
     camara_sin_permiso: "Kein Zugriff auf die Kamera möglich. Prüfen Sie die Browser-Berechtigungen.",
-    placeholder_texto: "Hier sehen Sie, was Sie sagen…",
-    puedes_corregir: "Hier sehen Sie, was Sie sagen. Tippen Sie darauf, um es zu korrigieren.", aviso_tranquilo: "Keine Sorge wegen Fehlern: Sie können vor dem Download alles prüfen und ändern.", aviso_voz_privada: "CVoice speichert keine Aufnahmen Ihrer Stimme.", cv_idioma_actual: "Ihr Lebenslauf ist auf {idioma}.", cv_traducir_invita: "In einer anderen Sprache?", boton_traducelo: "Übersetzen", boton_abrir_cv: "Lebenslauf öffnen", boton_compartir_cv: "Per WhatsApp oder E-Mail senden", compartir_titulo: "Lebenslauf senden",
+    puedes_corregir: "Hier sehen Sie, was Sie sagen. Tippen Sie darauf, um es zu korrigieren.", cv_idioma_actual: "Ihr Lebenslauf ist auf {idioma}.", cv_traducir_invita: "In einer anderen Sprache?", boton_abrir_cv: "Lebenslauf öffnen", boton_compartir_cv: "Per WhatsApp oder E-Mail senden", compartir_titulo: "Lebenslauf senden",
     boton_siguiente: "Weiter →", boton_anterior: "← Zurück",
-    mensaje_carga: "Die KI organisiert und verfasst Ihren Lebenslauf mit professionellem Schliff…",
+    mensaje_carga: "Wir schreiben Ihren Lebenslauf mit professionellem Schliff…",
     error_ia_generico: "Ihr Lebenslauf konnte nicht automatisch erstellt werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
     cv_titulo: "Ihr Lebenslauf ist fertig", cv_ayuda: "Tippen Sie auf einen beliebigen Text in Ihrem Lebenslauf, um ihn vor dem Download zu korrigieren.",
     cv_lateral_contacto: "Persönliche Daten",
@@ -1393,6 +1375,7 @@ const TEXTOS = {
     p4_item3: "Verfügbarkeit oder Arbeitszeiten",
     p4_item4: "Ehrenamt oder Zusatzaktivitäten",
     sin_voz: "Ihr Browser unterstützt dies nicht. Versuchen Sie Google Chrome.",
+    mic_sin_permiso: "Das Mikrofon kann nicht verwendet werden. Erlauben Sie CVoice den Mikrofonzugriff in den Handy-Einstellungen.",
   },
   it: {
     subtitulo: "Parla. Noi scriviamo il tuo curriculum.",
@@ -1402,12 +1385,11 @@ const TEXTOS = {
     p3_titulo: "I tuoi studi",
     p4_titulo: "Altri dati",
     p5_titulo: "La tua foto (facoltativa)",
-    boton_abrir_camara: "📷 Apri fotocamera", boton_capturar: "📸 Scatta foto", boton_repetir: "↺ Rifai la foto", boton_saltar: "Salta questo passaggio →", boton_continuar: "Continua →",
+    boton_abrir_camara: "📷 Apri fotocamera", boton_capturar: "📸 Scatta foto", boton_repetir: "↺ Rifai la foto", boton_saltar: "Salta", boton_continuar: "Continua →",
     camara_sin_permiso: "Non siamo riusciti ad accedere alla fotocamera. Controlla i permessi del browser.",
-    placeholder_texto: "Qui vedrai quello che stai dicendo…",
-    puedes_corregir: "Qui vedrai quello che stai dicendo. Toccalo per correggerlo.", aviso_tranquilo: "Non preoccuparti di sbagliare: potrai rivedere e cambiare tutto prima di scaricare il tuo CV.", aviso_voz_privada: "CVoice non conserva registrazioni della tua voce.", cv_idioma_actual: "Il tuo CV è in {idioma}.", cv_traducir_invita: "Ti serve in un'altra lingua?", boton_traducelo: "Traducilo", boton_abrir_cv: "Apri il mio CV", boton_compartir_cv: "Invia via WhatsApp o email", compartir_titulo: "Invia il mio CV",
+    puedes_corregir: "Qui vedrai quello che stai dicendo. Toccalo per correggerlo.", cv_idioma_actual: "Il tuo CV è in {idioma}.", cv_traducir_invita: "Ti serve in un'altra lingua?", boton_abrir_cv: "Apri il mio CV", boton_compartir_cv: "Invia via WhatsApp o email", compartir_titulo: "Invia il mio CV",
     boton_siguiente: "Avanti →", boton_anterior: "← Indietro",
-    mensaje_carga: "L'IA sta organizzando e scrivendo il tuo curriculum con un tocco professionale…",
+    mensaje_carga: "Stiamo scrivendo il tuo curriculum con un tocco professionale…",
     error_ia_generico: "Non siamo riusciti a creare automaticamente il tuo curriculum. Controlla la connessione e riprova.",
     cv_titulo: "Il tuo curriculum è pronto", cv_ayuda: "Tocca qualsiasi testo del tuo CV per correggerlo prima di scaricare.",
     cv_lateral_contacto: "Dati personali",
@@ -1437,6 +1419,7 @@ const TEXTOS = {
     p4_item3: "Disponibilità oraria",
     p4_item4: "Volontariato o attività extra",
     sin_voz: "Il tuo browser non lo supporta. Prova con Google Chrome.",
+    mic_sin_permiso: "Non possiamo usare il microfono. Consenti il microfono per CVoice nelle impostazioni del telefono.",
   },
   pt: {
     subtitulo: "Fale. Nós escrevemos o seu currículo.",
@@ -1446,12 +1429,11 @@ const TEXTOS = {
     p3_titulo: "Os seus estudos",
     p4_titulo: "Outros dados",
     p5_titulo: "A sua foto (opcional)",
-    boton_abrir_camara: "📷 Abrir câmara", boton_capturar: "📸 Tirar foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar este passo →", boton_continuar: "Continuar →",
+    boton_abrir_camara: "📷 Abrir câmara", boton_capturar: "📸 Tirar foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
     camara_sin_permiso: "Não foi possível aceder à câmara. Verifique as permissões do navegador.",
-    placeholder_texto: "Aqui verá o que está a dizer…",
-    puedes_corregir: "Aqui verá o que está a dizer. Toque para corrigir.", aviso_tranquilo: "Não se preocupe com erros: poderá rever e alterar tudo antes de descarregar o seu currículo.", aviso_voz_privada: "O CVoice não guarda gravações da sua voz.", cv_idioma_actual: "O seu currículo está em {idioma}.", cv_traducir_invita: "Precisa noutro idioma?", boton_traducelo: "Traduza-o", boton_abrir_cv: "Abrir o meu currículo", boton_compartir_cv: "Enviar por WhatsApp ou email", compartir_titulo: "Enviar o meu currículo",
+    puedes_corregir: "Aqui verá o que está a dizer. Toque para corrigir.", cv_idioma_actual: "O seu currículo está em {idioma}.", cv_traducir_invita: "Precisa noutro idioma?", boton_abrir_cv: "Abrir o meu currículo", boton_compartir_cv: "Enviar por WhatsApp ou email", compartir_titulo: "Enviar o meu currículo",
     boton_siguiente: "Seguinte →", boton_anterior: "← Voltar",
-    mensaje_carga: "A IA está a organizar e a escrever o seu currículo com um toque profissional…",
+    mensaje_carga: "Estamos a escrever o seu currículo com um toque profissional…",
     error_ia_generico: "Não foi possível criar o seu currículo automaticamente. Verifique a sua ligação à internet e tente novamente.",
     cv_titulo: "O seu currículo está pronto", cv_ayuda: "Toque em qualquer texto do seu currículo para o corrigir antes de descarregar.",
     cv_lateral_contacto: "Dados pessoais",
@@ -1481,6 +1463,7 @@ const TEXTOS = {
     p4_item3: "Disponibilidade horária",
     p4_item4: "Voluntariado ou atividades extra",
     sin_voz: "O seu navegador não suporta isto. Experimente o Google Chrome.",
+    mic_sin_permiso: "Não conseguimos usar o microfone. Permita o microfone para o CVoice nas definições do telemóvel.",
   },
   ar: {
     subtitulo: "تحدّث. ونحن نكتب سيرتك الذاتية.",
@@ -1490,12 +1473,11 @@ const TEXTOS = {
     p3_titulo: "دراستك",
     p4_titulo: "بيانات أخرى",
     p5_titulo: "صورتك (اختياري)",
-    boton_abrir_camara: "📷 فتح الكاميرا", boton_capturar: "📸 التقاط صورة", boton_repetir: "↺ إعادة التصوير", boton_saltar: "← تخطي هذه الخطوة", boton_continuar: "← متابعة",
+    boton_abrir_camara: "📷 فتح الكاميرا", boton_capturar: "📸 التقاط صورة", boton_repetir: "↺ إعادة التصوير", boton_saltar: "تخطٍّ", boton_continuar: "← متابعة",
     camara_sin_permiso: "تعذّر الوصول إلى الكاميرا. تحقق من أذونات المتصفح.",
-    placeholder_texto: "سترى هنا ما تقوله…",
-    puedes_corregir: "سترى هنا ما تقوله. اضغط عليه لتصحيحه.", aviso_tranquilo: "لا تقلق من الأخطاء: يمكنك مراجعة كل شيء وتغييره قبل تحميل سيرتك الذاتية.", aviso_voz_privada: "لا يحتفظ CVoice بتسجيلات لصوتك.", cv_idioma_actual: "لغة سيرتك الذاتية: {idioma}.", cv_traducir_invita: "تحتاجها بلغة أخرى؟", boton_traducelo: "ترجمها", boton_abrir_cv: "افتح سيرتي الذاتية", boton_compartir_cv: "أرسلها عبر واتساب أو البريد الإلكتروني", compartir_titulo: "إرسال سيرتي الذاتية",
+    puedes_corregir: "سترى هنا ما تقوله. اضغط عليه لتصحيحه.", cv_idioma_actual: "لغة سيرتك الذاتية: {idioma}.", cv_traducir_invita: "تحتاجها بلغة أخرى؟", boton_abrir_cv: "افتح سيرتي الذاتية", boton_compartir_cv: "أرسلها عبر واتساب أو البريد الإلكتروني", compartir_titulo: "إرسال سيرتي الذاتية",
     boton_siguiente: "التالي ←", boton_anterior: "→ السابق",
-    mensaje_carga: "الذكاء الاصطناعي ينظّم ويكتب سيرتك الذاتية بأسلوب مهني…",
+    mensaje_carga: "نحن نكتب سيرتك الذاتية بأسلوب مهني…",
     error_ia_generico: "تعذّر إنشاء سيرتك الذاتية تلقائيًا. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
     cv_titulo: "سيرتك الذاتية جاهزة", cv_ayuda: "اضغط على أي نص في سيرتك الذاتية لتصحيحه قبل التحميل.",
     cv_lateral_contacto: "البيانات الشخصية",
@@ -1525,6 +1507,7 @@ const TEXTOS = {
     p4_item3: "مدى التوفر أو ساعات العمل",
     p4_item4: "تطوع أو أنشطة إضافية (إن وجدت)",
     sin_voz: "متصفحك لا يدعم هذه الميزة. جرّب جوجل كروم.",
+    mic_sin_permiso: "لا يمكننا استخدام الميكروفون. اسمح لتطبيق CVoice باستخدام الميكروفون من إعدادات الهاتف.",
   },
   zh: {
     subtitulo: "你只管说，简历我们来写。",
@@ -1534,12 +1517,11 @@ const TEXTOS = {
     p3_titulo: "教育经历",
     p4_titulo: "其他信息",
     p5_titulo: "你的照片（可选）",
-    boton_abrir_camara: "📷 打开相机", boton_capturar: "📸 拍照", boton_repetir: "↺ 重新拍照", boton_saltar: "跳过此步骤 →", boton_continuar: "继续 →",
+    boton_abrir_camara: "📷 打开相机", boton_capturar: "📸 拍照", boton_repetir: "↺ 重新拍照", boton_saltar: "跳过", boton_continuar: "继续 →",
     camara_sin_permiso: "无法访问相机，请检查浏览器权限设置。",
-    placeholder_texto: "你说的内容会显示在这里…",
-    puedes_corregir: "你说的内容会显示在这里。点击即可修改。", aviso_tranquilo: "不用担心出错：下载简历前你可以检查并修改所有内容。", aviso_voz_privada: "CVoice 不保存你的语音录音。", cv_idioma_actual: "你的简历语言：{idioma}。", cv_traducir_invita: "需要其他语言？", boton_traducelo: "翻译简历", boton_abrir_cv: "打开我的简历", boton_compartir_cv: "通过 WhatsApp 或邮件发送", compartir_titulo: "发送我的简历",
+    puedes_corregir: "你说的内容会显示在这里。点击即可修改。", cv_idioma_actual: "你的简历语言：{idioma}。", cv_traducir_invita: "需要其他语言？", boton_abrir_cv: "打开我的简历", boton_compartir_cv: "通过 WhatsApp 或邮件发送", compartir_titulo: "发送我的简历",
     boton_siguiente: "下一步 →", boton_anterior: "← 上一步",
-    mensaje_carga: "AI 正在以专业的方式整理和撰写你的简历…",
+    mensaje_carga: "我们正在以专业的方式撰写你的简历…",
     error_ia_generico: "无法自动生成简历。请检查网络连接后重试。",
     cv_titulo: "你的简历已完成", cv_ayuda: "点击简历中的任意文字，即可在下载前修改。",
     cv_lateral_contacto: "个人信息",
@@ -1569,6 +1551,7 @@ const TEXTOS = {
     p4_item3: "工作时间或可用性",
     p4_item4: "志愿服务或其他活动（如有）",
     sin_voz: "你的浏览器不支持此功能，请尝试使用 Google Chrome。",
+    mic_sin_permiso: "无法使用麦克风。请在手机设置中允许 CVoice 使用麦克风。",
   },
   ja: {
     subtitulo: "話すだけ。履歴書は私たちが作ります。",
@@ -1578,12 +1561,11 @@ const TEXTOS = {
     p3_titulo: "学歴",
     p4_titulo: "その他の情報",
     p5_titulo: "写真（任意）",
-    boton_abrir_camara: "📷 カメラを開く", boton_capturar: "📸 撮影する", boton_repetir: "↺ 撮り直す", boton_saltar: "このステップを省略 →", boton_continuar: "続ける →",
+    boton_abrir_camara: "📷 カメラを開く", boton_capturar: "📸 撮影する", boton_repetir: "↺ 撮り直す", boton_saltar: "スキップ", boton_continuar: "続ける →",
     camara_sin_permiso: "カメラにアクセスできませんでした。ブラウザの権限設定を確認してください。",
-    placeholder_texto: "話した内容がここに表示されます…",
-    puedes_corregir: "話した内容がここに表示されます。タップして修正できます。", aviso_tranquilo: "間違えても大丈夫：ダウンロード前にすべて確認・変更できます。", aviso_voz_privada: "CVoiceはあなたの声の録音を保存しません。", cv_idioma_actual: "履歴書の言語：{idioma}", cv_traducir_invita: "他の言語が必要ですか？", boton_traducelo: "翻訳する", boton_abrir_cv: "履歴書を開く", boton_compartir_cv: "WhatsAppやメールで送る", compartir_titulo: "履歴書を送る",
+    puedes_corregir: "話した内容がここに表示されます。タップして修正できます。", cv_idioma_actual: "履歴書の言語：{idioma}", cv_traducir_invita: "他の言語が必要ですか？", boton_abrir_cv: "履歴書を開く", boton_compartir_cv: "WhatsAppやメールで送る", compartir_titulo: "履歴書を送る",
     boton_siguiente: "次へ →", boton_anterior: "← 戻る",
-    mensaje_carga: "AIがあなたの履歴書をプロフェッショナルな仕上がりに整理・執筆しています…",
+    mensaje_carga: "あなたの履歴書をプロフェッショナルな仕上がりで作成しています…",
     error_ia_generico: "履歴書を自動作成できませんでした。インターネット接続を確認して再度お試しください。",
     cv_titulo: "履歴書が完成しました", cv_ayuda: "履歴書の文字をタップすると、ダウンロード前に修正できます。",
     cv_lateral_contacto: "個人情報",
@@ -1613,6 +1595,7 @@ const TEXTOS = {
     p4_item3: "勤務可能な時間帯",
     p4_item4: "ボランティアや課外活動（あれば）",
     sin_voz: "お使いのブラウザでは対応していません。Google Chromeをお試しください。",
+    mic_sin_permiso: "マイクを使用できません。スマートフォンの設定で CVoice にマイクの使用を許可してください。",
   },
   ro: {
     subtitulo: "Vorbește. Noi scriem CV-ul tău.",
@@ -1622,12 +1605,11 @@ const TEXTOS = {
     p3_titulo: "Studiile tale",
     p4_titulo: "Alte date",
     p5_titulo: "Fotografia ta (opțional)",
-    boton_abrir_camara: "📷 Deschide camera", boton_capturar: "📸 Fă poza", boton_repetir: "↺ Repetă poza", boton_saltar: "Sari peste acest pas →", boton_continuar: "Continuă →",
+    boton_abrir_camara: "📷 Deschide camera", boton_capturar: "📸 Fă poza", boton_repetir: "↺ Repetă poza", boton_saltar: "Sari peste", boton_continuar: "Continuă →",
     camara_sin_permiso: "Nu am putut accesa camera. Verifică permisiunile browserului.",
-    placeholder_texto: "Aici vei vedea ce spui…",
-    puedes_corregir: "Aici vei vedea ce spui. Apasă pe text pentru a-l corecta.", aviso_tranquilo: "Nu-ți face griji dacă greșești: poți verifica și schimba totul înainte de a descărca CV-ul.", aviso_voz_privada: "CVoice nu păstrează înregistrări ale vocii tale.", cv_idioma_actual: "CV-ul tău este în {idioma}.", cv_traducir_invita: "Ai nevoie de altă limbă?", boton_traducelo: "Tradu-l", boton_abrir_cv: "Deschide CV-ul meu", boton_compartir_cv: "Trimite pe WhatsApp sau e-mail", compartir_titulo: "Trimite CV-ul meu",
+    puedes_corregir: "Aici vei vedea ce spui. Apasă pe text pentru a-l corecta.", cv_idioma_actual: "CV-ul tău este în {idioma}.", cv_traducir_invita: "Ai nevoie de altă limbă?", boton_abrir_cv: "Deschide CV-ul meu", boton_compartir_cv: "Trimite pe WhatsApp sau e-mail", compartir_titulo: "Trimite CV-ul meu",
     boton_siguiente: "Continuă →", boton_anterior: "← Înapoi",
-    mensaje_carga: "IA organizează și redactează CV-ul tău cu o notă profesională…",
+    mensaje_carga: "Îți redactăm CV-ul cu o notă profesională…",
     error_ia_generico: "Nu am putut crea automat CV-ul. Verifică conexiunea la internet și încearcă din nou.",
     cv_titulo: "CV-ul tău este pregătit", cv_ayuda: "Apasă pe orice text din CV-ul tău pentru a-l corecta înainte de descărcare.",
     cv_lateral_contacto: "Date personale",
@@ -1657,6 +1639,7 @@ const TEXTOS = {
     p4_item3: "Disponibilitate sau program de lucru",
     p4_item4: "Voluntariat sau activități extra",
     sin_voz: "Browserul tău nu permite acest lucru. Încearcă Google Chrome.",
+    mic_sin_permiso: "Nu putem folosi microfonul. Permite accesul la microfon pentru CVoice din setările telefonului.",
   },
   pl: {
     subtitulo: "Mów. My napiszemy Twoje CV.",
@@ -1666,12 +1649,11 @@ const TEXTOS = {
     p3_titulo: "Twoja edukacja",
     p4_titulo: "Inne informacje",
     p5_titulo: "Twoje zdjęcie (opcjonalnie)",
-    boton_abrir_camara: "📷 Otwórz kamerę", boton_capturar: "📸 Zrób zdjęcie", boton_repetir: "↺ Powtórz zdjęcie", boton_saltar: "Pomiń ten krok →", boton_continuar: "Kontynuuj →",
+    boton_abrir_camara: "📷 Otwórz kamerę", boton_capturar: "📸 Zrób zdjęcie", boton_repetir: "↺ Powtórz zdjęcie", boton_saltar: "Pomiń", boton_continuar: "Kontynuuj →",
     camara_sin_permiso: "Nie udało się uzyskać dostępu do kamery. Sprawdź uprawnienia przeglądarki.",
-    placeholder_texto: "Tutaj zobaczysz, co mówisz…",
-    puedes_corregir: "Tutaj zobaczysz, co mówisz. Dotknij, aby poprawić.", aviso_tranquilo: "Nie martw się błędami: przed pobraniem CV możesz wszystko sprawdzić i zmienić.", aviso_voz_privada: "CVoice nie przechowuje nagrań Twojego głosu.", cv_idioma_actual: "Język Twojego CV: {idioma}.", cv_traducir_invita: "Potrzebujesz innego języka?", boton_traducelo: "Przetłumacz", boton_abrir_cv: "Otwórz moje CV", boton_compartir_cv: "Wyślij przez WhatsApp lub e-mail", compartir_titulo: "Wyślij moje CV",
+    puedes_corregir: "Tutaj zobaczysz, co mówisz. Dotknij, aby poprawić.", cv_idioma_actual: "Język Twojego CV: {idioma}.", cv_traducir_invita: "Potrzebujesz innego języka?", boton_abrir_cv: "Otwórz moje CV", boton_compartir_cv: "Wyślij przez WhatsApp lub e-mail", compartir_titulo: "Wyślij moje CV",
     boton_siguiente: "Dalej →", boton_anterior: "← Wstecz",
-    mensaje_carga: "AI organizuje i pisze Twoje CV z profesjonalnym wyczuciem…",
+    mensaje_carga: "Piszemy Twoje CV z profesjonalnym wyczuciem…",
     error_ia_generico: "Nie udało się automatycznie utworzyć CV. Sprawdź połączenie internetowe i spróbuj ponownie.",
     cv_titulo: "Twoje CV jest gotowe", cv_ayuda: "Dotknij dowolnego tekstu w swoim CV, aby go poprawić przed pobraniem.",
     cv_lateral_contacto: "Dane osobowe",
@@ -1701,6 +1683,7 @@ const TEXTOS = {
     p4_item3: "Dyspozycyjność lub godziny pracy",
     p4_item4: "Wolontariat lub dodatkowe aktywności",
     sin_voz: "Twoja przeglądarka nie wspiera tej funkcji. Wypróbuj Google Chrome.",
+    mic_sin_permiso: "Nie możemy użyć mikrofonu. Zezwól aplikacji CVoice na dostęp do mikrofonu w ustawieniach telefonu.",
   },
   uk: {
     subtitulo: "Говоріть. Ми напишемо ваше резюме.",
@@ -1710,12 +1693,11 @@ const TEXTOS = {
     p3_titulo: "Ваша освіта",
     p4_titulo: "Інші дані",
     p5_titulo: "Ваше фото (необов'язково)",
-    boton_abrir_camara: "📷 Відкрити камеру", boton_capturar: "📸 Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "← Пропустити цей крок", boton_continuar: "← Продовжити",
+    boton_abrir_camara: "📷 Відкрити камеру", boton_capturar: "📸 Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "Пропустити", boton_continuar: "← Продовжити",
     camara_sin_permiso: "Не вдалося отримати доступ до камери. Перевірте дозволи браузера.",
-    placeholder_texto: "Тут з'явиться те, що ви говорите…",
-    puedes_corregir: "Тут з'явиться те, що ви говорите. Торкніться, щоб виправити.", aviso_tranquilo: "Не хвилюйтеся через помилки: перед завантаженням резюме ви зможете все перевірити й змінити.", aviso_voz_privada: "CVoice не зберігає записи вашого голосу.", cv_idioma_actual: "Мова вашого резюме: {idioma}.", cv_traducir_invita: "Потрібна інша мова?", boton_traducelo: "Перекласти", boton_abrir_cv: "Відкрити моє резюме", boton_compartir_cv: "Надіслати через WhatsApp або email", compartir_titulo: "Надіслати резюме",
+    puedes_corregir: "Тут з'явиться те, що ви говорите. Торкніться, щоб виправити.", cv_idioma_actual: "Мова вашого резюме: {idioma}.", cv_traducir_invita: "Потрібна інша мова?", boton_abrir_cv: "Відкрити моє резюме", boton_compartir_cv: "Надіслати через WhatsApp або email", compartir_titulo: "Надіслати резюме",
     boton_siguiente: "Далі →", boton_anterior: "← Назад",
-    mensaje_carga: "ШІ організовує та пише ваше резюме у професійному стилі…",
+    mensaje_carga: "Ми пишемо ваше резюме у професійному стилі…",
     error_ia_generico: "Не вдалося автоматично створити резюме. Перевірте з'єднання з інтернетом і спробуйте ще раз.",
     cv_titulo: "Ваше резюме готове", cv_ayuda: "Торкніться будь-якого тексту в резюме, щоб виправити його перед завантаженням.",
     cv_lateral_contacto: "Особисті дані",
@@ -1745,6 +1727,7 @@ const TEXTOS = {
     p4_item3: "Доступність або графік роботи",
     p4_item4: "Волонтерство або додаткові активності",
     sin_voz: "Ваш браузер не підтримує цю функцію. Спробуйте Google Chrome.",
+    mic_sin_permiso: "Не вдається використати мікрофон. Дозвольте CVoice доступ до мікрофона в налаштуваннях телефона.",
   },
   ru: {
     subtitulo: "Говорите. Мы напишем ваше резюме.",
@@ -1754,12 +1737,11 @@ const TEXTOS = {
     p3_titulo: "Ваше образование",
     p4_titulo: "Другие данные",
     p5_titulo: "Ваше фото (необязательно)",
-    boton_abrir_camara: "📷 Открыть камеру", boton_capturar: "📸 Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "← Пропустить этот шаг", boton_continuar: "← Продолжить",
+    boton_abrir_camara: "📷 Открыть камеру", boton_capturar: "📸 Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "Пропустить", boton_continuar: "← Продолжить",
     camara_sin_permiso: "Не удалось получить доступ к камере. Проверьте разрешения браузера.",
-    placeholder_texto: "Здесь появится то, что вы говорите…",
-    puedes_corregir: "Здесь появится то, что вы говорите. Коснитесь, чтобы исправить.", aviso_tranquilo: "Не бойтесь ошибиться: перед скачиванием резюме вы сможете всё проверить и изменить.", aviso_voz_privada: "CVoice не хранит записи вашего голоса.", cv_idioma_actual: "Язык вашего резюме: {idioma}.", cv_traducir_invita: "Нужен другой язык?", boton_traducelo: "Перевести", boton_abrir_cv: "Открыть моё резюме", boton_compartir_cv: "Отправить в WhatsApp или по email", compartir_titulo: "Отправить резюме",
+    puedes_corregir: "Здесь появится то, что вы говорите. Коснитесь, чтобы исправить.", cv_idioma_actual: "Язык вашего резюме: {idioma}.", cv_traducir_invita: "Нужен другой язык?", boton_abrir_cv: "Открыть моё резюме", boton_compartir_cv: "Отправить в WhatsApp или по email", compartir_titulo: "Отправить резюме",
     boton_siguiente: "Далее →", boton_anterior: "← Назад",
-    mensaje_carga: "ИИ организует и пишет ваше резюме в профессиональном стиле…",
+    mensaje_carga: "Мы пишем ваше резюме в профессиональном стиле…",
     error_ia_generico: "Не удалось автоматически создать резюме. Проверьте подключение к интернету и попробуйте снова.",
     cv_titulo: "Ваше резюме готово", cv_ayuda: "Коснитесь любого текста в резюме, чтобы исправить его перед скачиванием.",
     cv_lateral_contacto: "Личные данные",
@@ -1789,6 +1771,7 @@ const TEXTOS = {
     p4_item3: "Доступность или график работы",
     p4_item4: "Волонтёрство или дополнительные занятия",
     sin_voz: "Ваш браузер не поддерживает эту функцию. Попробуйте Google Chrome.",
+    mic_sin_permiso: "Не удаётся использовать микрофон. Разрешите CVoice доступ к микрофону в настройках телефона.",
   },
 };
 
@@ -2093,10 +2076,6 @@ function aplicarTextos(){
     const clave = el.getAttribute("data-i18n");
     if (t[clave]) el.textContent = t[clave];
   });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-    const clave = el.getAttribute("data-i18n-placeholder");
-    if (t[clave]) el.placeholder = t[clave];
-  });
   // Etiquetas para lectores de pantalla (accesibilidad)
   document.querySelectorAll("[data-i18n-aria]").forEach(el => {
     const clave = el.getAttribute("data-i18n-aria");
@@ -2160,10 +2139,7 @@ function unirFragmentos(fragmentos){
 function iniciarEscucha(boton){
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRec){
-    const aviso = document.getElementById("aviso-sin-voz");
-    aviso.textContent = TEXTOS[idiomaActual].sin_voz;
-    aviso.classList.remove("hidden");
-    setTimeout(() => aviso.classList.add("hidden"), 4000);
+    avisoBreve(tx("sin_voz"), 4000, true);
     return;
   }
 
@@ -2200,7 +2176,10 @@ function iniciarEscucha(boton){
 
     rec.onerror = (ev) => {
       if (ev.error === "no-speech" || ev.error === "audio-capture") return;
-      if (rec === reconocimiento) detenerEscucha();
+      if (rec !== reconocimiento) return;
+      detenerEscucha();
+      // Sin permiso de micrófono el botón no hacía nada: se explica qué hacer
+      if (ev.error === "not-allowed") avisoBreve(tx("mic_sin_permiso"), 7000, true);
     };
 
     // Pausa larga → la sesión termina sola: reiniciamos, salvo que ya no sea la activa
@@ -2484,7 +2463,7 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 3. TONO PROFESIONAL: Reescribe las funciones laborales usando verbos de acción e impacto en infinitivo: "Coordinar", "Gestionar", "Supervisar", "Implementar", "Optimizar", "Liderar", "Desarrollar", "Ejecutar". Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
 
-4. EXPERIENCIA LABORAL: Ordena cronológico inverso (lo más reciente primero). Para cada puesto incluye: título del puesto (profesional y específico), empresa/ciudad, fechas (si no las dice, estima "20XX – actualidad" o "20XX – 20XX" de forma coherente), y 3-4 viñetas con funciones concretas usando verbos de acción.
+4. EXPERIENCIA LABORAL: Ordena cronológico inverso (lo más reciente primero). Para cada puesto incluye: título del puesto (profesional y específico), empresa/ciudad, fechas (solo las que diga la persona; si no las dice, deja el campo vacío: nunca inventes fechas ni escribas marcadores como "20XX"), y 3-4 viñetas con funciones concretas usando verbos de acción.
 
 5. ESTUDIOS: Separa título oficial, centro educativo, año. Agrupa cursos cortos como "Formación complementaria".
 
@@ -2745,7 +2724,12 @@ function construirHTMLEstudios(listaEstudios, listaFormacionComplementaria){
 function pintarCV(resultado){
   const t = TEXTOS[idiomaActual];
 
-  document.getElementById("cv-nombre").textContent = (resultado.nombre || t.nombre_predeterminado).toUpperCase();
+  document.getElementById("cv-nombre").textContent = String(resultado.nombre || t.nombre_predeterminado).toUpperCase();
+  // CV nuevo: el panel "CV guardado" (Abrir / Enviar) era del PDF anterior
+  plantillaGuardada = null;
+  actualizarPanelCVGuardado();
+  // La librería del PDF se descarga ahora, mientras la persona revisa su CV
+  cargarHtml2pdf().catch(() => {});
 
   // --- Datos personales: cada fila se oculta individualmente si está vacía ---
   const filaTelefono = document.getElementById("cv-fila-telefono");
@@ -2936,6 +2920,9 @@ function traducirEtiquetasCV(codigo){
 selectIdiomaTraduccion.addEventListener("change", () => {
   const codigoDestino = selectIdiomaTraduccion.value;
   selectIdiomaTraduccion.classList.add("hidden");
+  // Sin selección: si la traducción falla, volver a elegir el mismo idioma la reintenta
+  // (con la opción aún marcada, tocarla no lanzaba "change" y no pasaba nada)
+  selectIdiomaTraduccion.selectedIndex = -1;
 
   const t = TEXTOS[idiomaActual];
   const estadoTexto = document.getElementById("txt-traduccion-estado");
@@ -2961,7 +2948,7 @@ selectIdiomaTraduccion.addEventListener("change", () => {
     });
 });
 
-// ---------- 11. Volver a grabar ----------
+// ---------- 11b. Volver a grabar ----------
 document.getElementById("btn-volver-editar").addEventListener("click", () => {
   detenerCamara();
   fotoCapturadaDataURL = null;
@@ -3008,6 +2995,8 @@ function seleccionarPlantilla(plantilla){
 
   // Actualizar el botón principal dinámico
   actualizarCTA(esBasico);
+  // Abrir / Enviar solo con el diseño que se descargó
+  actualizarPanelCVGuardado();
 
   // Ajustar el tamaño del contenido para que la hoja llene un A4
   ajustarCVaA4(document.getElementById(CV_MAP[plantilla]));
@@ -3018,7 +3007,6 @@ function seleccionarPlantilla(plantilla){
 
 function actualizarCTA(esBasico){
   const btnCTA = document.getElementById("btn-cta-principal");
-  const txtSub = document.getElementById("txt-cta-sub");
   const txtSec = document.getElementById("txt-cta-secundario");
   if (!btnCTA) return;
 
@@ -3042,7 +3030,6 @@ function actualizarCTA(esBasico){
     btnCTA.style.background = "var(--ambar)";
     if (txtSec) txtSec.style.display = "none";
   }
-  if (txtSub) txtSub.textContent = "";
 }
 
 // ---------- 12b. Monetización y descarga del CV en PDF ----------
@@ -3229,9 +3216,30 @@ function prepararTextoArabePDF(raiz){
   });
 }
 
+// html2pdf pesa casi 1 MB y solo hace falta para descargar: no se carga al abrir la app
+// (con datos móviles lentos retrasaba la primera pantalla), sino al mostrar el CV
+const URL_HTML2PDF = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+let cargaHtml2pdf = null;
+function cargarHtml2pdf(){
+  if (window.html2pdf) return Promise.resolve();
+  if (!cargaHtml2pdf){
+    cargaHtml2pdf = new Promise((resolver, rechazar) => {
+      const script = document.createElement("script");
+      script.src = URL_HTML2PDF;
+      script.onload = resolver;
+      // Sin conexión: se podrá reintentar en la siguiente descarga
+      script.onerror = () => { cargaHtml2pdf = null; script.remove(); rechazar(new Error("No se pudo cargar html2pdf")); };
+      document.head.appendChild(script);
+    });
+  }
+  return cargaHtml2pdf;
+}
+
 async function descargarHojaComoPDF(elemento, nombreArchivo){
   if (generandoPDF) return null;
   generandoPDF = true;
+  try { await cargarHtml2pdf(); }
+  catch(e){ console.error(e); generandoPDF = false; return false; }
   // Reajustar justo antes: el usuario puede haber editado textos
   try { await ajustarCVaA4(elemento); } catch(e) { console.error("Ajuste A4:", e); }
   // Si html2canvas pinta antes de que carguen las tipografías, el texto sale con otra
@@ -3316,7 +3324,8 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
     })
     .save();
   // Si algo se queda colgado (memoria, WebView antiguo…), no bloquear la descarga para siempre
-  const tiempoAgotado = new Promise((_, rechazar) => setTimeout(() => rechazar(new Error("tiempo agotado")), 60000));
+  let temporizador;
+  const tiempoAgotado = new Promise((_, rechazar) => { temporizador = setTimeout(() => rechazar(new Error("tiempo agotado")), 60000); });
   try {
     await Promise.race([generar, tiempoAgotado]);
     return true;
@@ -3324,6 +3333,7 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
     console.error("Error generando PDF:", err);
     return false;
   } finally {
+    clearTimeout(temporizador);
     document.documentElement.dir = dirPagina;
     estiloTemp.remove();
     generandoPDF = false;
@@ -3510,6 +3520,7 @@ function esPremium(tipo){ return tipo === "premium_299"; }
 
 async function entregarDescarga(tipo){
   ultimaDescarga = tipo;
+  plantillaDescargando = esPremium(tipo) ? disenoPremActivo : "basico";
   avisoBreve(tx("aviso_descargando"), 3000);
   const ok = esPremium(tipo) ? await generarYDescargarPDFPremium() : await generarYDescargarPDF();
   if (ok === null) return; // ya había una descarga en marcha
@@ -3524,15 +3535,25 @@ window.descargaGuardada = function(){
   mostrarPanelCVGuardado();
 };
 
-// Panel "CV guardado" con Abrir / Enviar (solo si la app sabe hacerlo: 1.3.0 o posterior)
+// Panel "CV guardado" con Abrir / Enviar (solo si la app sabe hacerlo: 1.3.0 o posterior).
+// Abre o envía el PDF que se guardó, así que solo se ve con ese diseño a la vista: si se
+// elige otro diseño se oculta (no es ese el CV que se enviaría) y vuelve al regresar a él.
+let plantillaDescargando = null; // diseño de la descarga en curso
+let plantillaGuardada = null;    // diseño del último PDF guardado
 function mostrarPanelCVGuardado(){
   const app = window.Android;
   if (!app || typeof app.compartirUltimoCV !== "function") return;
-  const panel = document.getElementById("panel-cv-guardado");
+  plantillaGuardada = plantillaDescargando;
   // Mismo color que el botón con el que se descargó: verde (gratis / 0,99 €) o ámbar (premium)
-  panel.classList.toggle("es-premium", esPremium(ultimaDescarga));
-  panel.classList.remove("hidden");
-  panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  document.getElementById("panel-cv-guardado").classList.toggle("es-premium", esPremium(ultimaDescarga));
+  if (actualizarPanelCVGuardado()){
+    document.getElementById("panel-cv-guardado").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+function actualizarPanelCVGuardado(){
+  const visible = !!plantillaGuardada && plantillaGuardada === plantillaActiva;
+  document.getElementById("panel-cv-guardado").classList.toggle("hidden", !visible);
+  return visible;
 }
 document.getElementById("btn-compartir-cv").addEventListener("click", () => {
   try { if (!window.Android.compartirUltimoCV(tx("compartir_titulo"))) avisoBreve(tx("aviso_pdf_error"), 6000, true); }
@@ -3575,6 +3596,8 @@ window.anuncioNoDisponible = function(){
 // ventajas y botón con el precio en el formato del idioma del teléfono
 function abrirModalPago(producto){
   productoPendiente = producto;
+  // Si un pago anterior se quedó sin respuesta de Google Play, el botón no debe seguir bloqueado
+  btnConfirmarPago.disabled = false;
   const premium = producto === "premium_299";
   const plantilla = premium ? disenoPremActivo : "basico";
   const precio = precioDe(producto);
