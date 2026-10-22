@@ -474,8 +474,11 @@
   #btn-volver-tras-error, #btn-volver-editar{
     font-size: 1.125rem; line-height: 1.4rem; min-height: 64px; padding-top: .6rem; padding-bottom: .6rem;
   }
-  .btn-con-icono{ display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
-  .icono-boton{ width: 26px; height: 26px; flex-shrink: 0; }
+  /* Flecha en la misma línea que el texto, a su lado; el texto nunca se parte en dos líneas
+     (si no cabe, ajustarBotonesConIcono() reduce el relleno y, si hace falta, la letra) */
+  .btn-con-icono{ display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .45rem; white-space: nowrap;
+    min-width: 0; /* Atrás y Siguiente siempre igual de anchos, aunque un texto sea más largo */ }
+  .icono-boton{ width: 24px; height: 24px; flex-shrink: 0; }
   /* En árabe se lee de derecha a izquierda: las flechas de avanzar/retroceder se invierten */
   [dir="rtl"] .icono-espejo{ transform: scaleX(-1); }
   /* "Aquí aparece lo que dices. Tócalo para corregirlo", justo encima del cuadro de texto */
@@ -661,11 +664,11 @@
       <canvas id="lienzo-foto" class="hidden"></canvas>
 
       <div id="controles-camara-inicial" class="flex flex-col sm:flex-row gap-3 justify-center mb-5">
-        <button id="btn-activar-camara" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_abrir_camara">📷 Abrir cámara</button>
+        <button id="btn-activar-camara" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--musgo)" data-i18n="boton_abrir_camara">Abrir cámara</button>
       </div>
 
       <div id="controles-camara-activa" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
-        <button id="btn-capturar-foto" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)" data-i18n="boton_capturar">📸 Hacer foto</button>
+        <button id="btn-capturar-foto" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)" data-i18n="boton_capturar">Hacer foto</button>
       </div>
 
       <div id="controles-foto-lista" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
@@ -1209,7 +1212,7 @@ const TEXTOS = {
     p3_titulo: "Tus estudios",
     p4_titulo: "Otros datos",
     p5_titulo: "Tu foto (opcional)",
-    boton_abrir_camara: "📷 Abrir cámara", boton_capturar: "📸 Hacer foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
+    boton_abrir_camara: "Abrir cámara", boton_capturar: "Hacer foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
     camara_sin_permiso: "No hemos podido acceder a la cámara. Revisa los permisos del navegador.",
     puedes_corregir: "Aquí verás lo que vas diciendo. Tócalo para corregirlo.", cv_idioma_actual: "Tu currículum está en {idioma}.", cv_traducir_invita: "¿Lo necesitas en otro idioma?", boton_abrir_cv: "Abrir mi CV", boton_compartir_cv: "Enviar por WhatsApp o email", compartir_titulo: "Enviar mi CV",
     boton_siguiente: "Siguiente →", boton_anterior: "← Atrás",
@@ -1254,7 +1257,7 @@ const TEXTOS = {
     p3_titulo: "Your education",
     p4_titulo: "Other details",
     p5_titulo: "Your photo (optional)",
-    boton_abrir_camara: "📷 Open camera", boton_capturar: "📸 Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip", boton_continuar: "Continue →",
+    boton_abrir_camara: "Open camera", boton_capturar: "Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip", boton_continuar: "Continue →",
     camara_sin_permiso: "We couldn't access the camera. Check your browser permissions.",
     puedes_corregir: "You'll see what you're saying here. Tap it to fix it.", cv_idioma_actual: "Your résumé is in {idioma}.", cv_traducir_invita: "Need it in another language?", boton_abrir_cv: "Open my résumé", boton_compartir_cv: "Send by WhatsApp or email", compartir_titulo: "Send my résumé",
     boton_siguiente: "Next →", boton_anterior: "← Back",
@@ -1299,7 +1302,7 @@ const TEXTOS = {
     p3_titulo: "Vos études",
     p4_titulo: "Autres informations",
     p5_titulo: "Votre photo (facultatif)",
-    boton_abrir_camara: "📷 Ouvrir la caméra", boton_capturar: "📸 Prendre la photo", boton_repetir: "↺ Reprendre la photo", boton_saltar: "Passer", boton_continuar: "Continuer →",
+    boton_abrir_camara: "Ouvrir la caméra", boton_capturar: "Prendre la photo", boton_repetir: "↺ Reprendre la photo", boton_saltar: "Passer", boton_continuar: "Continuer →",
     camara_sin_permiso: "Impossible d'accéder à la caméra. Vérifiez les autorisations du navigateur.",
     puedes_corregir: "Vous verrez ici ce que vous dites. Touchez-le pour le corriger.", cv_idioma_actual: "Votre CV est en {idioma}.", cv_traducir_invita: "Besoin d'une autre langue ?", boton_abrir_cv: "Ouvrir mon CV", boton_compartir_cv: "Envoyer par WhatsApp ou e-mail", compartir_titulo: "Envoyer mon CV",
     boton_siguiente: "Suivant →", boton_anterior: "← Retour",
@@ -1344,7 +1347,7 @@ const TEXTOS = {
     p3_titulo: "Ihre Ausbildung",
     p4_titulo: "Weitere Angaben",
     p5_titulo: "Ihr Foto (optional)",
-    boton_abrir_camara: "📷 Kamera öffnen", boton_capturar: "📸 Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Überspringen", boton_continuar: "Weiter →",
+    boton_abrir_camara: "Kamera öffnen", boton_capturar: "Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Überspringen", boton_continuar: "Weiter →",
     camara_sin_permiso: "Kein Zugriff auf die Kamera möglich. Prüfen Sie die Browser-Berechtigungen.",
     puedes_corregir: "Hier sehen Sie, was Sie sagen. Tippen Sie darauf, um es zu korrigieren.", cv_idioma_actual: "Ihr Lebenslauf ist auf {idioma}.", cv_traducir_invita: "In einer anderen Sprache?", boton_abrir_cv: "Lebenslauf öffnen", boton_compartir_cv: "Per WhatsApp oder E-Mail senden", compartir_titulo: "Lebenslauf senden",
     boton_siguiente: "Weiter →", boton_anterior: "← Zurück",
@@ -1389,7 +1392,7 @@ const TEXTOS = {
     p3_titulo: "I tuoi studi",
     p4_titulo: "Altri dati",
     p5_titulo: "La tua foto (facoltativa)",
-    boton_abrir_camara: "📷 Apri fotocamera", boton_capturar: "📸 Scatta foto", boton_repetir: "↺ Rifai la foto", boton_saltar: "Salta", boton_continuar: "Continua →",
+    boton_abrir_camara: "Apri fotocamera", boton_capturar: "Scatta foto", boton_repetir: "↺ Rifai la foto", boton_saltar: "Salta", boton_continuar: "Continua →",
     camara_sin_permiso: "Non siamo riusciti ad accedere alla fotocamera. Controlla i permessi del browser.",
     puedes_corregir: "Qui vedrai quello che stai dicendo. Toccalo per correggerlo.", cv_idioma_actual: "Il tuo CV è in {idioma}.", cv_traducir_invita: "Ti serve in un'altra lingua?", boton_abrir_cv: "Apri il mio CV", boton_compartir_cv: "Invia via WhatsApp o email", compartir_titulo: "Invia il mio CV",
     boton_siguiente: "Avanti →", boton_anterior: "← Indietro",
@@ -1434,7 +1437,7 @@ const TEXTOS = {
     p3_titulo: "Os seus estudos",
     p4_titulo: "Outros dados",
     p5_titulo: "A sua foto (opcional)",
-    boton_abrir_camara: "📷 Abrir câmara", boton_capturar: "📸 Tirar foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
+    boton_abrir_camara: "Abrir câmara", boton_capturar: "Tirar foto", boton_repetir: "↺ Repetir foto", boton_saltar: "Saltar", boton_continuar: "Continuar →",
     camara_sin_permiso: "Não foi possível aceder à câmara. Verifique as permissões do navegador.",
     puedes_corregir: "Aqui verá o que está a dizer. Toque para corrigir.", cv_idioma_actual: "O seu currículo está em {idioma}.", cv_traducir_invita: "Precisa noutro idioma?", boton_abrir_cv: "Abrir o meu currículo", boton_compartir_cv: "Enviar por WhatsApp ou email", compartir_titulo: "Enviar o meu currículo",
     boton_siguiente: "Seguinte →", boton_anterior: "← Voltar",
@@ -1479,7 +1482,7 @@ const TEXTOS = {
     p3_titulo: "دراستك",
     p4_titulo: "بيانات أخرى",
     p5_titulo: "صورتك (اختياري)",
-    boton_abrir_camara: "📷 فتح الكاميرا", boton_capturar: "📸 التقاط صورة", boton_repetir: "↺ إعادة التصوير", boton_saltar: "تخطٍّ", boton_continuar: "← متابعة",
+    boton_abrir_camara: "فتح الكاميرا", boton_capturar: "التقاط صورة", boton_repetir: "↺ إعادة التصوير", boton_saltar: "تخطٍّ", boton_continuar: "← متابعة",
     camara_sin_permiso: "تعذّر الوصول إلى الكاميرا. تحقق من أذونات المتصفح.",
     puedes_corregir: "سترى هنا ما تقوله. اضغط عليه لتصحيحه.", cv_idioma_actual: "لغة سيرتك الذاتية: {idioma}.", cv_traducir_invita: "تحتاجها بلغة أخرى؟", boton_abrir_cv: "افتح سيرتي الذاتية", boton_compartir_cv: "أرسلها عبر واتساب أو البريد الإلكتروني", compartir_titulo: "إرسال سيرتي الذاتية",
     boton_siguiente: "التالي ←", boton_anterior: "→ السابق",
@@ -1524,7 +1527,7 @@ const TEXTOS = {
     p3_titulo: "教育经历",
     p4_titulo: "其他信息",
     p5_titulo: "你的照片（可选）",
-    boton_abrir_camara: "📷 打开相机", boton_capturar: "📸 拍照", boton_repetir: "↺ 重新拍照", boton_saltar: "跳过", boton_continuar: "继续 →",
+    boton_abrir_camara: "打开相机", boton_capturar: "拍照", boton_repetir: "↺ 重新拍照", boton_saltar: "跳过", boton_continuar: "继续 →",
     camara_sin_permiso: "无法访问相机，请检查浏览器权限设置。",
     puedes_corregir: "你说的内容会显示在这里。点击即可修改。", cv_idioma_actual: "你的简历语言：{idioma}。", cv_traducir_invita: "需要其他语言？", boton_abrir_cv: "打开我的简历", boton_compartir_cv: "通过 WhatsApp 或邮件发送", compartir_titulo: "发送我的简历",
     boton_siguiente: "下一步 →", boton_anterior: "← 上一步",
@@ -1569,7 +1572,7 @@ const TEXTOS = {
     p3_titulo: "学歴",
     p4_titulo: "その他の情報",
     p5_titulo: "写真（任意）",
-    boton_abrir_camara: "📷 カメラを開く", boton_capturar: "📸 撮影する", boton_repetir: "↺ 撮り直す", boton_saltar: "スキップ", boton_continuar: "続ける →",
+    boton_abrir_camara: "カメラを開く", boton_capturar: "撮影する", boton_repetir: "↺ 撮り直す", boton_saltar: "スキップ", boton_continuar: "続ける →",
     camara_sin_permiso: "カメラにアクセスできませんでした。ブラウザの権限設定を確認してください。",
     puedes_corregir: "話した内容がここに表示されます。タップして修正できます。", cv_idioma_actual: "履歴書の言語：{idioma}", cv_traducir_invita: "他の言語が必要ですか？", boton_abrir_cv: "履歴書を開く", boton_compartir_cv: "WhatsAppやメールで送る", compartir_titulo: "履歴書を送る",
     boton_siguiente: "次へ →", boton_anterior: "← 戻る",
@@ -1614,7 +1617,7 @@ const TEXTOS = {
     p3_titulo: "Studiile tale",
     p4_titulo: "Alte date",
     p5_titulo: "Fotografia ta (opțional)",
-    boton_abrir_camara: "📷 Deschide camera", boton_capturar: "📸 Fă poza", boton_repetir: "↺ Repetă poza", boton_saltar: "Sari peste", boton_continuar: "Continuă →",
+    boton_abrir_camara: "Deschide camera", boton_capturar: "Fă poza", boton_repetir: "↺ Repetă poza", boton_saltar: "Sari peste", boton_continuar: "Continuă →",
     camara_sin_permiso: "Nu am putut accesa camera. Verifică permisiunile browserului.",
     puedes_corregir: "Aici vei vedea ce spui. Apasă pe text pentru a-l corecta.", cv_idioma_actual: "CV-ul tău este în {idioma}.", cv_traducir_invita: "Ai nevoie de altă limbă?", boton_abrir_cv: "Deschide CV-ul meu", boton_compartir_cv: "Trimite pe WhatsApp sau e-mail", compartir_titulo: "Trimite CV-ul meu",
     boton_siguiente: "Continuă →", boton_anterior: "← Înapoi",
@@ -1659,7 +1662,7 @@ const TEXTOS = {
     p3_titulo: "Twoja edukacja",
     p4_titulo: "Inne informacje",
     p5_titulo: "Twoje zdjęcie (opcjonalnie)",
-    boton_abrir_camara: "📷 Otwórz kamerę", boton_capturar: "📸 Zrób zdjęcie", boton_repetir: "↺ Powtórz zdjęcie", boton_saltar: "Pomiń", boton_continuar: "Kontynuuj →",
+    boton_abrir_camara: "Otwórz kamerę", boton_capturar: "Zrób zdjęcie", boton_repetir: "↺ Powtórz zdjęcie", boton_saltar: "Pomiń", boton_continuar: "Kontynuuj →",
     camara_sin_permiso: "Nie udało się uzyskać dostępu do kamery. Sprawdź uprawnienia przeglądarki.",
     puedes_corregir: "Tutaj zobaczysz, co mówisz. Dotknij, aby poprawić.", cv_idioma_actual: "Język Twojego CV: {idioma}.", cv_traducir_invita: "Potrzebujesz innego języka?", boton_abrir_cv: "Otwórz moje CV", boton_compartir_cv: "Wyślij przez WhatsApp lub e-mail", compartir_titulo: "Wyślij moje CV",
     boton_siguiente: "Dalej →", boton_anterior: "← Wstecz",
@@ -1704,7 +1707,7 @@ const TEXTOS = {
     p3_titulo: "Ваша освіта",
     p4_titulo: "Інші дані",
     p5_titulo: "Ваше фото (необов'язково)",
-    boton_abrir_camara: "📷 Відкрити камеру", boton_capturar: "📸 Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "Пропустити", boton_continuar: "← Продовжити",
+    boton_abrir_camara: "Відкрити камеру", boton_capturar: "Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "Пропустити", boton_continuar: "← Продовжити",
     camara_sin_permiso: "Не вдалося отримати доступ до камери. Перевірте дозволи браузера.",
     puedes_corregir: "Тут з'явиться те, що ви говорите. Торкніться, щоб виправити.", cv_idioma_actual: "Мова вашого резюме: {idioma}.", cv_traducir_invita: "Потрібна інша мова?", boton_abrir_cv: "Відкрити моє резюме", boton_compartir_cv: "Надіслати через WhatsApp або email", compartir_titulo: "Надіслати резюме",
     boton_siguiente: "Далі →", boton_anterior: "← Назад",
@@ -1749,7 +1752,7 @@ const TEXTOS = {
     p3_titulo: "Ваше образование",
     p4_titulo: "Другие данные",
     p5_titulo: "Ваше фото (необязательно)",
-    boton_abrir_camara: "📷 Открыть камеру", boton_capturar: "📸 Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "Пропустить", boton_continuar: "← Продолжить",
+    boton_abrir_camara: "Открыть камеру", boton_capturar: "Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "Пропустить", boton_continuar: "← Продолжить",
     camara_sin_permiso: "Не удалось получить доступ к камере. Проверьте разрешения браузера.",
     puedes_corregir: "Здесь появится то, что вы говорите. Коснитесь, чтобы исправить.", cv_idioma_actual: "Язык вашего резюме: {idioma}.", cv_traducir_invita: "Нужен другой язык?", boton_abrir_cv: "Открыть моё резюме", boton_compartir_cv: "Отправить в WhatsApp или по email", compartir_titulo: "Отправить резюме",
     boton_siguiente: "Далее →", boton_anterior: "← Назад",
@@ -2125,9 +2128,39 @@ function ponerTextoBoton(boton, texto){
   const limpio = String(texto || "").replace(/[←→↩↺]/g, "").trim();
   if (!ICONOS_BOTON[tipo]){ boton.textContent = limpio; return; }
   boton.classList.add("btn-con-icono");
-  boton.innerHTML = `<span></span><svg class="icono-boton${tipo === "rehacer" ? "" : " icono-espejo"}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS_BOTON[tipo]}</svg>`;
-  boton.firstChild.textContent = limpio;
+  const icono = `<svg class="icono-boton${tipo === "rehacer" ? "" : " icono-espejo"}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS_BOTON[tipo]}</svg>`;
+  // Simetría: la flecha de avanzar va detrás del texto; la de volver, delante
+  boton.innerHTML = tipo === "adelante" ? `<span></span>${icono}` : `${icono}<span></span>`;
+  boton.querySelector("span").textContent = limpio;
+  ajustarBotonesConIcono();
 }
+
+// Que el texto y la flecha quepan en una línea: si no caben, primero se reduce el relleno
+// lateral y después la letra, lo mínimo (se quiere grande y legible). Solo se puede medir
+// con el botón a la vista, así que se repite al cambiar de paso, de idioma o de pantalla.
+const LETRA_BOTON_MIN = 13;
+function ajustarBotonesConIcono(){
+  // Los botones de una misma fila (Atrás / Siguiente) se ajustan juntos: misma letra en los dos
+  const filas = new Set([...document.querySelectorAll(".btn-con-icono")].filter(b => b.offsetParent).map(b => b.parentElement));
+  filas.forEach(fila => {
+    const botones = [...fila.querySelectorAll(":scope > .btn-con-icono")];
+    const poner = (relleno, letra) => botones.forEach(b => {
+      b.style.paddingLeft = b.style.paddingRight = relleno;
+      b.style.gap = relleno ? ".25rem" : "";   // flecha más pegada al texto antes de achicar la letra
+      b.style.fontSize = letra;
+    });
+    const caben = () => botones.every(b => b.scrollWidth <= b.clientWidth);
+    poner("", "");
+    if (caben()) return;
+    let letra = parseFloat(getComputedStyle(botones[0]).fontSize);
+    poner(".5rem", letra + "px");
+    while (!caben() && letra > LETRA_BOTON_MIN){
+      letra -= 0.5;
+      poner(".5rem", letra + "px");
+    }
+  });
+}
+window.addEventListener("resize", ajustarBotonesConIcono);
 
 // ---------- 5. Reconocimiento de voz (Web Speech API) ----------
 // Reinicio automático al detectar pausas largas (comportamiento normal en Android WebView).
@@ -2251,6 +2284,7 @@ function irAPaso(numero){
   if (zonaIdioma) zonaIdioma.classList.toggle("hidden", numero !== 1);
   // "Habla. Nosotros redactamos tu currículum." es la instrucción de la primera pantalla
   document.querySelector("body > header").classList.toggle("hidden", numero !== 1);
+  ajustarBotonesConIcono();
 }
 
 function actualizarContador(){
@@ -2573,6 +2607,7 @@ function generarCV(){
       avisoErrorIA.textContent = t.error_ia_generico + mensajeErrorCorto(error);
       avisoErrorIA.classList.remove("hidden");
       btnVolver.classList.remove("hidden");
+      ajustarBotonesConIcono();
       txtCarga.classList.add("hidden");
       anillo.classList.add("hidden");
     });
@@ -2820,6 +2855,7 @@ function pintarCV(resultado){
   document.getElementById("pantalla-carga").classList.add("hidden");
   document.getElementById("pantalla-cv").classList.remove("hidden");
   document.querySelector("body > header").classList.add("hidden");
+  ajustarBotonesConIcono();
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
