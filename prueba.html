@@ -511,9 +511,49 @@
   .bv-cabecera::before{ width: 16rem; height: 16rem; right: -6rem; top: -7rem; background: rgba(251,247,238,.07); }
   .bv-cabecera::after{ width: 12rem; height: 12rem; left: -5rem; bottom: -7rem; background: rgba(217,139,63,.2); }
   .bv-cabecera > *{ position: relative; }
-  .bv-marca{ display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 1.2rem; }
-  .bv-marca svg{ width: 2.6rem; height: 2.6rem; border-radius: .7rem; box-shadow: 0 0 0 2px rgba(251,247,238,.22); }
-  .bv-marca span{ font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.4rem; letter-spacing: .01em; }
+  /* Versión corta (al volver a grabar o con Atrás desde el paso 1): quien ya conoce la app
+     solo ve "Elige tus idiomas" y Empezar, sin la presentación ni los 3 pasos */
+  #pantalla-bienvenida.solo-idiomas .bv-cabecera, #pantalla-bienvenida.solo-idiomas .bv-pasos{ display: none; }
+  #pantalla-bienvenida.solo-idiomas .bv-idiomas{ border-top: 0; padding-top: .4rem; }
+  #pantalla-bienvenida.solo-idiomas .bv-listo{ display: none; }
+  #pantalla-bienvenida.solo-idiomas #btn-empezar{ margin-top: .4rem; }
+
+  /* ===================== MISMO ESTILO EN TODAS LAS PANTALLAS =====================
+     Tarjeta blanca con esquinas grandes y sombra suave, como la bienvenida. En la entrevista,
+     la cabecera verde (contador + barra) continúa en el título de cada paso. */
+  #pantalla-entrevista{ background: #fff; border: 1px solid var(--linea); border-radius: 1.75rem; overflow: hidden;
+    box-shadow: 0 22px 45px -22px rgba(31,42,36,.45); }
+  #cabecera-pasos{ position: relative; overflow: hidden; background: var(--musgo); padding: 1.15rem 1.5rem .35rem; }
+  #cabecera-pasos::before{ content: ""; position: absolute; width: 14rem; height: 14rem; right: -5.5rem; top: -8rem;
+    border-radius: 50%; background: rgba(251,247,238,.07); pointer-events: none; }
+  #cabecera-pasos > *{ position: relative; }
+  #txt-paso-contador{ color: rgba(251,247,238,.85); font-weight: 700; letter-spacing: .02em; margin: 0 0 .6rem; }
+  #cabecera-pasos .barra-progreso{ background: rgba(251,247,238,.18); height: .55rem; }
+  #pantalla-entrevista .paso > div{ border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+  /* El título del paso, dentro de la franja verde */
+  #pantalla-entrevista .paso > div > h2{ position: relative; overflow: hidden; background: var(--musgo); color: var(--papel);
+    margin: -1.5rem -1.5rem 1.4rem; padding: .9rem 1.25rem 1.7rem; font-weight: 600; line-height: 1.2; }
+  #pantalla-entrevista .paso > div > h2::after{ content: ""; position: absolute; width: 9rem; height: 9rem; left: -4rem; bottom: -6.5rem;
+    border-radius: 50%; background: rgba(217,139,63,.2); pointer-events: none; }
+  @media (min-width: 640px){ #pantalla-entrevista .paso > div > h2{ margin: -2rem -2rem 1.6rem; } }
+  /* Lo que hay que decir: en un panel suave, como los pasos de la bienvenida */
+  .instruccion-paso{ line-height: 1.45; }
+  #pantalla-entrevista .paso ul{ background: var(--papel); border: 1px solid #EDE5D3; border-radius: 1.1rem; padding: .95rem 1.2rem; }
+
+  /* Pantalla de espera */
+  #pantalla-carga{ background: #fff; border: 1px solid var(--linea); border-radius: 1.75rem; padding: 2.75rem 1.5rem 2.5rem !important;
+    margin-top: 1.5rem; box-shadow: 0 22px 45px -22px rgba(31,42,36,.45); }
+
+  /* Pantalla del CV: título en franja verde y zonas en tarjetas */
+  #titulo-cv{ position: relative; overflow: hidden; background: var(--musgo); border-radius: 1.75rem; padding: 1.35rem 1.25rem; }
+  #titulo-cv::after{ content: ""; position: absolute; width: 12rem; height: 12rem; right: -4.5rem; top: -7rem; border-radius: 50%;
+    background: rgba(251,247,238,.07); pointer-events: none; }
+  #titulo-cv h2{ position: relative; color: var(--papel) !important; font-weight: 600; }
+  #carrusel-plantillas, #zona-descarga{ background: #fff; border: 1px solid var(--linea); border-radius: 1.75rem;
+    box-shadow: 0 18px 40px -24px rgba(31,42,36,.4); }
+  #carrusel-plantillas{ padding: 1rem 1rem .6rem; }
+  #carrusel-plantillas > p{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.05rem !important; text-align: center; }
+  #zona-descarga{ padding: 1.4rem 1.2rem 1rem !important; margin-top: 1.5rem !important; }
   .bv-titulo{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 2.05rem; line-height: 1.15; margin: 0 0 .8rem; }
   .bv-sub{ font-size: 1.0625rem; line-height: 1.55; color: rgba(251,247,238,.9); margin: 0 auto; max-width: 26rem; }
   .bv-cuerpo{ padding: 1.7rem 1.4rem 1.5rem; }
@@ -586,10 +626,6 @@
 <section id="pantalla-bienvenida">
   <div class="bv-tarjeta">
     <div class="bv-cabecera">
-      <div class="bv-marca">
-        <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#2F5D4F"/><path d="M196 78H296L330 112V243A75 75 0 0 1 180 243V94Q180 78 196 78Z" fill="#FAF6EF"/><path d="M296 78V104Q296 112 304 112H330Z" fill="#D9CFBF"/><rect x="194" y="95" width="48" height="60" rx="5" fill="#F3DDBC"/><circle cx="218" cy="116" r="12" fill="#D98B3F"/><path d="M198 155C204 137 232 137 238 155Z" fill="#D98B3F"/><g fill="#D98B3F"><rect x="255" y="97" width="40" height="13" rx="6.5"/><rect x="194" y="173" width="62" height="14" rx="7"/><rect x="194" y="251" width="66" height="14" rx="7"/></g><g fill="#E2DACB"><rect x="255" y="126" width="52" height="12" rx="6"/><rect x="194" y="199" width="124" height="13" rx="6.5"/><rect x="194" y="223" width="92" height="12" rx="6"/><rect x="202" y="277" width="110" height="13" rx="6.5"/></g><path d="M138 240A118 118 0 0 0 374 240M256 358V418M192 418H320" stroke="#fff" stroke-width="24" fill="none" stroke-linecap="round"/></svg>
-        <span>CVoice</span>
-      </div>
       <h1 class="bv-titulo" data-i18n="bv_titulo">Tu currículum, solo hablando</h1>
       <p class="bv-sub" data-i18n="bv_sub">Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.</p>
     </div>
@@ -637,18 +673,19 @@
 <!-- ============== ENTREVISTA POR PASOS ============== -->
 <section id="pantalla-entrevista" class="w-full max-w-xl hidden">
 
-  <div class="mb-5">
-    <div class="barra-progreso w-full h-3 rounded-full overflow-hidden" style="background:var(--musgo-claro)">
+  <!-- Cabecera verde de los pasos (contador y barra); continúa en el título de cada paso -->
+  <div id="cabecera-pasos">
+    <p id="txt-paso-contador" class="text-center text-sm">Paso 1 de 5</p>
+    <div class="barra-progreso w-full h-3 rounded-full overflow-hidden">
       <div id="barra-relleno" class="h-full rounded-full" style="width:20%; background:var(--ambar)"></div>
     </div>
-    <p id="txt-paso-contador" class="text-center text-sm mt-2" style="color:var(--musgo)">Paso 1 de 5</p>
   </div>
 
   <!-- Tarjeta Paso 1: Datos personales -->
   <article class="paso activo" data-paso="1">
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p1_titulo">Tus datos personales</h2>
-      <p class="text-base font-bold mb-2" style="color:var(--musgo)" data-i18n="p1_instruccion">Pulsa el micrófono y dinos:</p>
+      <p class="text-base font-bold mb-2 instruccion-paso" style="color:var(--musgo)" data-i18n="p1_instruccion">Pulsa el micrófono y dinos:</p>
       <ul id="p1-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item1">Tu nombre completo</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item2">Tu número de teléfono</span></li>
@@ -673,6 +710,8 @@
   <article class="paso" data-paso="2">
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p2_titulo">Tu experiencia de trabajo</h2>
+      <!-- Que quede claro que se pueden contar varios trabajos, no solo uno -->
+      <p class="text-base font-bold mb-2 instruccion-paso" style="color:var(--musgo)" data-i18n="p2_instruccion">Cuéntanos todos los trabajos que quieras incluir, uno detrás de otro. De cada uno dinos:</p>
       <ul id="p2-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item1">Nombre de la empresa o negocio</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item2">Tu puesto o cargo</span></li>
@@ -698,6 +737,7 @@
   <article class="paso" data-paso="3">
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p3_titulo">Tus estudios</h2>
+      <p class="text-base font-bold mb-2 instruccion-paso" style="color:var(--musgo)" data-i18n="p3_instruccion">Cuéntanos todos tus estudios y cursos, uno detrás de otro. De cada uno dinos:</p>
       <ul id="p3-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item1">Nombre del centro educativo</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item2">Título o certificado obtenido</span></li>
@@ -723,6 +763,7 @@
   <article class="paso" data-paso="4">
     <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 border text-center" style="border-color:var(--linea)">
       <h2 class="font-display text-2xl sm:text-3xl mb-3" data-i18n="p4_titulo">Otros datos</h2>
+      <p class="text-base font-bold mb-2 instruccion-paso" style="color:var(--musgo)" data-i18n="p1_instruccion">Pulsa el micrófono y dinos:</p>
       <ul id="p4-lista" class="text-left text-base mb-5 space-y-2 inline-block" style="color:var(--tinta)">
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item1">Idiomas que hablas y nivel</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item2">Carnet de conducir (si tienes)</span></li>
@@ -797,7 +838,7 @@
 <!-- ============== PANTALLA FINAL: CV EDITABLE — DOS COLUMNAS ============== -->
 <section id="pantalla-cv" class="w-full hidden">
 
-  <div class="text-center mb-5 max-w-3xl mx-auto">
+  <div id="titulo-cv" class="text-center mb-5 max-w-3xl mx-auto">
     <h2 class="font-display text-2xl sm:text-3xl" style="color:var(--musgo)" data-i18n="cv_titulo">Tu currículum está listo</h2>
   </div>
 
@@ -1033,7 +1074,7 @@
     </div>
 
   <!-- ===== PLANTILLA PREMIUM 2: EDITORIAL ===== -->
-  <div id="hoja-cv-prem2" class="cv-oculto">
+  <div id="hoja-cv-prem2" class="cv-oculto rounded-2xl shadow-2xl">
     <!-- Cabecera: foto grande + nombre -->
     <div class="p2-head">
       <div class="p2-avatar">
@@ -1086,7 +1127,7 @@
   </div>
 
   <!-- ===== PLANTILLA PREMIUM 3: ÁMBAR MODERNO ===== -->
-  <div id="hoja-cv-prem3" class="cv-oculto">
+  <div id="hoja-cv-prem3" class="cv-oculto rounded-2xl shadow-2xl">
     <div class="p3-izq">
       <div class="p3-avatar">
         <img id="p3-foto" alt="Foto" class="hidden">
@@ -1124,7 +1165,7 @@
   </div>
 
   <!-- ===== PLANTILLA PREMIUM 4: AZUL MARINO (una columna) ===== -->
-  <div id="hoja-cv-prem4" class="cv-oculto">
+  <div id="hoja-cv-prem4" class="cv-oculto rounded-2xl shadow-2xl">
     <!-- Cabecera con foto, nombre, cargo y contacto -->
     <div class="p4-header">
       <div class="p4-avatar">
@@ -1169,7 +1210,7 @@
   </div><!-- /contenedor-cvs (contiene las 5 plantillas) -->
 
   <!-- ===== Zona de descarga / monetización ===== -->
-  <div class="max-w-3xl mx-auto mt-4 mb-3 px-2">
+  <div id="zona-descarga" class="max-w-3xl mx-auto mt-4 mb-3 px-2">
 
     <!-- Justo antes de descargar: último repaso del texto (el idioma del CV se elige en la bienvenida) -->
     <p class="cv-ayuda-final" data-i18n="cv_ayuda">Toca cualquier texto de tu CV para corregirlo antes de descargar.</p>
@@ -1344,6 +1385,8 @@ const TEXTOS = {
     bv_listo_t: "¡Felicidades, todo listo!",
     bv_listo_d: "Hablarás en {hablar} y tu currículum estará en {cv}.",
     boton_empezar: "Empezar",
+    p2_instruccion: "Cuéntanos todos los trabajos que quieras incluir, uno detrás de otro. De cada uno dinos:",
+    p3_instruccion: "Cuéntanos todos tus estudios y cursos, uno detrás de otro. De cada uno dinos:",
   },
   en: {
     subtitulo: "Speak. We write your résumé.",
@@ -1401,6 +1444,8 @@ const TEXTOS = {
     bv_listo_t: "Congratulations, you're all set!",
     bv_listo_d: "You'll speak in {hablar} and your résumé will be in {cv}.",
     boton_empezar: "Start",
+    p2_instruccion: "Tell us about every job you want to include, one after another. For each one, say:",
+    p3_instruccion: "Tell us about all your studies and courses, one after another. For each one, say:",
   },
   fr: {
     subtitulo: "Parlez. Nous rédigeons votre CV.",
@@ -1458,6 +1503,8 @@ const TEXTOS = {
     bv_listo_t: "Félicitations, tout est prêt !",
     bv_listo_d: "Vous parlerez en {hablar} et votre CV sera en {cv}.",
     boton_empezar: "Commencer",
+    p2_instruccion: "Parlez-nous de tous les emplois que vous voulez inclure, l'un après l'autre. Pour chacun, dites :",
+    p3_instruccion: "Parlez-nous de toutes vos études et formations, l'une après l'autre. Pour chacune, dites :",
   },
   de: {
     subtitulo: "Sprechen Sie. Wir schreiben Ihren Lebenslauf.",
@@ -1515,6 +1562,8 @@ const TEXTOS = {
     bv_listo_t: "Glückwunsch, alles bereit!",
     bv_listo_d: "Sie sprechen: {hablar} · Ihr Lebenslauf: {cv}",
     boton_empezar: "Los geht's",
+    p2_instruccion: "Erzählen Sie von allen Jobs, die Sie aufnehmen möchten, einem nach dem anderen. Nennen Sie zu jedem:",
+    p3_instruccion: "Erzählen Sie von all Ihren Ausbildungen und Kursen, einem nach dem anderen. Nennen Sie zu jedem:",
   },
   it: {
     subtitulo: "Parla. Noi scriviamo il tuo curriculum.",
@@ -1572,6 +1621,8 @@ const TEXTOS = {
     bv_listo_t: "Congratulazioni, è tutto pronto!",
     bv_listo_d: "Parlerai in {hablar} e il tuo curriculum sarà in {cv}.",
     boton_empezar: "Inizia",
+    p2_instruccion: "Raccontaci tutti i lavori che vuoi includere, uno dopo l'altro. Per ognuno dicci:",
+    p3_instruccion: "Raccontaci tutti i tuoi studi e corsi, uno dopo l'altro. Per ognuno dicci:",
   },
   pt: {
     subtitulo: "Fale. Nós escrevemos o seu currículo.",
@@ -1629,6 +1680,8 @@ const TEXTOS = {
     bv_listo_t: "Parabéns, está tudo pronto!",
     bv_listo_d: "Vai falar em {hablar} e o seu currículo ficará em {cv}.",
     boton_empezar: "Começar",
+    p2_instruccion: "Conte-nos todos os trabalhos que quer incluir, um a seguir ao outro. De cada um, diga-nos:",
+    p3_instruccion: "Conte-nos todos os seus estudos e cursos, um a seguir ao outro. De cada um, diga-nos:",
   },
   ar: {
     subtitulo: "تحدّث. ونحن نكتب سيرتك الذاتية.",
@@ -1686,6 +1739,8 @@ const TEXTOS = {
     bv_listo_t: "تهانينا، كل شيء جاهز!",
     bv_listo_d: "ستتحدث: {hablar} · سيرتك الذاتية: {cv}",
     boton_empezar: "ابدأ",
+    p2_instruccion: "أخبرنا بكل الوظائف التي تريد إضافتها، واحدة تلو الأخرى. ولكل وظيفة اذكر:",
+    p3_instruccion: "أخبرنا بكل دراساتك ودوراتك، واحدة تلو الأخرى. ولكل منها اذكر:",
   },
   zh: {
     subtitulo: "你只管说，简历我们来写。",
@@ -1743,6 +1798,8 @@ const TEXTOS = {
     bv_listo_t: "恭喜，一切就绪！",
     bv_listo_d: "说话：{hablar} · 简历：{cv}",
     boton_empezar: "开始",
+    p2_instruccion: "请依次说出你想写进简历的所有工作。每份工作请说明：",
+    p3_instruccion: "请依次说出你所有的学历和课程。每一项请说明：",
   },
   ja: {
     subtitulo: "話すだけ。履歴書は私たちが作ります。",
@@ -1800,6 +1857,8 @@ const TEXTOS = {
     bv_listo_t: "おめでとうございます。準備完了です！",
     bv_listo_d: "話す言語：{hablar} · 履歴書：{cv}",
     boton_empezar: "はじめる",
+    p2_instruccion: "履歴書に載せたい職歴をすべて、ひとつずつ話してください。それぞれについて：",
+    p3_instruccion: "学歴や受講した講座をすべて、ひとつずつ話してください。それぞれについて：",
   },
   ro: {
     subtitulo: "Vorbește. Noi scriem CV-ul tău.",
@@ -1857,6 +1916,8 @@ const TEXTOS = {
     bv_listo_t: "Felicitări, totul este gata!",
     bv_listo_d: "Vei vorbi în {hablar}, iar CV-ul tău va fi în {cv}.",
     boton_empezar: "Începe",
+    p2_instruccion: "Povestește-ne toate locurile de muncă pe care vrei să le incluzi, unul după altul. Pentru fiecare spune-ne:",
+    p3_instruccion: "Povestește-ne toate studiile și cursurile tale, unul după altul. Pentru fiecare spune-ne:",
   },
   pl: {
     subtitulo: "Mów. My napiszemy Twoje CV.",
@@ -1914,6 +1975,8 @@ const TEXTOS = {
     bv_listo_t: "Gratulacje, wszystko gotowe!",
     bv_listo_d: "Mówisz: {hablar} · Twoje CV: {cv}",
     boton_empezar: "Zacznij",
+    p2_instruccion: "Opowiedz o wszystkich pracach, które chcesz uwzględnić, jedna po drugiej. O każdej powiedz:",
+    p3_instruccion: "Opowiedz o całej swojej nauce i kursach, jeden po drugim. O każdym powiedz:",
   },
   uk: {
     subtitulo: "Говоріть. Ми напишемо ваше резюме.",
@@ -1971,6 +2034,8 @@ const TEXTOS = {
     bv_listo_t: "Вітаємо, усе готово!",
     bv_listo_d: "Ви говорите: {hablar} · Ваше резюме: {cv}",
     boton_empezar: "Почати",
+    p2_instruccion: "Розкажіть про всі місця роботи, які хочете додати, одне за одним. Про кожне скажіть:",
+    p3_instruccion: "Розкажіть про все своє навчання та курси, одне за одним. Про кожне скажіть:",
   },
   ru: {
     subtitulo: "Говорите. Мы напишем ваше резюме.",
@@ -2028,6 +2093,8 @@ const TEXTOS = {
     bv_listo_t: "Поздравляем, всё готово!",
     bv_listo_d: "Вы говорите: {hablar} · Ваше резюме: {cv}",
     boton_empezar: "Начать",
+    p2_instruccion: "Расскажите обо всех местах работы, которые хотите указать, одно за другим. О каждом скажите:",
+    p3_instruccion: "Расскажите обо всей своей учёбе и курсах, одно за другим. О каждом скажите:",
   },
 };
 
@@ -2341,10 +2408,12 @@ function elegirIdioma(codigo){
   aplicarTextos();
 }
 
-function mostrarBienvenida(){
+// soloIdiomas: versión corta para quien ya ha usado la app (volver a grabar, Atrás desde el paso 1)
+function mostrarBienvenida(soloIdiomas){
   detenerEscucha();
   detenerCamara();
-  document.getElementById("pantalla-entrevista").classList.add("hidden");
+  document.getElementById("pantalla-bienvenida").classList.toggle("solo-idiomas", !!soloIdiomas);
+  ["pantalla-entrevista", "pantalla-carga", "pantalla-cv"].forEach(id => document.getElementById(id).classList.add("hidden"));
   document.querySelector("body > header").classList.add("hidden");
   document.getElementById("pantalla-bienvenida").classList.remove("hidden");
   window.scrollTo({ top: 0 });
@@ -3175,10 +3244,9 @@ document.getElementById("btn-volver-editar").addEventListener("click", () => {
   iconoSinCamara.classList.remove("hidden");
   ponerTextoBoton(document.getElementById("btn-saltar-foto"), TEXTOS[idiomaActual].boton_saltar);
 
-  document.getElementById("pantalla-cv").classList.add("hidden");
-  document.getElementById("pantalla-carga").classList.add("hidden");
-  document.getElementById("pantalla-entrevista").classList.remove("hidden");
-  irAPaso(1);
+  // Antes de volver a grabar se pueden cambiar los idiomas (solo esa parte de la bienvenida);
+  // "Empezar" lleva al paso 1 con lo dictado conservado
+  mostrarBienvenida(true);
 });
 
 // ---------- 12. Carrusel de plantillas ----------
@@ -3230,18 +3298,22 @@ function actualizarCTA(esBasico){
   // Mismo formato en los dos botones: flecha pegada al título en una línea + subtítulo
   const contenido = (titulo, subtitulo) => `
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800;white-space:nowrap">${svgFlecha}${titulo}</div>
-      <div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">${subtitulo}</div>`;
+      ${subtitulo ? `<div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">${subtitulo}</div>` : ""}`;
 
+  // Fuera de la app (navegador) no se puede descargar: sin "viendo un vídeo corto" ni precios,
+  // que confunden; al pulsar se invita a instalar la app
+  const enApp = typeof EN_APP !== "undefined" && EN_APP;
   if (esBasico){
-    btnCTA.innerHTML = contenido(tx("cta_gratis"), tx("cta_gratis_sub"));
+    btnCTA.innerHTML = contenido(tx("cta_gratis"), enApp ? tx("cta_gratis_sub") : "");
     btnCTA.style.background = "var(--musgo)";
     if (txtSec){
       txtSec.textContent = tx("cta_sin_anuncio", { precio: precioDe("basico_099") });
-      txtSec.style.display = "";
+      txtSec.style.display = enApp ? "" : "none";
     }
   } else {
-    btnCTA.innerHTML = contenido(tx("cta_premium", { precio: precioDe("premium_299") }),
-                                 tx("cta_premium_sub", { diseno: tx("diseno_" + plantillaActiva) }));
+    btnCTA.innerHTML = enApp
+      ? contenido(tx("cta_premium", { precio: precioDe("premium_299") }), tx("cta_premium_sub", { diseno: tx("diseno_" + plantillaActiva) }))
+      : contenido(tx("cta_premium").replace(/\s*·\s*$/, ""), tx("diseno_" + plantillaActiva));
     btnCTA.style.background = "var(--ambar)";
     if (txtSec) txtSec.style.display = "none";
   }
@@ -4028,7 +4100,7 @@ window.botonAtras = function(){
   if (visible("pantalla-bienvenida")) return false;
   if (pasoActual > 1){ irAPaso(pasoActual - 1); window.scrollTo({ top: 0 }); return true; }
   // Desde el paso 1 se vuelve a la bienvenida (ahí se pueden cambiar los idiomas); lo dictado se conserva
-  mostrarBienvenida();
+  mostrarBienvenida(true);
   return true;
 };
 
