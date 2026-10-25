@@ -98,7 +98,9 @@
   }
   @media (prefers-reduced-motion: reduce){ .mic-btn.escuchando{ animation: none; } }
 
-  /* Ondas centradas en el micro y del mismo tamaño que el botón (w-28 / sm:w-32) */
+  /* Ondas centradas en el micro y del mismo tamaño que el botón (w-28 / sm:w-32).
+     Crecen como mucho ~20 px y la zona deja más hueco, para no tapar la lista ni el texto */
+  .zona-mic{ margin-top:.5rem; margin-bottom:2rem; }
   .onda{ position:absolute; top:50%; left:50%; width:7rem; height:7rem; margin:-3.5rem 0 0 -3.5rem; border:2px solid var(--ambar); border-radius:50%; opacity:0; pointer-events:none; }
   @media (min-width:640px){ .onda{ width:8rem; height:8rem; margin:-4rem 0 0 -4rem; } }
   .escuchando .onda{ animation: expandir 1.8s ease-out infinite; }
@@ -106,7 +108,7 @@
   .onda:nth-child(3){ animation-delay:.8s; }
   @keyframes expandir{
     0%{ transform:scale(1); opacity:.6; }
-    100%{ transform:scale(1.75); opacity:0; }
+    100%{ transform:scale(1.35); opacity:0; }
   }
   @media (prefers-reduced-motion: reduce){ .escuchando .onda{ animation: none; } }
 
@@ -687,7 +689,7 @@
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item3">Tu correo electrónico</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p1_item4">Tu ciudad o municipio</span></li>
       </ul>
-      <div class="relative flex justify-center mb-6">
+      <div class="zona-mic relative flex justify-center">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
         <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="1" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
@@ -713,7 +715,7 @@
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item3">Años o fechas en que trabajaste</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p2_item4">Qué tareas o funciones hacías</span></li>
       </ul>
-      <div class="relative flex justify-center mb-6">
+      <div class="zona-mic relative flex justify-center">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
         <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="2" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
@@ -739,7 +741,7 @@
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item3">Año en que terminaste</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p3_item4">Cursos o formaciones extra (si tienes)</span></li>
       </ul>
-      <div class="relative flex justify-center mb-6">
+      <div class="zona-mic relative flex justify-center">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
         <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="3" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
@@ -765,7 +767,7 @@
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item3">Disponibilidad horaria</span></li>
         <li class="flex items-start gap-2"><span class="punto-item">●</span><span data-i18n="p4_item4">Voluntariados o actividades extra (si tienes)</span></li>
       </ul>
-      <div class="relative flex justify-center mb-6">
+      <div class="zona-mic relative flex justify-center">
         <span class="onda"></span><span class="onda"></span><span class="onda"></span>
         <button class="mic-btn relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-xl transition-transform active:scale-95" data-mic data-paso-objetivo="4" aria-label="Grabar voz" data-i18n-aria="aria_grabar">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 18v4M8 22h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
