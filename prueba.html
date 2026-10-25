@@ -93,14 +93,16 @@
   .mic-btn.escuchando{ background: var(--ambar); animation: pulso 1.6s ease-out infinite; }
   @keyframes pulso{
     0%   { box-shadow: 0 0 0 0 rgba(217,139,63,0.55); }
-    70%  { box-shadow: 0 0 0 18px rgba(217,139,63,0); }
+    70%  { box-shadow: 0 0 0 24px rgba(217,139,63,0); }
     100% { box-shadow: 0 0 0 0 rgba(217,139,63,0); }
   }
   @media (prefers-reduced-motion: reduce){ .mic-btn.escuchando{ animation: none; } }
 
   /* Ondas centradas en el micro y del mismo tamaño que el botón (w-28 / sm:w-32).
-     Crecen como mucho ~20 px y la zona deja más hueco, para no tapar la lista ni el texto */
-  .zona-mic{ margin-top:.5rem; margin-bottom:2rem; }
+     El micro queda a 32 px de la lista (mb-5 + .75rem) y del cuadro de texto (2rem);
+     las ondas crecen hasta ~29 px, casi tocando sin llegar */
+  .zona-mic{ margin-top:.75rem; margin-bottom:2rem; --escala-onda:1.5; }
+  @media (min-width:640px){ .zona-mic{ --escala-onda:1.43; } }
   .onda{ position:absolute; top:50%; left:50%; width:7rem; height:7rem; margin:-3.5rem 0 0 -3.5rem; border:2px solid var(--ambar); border-radius:50%; opacity:0; pointer-events:none; }
   @media (min-width:640px){ .onda{ width:8rem; height:8rem; margin:-4rem 0 0 -4rem; } }
   .escuchando .onda{ animation: expandir 1.8s ease-out infinite; }
@@ -108,7 +110,7 @@
   .onda:nth-child(3){ animation-delay:.8s; }
   @keyframes expandir{
     0%{ transform:scale(1); opacity:.6; }
-    100%{ transform:scale(1.35); opacity:0; }
+    100%{ transform:scale(var(--escala-onda, 1.5)); opacity:0; }
   }
   @media (prefers-reduced-motion: reduce){ .escuchando .onda{ animation: none; } }
 
