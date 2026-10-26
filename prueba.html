@@ -3332,6 +3332,18 @@ function actualizarCTA(esBasico){
   // Fuera de la app (navegador) no se puede descargar: sin "viendo un vídeo corto" ni precios,
   // que confunden; al pulsar se invita a instalar la app
   const enApp = typeof EN_APP !== "undefined" && EN_APP;
+
+  // Corregido después de descargarlo: se vuelve a guardar gratis, así que solo "DESCARGAR",
+  // sin precio ni vídeo (la palabra sale de cta_premium: "DESCARGAR · {precio}" en todos los idiomas)
+  let soloGuardarCambios = false;
+  try { soloGuardarCambios = enApp && hayCambiosSinGuardar(); } catch(e) {} // aún sin inicializar al arrancar
+  if (soloGuardarCambios){
+    btnCTA.innerHTML = contenido(tx("cta_premium").split("·")[0].trim(), "");
+    btnCTA.style.background = esBasico ? "var(--musgo)" : "var(--ambar)";
+    if (txtSec) txtSec.style.display = "none";
+    return;
+  }
+
   if (esBasico){
     btnCTA.innerHTML = contenido(tx("cta_gratis"), enApp ? tx("cta_gratis_sub") : "");
     btnCTA.style.background = "var(--musgo)";
@@ -3896,8 +3908,14 @@ let cvCambiadoTrasGuardar = false;
 let accionTrasGuardar = null; // "abrir" | "compartir": se hace cuando el PDF nuevo queda guardado
 document.getElementById("contenedor-cvs").addEventListener("input", e => {
   if (e.target.closest && e.target.closest("#hoja-cv")) versionDatosCV++;
-  if (plantillaGuardada) cvCambiadoTrasGuardar = true;
+  if (plantillaGuardada && !cvCambiadoTrasGuardar) marcarCambiosCV(true);
 });
+
+// El botón de descarga cambia a solo "DESCARGAR" mientras hay correcciones sin guardar
+function marcarCambiosCV(hay){
+  cvCambiadoTrasGuardar = hay;
+  actualizarCTA(plantillaActiva === "basico");
+}
 
 function hayCambiosSinGuardar(){
   return cvCambiadoTrasGuardar && !!plantillaGuardada && plantillaGuardada === plantillaActiva;
@@ -3906,14 +3924,14 @@ function hayCambiosSinGuardar(){
 async function guardarCambiosCV(accion){
   accionTrasGuardar = accion;
   plantillaDescargando = plantillaGuardada;
-  cvCambiadoTrasGuardar = false;
+  marcarCambiosCV(false);
   avisoBreve(tx("aviso_descargando"), 3000);
   const basico = plantillaGuardada === "basico";
   const ok = basico ? await generarYDescargarPDF()
                     : await descargarHojaComoPDF(document.getElementById(CV_MAP[plantillaGuardada]), nombreCVActual() + "_premium");
   if (ok === null) return; // ya había un PDF en marcha
   if (!ok){
-    cvCambiadoTrasGuardar = true;
+    marcarCambiosCV(true);
     accionTrasGuardar = null;
     avisoBreve(tx("aviso_pdf_error"), 9000, true);
   }
@@ -3932,7 +3950,7 @@ window.descargaFallida = function(){
   if (accionTrasGuardar){
     // Falló al guardar una corrección: nada que cobrar, se puede volver a intentar
     accionTrasGuardar = null;
-    cvCambiadoTrasGuardar = true;
+    marcarCambiosCV(true);
   } else {
     descargaPendiente = ultimaDescarga;
   }
