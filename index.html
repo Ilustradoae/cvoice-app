@@ -3136,6 +3136,8 @@ function pintarCV(resultado){
   document.getElementById("cv-nombre").textContent = String(resultado.nombre || t.nombre_predeterminado).toUpperCase();
   // CV nuevo: el panel "CV guardado" (Abrir / Enviar) era del PDF anterior
   plantillaGuardada = null;
+  cvCambiadoTrasGuardar = false;
+  versionDatosCV++;
   actualizarPanelCVGuardado();
   // La librería del PDF se descarga ahora, mientras la persona revisa su CV
   cargarHtml2pdf().catch(() => {});
@@ -3247,15 +3249,18 @@ function traducirEtiquetasCV(codigo){
 
 // ---------- 11b. Volver a grabar ----------
 document.getElementById("btn-volver-editar").addEventListener("click", () => {
+  // La foto se conserva (como lo dictado): en el paso 5 sale ya hecha, con "Repetir foto"
+  // por si quiere otra y "Continuar" para seguir con la misma
   detenerCamara();
-  fotoCapturadaDataURL = null;
+  const hayFoto = !!fotoCapturadaDataURL;
+  if (hayFoto) imgFotoCapturada.src = fotoCapturadaDataURL;
   controlesActiva.classList.add("hidden");
-  controlesListos.classList.add("hidden");
-  controlesInicial.classList.remove("hidden");
+  controlesListos.classList.toggle("hidden", !hayFoto);
+  controlesInicial.classList.toggle("hidden", hayFoto);
   videoCamara.classList.add("hidden");
-  imgFotoCapturada.classList.add("hidden");
-  iconoSinCamara.classList.remove("hidden");
-  ponerTextoBoton(document.getElementById("btn-saltar-foto"), TEXTOS[idiomaActual].boton_saltar);
+  imgFotoCapturada.classList.toggle("hidden", !hayFoto);
+  iconoSinCamara.classList.toggle("hidden", hayFoto);
+  ponerTextoBoton(document.getElementById("btn-saltar-foto"), TEXTOS[idiomaActual][hayFoto ? "boton_continuar" : "boton_saltar"]);
 
   // Antes de volver a grabar se pueden cambiar los idiomas (solo esa parte de la bienvenida);
   // "Empezar" lleva al paso 1 con lo dictado conservado
@@ -3272,12 +3277,23 @@ const CV_IDS  = Object.values(CV_MAP);
 let plantillaActiva = "basico";   // "basico" | "prem1" | "prem2" | "prem3" | "prem4"
 let disenoPremActivo = "prem1";   // último diseño premium seleccionado (el que se compra)
 
+// Los diseños premium se rellenan con el básico (la fuente de los datos), pero solo si este
+// ha cambiado desde la última vez: así lo corregido directamente en un diseño premium no se
+// pierde al mirar otro diseño y volver.
+let versionDatosCV = 0; // sube con cada CV nuevo y con cada corrección en el básico
+function rellenarSiHaceFalta(modelo){
+  const hoja = document.getElementById(CV_MAP[modelo]);
+  if (hoja.dataset.version === String(versionDatosCV)) return;
+  rellenarPlantilla(modelo);
+  hoja.dataset.version = String(versionDatosCV);
+}
+
 function seleccionarPlantilla(plantilla){
   plantillaActiva = plantilla;
   const esBasico = plantilla === "basico";
   if (!esBasico){
     disenoPremActivo = plantilla;
-    rellenarPlantilla(plantilla);
+    rellenarSiHaceFalta(plantilla);
   }
 
   // Mostrar solo la hoja elegida y marcar su botón en el carrusel
@@ -3316,6 +3332,18 @@ function actualizarCTA(esBasico){
   // Fuera de la app (navegador) no se puede descargar: sin "viendo un vídeo corto" ni precios,
   // que confunden; al pulsar se invita a instalar la app
   const enApp = typeof EN_APP !== "undefined" && EN_APP;
+
+  // Corregido después de descargarlo: se vuelve a guardar gratis, así que solo "DESCARGAR",
+  // sin precio ni vídeo (la palabra sale de cta_premium: "DESCARGAR · {precio}" en todos los idiomas)
+  let soloGuardarCambios = false;
+  try { soloGuardarCambios = enApp && hayCambiosSinGuardar(); } catch(e) {} // aún sin inicializar al arrancar
+  if (soloGuardarCambios){
+    btnCTA.innerHTML = contenido(tx("cta_premium").split("·")[0].trim(), "");
+    btnCTA.style.background = esBasico ? "var(--musgo)" : "var(--ambar)";
+    if (txtSec) txtSec.style.display = "none";
+    return;
+  }
+
   if (esBasico){
     btnCTA.innerHTML = contenido(tx("cta_gratis"), enApp ? tx("cta_gratis_sub") : "");
     btnCTA.style.background = "var(--musgo)";
@@ -3651,10 +3679,9 @@ function generarYDescargarPDF(){
 
 // Rellena la plantilla premium con los datos del CV básico y la descarga
 function generarYDescargarPDFPremium(){
-  // Si el usuario ha editado directamente la plantilla premium visible, no la
-  // sobrescribimos con los datos del básico: solo rellenamos si no está a la vista.
+  // Lo corregido directamente en el diseño premium se conserva (ver rellenarSiHaceFalta)
   const hojaPrem = document.getElementById(CV_MAP[disenoPremActivo]);
-  if (hojaPrem.classList.contains("cv-oculto")) rellenarPlantilla(disenoPremActivo);
+  rellenarSiHaceFalta(disenoPremActivo);
   // descargarHojaComoPDF trabaja sobre un clon, así que da igual que esté oculta
   return descargarHojaComoPDF(hojaPrem, nombreCVActual() + "_premium");
 }
@@ -3832,6 +3859,13 @@ async function entregarDescarga(tipo){
 window.descargaGuardada = function(){
   descargaPendiente = null;
   mostrarPanelCVGuardado();
+  // Era una corrección guardada desde Abrir / Enviar: se hace lo que se pidió
+  if (accionTrasGuardar){
+    const accion = accionTrasGuardar;
+    accionTrasGuardar = null;
+    document.getElementById("aviso-sin-voz").classList.add("hidden");
+    return abrirOEnviarCV(accion);
+  }
   // Con el panel "CV guardado" a la vista sobra el aviso flotante (lo tapaba); sin panel
   // (apps antiguas) el aviso es lo único que dice dónde está el PDF
   if (document.getElementById("panel-cv-guardado").classList.contains("hidden")) avisoBreve(tx("aviso_cv_guardado"), 4500);
@@ -3858,16 +3892,68 @@ function actualizarPanelCVGuardado(){
   document.getElementById("panel-cv-guardado").classList.toggle("hidden", !visible);
   return visible;
 }
+function abrirOEnviarCV(accion){
+  try {
+    const ok = accion === "compartir" ? window.Android.compartirUltimoCV(tx("compartir_titulo"))
+                                      : window.Android.abrirUltimoCV();
+    if (!ok) avisoBreve(tx("aviso_pdf_error"), 6000, true);
+  } catch(e) { avisoBreve(tx("aviso_pdf_error"), 6000, true); }
+}
+
+// ---------- Correcciones después de descargar ----------
+// Si se corrige el CV ya descargado, el PDF guardado se queda viejo. Al pulsar Abrir o
+// Enviar (o Descargar con ese mismo diseño) se guarda otra vez con los cambios, sin otro
+// vídeo ni otro pago: es el mismo CV que ya consiguió.
+let cvCambiadoTrasGuardar = false;
+let accionTrasGuardar = null; // "abrir" | "compartir": se hace cuando el PDF nuevo queda guardado
+document.getElementById("contenedor-cvs").addEventListener("input", e => {
+  if (e.target.closest && e.target.closest("#hoja-cv")) versionDatosCV++;
+  if (plantillaGuardada && !cvCambiadoTrasGuardar) marcarCambiosCV(true);
+});
+
+// El botón de descarga cambia a solo "DESCARGAR" mientras hay correcciones sin guardar
+function marcarCambiosCV(hay){
+  cvCambiadoTrasGuardar = hay;
+  actualizarCTA(plantillaActiva === "basico");
+}
+
+function hayCambiosSinGuardar(){
+  return cvCambiadoTrasGuardar && !!plantillaGuardada && plantillaGuardada === plantillaActiva;
+}
+
+async function guardarCambiosCV(accion){
+  accionTrasGuardar = accion;
+  plantillaDescargando = plantillaGuardada;
+  marcarCambiosCV(false);
+  avisoBreve(tx("aviso_descargando"), 3000);
+  const basico = plantillaGuardada === "basico";
+  const ok = basico ? await generarYDescargarPDF()
+                    : await descargarHojaComoPDF(document.getElementById(CV_MAP[plantillaGuardada]), nombreCVActual() + "_premium");
+  if (ok === null) return; // ya había un PDF en marcha
+  if (!ok){
+    marcarCambiosCV(true);
+    accionTrasGuardar = null;
+    avisoBreve(tx("aviso_pdf_error"), 9000, true);
+  }
+  // Si salió bien, la app llama a descargaGuardada() y ahí se abre o se envía
+}
+
 document.getElementById("btn-compartir-cv").addEventListener("click", () => {
-  try { if (!window.Android.compartirUltimoCV(tx("compartir_titulo"))) avisoBreve(tx("aviso_pdf_error"), 6000, true); }
-  catch(e) { avisoBreve(tx("aviso_pdf_error"), 6000, true); }
+  if (hayCambiosSinGuardar()) return guardarCambiosCV("compartir");
+  abrirOEnviarCV("compartir");
 });
 document.getElementById("btn-abrir-cv").addEventListener("click", () => {
-  try { if (!window.Android.abrirUltimoCV()) avisoBreve(tx("aviso_pdf_error"), 6000, true); }
-  catch(e) { avisoBreve(tx("aviso_pdf_error"), 6000, true); }
+  if (hayCambiosSinGuardar()) return guardarCambiosCV("abrir");
+  abrirOEnviarCV("abrir");
 });
 window.descargaFallida = function(){
-  descargaPendiente = ultimaDescarga;
+  if (accionTrasGuardar){
+    // Falló al guardar una corrección: nada que cobrar, se puede volver a intentar
+    accionTrasGuardar = null;
+    marcarCambiosCV(true);
+  } else {
+    descargaPendiente = ultimaDescarga;
+  }
   avisoBreve(tx("aviso_pdf_error"), 9000, true);
 };
 
@@ -3918,7 +4004,7 @@ function abrirModalPago(producto){
   const vista = document.getElementById("modal-pago-vista");
   vista.innerHTML = "";
   const hoja = document.getElementById(CV_MAP[plantilla]);
-  if (premium && hoja.classList.contains("cv-oculto")) rellenarPlantilla(plantilla);
+  if (premium) rellenarSiHaceFalta(plantilla);
   const mini = hoja.cloneNode(true);
   mini.removeAttribute("contenteditable");
   mini.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
@@ -3940,6 +4026,8 @@ document.getElementById("btn-cta-principal").addEventListener("click", () => {
   if (!EN_APP) return mostrarModalApp();
   const premium = plantillaActiva !== "basico";
   if (pendienteSirve(premium)) return entregarDescarga(descargaPendiente);
+  // Corregido después de descargarlo: se guarda otra vez gratis (mismo CV, mismo diseño)
+  if (hayCambiosSinGuardar()) return guardarCambiosCV(null);
   if (premium) abrirModalPago("premium_299");
   else lanzarAnuncio();
 });
