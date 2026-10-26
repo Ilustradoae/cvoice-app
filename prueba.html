@@ -3701,10 +3701,6 @@ function rellenarPlantilla(modelo){
   const elNombre = $(`${p}-nombre`);
   if (elNombre) elNombre.textContent = nombre || TEXTOS[idiomaCV].nombre_predeterminado;
   const elIniciales = $(`${p}-iniciales`);
-  if (elIniciales){
-    const iniciales = nombre.split(/\s+/).filter(Boolean).map(w => w[0]).join("").substring(0, 2).toUpperCase();
-    elIniciales.textContent = iniciales || "—";
-  }
 
   // Datos de contacto: si en el básico están ocultos o vacíos, se oculta la fila entera
   ["telefono", "email", "ubicacion"].forEach(campo => {
@@ -3743,12 +3739,41 @@ function rellenarPlantilla(modelo){
   copiarSeccion("cv-seccion-perfil", "cv-perfil", idSec("perfil", "perfil"), `${p}-perfil`);
   copiarSeccion("cv-seccion-habilidades", "cv-habilidades", idSec("habilidades", "hab"), `${p}-habilidades`);
 
-  // Subtítulo/cargo en prem2, prem3 y prem4: el primer puesto de la experiencia
-  const subEl = $(`${p}-sub-cargo`) || $(`${p}-cargo`);
+  actualizarDerivados(p);
+}
+
+// Lo que no se edita a mano y sale de otros datos: iniciales del avatar (p3, p4) y
+// subtítulo/cargo bajo el nombre (prem2, prem3, prem4) = primer puesto de la experiencia
+function actualizarDerivados(p){
+  const elIniciales = document.getElementById(`${p}-iniciales`);
+  if (elIniciales){
+    const nombre = document.getElementById("cv-nombre").textContent.trim();
+    const iniciales = nombre.split(/\s+/).filter(Boolean).map(w => w[0]).join("").substring(0, 2).toUpperCase();
+    elIniciales.textContent = iniciales || "—";
+  }
+  const subEl = document.getElementById(`${p}-sub-cargo`) || document.getElementById(`${p}-cargo`);
   if (subEl){
     const primerPuesto = document.querySelector("#cv-experiencia .cv-experiencia-puesto");
     subEl.textContent = primerPuesto ? primerPuesto.textContent.trim() : "";
   }
+}
+
+// Una corrección hecha en un diseño premium se copia al básico, que es la fuente de todos:
+// así la última corrección manda, se haga en el diseño que se haga. Los demás diseños la
+// recogen al mostrarlos (rellenarSiHaceFalta); el que se está editando no se vuelve a
+// rellenar, para no mover el cursor.
+const CAMPOS_TEXTO_CV = ["nombre", "telefono", "email", "ubicacion"];
+const PREFIJO_A_MODELO = { prem: "prem1", p2: "prem2", p3: "prem3", p4: "prem4" };
+function volcarCorreccionEnBasico(editable){
+  const m = /^(prem|p2|p3|p4)-(\w+)$/.exec(editable.id || "");
+  if (!m) return;
+  const destino = document.getElementById("cv-" + m[2]);
+  if (!destino) return;
+  if (CAMPOS_TEXTO_CV.includes(m[2])) destino.textContent = editable.textContent;
+  else destino.innerHTML = editable.innerHTML;
+  versionDatosCV++;
+  document.getElementById(CV_MAP[PREFIJO_A_MODELO[m[1]]]).dataset.version = String(versionDatosCV);
+  actualizarDerivados(m[1]);
 }
 
 // =============================================================================
@@ -3907,7 +3932,9 @@ function abrirOEnviarCV(accion){
 let cvCambiadoTrasGuardar = false;
 let accionTrasGuardar = null; // "abrir" | "compartir": se hace cuando el PDF nuevo queda guardado
 document.getElementById("contenedor-cvs").addEventListener("input", e => {
+  const editable = e.target.closest && e.target.closest("[contenteditable='true'][id]");
   if (e.target.closest && e.target.closest("#hoja-cv")) versionDatosCV++;
+  else if (editable) volcarCorreccionEnBasico(editable);
   if (plantillaGuardada && !cvCambiadoTrasGuardar) marcarCambiosCV(true);
 });
 
