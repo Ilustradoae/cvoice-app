@@ -310,7 +310,7 @@
     align-items: stretch;
   }
   .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: calc(2.5 * var(--u)) calc(1.75 * var(--u)); display: flex; flex-direction: column; }
-  .p3-avatar{ width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto calc(1.25 * var(--ue)); font-size: calc(1.5 * var(--u)); font-weight: 700; color: #C4874A; }
+  .p3-avatar{ width: calc(7 * var(--u)); height: calc(7 * var(--u)); border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto calc(1.25 * var(--ue)); }
   .p3-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p3-nombre{ font-size: calc(1.05 * var(--u)); font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: calc(.2 * var(--u)); }
   .p3-sub{ font-size: calc(.62 * var(--u)); color: #C4874A; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; text-align: center; margin-bottom: calc(1.25 * var(--ue)); }
@@ -333,7 +333,7 @@
     background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
   }
   .p4-header{ background: #1B3A5C; padding: calc(1.5 * var(--u)) calc(2 * var(--u)); display: flex; align-items: center; gap: calc(1.25 * var(--u)); border-bottom: 4px solid #2D6A9F; }
-  .p4-avatar{ width: calc(5.5 * var(--u)); height: calc(5.5 * var(--u)); border-radius: calc(.6 * var(--u)); border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; font-size: calc(1.4 * var(--u)); font-weight: 700; color: #93B5D4; }
+  .p4-avatar{ width: calc(5.5 * var(--u)); height: calc(5.5 * var(--u)); border-radius: calc(.6 * var(--u)); border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
   .p4-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p4-hinfo{ flex: 1; }
   .p4-nombre{ font-size: calc(1.4 * var(--u)); font-weight: 700; color: #fff; letter-spacing: .02em; }
@@ -967,7 +967,6 @@
       <aside class="cv-col-izquierda">
         <div class="cv-avatar" id="cv-foto-contenedor">
           <img id="cv-foto-img" alt="Foto del candidato" class="hidden">
-          <svg id="cv-avatar-placeholder" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#B7AF9D" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
         </div>
         <h1 contenteditable="true" id="cv-nombre" class="cv-nombre pista-edicion">NOMBRE APELLIDO</h1>
 
@@ -1022,7 +1021,6 @@
       <div class="prem-izq">
         <div class="prem-avatar">
           <img id="prem-foto" alt="" class="hidden">
-          <svg id="prem-avatar-placeholder" width="46" height="46" viewBox="0 0 24 24" fill="#475569"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         </div>
 
         <h1 contenteditable="true" id="prem-nombre" class="prem-nombre">NOMBRE APELLIDO</h1>
@@ -1083,7 +1081,6 @@
     <div class="p2-head">
       <div class="p2-avatar">
         <img id="p2-foto" alt="Foto" class="hidden" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
-        <svg id="p2-avatar-placeholder" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke-linecap="round"/></svg>
       </div>
       <div>
         <div contenteditable="true" id="p2-nombre" class="p2-nombre pista-edicion">Nombre Apellido</div>
@@ -1135,7 +1132,6 @@
     <div class="p3-izq">
       <div class="p3-avatar">
         <img id="p3-foto" alt="Foto" class="hidden">
-        <span id="p3-iniciales">SG</span>
       </div>
       <div contenteditable="true" id="p3-nombre" class="p3-nombre pista-edicion">Nombre Apellido</div>
       <div id="p3-sub-cargo" class="p3-sub"></div>
@@ -1174,7 +1170,6 @@
     <div class="p4-header">
       <div class="p4-avatar">
         <img id="p4-foto" alt="Foto" class="hidden">
-        <span id="p4-iniciales">SG</span>
       </div>
       <div class="p4-hinfo">
         <div contenteditable="true" id="p4-nombre" class="p4-nombre pista-edicion">Nombre Apellido</div>
@@ -3196,15 +3191,8 @@ function pintarCV(resultado){
   document.getElementById("cv-seccion-habilidades").classList.toggle("hidden", !habilidades.length);
 
   const imgFoto = document.getElementById("cv-foto-img");
-  const placeholderFoto = document.getElementById("cv-avatar-placeholder");
-  if (fotoCapturadaDataURL){
-    imgFoto.src = fotoCapturadaDataURL;
-    imgFoto.classList.remove("hidden");
-    placeholderFoto.classList.add("hidden");
-  } else {
-    imgFoto.classList.add("hidden");
-    placeholderFoto.classList.remove("hidden");
-  }
+  if (fotoCapturadaDataURL) imgFoto.src = fotoCapturadaDataURL;
+  imgFoto.classList.toggle("hidden", !fotoCapturadaDataURL);
   // Sin foto no se deja el hueco: un círculo vacío en el CV queda poco profesional
   document.getElementById("cv-foto-contenedor").classList.toggle("hidden", !fotoCapturadaDataURL);
 
@@ -3696,11 +3684,9 @@ function rellenarPlantilla(modelo){
   // prem1 usa nombres de ID distintos para las secciones
   const idSec = (prem1, otros) => modelo === "prem1" ? `prem-seccion-${prem1}` : `${p}-sec-${otros}`;
 
-  // Nombre e iniciales (los avatares de p3 y p4 las muestran si no hay foto)
   const nombre = $("cv-nombre").textContent.trim();
   const elNombre = $(`${p}-nombre`);
   if (elNombre) elNombre.textContent = nombre || TEXTOS[idiomaCV].nombre_predeterminado;
-  const elIniciales = $(`${p}-iniciales`);
 
   // Datos de contacto: si en el básico están ocultos o vacíos, se oculta la fila entera
   ["telefono", "email", "ubicacion"].forEach(campo => {
@@ -3718,10 +3704,7 @@ function rellenarPlantilla(modelo){
     const hayFoto = !!fotoCapturadaDataURL;
     if (hayFoto) fotoEl.src = fotoCapturadaDataURL;
     fotoEl.classList.toggle("hidden", !hayFoto);
-    if (elIniciales) elIniciales.style.display = hayFoto ? "none" : "";
-    const placEl = $(`${p}-avatar-placeholder`);
-    if (placEl) placEl.classList.toggle("hidden", hayFoto);
-    // Sin foto se quita el recuadro entero (ni silueta ni iniciales)
+    // Sin foto se quita el recuadro entero: no queda hueco en el CV
     fotoEl.parentElement.classList.toggle("hidden", !hayFoto);
   }
 
@@ -3742,15 +3725,9 @@ function rellenarPlantilla(modelo){
   actualizarDerivados(p);
 }
 
-// Lo que no se edita a mano y sale de otros datos: iniciales del avatar (p3, p4) y
-// subtítulo/cargo bajo el nombre (prem2, prem3, prem4) = primer puesto de la experiencia
+// Subtítulo/cargo bajo el nombre (prem2, prem3, prem4): no se edita a mano, es el primer
+// puesto de la experiencia
 function actualizarDerivados(p){
-  const elIniciales = document.getElementById(`${p}-iniciales`);
-  if (elIniciales){
-    const nombre = document.getElementById("cv-nombre").textContent.trim();
-    const iniciales = nombre.split(/\s+/).filter(Boolean).map(w => w[0]).join("").substring(0, 2).toUpperCase();
-    elIniciales.textContent = iniciales || "—";
-  }
   const subEl = document.getElementById(`${p}-sub-cargo`) || document.getElementById(`${p}-cargo`);
   if (subEl){
     const primerPuesto = document.querySelector("#cv-experiencia .cv-experiencia-puesto");
