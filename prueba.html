@@ -3253,6 +3253,7 @@ document.getElementById("btn-volver-editar").addEventListener("click", () => {
   // por si quiere otra y "Continuar" para seguir con la misma
   detenerCamara();
   const hayFoto = !!fotoCapturadaDataURL;
+  if (hayFoto) imgFotoCapturada.src = fotoCapturadaDataURL;
   controlesActiva.classList.add("hidden");
   controlesListos.classList.toggle("hidden", !hayFoto);
   controlesInicial.classList.toggle("hidden", hayFoto);
