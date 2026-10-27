@@ -20,6 +20,7 @@
     --musgo-claro:#E4EFE9; /* verde muy pálido para tarjetas */
     --ambar:#D98B3F;       /* ámbar, acento y llamada a la acción */
     --ambar-suave:#F3DDBC;
+    --ambar-boton:#A9631F; /* ámbar tostado para botones con texto blanco: contraste 4,7 (el ámbar normal da 2,7) */
     --linea:#CFC6B2;       /* líneas/bordes sutiles */
 
     /* Paleta exclusiva del documento de CV: pensada para parecer papel impreso, no "app" */
@@ -587,10 +588,10 @@
   .bv-check svg{ width: 1.35rem; height: 1.35rem; }
   .bv-listo-t{ font-weight: 700; font-size: 1.0625rem; color: var(--musgo); margin: 0; }
   .bv-listo-d{ font-size: .95rem; line-height: 1.4; color: var(--tinta); margin: .15rem 0 0; }
-  #btn-empezar{ width: 100%; min-height: 64px; border-radius: 9999px; border: 0; background: var(--ambar); color: #fff;
-    font-size: 1.25rem; font-weight: 700; padding: 0 1.25rem; box-shadow: 0 12px 24px -12px rgba(217,139,63,.9);
+  #btn-empezar{ width: 100%; min-height: 64px; border-radius: 9999px; border: 0; background: var(--ambar-boton); color: #fff;
+    font-size: 1.25rem; font-weight: 700; padding: 0 1.25rem; box-shadow: 0 12px 24px -12px rgba(169,99,31,.9);
     transition: transform .15s ease, box-shadow .15s ease; }
-  #btn-empezar:active{ transform: scale(.98); box-shadow: 0 6px 14px -8px rgba(217,139,63,.9); }
+  #btn-empezar:active{ transform: scale(.98); box-shadow: 0 6px 14px -8px rgba(169,99,31,.9); }
   @media (max-width: 380px){ .bv-titulo{ font-size: 1.75rem; } .bv-cabecera{ padding: 1.7rem 1.2rem 1.9rem; } .bv-cuerpo{ padding: 1.4rem 1.1rem 1.3rem; } }
   /* Panel tras guardar el CV: título y dos botones iguales (enviar / abrir) */
   #panel-cv-guardado{ background: var(--musgo-claro); border: 2px solid var(--musgo); border-radius: 1.25rem;
@@ -805,7 +806,7 @@
       </div>
 
       <div id="controles-camara-activa" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
-        <button id="btn-capturar-foto" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)" data-i18n="boton_capturar">Hacer foto</button>
+        <button id="btn-capturar-foto" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar-boton)" data-i18n="boton_capturar">Hacer foto</button>
       </div>
 
       <div id="controles-foto-lista" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
@@ -1203,7 +1204,7 @@
     <p class="cv-ayuda-final" data-i18n="cv_ayuda">Toca cualquier texto de tu CV para corregirlo antes de descargar.</p>
 
     <!-- BOTÓN PRINCIPAL DINÁMICO (arriba) -->
-    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-4" style="background:var(--ambar); padding-left:14px; padding-right:14px">
+    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-4" style="background:var(--ambar-boton); padding-left:14px; padding-right:14px">
       <div class="flex items-center justify-center gap-2">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
         <span class="text-base">DESCARGAR</span>
