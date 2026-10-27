@@ -68,7 +68,7 @@
     max-width: none;
   }
   /* Modales: scroll vertical si el contenido no cabe en pantalla pequeña */
-  #modal-app > div, #modal-pago > div {
+  #modal-app > div {
     max-height: 90dvh; /* dvh = dynamic viewport height, correcto en móvil */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -157,11 +157,9 @@
 
   .cv-oculto{ display: none !important; }
 
-  /* Carrusel de diseños: nombre + etiqueta GRATIS/PREMIUM bajo cada miniatura */
+  /* Carrusel de diseños: nombre bajo cada miniatura */
   #carrusel-plantillas button{ width: 84px !important; }
   .car-nombre{ display: block; font-size: 11px; font-weight: 700; color: var(--tinta); margin: 2px 0 3px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .car-etiqueta{ display: block; font-size: 9px; font-weight: 800; color: white; border-radius: 8px; padding: 2px 4px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   /* Dato de contacto vacío en las plantillas premium: se oculta la fila entera */
   .cv-vacio{ display: none !important; }
@@ -507,7 +505,6 @@
   .ayuda-editar + textarea{ border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
   /* Pantalla del CV */
   #carrusel-plantillas > p{ font-size: 1rem; }
-  #txt-cta-secundario{ font-size: 1rem; line-height: 1.4rem; padding: .6rem 0; }
   .cv-ayuda-final{ text-align: center; font-size: 1rem; line-height: 1.4rem; color: var(--tinta); margin: 0 0 .75rem; }
 
   /* ===================== BIENVENIDA (paso cero) =====================
@@ -560,6 +557,9 @@
   #zona-descarga{ padding: 1.4rem 1.2rem 1rem !important; margin-top: 1.5rem !important; }
   .bv-titulo{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 2.05rem; line-height: 1.15; margin: 0 0 .8rem; }
   .bv-sub{ font-size: 1.0625rem; line-height: 1.55; color: rgba(251,247,238,.9); margin: 0 auto; max-width: 26rem; }
+  /* Sello "100 % gratis": da confianza a quien no sabe si le van a cobrar */
+  .bv-gratis{ display: inline-block; margin: 1rem auto 0; padding: .35rem .9rem; border-radius: 999px;
+    background: var(--ambar-suave); color: #6b4416; font-size: .875rem; font-weight: 700; line-height: 1.3; }
   .bv-cuerpo{ padding: 1.7rem 1.4rem 1.5rem; }
   .bv-pasos{ list-style: none; margin: 0 0 1.7rem; padding: 0; display: flex; flex-direction: column; gap: 1.1rem; }
   .bv-pasos li{ display: flex; align-items: flex-start; gap: 1rem; }
@@ -603,15 +603,11 @@
   #btn-compartir-cv, #btn-abrir-cv{ display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .35rem;
     min-height: 96px; padding: .75rem .5rem; border-radius: 1.25rem; font-size: 1rem; line-height: 1.25rem; font-weight: 700;
     background: var(--musgo); color: #fff; box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1); }
-  /* Si la descarga fue la premium, el panel lleva el ámbar de su botón de descarga */
-  #panel-cv-guardado.es-premium{ background: #FBEBD7; border-color: var(--ambar); }
-  #panel-cv-guardado.es-premium .panel-cv-guardado-titulo{ color: #8a5a1f; }
-  #panel-cv-guardado.es-premium #btn-compartir-cv, #panel-cv-guardado.es-premium #btn-abrir-cv{ background: var(--ambar); }
 </style>
 <!-- Tailwind CSS v3.4.17 compilado (solo las clases que usa esta página). Antes se usaba el CDN
      de desarrollo (cdn.tailwindcss.com), que compila en el móvil en cada carga. Si se añaden clases
      nuevas de Tailwind hay que regenerarlo. -->
-<style id="tailwind">*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\!visible{visibility:visible !important}.visible{visibility:visible}.invisible{visibility:hidden}.static{position:static}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.left-1\/2{left:50%}.bottom-4{bottom:1rem}.z-10{z-index:10}.z-50{z-index:50}.m-auto{margin:auto}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.block{display:block}.inline-block{display:inline-block}.inline{display:inline}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-28{height:7rem}.h-3{height:0.75rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-28{width:7rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-xl{max-width:36rem}.max-w-3xl{max-width:48rem}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.resize{resize:both}.list-disc{list-style-type:disc}.flex-row{flex-direction:row}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.gap-2{gap:0.5rem}.gap-1{gap:0.25rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.self-center{align-self:center}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-t{border-top-width:1px}.border-red-300{--tw-border-opacity:1;border-color:rgb(252 165 165 / var(--tw-border-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-2{padding:0.5rem}.p-8{padding:2rem}.px-4{padding-left:1rem;padding-right:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-2{padding-bottom:0.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-normal{font-weight:400}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-red-800{--tw-text-opacity:1;color:rgb(153 27 27 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.opacity-80{opacity:0.8}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:bg-gray-50:hover{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.hover\:opacity-90:hover{opacity:0.9}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 640px){.sm\:h-32{height:8rem}.sm\:w-32{width:8rem}.sm\:flex-row{flex-direction:row}.sm\:p-8{padding:2rem}.sm\:py-10{padding-top:2.5rem;padding-bottom:2.5rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}}</style>
+<style id="tailwind">*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.\!visible{visibility:visible !important}.visible{visibility:visible}.invisible{visibility:hidden}.static{position:static}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.left-1\/2{left:50%}.bottom-4{bottom:1rem}.z-10{z-index:10}.z-50{z-index:50}.m-auto{margin:auto}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.block{display:block}.inline-block{display:inline-block}.inline{display:inline}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-28{height:7rem}.h-3{height:0.75rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-28{width:7rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-xl{max-width:36rem}.max-w-3xl{max-width:48rem}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.resize{resize:both}.list-disc{list-style-type:disc}.flex-row{flex-direction:row}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-5{gap:1.25rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-t{border-top-width:1px}.border-red-300{--tw-border-opacity:1;border-color:rgb(252 165 165 / var(--tw-border-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-2{padding:0.5rem}.p-8{padding:2rem}.px-4{padding-left:1rem;padding-right:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-2{padding-bottom:0.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-red-800{--tw-text-opacity:1;color:rgb(153 27 27 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:bg-gray-50:hover{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.hover\:opacity-90:hover{opacity:0.9}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 640px){.sm\:h-32{height:8rem}.sm\:w-32{width:8rem}.sm\:flex-row{flex-direction:row}.sm\:p-8{padding:2rem}.sm\:py-10{padding-top:2.5rem;padding-bottom:2.5rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}}</style>
 </head>
 
 <body class="min-h-screen flex flex-col items-center px-4 py-6 sm:py-10">
@@ -632,6 +628,7 @@
     <div class="bv-cabecera">
       <h1 class="bv-titulo" data-i18n="bv_titulo">Tu currículum, solo hablando</h1>
       <p class="bv-sub" data-i18n="bv_sub">Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.</p>
+      <p class="bv-gratis" data-i18n="bv_gratis">100 % gratis · Sin registro · Sin anuncios</p>
     </div>
 
     <div class="bv-cuerpo">
@@ -851,7 +848,7 @@
     <p class="text-sm font-bold mb-2" style="color:var(--musgo)" data-i18n="elige_estilo">Elige el diseño de tu currículum:</p>
     <div class="flex gap-2 overflow-x-auto pb-2" style="-webkit-overflow-scrolling:touch; scrollbar-width:none">
 
-      <!-- 1. BÁSICO (GRATIS) -->
+      <!-- 1. CLÁSICO -->
       <button id="car-basico" onclick="seleccionarPlantilla('basico')"
         class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
         style="width:72px;border-color:var(--ambar);background:white">
@@ -869,7 +866,6 @@
           </div>
         </div>
         <span class="car-nombre" data-i18n="diseno_basico">Clásico</span>
-        <span class="car-etiqueta" style="background:#64748B" data-i18n="etiqueta_gratis">GRATIS</span>
       </button>
 
       <!-- 2. EJECUTIVO -->
@@ -889,7 +885,6 @@
           </div>
         </div>
         <span class="car-nombre" data-i18n="diseno_prem1">Diseño</span>
-        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
       <!-- 3. EDITORIAL -->
@@ -911,7 +906,6 @@
           </div>
         </div>
         <span class="car-nombre" data-i18n="diseno_prem2">Diseño</span>
-        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
       <!-- 4. ÁMBAR -->
@@ -932,7 +926,6 @@
           </div>
         </div>
         <span class="car-nombre" data-i18n="diseno_prem3">Diseño</span>
-        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
       <!-- 5. AZUL MARINO -->
@@ -951,7 +944,6 @@
           </div>
         </div>
         <span class="car-nombre" data-i18n="diseno_prem4">Diseño</span>
-        <span class="car-etiqueta" style="background:var(--ambar)" data-i18n="etiqueta_premium">PREMIUM</span>
       </button>
 
     </div><!-- /flex carrusel -->
@@ -1208,25 +1200,19 @@
   </div>
   </div><!-- /contenedor-cvs (contiene las 5 plantillas) -->
 
-  <!-- ===== Zona de descarga / monetización ===== -->
+  <!-- ===== Zona de descarga ===== -->
   <div id="zona-descarga" class="max-w-3xl mx-auto mt-4 mb-3 px-2">
 
     <!-- Justo antes de descargar: último repaso del texto (el idioma del CV se elige en la bienvenida) -->
     <p class="cv-ayuda-final" data-i18n="cv_ayuda">Toca cualquier texto de tu CV para corregirlo antes de descargar.</p>
 
     <!-- BOTÓN PRINCIPAL DINÁMICO (arriba) -->
-    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-1" style="background:var(--musgo); padding-left:14px; padding-right:14px">
+    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-4" style="background:var(--musgo); padding-left:14px; padding-right:14px">
       <div class="flex items-center justify-center gap-2">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-        <span class="text-base">DESCARGAR GRATIS</span>
+        <span class="text-base">DESCARGAR</span>
       </div>
-      <div class="text-xs font-normal opacity-80">(viendo un vídeo corto)</div>
     </button>
-
-    <!-- Opción secundaria sin anuncio (solo visible en modo gratis) -->
-    <p id="txt-cta-secundario" class="text-center text-xs underline cursor-pointer mb-4" style="color:var(--musgo)">
-      Descarga inmediata sin anuncio por 0,99 €
-    </p>
 
     <!-- Tras guardar el PDF: abrirlo o mandarlo (WhatsApp, correo…) sin tener que buscar la
          carpeta Descargas. Solo con la app 1.3.0+, que tiene Android.compartirUltimoCV -->
@@ -1258,7 +1244,7 @@
   <button id="btn-ajustes-privacidad" class="hidden underline" style="min-height:44px; padding:0 8px" data-i18n="pie_ajustes_privacidad">Ajustes de privacidad</button>
 </footer>
 
-<!-- ===== Modal: fuera de la app no se descarga (solo la app tiene anuncios y pagos) ===== -->
+<!-- ===== Modal: fuera de la app no se descarga (el PDF se guarda en el móvil desde la app) ===== -->
 <div id="modal-app" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){this.classList.add('hidden')}">
   <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full m-auto text-center flex flex-col gap-5">
     <p class="font-display text-2xl font-bold" style="color:var(--musgo)" data-i18n="app_titulo">Descarga tu CV desde la app</p>
@@ -1266,20 +1252,6 @@
     <a href="https://play.google.com/store/apps/details?id=com.illustratedstudio.cvoice" target="_blank" rel="noopener"
        class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md" style="background:var(--musgo)" data-i18n="app_boton">Conseguir CVoice en Google Play</a>
     <button class="text-sm" style="color:#6B6354; min-height:44px" onclick="document.getElementById('modal-app').classList.add('hidden')" data-i18n="cerrar">Cerrar</button>
-  </div>
-</div>
-
-<!-- ===== Modal: confirmación de pago ===== -->
-<div id="modal-pago" class="hidden fixed inset-0 z-50 flex overflow-y-auto px-4 py-8" style="background:rgba(0,0,0,0.55)" onclick="if(event.target===this){cerrarModalPago();productoPendiente=null;}">
-  <div class="bg-white rounded-3xl shadow-2xl p-6 max-w-sm w-full m-auto text-center flex flex-col gap-4" onclick="event.stopPropagation()">
-    <span id="modal-pago-insignia" class="hidden self-center text-xs font-bold px-3 py-1 rounded-full" style="background:var(--ambar-suave); color:#8a5a1f" data-i18n="insignia_recomendado">⭐ Recomendado</span>
-    <p id="modal-pago-titulo" class="font-display text-2xl font-bold" style="color:var(--musgo)"></p>
-    <!-- Vista previa del CV del propio usuario con el diseño elegido -->
-    <div id="modal-pago-vista" class="mx-auto rounded-lg overflow-hidden shadow-lg" style="width:150px; height:212px; background:#fff; border:1px solid var(--linea); pointer-events:none; text-align:left"></div>
-    <ul id="modal-pago-ventajas" class="text-left text-sm mx-auto flex flex-col gap-1" style="color:var(--tinta)"></ul>
-    <button id="btn-confirmar-pago" class="w-full py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)"></button>
-    <p class="text-xs" style="color:#6B6354" data-i18n="pago_pie">Sin suscripciones · Pago seguro con Google Play</p>
-    <button id="btn-cancelar-pago" class="text-sm" style="color:#6B6354; min-height:44px" data-i18n="ahora_no">Ahora no</button>
   </div>
 </div>
 
@@ -1372,6 +1344,7 @@ const TEXTOS = {
     aviso_salir: "Pulsa Atrás otra vez para salir de CVoice.",
     bv_titulo: "Tu currículum, solo hablando",
     bv_sub: "Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.",
+    bv_gratis: "100 % gratis · Sin registro · Sin anuncios",
     bv_p1_t: "Habla",
     bv_p1_d: "Responde a unas preguntas sencillas, como en una conversación.",
     bv_p2_t: "Lo redactamos",
@@ -1431,6 +1404,7 @@ const TEXTOS = {
     aviso_salir: "Press Back again to exit CVoice.",
     bv_titulo: "Your résumé, just by talking",
     bv_sub: "Tell us about your experience out loud. We turn it into a professional résumé, ready to send.",
+    bv_gratis: "100% free · No sign-up · No ads",
     bv_p1_t: "Talk",
     bv_p1_d: "Answer a few simple questions, like in a conversation.",
     bv_p2_t: "We write it",
@@ -1490,6 +1464,7 @@ const TEXTOS = {
     aviso_salir: "Appuyez à nouveau sur Retour pour quitter CVoice.",
     bv_titulo: "Votre CV, simplement en parlant",
     bv_sub: "Racontez votre expérience à voix haute. Nous la transformons en un CV professionnel, prêt à envoyer.",
+    bv_gratis: "100 % gratuit · Sans inscription · Sans publicité",
     bv_p1_t: "Parlez",
     bv_p1_d: "Répondez à quelques questions simples, comme dans une conversation.",
     bv_p2_t: "Nous le rédigeons",
@@ -1549,6 +1524,7 @@ const TEXTOS = {
     aviso_salir: "Drücken Sie erneut Zurück, um CVoice zu verlassen.",
     bv_titulo: "Ihr Lebenslauf – einfach sprechen",
     bv_sub: "Erzählen Sie uns von Ihrer Erfahrung. Wir machen daraus einen professionellen Lebenslauf, bereit zum Versenden.",
+    bv_gratis: "100 % kostenlos · Ohne Anmeldung · Ohne Werbung",
     bv_p1_t: "Sprechen",
     bv_p1_d: "Beantworten Sie ein paar einfache Fragen – wie in einem Gespräch.",
     bv_p2_t: "Wir schreiben ihn",
@@ -1608,6 +1584,7 @@ const TEXTOS = {
     aviso_salir: "Premi di nuovo Indietro per uscire da CVoice.",
     bv_titulo: "Il tuo curriculum, solo parlando",
     bv_sub: "Raccontaci la tua esperienza a voce. Noi la trasformiamo in un curriculum professionale, pronto da inviare.",
+    bv_gratis: "100% gratis · Senza registrazione · Senza pubblicità",
     bv_p1_t: "Parla",
     bv_p1_d: "Rispondi ad alcune domande semplici, come in una conversazione.",
     bv_p2_t: "Lo scriviamo noi",
@@ -1667,6 +1644,7 @@ const TEXTOS = {
     aviso_salir: "Prima Voltar novamente para sair do CVoice.",
     bv_titulo: "O seu currículo, só a falar",
     bv_sub: "Conte-nos a sua experiência em voz alta. Nós transformamo-la num currículo profissional, pronto a enviar.",
+    bv_gratis: "100% grátis · Sem registo · Sem anúncios",
     bv_p1_t: "Fale",
     bv_p1_d: "Responda a algumas perguntas simples, como numa conversa.",
     bv_p2_t: "Nós escrevemos",
@@ -1726,6 +1704,7 @@ const TEXTOS = {
     aviso_salir: "اضغط على رجوع مرة أخرى للخروج من CVoice.",
     bv_titulo: "سيرتك الذاتية بمجرد الكلام",
     bv_sub: "حدّثنا عن خبرتك بصوتك، ونحن نحوّلها إلى سيرة ذاتية احترافية جاهزة للإرسال.",
+    bv_gratis: "مجاني 100% · بدون تسجيل · بدون إعلانات",
     bv_p1_t: "تحدّث",
     bv_p1_d: "أجب عن بعض الأسئلة البسيطة، كأنها محادثة.",
     bv_p2_t: "نحن نكتبها",
@@ -1785,6 +1764,7 @@ const TEXTOS = {
     aviso_salir: "再按一次返回键即可退出 CVoice。",
     bv_titulo: "只需说话，简历就完成",
     bv_sub: "用声音告诉我们你的经历，我们把它变成一份专业的简历，可以直接发送。",
+    bv_gratis: "完全免费 · 无需注册 · 无广告",
     bv_p1_t: "说",
     bv_p1_d: "像聊天一样，回答几个简单的问题。",
     bv_p2_t: "我们来写",
@@ -1844,6 +1824,7 @@ const TEXTOS = {
     aviso_salir: "もう一度「戻る」を押すと CVoice を終了します。",
     bv_titulo: "話すだけで、あなたの履歴書",
     bv_sub: "あなたの経験を声で教えてください。すぐに送れる、プロらしい履歴書に仕上げます。",
+    bv_gratis: "完全無料 · 登録不要 · 広告なし",
     bv_p1_t: "話す",
     bv_p1_d: "会話のように、いくつかの簡単な質問に答えるだけ。",
     bv_p2_t: "私たちが作成",
@@ -1903,6 +1884,7 @@ const TEXTOS = {
     aviso_salir: "Apasă din nou Înapoi pentru a ieși din CVoice.",
     bv_titulo: "CV-ul tău, doar vorbind",
     bv_sub: "Povestește-ne experiența ta cu vocea. Noi o transformăm într-un CV profesional, gata de trimis.",
+    bv_gratis: "100% gratuit · Fără înregistrare · Fără reclame",
     bv_p1_t: "Vorbește",
     bv_p1_d: "Răspunde la câteva întrebări simple, ca într-o conversație.",
     bv_p2_t: "Noi îl redactăm",
@@ -1962,6 +1944,7 @@ const TEXTOS = {
     aviso_salir: "Naciśnij ponownie Wstecz, aby wyjść z CVoice.",
     bv_titulo: "Twoje CV – wystarczy mówić",
     bv_sub: "Opowiedz nam o swoim doświadczeniu. Zamienimy to w profesjonalne CV, gotowe do wysłania.",
+    bv_gratis: "100% za darmo · Bez rejestracji · Bez reklam",
     bv_p1_t: "Mów",
     bv_p1_d: "Odpowiedz na kilka prostych pytań, jak w rozmowie.",
     bv_p2_t: "My je piszemy",
@@ -2021,6 +2004,7 @@ const TEXTOS = {
     aviso_salir: "Натисніть «Назад» ще раз, щоб вийти з CVoice.",
     bv_titulo: "Ваше резюме — просто голосом",
     bv_sub: "Розкажіть про свій досвід уголос. Ми перетворимо його на професійне резюме, готове до надсилання.",
+    bv_gratis: "100% безкоштовно · Без реєстрації · Без реклами",
     bv_p1_t: "Говоріть",
     bv_p1_d: "Дайте відповідь на кілька простих запитань, як у розмові.",
     bv_p2_t: "Ми пишемо",
@@ -2080,6 +2064,7 @@ const TEXTOS = {
     aviso_salir: "Нажмите «Назад» ещё раз, чтобы выйти из CVoice.",
     bv_titulo: "Ваше резюме — просто голосом",
     bv_sub: "Расскажите о своём опыте вслух. Мы превратим его в профессиональное резюме, готовое к отправке.",
+    bv_gratis: "100% бесплатно · Без регистрации · Без рекламы",
     bv_p1_t: "Говорите",
     bv_p1_d: "Ответьте на несколько простых вопросов, как в разговоре.",
     bv_p2_t: "Мы пишем",
@@ -2097,240 +2082,146 @@ const TEXTOS = {
   },
 };
 
-// Textos de la pantalla final, venta y avisos en todos los idiomas.
-// {precio} y {diseno} se sustituyen al usarlos (ver tx()).
+// Textos de la pantalla final y avisos en todos los idiomas.
 const TEXTOS_EXTRA = {
   es: {
     cv_bloque_perfil: "Perfil profesional", cv_bloque_habilidades: "Habilidades",
-    elige_estilo: "Elige el diseño de tu currículum:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Elige el diseño de tu currículum:",
     diseno_basico: "Clásico", diseno_prem1: "Ejecutivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
-    cta_gratis: "DESCARGAR GRATIS", cta_gratis_sub: "(viendo un vídeo corto)", cta_premium: "DESCARGAR · {precio}", cta_premium_sub: "Diseño {diseno} · Sin suscripciones · Sin anuncios",
-    cta_sin_anuncio: "Descarga inmediata sin anuncio por {precio}",
-    pago_titulo_premium: "Diseño {diseno}", pago_titulo_sin_anuncio: "Descarga sin anuncios", insignia_recomendado: "⭐ Recomendado",
-    pago_ventaja_premium_1: "Un diseño que destaca entre los candidatos", pago_ventaja_premium_2: "Listo para enviar a empresas en PDF", pago_ventaja_premium_3: "Sin anuncios",
-    pago_ventaja_basico_1: "Descarga inmediata", pago_ventaja_basico_2: "Sin ver ningún vídeo", pago_ventaja_basico_3: "Listo para enviar a empresas en PDF",
-    pago_pie: "Sin suscripciones · Pago seguro con Google Play", boton_pagar: "Descargar por {precio}", ahora_no: "Ahora no",
+    cta_descargar: "DESCARGAR",
     app_titulo: "Descarga tu CV desde la app", app_desc: "La descarga del currículum en PDF está disponible en la app CVoice para Android.", app_boton: "Conseguir CVoice en Google Play", cerrar: "Cerrar",
-    aviso_cargando_video: "Cargando el vídeo…", aviso_descargando: "Descargando tu currículum…", aviso_video_completo: "Para la descarga gratuita hay que ver el vídeo completo.",
-    aviso_pago_error: "No se ha podido completar el pago. Inténtalo de nuevo.", aviso_pago_pendiente: "Pago pendiente de confirmar. Cuando Google lo confirme, vuelve a pulsar descargar.",
-    aviso_pdf_error: "No se ha podido guardar el currículum. Pulsa descargar otra vez: no tendrás que volver a pagar ni ver el vídeo.", aviso_cv_guardado: "Currículum guardado en la carpeta Descargas.", pie_privacidad: "Política de privacidad", pie_ajustes_privacidad: "Ajustes de privacidad",
+    aviso_descargando: "Descargando tu currículum…",
+    aviso_pdf_error: "No se ha podido guardar el currículum. Pulsa descargar otra vez.", aviso_cv_guardado: "Currículum guardado en la carpeta Descargas.", pie_privacidad: "Política de privacidad", pie_ajustes_privacidad: "Ajustes de privacidad",
     aria_grabar: "Grabar voz",
   },
   en: {
     cv_bloque_perfil: "Professional profile", cv_bloque_habilidades: "Skills",
-    elige_estilo: "Choose your résumé design:", etiqueta_gratis: "FREE", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Choose your résumé design:",
     diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate",
-    cta_gratis: "DOWNLOAD FREE", cta_gratis_sub: "(by watching a short video)", cta_premium: "DOWNLOAD · {precio}", cta_premium_sub: "{diseno} design · No subscription · No ads",
-    cta_sin_anuncio: "Instant download without ads for {precio}",
-    pago_titulo_premium: "{diseno} design", pago_titulo_sin_anuncio: "Download without ads", insignia_recomendado: "⭐ Recommended",
-    pago_ventaja_premium_1: "A design that stands out from other candidates", pago_ventaja_premium_2: "Ready to send to employers as a PDF", pago_ventaja_premium_3: "No ads",
-    pago_ventaja_basico_1: "Instant download", pago_ventaja_basico_2: "No video to watch", pago_ventaja_basico_3: "Ready to send to employers as a PDF",
-    pago_pie: "No subscription · Secure payment with Google Play", boton_pagar: "Download for {precio}", ahora_no: "Not now",
+    cta_descargar: "DOWNLOAD",
     app_titulo: "Download your CV in the app", app_desc: "Downloading your résumé as a PDF is available in the CVoice app for Android.", app_boton: "Get CVoice on Google Play", cerrar: "Close",
-    aviso_cargando_video: "Loading the video…", aviso_descargando: "Downloading your résumé…", aviso_video_completo: "To download for free you need to watch the whole video.",
-    aviso_pago_error: "The payment could not be completed. Please try again.", aviso_pago_pendiente: "Payment pending confirmation. Once Google confirms it, tap download again.",
-    aviso_pdf_error: "Your résumé couldn't be saved. Tap download again — you won't have to pay or watch the video again.", aviso_cv_guardado: "Résumé saved to your Downloads folder.", pie_privacidad: "Privacy policy", pie_ajustes_privacidad: "Privacy settings",
+    aviso_descargando: "Downloading your résumé…",
+    aviso_pdf_error: "Your résumé couldn't be saved. Tap download again.", aviso_cv_guardado: "Résumé saved to your Downloads folder.", pie_privacidad: "Privacy policy", pie_ajustes_privacidad: "Privacy settings",
     aria_grabar: "Record voice",
   },
   fr: {
     cv_bloque_perfil: "Profil professionnel", cv_bloque_habilidades: "Compétences",
-    elige_estilo: "Choisissez le design de votre CV :", etiqueta_gratis: "GRATUIT", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Choisissez le design de votre CV :",
     diseno_basico: "Classique", diseno_prem1: "Exécutif", diseno_prem2: "Éditorial", diseno_prem3: "Moderne", diseno_prem4: "Entreprise",
-    cta_gratis: "TÉLÉCHARGER GRATUITEMENT", cta_gratis_sub: "(en regardant une courte vidéo)", cta_premium: "TÉLÉCHARGER · {precio}", cta_premium_sub: "Design {diseno} · Sans abonnement · Sans publicité",
-    cta_sin_anuncio: "Téléchargement immédiat sans publicité pour {precio}",
-    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Téléchargement sans publicité", insignia_recomendado: "⭐ Recommandé",
-    pago_ventaja_premium_1: "Un design qui se démarque des autres candidats", pago_ventaja_premium_2: "Prêt à envoyer aux entreprises en PDF", pago_ventaja_premium_3: "Sans publicité",
-    pago_ventaja_basico_1: "Téléchargement immédiat", pago_ventaja_basico_2: "Aucune vidéo à regarder", pago_ventaja_basico_3: "Prêt à envoyer aux entreprises en PDF",
-    pago_pie: "Sans abonnement · Paiement sécurisé avec Google Play", boton_pagar: "Télécharger pour {precio}", ahora_no: "Pas maintenant",
+    cta_descargar: "TÉLÉCHARGER",
     app_titulo: "Téléchargez votre CV dans l'application", app_desc: "Le téléchargement du CV en PDF est disponible dans l'application CVoice pour Android.", app_boton: "Obtenir CVoice sur Google Play", cerrar: "Fermer",
-    aviso_cargando_video: "Chargement de la vidéo…", aviso_descargando: "Téléchargement de votre CV…", aviso_video_completo: "Pour le téléchargement gratuit, il faut regarder toute la vidéo.",
-    aviso_pago_error: "Le paiement n'a pas pu être effectué. Réessayez.", aviso_pago_pendiente: "Paiement en attente de confirmation. Quand Google le confirmera, appuyez de nouveau sur télécharger.",
-    aviso_pdf_error: "Impossible d'enregistrer votre CV. Appuyez de nouveau sur télécharger : vous n'aurez pas à repayer ni à revoir la vidéo.", aviso_cv_guardado: "CV enregistré dans le dossier Téléchargements.", pie_privacidad: "Politique de confidentialité", pie_ajustes_privacidad: "Paramètres de confidentialité",
+    aviso_descargando: "Téléchargement de votre CV…",
+    aviso_pdf_error: "Impossible d'enregistrer votre CV. Appuyez de nouveau sur télécharger.", aviso_cv_guardado: "CV enregistré dans le dossier Téléchargements.", pie_privacidad: "Politique de confidentialité", pie_ajustes_privacidad: "Paramètres de confidentialité",
     aria_grabar: "Enregistrer la voix",
   },
   de: {
     cv_bloque_perfil: "Berufsprofil", cv_bloque_habilidades: "Fähigkeiten",
-    elige_estilo: "Wähle das Design deines Lebenslaufs:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Wähle das Design deines Lebenslaufs:",
     diseno_basico: "Klassisch", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Business",
-    cta_gratis: "KOSTENLOS HERUNTERLADEN", cta_gratis_sub: "(mit einem kurzen Video)", cta_premium: "HERUNTERLADEN · {precio}", cta_premium_sub: "Design {diseno} · Kein Abo · Ohne Werbung",
-    cta_sin_anuncio: "Sofort ohne Werbung herunterladen für {precio}",
-    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download ohne Werbung", insignia_recomendado: "⭐ Empfohlen",
-    pago_ventaja_premium_1: "Ein Design, das unter den Bewerbern auffällt", pago_ventaja_premium_2: "Als PDF bereit für Arbeitgeber", pago_ventaja_premium_3: "Ohne Werbung",
-    pago_ventaja_basico_1: "Sofortiger Download", pago_ventaja_basico_2: "Kein Video ansehen", pago_ventaja_basico_3: "Als PDF bereit für Arbeitgeber",
-    pago_pie: "Kein Abo · Sichere Zahlung über Google Play", boton_pagar: "Für {precio} herunterladen", ahora_no: "Jetzt nicht",
+    cta_descargar: "HERUNTERLADEN",
     app_titulo: "Lade deinen Lebenslauf in der App herunter", app_desc: "Der Download des Lebenslaufs als PDF ist in der CVoice-App für Android verfügbar.", app_boton: "CVoice bei Google Play holen", cerrar: "Schließen",
-    aviso_cargando_video: "Video wird geladen…", aviso_descargando: "Dein Lebenslauf wird heruntergeladen…", aviso_video_completo: "Für den kostenlosen Download musst du das ganze Video ansehen.",
-    aviso_pago_error: "Die Zahlung konnte nicht abgeschlossen werden. Bitte versuche es erneut.", aviso_pago_pendiente: "Zahlung wartet auf Bestätigung. Sobald Google sie bestätigt, tippe erneut auf Herunterladen.",
-    aviso_pdf_error: "Dein Lebenslauf konnte nicht gespeichert werden. Tippe erneut auf Herunterladen – du musst weder noch einmal zahlen noch das Video erneut ansehen.", aviso_cv_guardado: "Lebenslauf im Ordner „Downloads“ gespeichert.", pie_privacidad: "Datenschutzerklärung", pie_ajustes_privacidad: "Datenschutzeinstellungen",
+    aviso_descargando: "Dein Lebenslauf wird heruntergeladen…",
+    aviso_pdf_error: "Dein Lebenslauf konnte nicht gespeichert werden. Tippe erneut auf Herunterladen.", aviso_cv_guardado: "Lebenslauf im Ordner „Downloads“ gespeichert.", pie_privacidad: "Datenschutzerklärung", pie_ajustes_privacidad: "Datenschutzeinstellungen",
     aria_grabar: "Sprache aufnehmen",
   },
   it: {
     cv_bloque_perfil: "Profilo professionale", cv_bloque_habilidades: "Competenze",
-    elige_estilo: "Scegli il design del tuo curriculum:", etiqueta_gratis: "GRATIS", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Scegli il design del tuo curriculum:",
     diseno_basico: "Classico", diseno_prem1: "Executive", diseno_prem2: "Editoriale", diseno_prem3: "Moderno", diseno_prem4: "Aziendale",
-    cta_gratis: "SCARICA GRATIS", cta_gratis_sub: "(guardando un breve video)", cta_premium: "SCARICA · {precio}", cta_premium_sub: "Design {diseno} · Nessun abbonamento · Senza pubblicità",
-    cta_sin_anuncio: "Download immediato senza pubblicità per {precio}",
-    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download senza pubblicità", insignia_recomendado: "⭐ Consigliato",
-    pago_ventaja_premium_1: "Un design che si distingue tra i candidati", pago_ventaja_premium_2: "Pronto da inviare alle aziende in PDF", pago_ventaja_premium_3: "Senza pubblicità",
-    pago_ventaja_basico_1: "Download immediato", pago_ventaja_basico_2: "Nessun video da guardare", pago_ventaja_basico_3: "Pronto da inviare alle aziende in PDF",
-    pago_pie: "Nessun abbonamento · Pagamento sicuro con Google Play", boton_pagar: "Scarica per {precio}", ahora_no: "Non ora",
+    cta_descargar: "SCARICA",
     app_titulo: "Scarica il tuo CV dall'app", app_desc: "Il download del curriculum in PDF è disponibile nell'app CVoice per Android.", app_boton: "Scarica CVoice da Google Play", cerrar: "Chiudi",
-    aviso_cargando_video: "Caricamento del video…", aviso_descargando: "Download del tuo curriculum…", aviso_video_completo: "Per il download gratuito devi guardare tutto il video.",
-    aviso_pago_error: "Non è stato possibile completare il pagamento. Riprova.", aviso_pago_pendiente: "Pagamento in attesa di conferma. Quando Google lo confermerà, tocca di nuovo scarica.",
-    aviso_pdf_error: "Non è stato possibile salvare il curriculum. Tocca di nuovo scarica: non dovrai pagare né rivedere il video.", aviso_cv_guardado: "Curriculum salvato nella cartella Download.", pie_privacidad: "Informativa sulla privacy", pie_ajustes_privacidad: "Impostazioni privacy",
+    aviso_descargando: "Download del tuo curriculum…",
+    aviso_pdf_error: "Non è stato possibile salvare il curriculum. Tocca di nuovo scarica.", aviso_cv_guardado: "Curriculum salvato nella cartella Download.", pie_privacidad: "Informativa sulla privacy", pie_ajustes_privacidad: "Impostazioni privacy",
     aria_grabar: "Registra voce",
   },
   pt: {
     cv_bloque_perfil: "Perfil profissional", cv_bloque_habilidades: "Competências",
-    elige_estilo: "Escolhe o design do teu currículo:", etiqueta_gratis: "GRÁTIS", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Escolhe o design do teu currículo:",
     diseno_basico: "Clássico", diseno_prem1: "Executivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
-    cta_gratis: "DESCARREGAR GRÁTIS", cta_gratis_sub: "(vendo um vídeo curto)", cta_premium: "DESCARREGAR · {precio}", cta_premium_sub: "Design {diseno} · Sem subscrição · Sem anúncios",
-    cta_sin_anuncio: "Download imediato sem anúncios por {precio}",
-    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Download sem anúncios", insignia_recomendado: "⭐ Recomendado",
-    pago_ventaja_premium_1: "Um design que se destaca entre os candidatos", pago_ventaja_premium_2: "Pronto a enviar às empresas em PDF", pago_ventaja_premium_3: "Sem anúncios",
-    pago_ventaja_basico_1: "Download imediato", pago_ventaja_basico_2: "Sem ver nenhum vídeo", pago_ventaja_basico_3: "Pronto a enviar às empresas em PDF",
-    pago_pie: "Sem subscrição · Pagamento seguro com Google Play", boton_pagar: "Descarregar por {precio}", ahora_no: "Agora não",
+    cta_descargar: "DESCARREGAR",
     app_titulo: "Descarrega o teu CV na app", app_desc: "O download do currículo em PDF está disponível na app CVoice para Android.", app_boton: "Obter CVoice no Google Play", cerrar: "Fechar",
-    aviso_cargando_video: "A carregar o vídeo…", aviso_descargando: "A descarregar o teu currículo…", aviso_video_completo: "Para o download grátis é preciso ver o vídeo completo.",
-    aviso_pago_error: "Não foi possível concluir o pagamento. Tenta novamente.", aviso_pago_pendiente: "Pagamento pendente de confirmação. Quando a Google o confirmar, volta a tocar em descarregar.",
-    aviso_pdf_error: "Não foi possível guardar o currículo. Toca outra vez em descarregar: não vais ter de pagar nem ver o vídeo de novo.", aviso_cv_guardado: "Currículo guardado na pasta Transferências.", pie_privacidad: "Política de privacidade", pie_ajustes_privacidad: "Definições de privacidade",
+    aviso_descargando: "A descarregar o teu currículo…",
+    aviso_pdf_error: "Não foi possível guardar o currículo. Toca outra vez em descarregar.", aviso_cv_guardado: "Currículo guardado na pasta Transferências.", pie_privacidad: "Política de privacidade", pie_ajustes_privacidad: "Definições de privacidade",
     aria_grabar: "Gravar voz",
   },
   ar: {
     cv_bloque_perfil: "الملف المهني", cv_bloque_habilidades: "المهارات",
-    elige_estilo: "اختر تصميم سيرتك الذاتية:", etiqueta_gratis: "مجاني", etiqueta_premium: "مميز",
+    elige_estilo: "اختر تصميم سيرتك الذاتية:",
     diseno_basico: "كلاسيكي", diseno_prem1: "تنفيذي", diseno_prem2: "تحريري", diseno_prem3: "عصري", diseno_prem4: "مؤسسي",
-    cta_gratis: "تنزيل مجاني", cta_gratis_sub: "(بمشاهدة فيديو قصير)", cta_premium: "تنزيل · {precio}", cta_premium_sub: "تصميم {diseno} · بدون اشتراك · بدون إعلانات",
-    cta_sin_anuncio: "تنزيل فوري بدون إعلانات مقابل {precio}",
-    pago_titulo_premium: "تصميم {diseno}", pago_titulo_sin_anuncio: "تنزيل بدون إعلانات", insignia_recomendado: "⭐ موصى به",
-    pago_ventaja_premium_1: "تصميم يميزك بين المرشحين", pago_ventaja_premium_2: "جاهز للإرسال إلى الشركات بصيغة PDF", pago_ventaja_premium_3: "بدون إعلانات",
-    pago_ventaja_basico_1: "تنزيل فوري", pago_ventaja_basico_2: "بدون مشاهدة أي فيديو", pago_ventaja_basico_3: "جاهز للإرسال إلى الشركات بصيغة PDF",
-    pago_pie: "بدون اشتراك · دفع آمن عبر Google Play", boton_pagar: "تنزيل مقابل {precio}", ahora_no: "ليس الآن",
+    cta_descargar: "تنزيل",
     app_titulo: "نزّل سيرتك الذاتية من التطبيق", app_desc: "تنزيل السيرة الذاتية بصيغة PDF متاح في تطبيق CVoice لنظام Android.", app_boton: "احصل على CVoice من Google Play", cerrar: "إغلاق",
-    aviso_cargando_video: "جارٍ تحميل الفيديو…", aviso_descargando: "جارٍ تنزيل سيرتك الذاتية…", aviso_video_completo: "للتنزيل المجاني يجب مشاهدة الفيديو كاملاً.",
-    aviso_pago_error: "تعذّر إتمام الدفع. حاول مرة أخرى.", aviso_pago_pendiente: "الدفع بانتظار التأكيد. عندما تؤكده Google، اضغط على التنزيل مرة أخرى.",
-    aviso_pdf_error: "تعذّر حفظ سيرتك الذاتية. اضغط على التنزيل مرة أخرى، ولن تحتاج إلى الدفع أو مشاهدة الفيديو من جديد.", aviso_cv_guardado: "تم حفظ السيرة الذاتية في مجلد التنزيلات.", pie_privacidad: "سياسة الخصوصية", pie_ajustes_privacidad: "إعدادات الخصوصية",
+    aviso_descargando: "جارٍ تنزيل سيرتك الذاتية…",
+    aviso_pdf_error: "تعذّر حفظ سيرتك الذاتية. اضغط على التنزيل مرة أخرى.", aviso_cv_guardado: "تم حفظ السيرة الذاتية في مجلد التنزيلات.", pie_privacidad: "سياسة الخصوصية", pie_ajustes_privacidad: "إعدادات الخصوصية",
     aria_grabar: "تسجيل الصوت",
   },
   zh: {
     cv_bloque_perfil: "个人简介", cv_bloque_habilidades: "技能",
-    elige_estilo: "选择简历设计：", etiqueta_gratis: "免费", etiqueta_premium: "高级",
+    elige_estilo: "选择简历设计：",
     diseno_basico: "经典", diseno_prem1: "商务", diseno_prem2: "杂志", diseno_prem3: "现代", diseno_prem4: "企业",
-    cta_gratis: "免费下载", cta_gratis_sub: "（观看一段短视频）", cta_premium: "下载 · {precio}", cta_premium_sub: "{diseno}设计 · 无订阅 · 无广告",
-    cta_sin_anuncio: "无广告立即下载，仅需 {precio}",
-    pago_titulo_premium: "{diseno}设计", pago_titulo_sin_anuncio: "无广告下载", insignia_recomendado: "⭐ 推荐",
-    pago_ventaja_premium_1: "让你在求职者中脱颖而出的设计", pago_ventaja_premium_2: "PDF 格式，可直接发送给企业", pago_ventaja_premium_3: "无广告",
-    pago_ventaja_basico_1: "立即下载", pago_ventaja_basico_2: "无需观看视频", pago_ventaja_basico_3: "PDF 格式，可直接发送给企业",
-    pago_pie: "无订阅 · 通过 Google Play 安全支付", boton_pagar: "以 {precio} 下载", ahora_no: "暂不",
+    cta_descargar: "下载",
     app_titulo: "在应用中下载你的简历", app_desc: "PDF 简历下载功能仅在 Android 版 CVoice 应用中提供。", app_boton: "在 Google Play 获取 CVoice", cerrar: "关闭",
-    aviso_cargando_video: "正在加载视频…", aviso_descargando: "正在下载你的简历…", aviso_video_completo: "免费下载需要看完整个视频。",
-    aviso_pago_error: "付款未能完成，请重试。", aviso_pago_pendiente: "付款待确认。Google 确认后，请再次点击下载。",
-    aviso_pdf_error: "简历未能保存。请再次点击下载，无需重新付款或观看视频。", aviso_cv_guardado: "简历已保存到“下载”文件夹。", pie_privacidad: "隐私政策", pie_ajustes_privacidad: "隐私设置",
+    aviso_descargando: "正在下载你的简历…",
+    aviso_pdf_error: "简历未能保存。请再次点击下载。", aviso_cv_guardado: "简历已保存到“下载”文件夹。", pie_privacidad: "隐私政策", pie_ajustes_privacidad: "隐私设置",
     aria_grabar: "录音",
   },
   ja: {
     cv_bloque_perfil: "プロフィール", cv_bloque_habilidades: "スキル",
-    elige_estilo: "履歴書のデザインを選んでください：", etiqueta_gratis: "無料", etiqueta_premium: "プレミアム",
+    elige_estilo: "履歴書のデザインを選んでください：",
     diseno_basico: "クラシック", diseno_prem1: "エグゼクティブ", diseno_prem2: "エディトリアル", diseno_prem3: "モダン", diseno_prem4: "コーポレート",
-    cta_gratis: "無料でダウンロード", cta_gratis_sub: "（短い動画を見る）", cta_premium: "ダウンロード · {precio}", cta_premium_sub: "{diseno}デザイン · サブスクなし · 広告なし",
-    cta_sin_anuncio: "{precio}で広告なしですぐにダウンロード",
-    pago_titulo_premium: "{diseno}デザイン", pago_titulo_sin_anuncio: "広告なしでダウンロード", insignia_recomendado: "⭐ おすすめ",
-    pago_ventaja_premium_1: "他の応募者と差がつくデザイン", pago_ventaja_premium_2: "PDFで企業にそのまま送れます", pago_ventaja_premium_3: "広告なし",
-    pago_ventaja_basico_1: "すぐにダウンロード", pago_ventaja_basico_2: "動画を見る必要なし", pago_ventaja_basico_3: "PDFで企業にそのまま送れます",
-    pago_pie: "サブスクなし · Google Play で安全にお支払い", boton_pagar: "{precio}でダウンロード", ahora_no: "あとで",
+    cta_descargar: "ダウンロード",
     app_titulo: "アプリで履歴書をダウンロード", app_desc: "PDF での履歴書ダウンロードは Android 版 CVoice アプリで利用できます。", app_boton: "Google Play で CVoice を入手", cerrar: "閉じる",
-    aviso_cargando_video: "動画を読み込んでいます…", aviso_descargando: "履歴書をダウンロードしています…", aviso_video_completo: "無料ダウンロードには動画を最後まで見る必要があります。",
-    aviso_pago_error: "支払いを完了できませんでした。もう一度お試しください。", aviso_pago_pendiente: "支払いの確認待ちです。Google が確認したら、もう一度ダウンロードを押してください。",
-    aviso_pdf_error: "履歴書を保存できませんでした。もう一度ダウンロードを押してください。再度の支払いや動画の視聴は不要です。", aviso_cv_guardado: "履歴書を「ダウンロード」フォルダに保存しました。", pie_privacidad: "プライバシーポリシー", pie_ajustes_privacidad: "プライバシー設定",
+    aviso_descargando: "履歴書をダウンロードしています…",
+    aviso_pdf_error: "履歴書を保存できませんでした。もう一度ダウンロードを押してください。", aviso_cv_guardado: "履歴書を「ダウンロード」フォルダに保存しました。", pie_privacidad: "プライバシーポリシー", pie_ajustes_privacidad: "プライバシー設定",
     aria_grabar: "音声を録音",
   },
   ro: {
     cv_bloque_perfil: "Profil profesional", cv_bloque_habilidades: "Competențe",
-    elige_estilo: "Alege designul CV-ului tău:", etiqueta_gratis: "GRATUIT", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Alege designul CV-ului tău:",
     diseno_basico: "Clasic", diseno_prem1: "Executiv", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporativ",
-    cta_gratis: "DESCARCĂ GRATUIT", cta_gratis_sub: "(urmărind un videoclip scurt)", cta_premium: "DESCARCĂ · {precio}", cta_premium_sub: "Design {diseno} · Fără abonament · Fără reclame",
-    cta_sin_anuncio: "Descărcare imediată fără reclame pentru {precio}",
-    pago_titulo_premium: "Design {diseno}", pago_titulo_sin_anuncio: "Descărcare fără reclame", insignia_recomendado: "⭐ Recomandat",
-    pago_ventaja_premium_1: "Un design care iese în evidență printre candidați", pago_ventaja_premium_2: "Gata de trimis la firme în PDF", pago_ventaja_premium_3: "Fără reclame",
-    pago_ventaja_basico_1: "Descărcare imediată", pago_ventaja_basico_2: "Fără niciun videoclip", pago_ventaja_basico_3: "Gata de trimis la firme în PDF",
-    pago_pie: "Fără abonament · Plată sigură prin Google Play", boton_pagar: "Descarcă pentru {precio}", ahora_no: "Nu acum",
+    cta_descargar: "DESCARCĂ",
     app_titulo: "Descarcă CV-ul din aplicație", app_desc: "Descărcarea CV-ului în PDF este disponibilă în aplicația CVoice pentru Android.", app_boton: "Obține CVoice pe Google Play", cerrar: "Închide",
-    aviso_cargando_video: "Se încarcă videoclipul…", aviso_descargando: "Se descarcă CV-ul tău…", aviso_video_completo: "Pentru descărcarea gratuită trebuie să urmărești tot videoclipul.",
-    aviso_pago_error: "Plata nu a putut fi finalizată. Încearcă din nou.", aviso_pago_pendiente: "Plata așteaptă confirmarea. Când Google o confirmă, apasă din nou pe descarcă.",
-    aviso_pdf_error: "CV-ul nu a putut fi salvat. Apasă din nou pe descarcă: nu va trebui să plătești din nou sau să revezi videoclipul.", aviso_cv_guardado: "CV salvat în dosarul Descărcări.", pie_privacidad: "Politica de confidențialitate", pie_ajustes_privacidad: "Setări de confidențialitate",
+    aviso_descargando: "Se descarcă CV-ul tău…",
+    aviso_pdf_error: "CV-ul nu a putut fi salvat. Apasă din nou pe descarcă.", aviso_cv_guardado: "CV salvat în dosarul Descărcări.", pie_privacidad: "Politica de confidențialitate", pie_ajustes_privacidad: "Setări de confidențialitate",
     aria_grabar: "Înregistrează vocea",
   },
   pl: {
     cv_bloque_perfil: "Profil zawodowy", cv_bloque_habilidades: "Umiejętności",
-    elige_estilo: "Wybierz wygląd swojego CV:", etiqueta_gratis: "ZA DARMO", etiqueta_premium: "PREMIUM",
+    elige_estilo: "Wybierz wygląd swojego CV:",
     diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny",
-    cta_gratis: "POBIERZ ZA DARMO", cta_gratis_sub: "(po obejrzeniu krótkiego filmu)", cta_premium: "POBIERZ · {precio}", cta_premium_sub: "Wzór {diseno} · Bez subskrypcji · Bez reklam",
-    cta_sin_anuncio: "Natychmiastowe pobranie bez reklam za {precio}",
-    pago_titulo_premium: "Wzór {diseno}", pago_titulo_sin_anuncio: "Pobieranie bez reklam", insignia_recomendado: "⭐ Polecany",
-    pago_ventaja_premium_1: "Wygląd, który wyróżnia cię spośród kandydatów", pago_ventaja_premium_2: "Gotowe do wysłania firmom w PDF", pago_ventaja_premium_3: "Bez reklam",
-    pago_ventaja_basico_1: "Natychmiastowe pobranie", pago_ventaja_basico_2: "Bez oglądania filmu", pago_ventaja_basico_3: "Gotowe do wysłania firmom w PDF",
-    pago_pie: "Bez subskrypcji · Bezpieczna płatność przez Google Play", boton_pagar: "Pobierz za {precio}", ahora_no: "Nie teraz",
+    cta_descargar: "POBIERZ",
     app_titulo: "Pobierz CV w aplikacji", app_desc: "Pobieranie CV w PDF jest dostępne w aplikacji CVoice na Androida.", app_boton: "Pobierz CVoice z Google Play", cerrar: "Zamknij",
-    aviso_cargando_video: "Ładowanie filmu…", aviso_descargando: "Pobieranie twojego CV…", aviso_video_completo: "Aby pobrać za darmo, trzeba obejrzeć cały film.",
-    aviso_pago_error: "Nie udało się dokończyć płatności. Spróbuj ponownie.", aviso_pago_pendiente: "Płatność czeka na potwierdzenie. Gdy Google ją potwierdzi, ponownie naciśnij pobierz.",
-    aviso_pdf_error: "Nie udało się zapisać CV. Naciśnij ponownie pobierz – nie zapłacisz drugi raz ani nie obejrzysz filmu ponownie.", aviso_cv_guardado: "CV zapisane w folderze Pobrane.", pie_privacidad: "Polityka prywatności", pie_ajustes_privacidad: "Ustawienia prywatności",
+    aviso_descargando: "Pobieranie twojego CV…",
+    aviso_pdf_error: "Nie udało się zapisać CV. Naciśnij ponownie pobierz.", aviso_cv_guardado: "CV zapisane w folderze Pobrane.", pie_privacidad: "Polityka prywatności", pie_ajustes_privacidad: "Ustawienia prywatności",
     aria_grabar: "Nagraj głos",
   },
   uk: {
     cv_bloque_perfil: "Професійний профіль", cv_bloque_habilidades: "Навички",
-    elige_estilo: "Оберіть дизайн резюме:", etiqueta_gratis: "БЕЗКОШТОВНО", etiqueta_premium: "ПРЕМІУМ",
+    elige_estilo: "Оберіть дизайн резюме:",
     diseno_basico: "Класичний", diseno_prem1: "Діловий", diseno_prem2: "Редакційний", diseno_prem3: "Сучасний", diseno_prem4: "Корпоративний",
-    cta_gratis: "ЗАВАНТАЖИТИ БЕЗКОШТОВНО", cta_gratis_sub: "(переглянувши коротке відео)", cta_premium: "ЗАВАНТАЖИТИ · {precio}", cta_premium_sub: "Дизайн «{diseno}» · Без підписки · Без реклами",
-    cta_sin_anuncio: "Миттєве завантаження без реклами за {precio}",
-    pago_titulo_premium: "Дизайн «{diseno}»", pago_titulo_sin_anuncio: "Завантаження без реклами", insignia_recomendado: "⭐ Рекомендовано",
-    pago_ventaja_premium_1: "Дизайн, що вирізняє вас серед кандидатів", pago_ventaja_premium_2: "Готове до надсилання компаніям у PDF", pago_ventaja_premium_3: "Без реклами",
-    pago_ventaja_basico_1: "Миттєве завантаження", pago_ventaja_basico_2: "Без перегляду відео", pago_ventaja_basico_3: "Готове до надсилання компаніям у PDF",
-    pago_pie: "Без підписки · Безпечна оплата через Google Play", boton_pagar: "Завантажити за {precio}", ahora_no: "Не зараз",
+    cta_descargar: "ЗАВАНТАЖИТИ",
     app_titulo: "Завантажте резюме в застосунку", app_desc: "Завантаження резюме у PDF доступне в застосунку CVoice для Android.", app_boton: "Отримати CVoice у Google Play", cerrar: "Закрити",
-    aviso_cargando_video: "Завантаження відео…", aviso_descargando: "Завантаження вашого резюме…", aviso_video_completo: "Для безкоштовного завантаження потрібно переглянути відео повністю.",
-    aviso_pago_error: "Не вдалося завершити оплату. Спробуйте ще раз.", aviso_pago_pendiente: "Оплата очікує підтвердження. Коли Google її підтвердить, знову натисніть «Завантажити».",
-    aviso_pdf_error: "Не вдалося зберегти резюме. Натисніть «Завантажити» ще раз — повторно платити чи дивитися відео не потрібно.", aviso_cv_guardado: "Резюме збережено в папці «Завантаження».", pie_privacidad: "Політика конфіденційності", pie_ajustes_privacidad: "Налаштування конфіденційності",
+    aviso_descargando: "Завантаження вашого резюме…",
+    aviso_pdf_error: "Не вдалося зберегти резюме. Натисніть «Завантажити» ще раз.", aviso_cv_guardado: "Резюме збережено в папці «Завантаження».", pie_privacidad: "Політика конфіденційності", pie_ajustes_privacidad: "Налаштування конфіденційності",
     aria_grabar: "Записати голос",
   },
   ru: {
     cv_bloque_perfil: "Профессиональный профиль", cv_bloque_habilidades: "Навыки",
-    elige_estilo: "Выберите дизайн резюме:", etiqueta_gratis: "БЕСПЛАТНО", etiqueta_premium: "ПРЕМИУМ",
+    elige_estilo: "Выберите дизайн резюме:",
     diseno_basico: "Классический", diseno_prem1: "Деловой", diseno_prem2: "Редакционный", diseno_prem3: "Современный", diseno_prem4: "Корпоративный",
-    cta_gratis: "СКАЧАТЬ БЕСПЛАТНО", cta_gratis_sub: "(посмотрев короткое видео)", cta_premium: "СКАЧАТЬ · {precio}", cta_premium_sub: "Дизайн «{diseno}» · Без подписки · Без рекламы",
-    cta_sin_anuncio: "Мгновенная загрузка без рекламы за {precio}",
-    pago_titulo_premium: "Дизайн «{diseno}»", pago_titulo_sin_anuncio: "Загрузка без рекламы", insignia_recomendado: "⭐ Рекомендуем",
-    pago_ventaja_premium_1: "Дизайн, который выделит вас среди кандидатов", pago_ventaja_premium_2: "Готово к отправке работодателям в PDF", pago_ventaja_premium_3: "Без рекламы",
-    pago_ventaja_basico_1: "Мгновенная загрузка", pago_ventaja_basico_2: "Без просмотра видео", pago_ventaja_basico_3: "Готово к отправке работодателям в PDF",
-    pago_pie: "Без подписки · Безопасная оплата через Google Play", boton_pagar: "Скачать за {precio}", ahora_no: "Не сейчас",
+    cta_descargar: "СКАЧАТЬ",
     app_titulo: "Скачайте резюме в приложении", app_desc: "Скачивание резюме в PDF доступно в приложении CVoice для Android.", app_boton: "Скачать CVoice в Google Play", cerrar: "Закрыть",
-    aviso_cargando_video: "Загрузка видео…", aviso_descargando: "Скачиваем ваше резюме…", aviso_video_completo: "Для бесплатной загрузки нужно досмотреть видео до конца.",
-    aviso_pago_error: "Не удалось завершить оплату. Попробуйте ещё раз.", aviso_pago_pendiente: "Оплата ожидает подтверждения. Когда Google её подтвердит, снова нажмите «Скачать».",
-    aviso_pdf_error: "Не удалось сохранить резюме. Нажмите «Скачать» ещё раз — повторно платить или смотреть видео не придётся.", aviso_cv_guardado: "Резюме сохранено в папке «Загрузки».", pie_privacidad: "Политика конфиденциальности", pie_ajustes_privacidad: "Настройки конфиденциальности",
+    aviso_descargando: "Скачиваем ваше резюме…",
+    aviso_pdf_error: "Не удалось сохранить резюме. Нажмите «Скачать» ещё раз.", aviso_cv_guardado: "Резюме сохранено в папке «Загрузки».", pie_privacidad: "Политика конфиденциальности", pie_ajustes_privacidad: "Настройки конфиденциальности",
     aria_grabar: "Записать голос",
   },
 };
 Object.keys(TEXTOS_EXTRA).forEach(l => Object.assign(TEXTOS[l], TEXTOS_EXTRA[l]));
 
-// Texto traducido con sustituciones: tx("boton_pagar", {precio: "0,99 €"})
+// Texto traducido con sustituciones: tx("bv_listo_d", {hablar: "español", cv: "English"})
 function tx(clave, datos = {}, idioma = idiomaActual){
   const texto = (TEXTOS[idioma] && TEXTOS[idioma][clave]) || TEXTOS.es[clave] || "";
   return texto.replace(/\{(\w+)\}/g, (_, k) => datos[k] ?? "");
 }
-// Precio con el formato del idioma del teléfono (0,99 € / €0.99 …)
-function precioLocal(euros){
-  try { return new Intl.NumberFormat(IDIOMAS[idiomaActual].lang, { style: "currency", currency: "EUR" }).format(euros); }
-  catch(e){ return euros.toFixed(2).replace(".", ",") + " €"; }
-}
-const PRECIOS = { basico_099: 0.99, premium_299: 2.99 };
-// Precios reales de Google Play en la moneda del usuario (los da la app Android con
-// AndroidBilling.obtenerPrecios() o window.preciosPlay); si no llegan, se muestran en euros.
-let preciosPlay = {};
-try {
-  if (window.AndroidBilling && typeof window.AndroidBilling.obtenerPrecios === "function"){
-    preciosPlay = JSON.parse(window.AndroidBilling.obtenerPrecios() || "{}") || {};
-  }
-} catch(e){ preciosPlay = {}; }
-function precioDe(producto){ return preciosPlay[producto] || precioLocal(PRECIOS[producto]); }
 
 const PLANTILLA_PASO = {
   es: (n,t) => `Paso ${n} de ${t}`,
@@ -2453,8 +2344,8 @@ function aplicarTextos(){
   });
   actualizarContador();
   actualizarResumenIdiomas();
-  // Botón de descarga (texto y precio en el idioma de la interfaz)
-  if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
+  // Botón de descarga en el idioma de la interfaz
+  actualizarCTA();
 }
 
 // Botones con flecha junto al texto: flechas SVG gruesas en vez de los caracteres
@@ -3200,7 +3091,6 @@ function pintarCV(resultado){
   traducirEtiquetasCV(idiomaCVDestino);
 
   // Al mostrar el CV siempre empezamos en el básico
-  disenoPremActivo = "prem1";
   seleccionarPlantilla("basico");
 
   document.getElementById("pantalla-carga").classList.add("hidden");
@@ -3263,7 +3153,6 @@ const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem
 const CV_IDS  = Object.values(CV_MAP);
 
 let plantillaActiva = "basico";   // "basico" | "prem1" | "prem2" | "prem3" | "prem4"
-let disenoPremActivo = "prem1";   // último diseño premium seleccionado (el que se compra)
 
 // Los diseños premium se rellenan con el básico (la fuente de los datos), pero solo si este
 // ha cambiado desde la última vez: así lo corregido directamente en un diseño premium no se
@@ -3278,11 +3167,7 @@ function rellenarSiHaceFalta(modelo){
 
 function seleccionarPlantilla(plantilla){
   plantillaActiva = plantilla;
-  const esBasico = plantilla === "basico";
-  if (!esBasico){
-    disenoPremActivo = plantilla;
-    rellenarSiHaceFalta(plantilla);
-  }
+  if (plantilla !== "basico") rellenarSiHaceFalta(plantilla);
 
   // Mostrar solo la hoja elegida y marcar su botón en el carrusel
   Object.entries(CV_MAP).forEach(([p, id]) => {
@@ -3293,8 +3178,6 @@ function seleccionarPlantilla(plantilla){
     btn.style.boxShadow   = activa ? "0 0 0 2px rgba(255,85,51,0.3)" : "none";
   });
 
-  // Actualizar el botón principal dinámico
-  actualizarCTA(esBasico);
   // Abrir / Enviar solo con el diseño que se descargó
   actualizarPanelCVGuardado();
 
@@ -3305,58 +3188,15 @@ function seleccionarPlantilla(plantilla){
   requestAnimationFrame(() => requestAnimationFrame(aplicarEscalaCV));
 }
 
-function actualizarCTA(esBasico){
+// Botón de descarga: el mismo para los 5 diseños (todos gratis), con la flecha pegada al texto
+function actualizarCTA(){
   const btnCTA = document.getElementById("btn-cta-principal");
-  const txtSec = document.getElementById("txt-cta-secundario");
   if (!btnCTA) return;
-
   const svgFlecha = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>`;
-
-  // Mismo formato en los dos botones: flecha pegada al título en una línea + subtítulo
-  const contenido = (titulo, subtitulo) => `
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800;white-space:nowrap">${svgFlecha}${titulo}</div>
-      ${subtitulo ? `<div style="font-size:0.75rem;font-weight:400;opacity:0.85;margin-top:2px">${subtitulo}</div>` : ""}`;
-
-  // Fuera de la app (navegador) no se puede descargar: sin "viendo un vídeo corto" ni precios,
-  // que confunden; al pulsar se invita a instalar la app
-  const enApp = typeof EN_APP !== "undefined" && EN_APP;
-
-  // Corregido después de descargarlo: se vuelve a guardar gratis, así que solo "DESCARGAR",
-  // sin precio ni vídeo (la palabra sale de cta_premium: "DESCARGAR · {precio}" en todos los idiomas)
-  let soloGuardarCambios = false;
-  try { soloGuardarCambios = enApp && hayCambiosSinGuardar(); } catch(e) {} // aún sin inicializar al arrancar
-  if (soloGuardarCambios){
-    btnCTA.innerHTML = contenido(tx("cta_premium").split("·")[0].trim(), "");
-    btnCTA.style.background = esBasico ? "var(--musgo)" : "var(--ambar)";
-    if (txtSec) txtSec.style.display = "none";
-    return;
-  }
-
-  if (esBasico){
-    btnCTA.innerHTML = contenido(tx("cta_gratis"), enApp ? tx("cta_gratis_sub") : "");
-    btnCTA.style.background = "var(--musgo)";
-    if (txtSec){
-      txtSec.textContent = tx("cta_sin_anuncio", { precio: precioDe("basico_099") });
-      txtSec.style.display = enApp ? "" : "none";
-    }
-  } else {
-    btnCTA.innerHTML = enApp
-      ? contenido(tx("cta_premium", { precio: precioDe("premium_299") }), tx("cta_premium_sub", { diseno: tx("diseno_" + plantillaActiva) }))
-      : contenido(tx("cta_premium").replace(/\s*·\s*$/, ""), tx("diseno_" + plantillaActiva));
-    btnCTA.style.background = "var(--ambar)";
-    if (txtSec) txtSec.style.display = "none";
-  }
+  btnCTA.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:800;white-space:nowrap">${svgFlecha}${tx("cta_descargar")}</div>`;
 }
 
-// ---------- 12b. Monetización y descarga del CV en PDF ----------
-
-let productoPendiente = null; // "basico_099" | "premium_299"
-
-// ---- Referencias al modal de pago ----
-const modalPago             = document.getElementById("modal-pago");
-const modalPagoTitulo       = document.getElementById("modal-pago-titulo");
-const btnConfirmarPago      = document.getElementById("btn-confirmar-pago");
-const btnCancelarPago       = document.getElementById("btn-cancelar-pago");
+// ---------- 12b. Descarga del CV en PDF ----------
 
 // =============================================================================
 // GENERACIÓN DEL PDF
@@ -3660,20 +3500,6 @@ function nombreCVActual(){
   return (document.getElementById("cv-nombre").textContent || "CV").trim().replace(/\s+/g, "_");
 }
 
-// Descarga el CV básico (el actual de dos columnas)
-function generarYDescargarPDF(){
-  return descargarHojaComoPDF(document.getElementById("hoja-cv"), nombreCVActual());
-}
-
-// Rellena la plantilla premium con los datos del CV básico y la descarga
-function generarYDescargarPDFPremium(){
-  // Lo corregido directamente en el diseño premium se conserva (ver rellenarSiHaceFalta)
-  const hojaPrem = document.getElementById(CV_MAP[disenoPremActivo]);
-  rellenarSiHaceFalta(disenoPremActivo);
-  // descargarHojaComoPDF trabaja sobre un clon, así que da igual que esté oculta
-  return descargarHojaComoPDF(hojaPrem, nombreCVActual() + "_premium");
-}
-
 // Copia los datos del CV básico (fuente única: lo que generó/tradujo la IA más las
 // correcciones del usuario) a la plantilla premium indicada.
 function rellenarPlantilla(modelo){
@@ -3754,14 +3580,13 @@ function volcarCorreccionEnBasico(editable){
 }
 
 // =============================================================================
-// DESCARGA: solo dentro de la app Android, que es la que tiene anuncios (AdMob)
-// y pagos (Google Play). En un navegador normal se invita a instalar la app.
-// (La app inyecta window.AndroidAds y window.AndroidBilling desde Java.)
+// DESCARGA: gratis para todos los diseños. Solo dentro de la app Android, que es la que
+// guarda el PDF en el móvil (window.Android). En un navegador normal se invita a instalarla.
 // =============================================================================
-const EN_APP = !!(window.AndroidAds && window.AndroidBilling);
+const EN_APP = !!window.Android;
 
-// "Ajustes de privacidad": solo para quien tuvo que dar consentimiento de anuncios (UE…).
-// La app avisa con window.ajustesPrivacidadDisponibles() o se pregunta al cargar.
+// "Ajustes de privacidad": solo con la app 1.3.1 o anterior, que aún pide el consentimiento
+// de anuncios al abrirse (window.AndroidAds). Con la app sin anuncios no aparece nunca.
 const btnAjustesPrivacidad = document.getElementById("btn-ajustes-privacidad");
 window.ajustesPrivacidadDisponibles = () => btnAjustesPrivacidad.classList.remove("hidden");
 try {
@@ -3785,81 +3610,35 @@ function avisoBreve(texto, ms = 4500, error = false){
   avisoBreve.temporizador = setTimeout(() => aviso.classList.add("hidden"), ms);
 }
 
-// ---------- Descarga gratis con vídeo recompensado ----------
-// El vídeo de AdMob ocupa toda la pantalla: no hace falta ningún modal intermedio.
-let anuncioEnCurso = false; // evita lanzar dos vídeos con dos pulsaciones seguidas
-let sesionAnuncio = 0;
-let limpiarEsperaAnuncio = () => {};
+// ---------- Guardar el PDF ----------
+// Descargar (diseño a la vista) y Abrir / Enviar con correcciones sin guardar usan lo mismo.
+// accion: null, "abrir" o "compartir" (se hace cuando la app confirma que el PDF está guardado)
+let plantillaDescargando = null; // diseño del PDF que se está guardando
+let plantillaGuardada = null;    // diseño del último PDF guardado
+let cvCambiadoTrasGuardar = false;
+let accionTrasGuardar = null;
 
-// Plan B para no dejar a nadie atascado en "Cargando el vídeo…": en algunos países AdMob
-// tarda muchísimo o no llega a tener vídeo.
-// Mientras el anuncio está delante la web no recibe ningún evento (ni blur ni
-// visibilitychange: medido en el móvil), así que solo la app sabe si el vídeo salió:
-// - App 1.3.0+ (AndroidAds.avisaAlMostrar): avisa con window.anuncioMostrado(). Si en 15 s
-//   el vídeo no ha salido, descarga gratis; si salió, hay que verlo (llega recompensaCompletada
-//   o anuncioCerrado) y solo si en 2 min no llega nada se da la descarga.
-// - Apps anteriores: no avisan; el plan B espera 90 s, más que cualquier vídeo, para no
-//   regalar la descarga mientras se está viendo el anuncio.
-// Un aviso que llegue después ya no descarga otra vez.
-const ESPERA_VIDEO_MS = 15000;
-const ESPERA_VIDEO_SIN_AVISO_MS = 90000;
-const ESPERA_FIN_VIDEO_MS = 120000;
-let alMostrarseAnuncio = () => {};
-window.anuncioMostrado = function(){ alMostrarseAnuncio(); };
-
-function lanzarAnuncio(){
-  if (anuncioEnCurso) return;
-  anuncioEnCurso = true;
-  const sesion = ++sesionAnuncio;
-  avisoBreve(tx("aviso_cargando_video"), 3000);
-  const appAvisa = typeof window.AndroidAds.avisaAlMostrar === "function";
-  let temporizador = setTimeout(() => resolverAnuncioSinAviso(sesion),
-    appAvisa ? ESPERA_VIDEO_MS : ESPERA_VIDEO_SIN_AVISO_MS);
-  alMostrarseAnuncio = () => {
-    if (sesion !== sesionAnuncio) return;
-    clearTimeout(temporizador);
-    temporizador = setTimeout(() => resolverAnuncioSinAviso(sesion), ESPERA_FIN_VIDEO_MS);
-  };
-  limpiarEsperaAnuncio = () => {
-    clearTimeout(temporizador);
-    alMostrarseAnuncio = () => {};
-  };
-  window.AndroidAds.mostrarRecompensado();
-}
-
-function terminarAnuncio(){
-  anuncioEnCurso = false;
-  limpiarEsperaAnuncio();
-}
-
-function resolverAnuncioSinAviso(sesion){
-  if (!anuncioEnCurso || sesion !== sesionAnuncio) return;
-  terminarAnuncio();
-  entregarDescarga("basico");
-}
-
-// ---------- Entrega de la descarga ya ganada (vídeo visto o pago hecho) ----------
-// Si el PDF no llega a guardarse, el usuario no pierde lo que ya ha pagado o visto:
-// el siguiente toque en descargar lo repite sin volver a cobrar ni a pedir el vídeo.
-// tipo: "basico" (vídeo), "basico_099" o "premium_299"
-let descargaPendiente = null;
-let ultimaDescarga = null;
-
-function esPremium(tipo){ return tipo === "premium_299"; }
-
-async function entregarDescarga(tipo){
-  ultimaDescarga = tipo;
-  plantillaDescargando = esPremium(tipo) ? disenoPremActivo : "basico";
+async function guardarPDF(plantilla, accion){
+  accionTrasGuardar = accion;
+  plantillaDescargando = plantilla;
+  cvCambiadoTrasGuardar = false;
   avisoBreve(tx("aviso_descargando"), 3000);
-  const ok = esPremium(tipo) ? await generarYDescargarPDFPremium() : await generarYDescargarPDF();
-  if (ok === null) return; // ya había una descarga en marcha
-  descargaPendiente = ok ? null : tipo;
-  if (!ok) avisoBreve(tx("aviso_pdf_error"), 9000, true);
+  if (plantilla !== "basico") rellenarSiHaceFalta(plantilla);
+  const ok = await descargarHojaComoPDF(document.getElementById(CV_MAP[plantilla]), nombreCVActual());
+  if (ok === null) return; // ya había un PDF en marcha
+  if (!ok) noSeGuardo();
+  // Si salió bien, la app llama a descargaGuardada()
+}
+
+// El PDF no llegó a guardarse: se puede volver a intentar (las correcciones siguen pendientes)
+function noSeGuardo(){
+  accionTrasGuardar = null;
+  if (plantillaGuardada) cvCambiadoTrasGuardar = true;
+  avisoBreve(tx("aviso_pdf_error"), 9000, true);
 }
 
 // Los llama JavaScriptInterface.java cuando el PDF queda (o no) guardado en el móvil
 window.descargaGuardada = function(){
-  descargaPendiente = null;
   mostrarPanelCVGuardado();
   // Era una corrección guardada desde Abrir / Enviar: se hace lo que se pidió
   if (accionTrasGuardar){
@@ -3873,18 +3652,20 @@ window.descargaGuardada = function(){
   if (document.getElementById("panel-cv-guardado").classList.contains("hidden")) avisoBreve(tx("aviso_cv_guardado"), 4500);
   else document.getElementById("aviso-sin-voz").classList.add("hidden");
 };
+window.descargaFallida = noSeGuardo;
+
+document.getElementById("btn-cta-principal").addEventListener("click", () => {
+  if (!EN_APP) return mostrarModalApp();
+  guardarPDF(plantillaActiva, null);
+});
 
 // Panel "CV guardado" con Abrir / Enviar (solo si la app sabe hacerlo: 1.3.0 o posterior).
 // Abre o envía el PDF que se guardó, así que solo se ve con ese diseño a la vista: si se
 // elige otro diseño se oculta (no es ese el CV que se enviaría) y vuelve al regresar a él.
-let plantillaDescargando = null; // diseño de la descarga en curso
-let plantillaGuardada = null;    // diseño del último PDF guardado
 function mostrarPanelCVGuardado(){
   const app = window.Android;
   if (!app || typeof app.compartirUltimoCV !== "function") return;
   plantillaGuardada = plantillaDescargando;
-  // Mismo color que el botón con el que se descargó: verde (gratis / 0,99 €) o ámbar (premium)
-  document.getElementById("panel-cv-guardado").classList.toggle("es-premium", esPremium(ultimaDescarga));
   if (actualizarPanelCVGuardado()){
     document.getElementById("panel-cv-guardado").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
@@ -3902,182 +3683,28 @@ function abrirOEnviarCV(accion){
   } catch(e) { avisoBreve(tx("aviso_pdf_error"), 6000, true); }
 }
 
-// ---------- Correcciones después de descargar ----------
-// Si se corrige el CV ya descargado, el PDF guardado se queda viejo. Al pulsar Abrir o
-// Enviar (o Descargar con ese mismo diseño) se guarda otra vez con los cambios, sin otro
-// vídeo ni otro pago: es el mismo CV que ya consiguió.
-let cvCambiadoTrasGuardar = false;
-let accionTrasGuardar = null; // "abrir" | "compartir": se hace cuando el PDF nuevo queda guardado
+// ---------- Correcciones ----------
+// La última corrección manda en todos los diseños (volcarCorreccionEnBasico). Si el CV ya
+// descargado se corrige, el PDF guardado se queda viejo: Abrir y Enviar lo guardan otra vez
+// con los cambios antes de abrirlo o enviarlo.
 document.getElementById("contenedor-cvs").addEventListener("input", e => {
   const editable = e.target.closest && e.target.closest("[contenteditable='true'][id]");
   if (e.target.closest && e.target.closest("#hoja-cv")) versionDatosCV++;
   else if (editable) volcarCorreccionEnBasico(editable);
-  if (plantillaGuardada && !cvCambiadoTrasGuardar) marcarCambiosCV(true);
+  if (plantillaGuardada) cvCambiadoTrasGuardar = true;
 });
-
-// El botón de descarga cambia a solo "DESCARGAR" mientras hay correcciones sin guardar
-function marcarCambiosCV(hay){
-  cvCambiadoTrasGuardar = hay;
-  actualizarCTA(plantillaActiva === "basico");
-}
 
 function hayCambiosSinGuardar(){
   return cvCambiadoTrasGuardar && !!plantillaGuardada && plantillaGuardada === plantillaActiva;
 }
 
-async function guardarCambiosCV(accion){
-  accionTrasGuardar = accion;
-  plantillaDescargando = plantillaGuardada;
-  marcarCambiosCV(false);
-  avisoBreve(tx("aviso_descargando"), 3000);
-  const basico = plantillaGuardada === "basico";
-  const ok = basico ? await generarYDescargarPDF()
-                    : await descargarHojaComoPDF(document.getElementById(CV_MAP[plantillaGuardada]), nombreCVActual() + "_premium");
-  if (ok === null) return; // ya había un PDF en marcha
-  if (!ok){
-    marcarCambiosCV(true);
-    accionTrasGuardar = null;
-    avisoBreve(tx("aviso_pdf_error"), 9000, true);
-  }
-  // Si salió bien, la app llama a descargaGuardada() y ahí se abre o se envía
-}
-
 document.getElementById("btn-compartir-cv").addEventListener("click", () => {
-  if (hayCambiosSinGuardar()) return guardarCambiosCV("compartir");
+  if (hayCambiosSinGuardar()) return guardarPDF(plantillaGuardada, "compartir");
   abrirOEnviarCV("compartir");
 });
 document.getElementById("btn-abrir-cv").addEventListener("click", () => {
-  if (hayCambiosSinGuardar()) return guardarCambiosCV("abrir");
+  if (hayCambiosSinGuardar()) return guardarPDF(plantillaGuardada, "abrir");
   abrirOEnviarCV("abrir");
-});
-window.descargaFallida = function(){
-  if (accionTrasGuardar){
-    // Falló al guardar una corrección: nada que cobrar, se puede volver a intentar
-    accionTrasGuardar = null;
-    marcarCambiosCV(true);
-  } else {
-    descargaPendiente = ultimaDescarga;
-  }
-  avisoBreve(tx("aviso_pdf_error"), 9000, true);
-};
-
-// ¿Hay una descarga ya ganada que sirva para este botón? (premium solo para premium)
-function pendienteSirve(premium){
-  return !!descargaPendiente && esPremium(descargaPendiente) === premium;
-}
-
-// Callbacks del anuncio recompensado (los llama AnunciosBridge.java)
-// Vídeo visto entero: se descarga el CV directamente
-window.recompensaCompletada = function(){
-  if (!anuncioEnCurso) return; // ya resuelto por el plan B
-  terminarAnuncio();
-  entregarDescarga("basico");
-};
-// Cerrado antes de terminar: sin recompensa, se puede volver a intentar o pagar
-window.anuncioCerrado = function(){
-  if (!anuncioEnCurso) return;
-  terminarAnuncio();
-  avisoBreve(tx("aviso_video_completo"));
-};
-// No hay anuncio disponible (sin conexión, sin inventario…): no se bloquea al usuario
-window.anuncioNoDisponible = function(){
-  window.recompensaCompletada();
-};
-
-// ---------- Descargas de pago ----------
-// Ventana de pago: nombre del diseño elegido, vista previa con el CV del propio usuario,
-// ventajas y botón con el precio en el formato del idioma del teléfono
-function abrirModalPago(producto){
-  productoPendiente = producto;
-  // Si un pago anterior se quedó sin respuesta de Google Play, el botón no debe seguir bloqueado
-  btnConfirmarPago.disabled = false;
-  const premium = producto === "premium_299";
-  const plantilla = premium ? disenoPremActivo : "basico";
-  const precio = precioDe(producto);
-
-  modalPagoTitulo.textContent = premium ? tx("pago_titulo_premium", { diseno: tx("diseno_" + plantilla) })
-                                        : tx("pago_titulo_sin_anuncio");
-  document.getElementById("modal-pago-insignia").classList.toggle("hidden", plantilla !== "prem1");
-  const ventajas = premium ? ["pago_ventaja_premium_1", "pago_ventaja_premium_2", "pago_ventaja_premium_3"]
-                           : ["pago_ventaja_basico_1", "pago_ventaja_basico_2", "pago_ventaja_basico_3"];
-  document.getElementById("modal-pago-ventajas").innerHTML =
-    ventajas.map(k => `<li><span style="color:var(--musgo);font-weight:800">✓</span> ${escaparHTML(tx(k))}</li>`).join("");
-  btnConfirmarPago.textContent = tx("boton_pagar", { precio });
-
-  // Miniatura del CV real del usuario (copia de la hoja, sin edición, escalada al ancho de la vista)
-  const vista = document.getElementById("modal-pago-vista");
-  vista.innerHTML = "";
-  const hoja = document.getElementById(CV_MAP[plantilla]);
-  if (premium) rellenarSiHaceFalta(plantilla);
-  const mini = hoja.cloneNode(true);
-  mini.removeAttribute("contenteditable");
-  mini.querySelectorAll("[contenteditable]").forEach(n => n.removeAttribute("contenteditable"));
-  mini.classList.remove("cv-oculto", "shadow-2xl", "rounded-2xl");
-  Object.assign(mini.style, { zoom: String(150 / PDF_ANCHO_PX), width: PDF_ANCHO_PX + "px", maxWidth: "none",
-                              minHeight: PDF_ALTO_PX + "px", margin: "0", borderRadius: "0" });
-  vista.appendChild(mini);
-
-  modalPago.classList.remove("hidden");
-}
-
-function cerrarModalPago(){
-  modalPago.classList.add("hidden");
-  document.getElementById("modal-pago-vista").innerHTML = ""; // quitar la copia (ids duplicados)
-}
-
-// Botón principal: gratis con vídeo (básico) o pago (premium)
-document.getElementById("btn-cta-principal").addEventListener("click", () => {
-  if (!EN_APP) return mostrarModalApp();
-  const premium = plantillaActiva !== "basico";
-  if (pendienteSirve(premium)) return entregarDescarga(descargaPendiente);
-  // Corregido después de descargarlo: se guarda otra vez gratis (mismo CV, mismo diseño)
-  if (hayCambiosSinGuardar()) return guardarCambiosCV(null);
-  if (premium) abrirModalPago("premium_299");
-  else lanzarAnuncio();
-});
-
-// Opción secundaria: básico sin anuncio por 0,99 €
-document.getElementById("txt-cta-secundario").addEventListener("click", () => {
-  if (!EN_APP) return mostrarModalApp();
-  if (pendienteSirve(false)) return entregarDescarga(descargaPendiente);
-  abrirModalPago("basico_099");
-});
-
-// Confirmación de pago: abre Google Play; responde con pagoCompletado / pagoCancelado / pagoPendiente
-btnConfirmarPago.addEventListener("click", () => {
-  if (!EN_APP) return mostrarModalApp();
-  btnConfirmarPago.disabled = true;
-  window.AndroidBilling.iniciarPago(productoPendiente);
-});
-
-// Callbacks del pago (los llama PagosBridge.java)
-window.pagoCompletado = function(productoId){
-  btnConfirmarPago.disabled = false;
-  cerrarModalPago();
-  entregarDescarga(productoId === "premium_299" ? "premium_299" : "basico_099");
-};
-// mensaje vacío = lo canceló el usuario (no se muestra nada)
-window.pagoCancelado = function(mensaje){
-  btnConfirmarPago.disabled = false;
-  cerrarModalPago();
-  if (mensaje) avisoBreve(tx("aviso_pago_error"), 4500, true);
-};
-window.pagoPendiente = function(){
-  btnConfirmarPago.disabled = false;
-  cerrarModalPago();
-  avisoBreve(tx("aviso_pago_pendiente"), 7000);
-};
-// Precios de Google Play en la moneda del usuario ({ basico_099: "0,89 US$", … }):
-// llegan al arrancar la app y se reflejan en el botón de descarga
-window.preciosPlay = function(precios){
-  if (!precios || typeof precios !== "object") return;
-  preciosPlay = precios;
-  if (typeof plantillaActiva !== "undefined") actualizarCTA(plantillaActiva === "basico");
-};
-
-btnCancelarPago.addEventListener("click", () => {
-  cerrarModalPago();
-  productoPendiente = null;
 });
 
 // ---------- 13. Escala y zoom táctil del CV en pantalla ----------
@@ -4203,7 +3830,6 @@ function confirmarSalida(){
 }
 window.botonAtras = function(){
   const visible = id => !document.getElementById(id).classList.contains("hidden");
-  if (visible("modal-pago")){ cerrarModalPago(); productoPendiente = null; return true; }
   if (visible("modal-app")){ document.getElementById("modal-app").classList.add("hidden"); return true; }
   if (visible("pantalla-carga")){
     // Con error: volver a la entrevista; mientras se redacta, no se sale
