@@ -20,6 +20,7 @@
     --musgo-claro:#E4EFE9; /* verde muy pálido para tarjetas */
     --ambar:#D98B3F;       /* ámbar, acento y llamada a la acción */
     --ambar-suave:#F3DDBC;
+    --ambar-boton:#A9631F; /* ámbar tostado para botones con texto blanco: contraste 4,7 (el ámbar normal da 2,7) */
     --linea:#CFC6B2;       /* líneas/bordes sutiles */
 
     /* Paleta exclusiva del documento de CV: pensada para parecer papel impreso, no "app" */
@@ -557,9 +558,6 @@
   #zona-descarga{ padding: 1.4rem 1.2rem 1rem !important; margin-top: 1.5rem !important; }
   .bv-titulo{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 2.05rem; line-height: 1.15; margin: 0 0 .8rem; }
   .bv-sub{ font-size: 1.0625rem; line-height: 1.55; color: rgba(251,247,238,.9); margin: 0 auto; max-width: 26rem; }
-  /* Sello "100 % gratis": da confianza a quien no sabe si le van a cobrar */
-  .bv-gratis{ display: inline-block; margin: 1rem auto 0; padding: .35rem .9rem; border-radius: 999px;
-    background: var(--ambar-suave); color: #6b4416; font-size: .875rem; font-weight: 700; line-height: 1.3; }
   .bv-cuerpo{ padding: 1.7rem 1.4rem 1.5rem; }
   .bv-pasos{ list-style: none; margin: 0 0 1.7rem; padding: 0; display: flex; flex-direction: column; gap: 1.1rem; }
   .bv-pasos li{ display: flex; align-items: flex-start; gap: 1rem; }
@@ -590,10 +588,10 @@
   .bv-check svg{ width: 1.35rem; height: 1.35rem; }
   .bv-listo-t{ font-weight: 700; font-size: 1.0625rem; color: var(--musgo); margin: 0; }
   .bv-listo-d{ font-size: .95rem; line-height: 1.4; color: var(--tinta); margin: .15rem 0 0; }
-  #btn-empezar{ width: 100%; min-height: 64px; border-radius: 9999px; border: 0; background: var(--ambar); color: #fff;
-    font-size: 1.25rem; font-weight: 700; padding: 0 1.25rem; box-shadow: 0 12px 24px -12px rgba(217,139,63,.9);
+  #btn-empezar{ width: 100%; min-height: 64px; border-radius: 9999px; border: 0; background: var(--ambar-boton); color: #fff;
+    font-size: 1.25rem; font-weight: 700; padding: 0 1.25rem; box-shadow: 0 12px 24px -12px rgba(169,99,31,.9);
     transition: transform .15s ease, box-shadow .15s ease; }
-  #btn-empezar:active{ transform: scale(.98); box-shadow: 0 6px 14px -8px rgba(217,139,63,.9); }
+  #btn-empezar:active{ transform: scale(.98); box-shadow: 0 6px 14px -8px rgba(169,99,31,.9); }
   @media (max-width: 380px){ .bv-titulo{ font-size: 1.75rem; } .bv-cabecera{ padding: 1.7rem 1.2rem 1.9rem; } .bv-cuerpo{ padding: 1.4rem 1.1rem 1.3rem; } }
   /* Panel tras guardar el CV: título y dos botones iguales (enviar / abrir) */
   #panel-cv-guardado{ background: var(--musgo-claro); border: 2px solid var(--musgo); border-radius: 1.25rem;
@@ -628,7 +626,6 @@
     <div class="bv-cabecera">
       <h1 class="bv-titulo" data-i18n="bv_titulo">Tu currículum, solo hablando</h1>
       <p class="bv-sub" data-i18n="bv_sub">Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.</p>
-      <p class="bv-gratis" data-i18n="bv_gratis">100 % gratis · Sin registro · Sin anuncios</p>
     </div>
 
     <div class="bv-cuerpo">
@@ -809,7 +806,7 @@
       </div>
 
       <div id="controles-camara-activa" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
-        <button id="btn-capturar-foto" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar)" data-i18n="boton_capturar">Hacer foto</button>
+        <button id="btn-capturar-foto" class="px-8 py-4 rounded-full text-lg font-bold text-white shadow-md transition hover:opacity-90" style="background:var(--ambar-boton)" data-i18n="boton_capturar">Hacer foto</button>
       </div>
 
       <div id="controles-foto-lista" class="hidden flex flex-col sm:flex-row gap-3 justify-center mb-5">
@@ -1207,7 +1204,7 @@
     <p class="cv-ayuda-final" data-i18n="cv_ayuda">Toca cualquier texto de tu CV para corregirlo antes de descargar.</p>
 
     <!-- BOTÓN PRINCIPAL DINÁMICO (arriba) -->
-    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-4" style="background:var(--ambar); padding-left:14px; padding-right:14px">
+    <button id="btn-cta-principal" class="w-full py-4 rounded-2xl font-bold text-white shadow-md transition hover:opacity-90 mb-4" style="background:var(--ambar-boton); padding-left:14px; padding-right:14px">
       <div class="flex items-center justify-center gap-2">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
         <span class="text-base">DESCARGAR</span>
@@ -1344,7 +1341,6 @@ const TEXTOS = {
     aviso_salir: "Pulsa Atrás otra vez para salir de CVoice.",
     bv_titulo: "Tu currículum, solo hablando",
     bv_sub: "Cuéntanos tu experiencia con tu voz. Nosotros la convertimos en un currículum profesional, listo para enviar.",
-    bv_gratis: "100 % gratis · Sin registro · Sin anuncios",
     bv_p1_t: "Habla",
     bv_p1_d: "Responde a unas preguntas sencillas, como en una conversación.",
     bv_p2_t: "Lo redactamos",
@@ -1404,7 +1400,6 @@ const TEXTOS = {
     aviso_salir: "Press Back again to exit CVoice.",
     bv_titulo: "Your résumé, just by talking",
     bv_sub: "Tell us about your experience out loud. We turn it into a professional résumé, ready to send.",
-    bv_gratis: "100% free · No sign-up · No ads",
     bv_p1_t: "Talk",
     bv_p1_d: "Answer a few simple questions, like in a conversation.",
     bv_p2_t: "We write it",
@@ -1464,7 +1459,6 @@ const TEXTOS = {
     aviso_salir: "Appuyez à nouveau sur Retour pour quitter CVoice.",
     bv_titulo: "Votre CV, simplement en parlant",
     bv_sub: "Racontez votre expérience à voix haute. Nous la transformons en un CV professionnel, prêt à envoyer.",
-    bv_gratis: "100 % gratuit · Sans inscription · Sans publicité",
     bv_p1_t: "Parlez",
     bv_p1_d: "Répondez à quelques questions simples, comme dans une conversation.",
     bv_p2_t: "Nous le rédigeons",
@@ -1524,7 +1518,6 @@ const TEXTOS = {
     aviso_salir: "Drücken Sie erneut Zurück, um CVoice zu verlassen.",
     bv_titulo: "Ihr Lebenslauf – einfach sprechen",
     bv_sub: "Erzählen Sie uns von Ihrer Erfahrung. Wir machen daraus einen professionellen Lebenslauf, bereit zum Versenden.",
-    bv_gratis: "100 % kostenlos · Ohne Anmeldung · Ohne Werbung",
     bv_p1_t: "Sprechen",
     bv_p1_d: "Beantworten Sie ein paar einfache Fragen – wie in einem Gespräch.",
     bv_p2_t: "Wir schreiben ihn",
@@ -1584,7 +1577,6 @@ const TEXTOS = {
     aviso_salir: "Premi di nuovo Indietro per uscire da CVoice.",
     bv_titulo: "Il tuo curriculum, solo parlando",
     bv_sub: "Raccontaci la tua esperienza a voce. Noi la trasformiamo in un curriculum professionale, pronto da inviare.",
-    bv_gratis: "100% gratis · Senza registrazione · Senza pubblicità",
     bv_p1_t: "Parla",
     bv_p1_d: "Rispondi ad alcune domande semplici, come in una conversazione.",
     bv_p2_t: "Lo scriviamo noi",
@@ -1644,7 +1636,6 @@ const TEXTOS = {
     aviso_salir: "Prima Voltar novamente para sair do CVoice.",
     bv_titulo: "O seu currículo, só a falar",
     bv_sub: "Conte-nos a sua experiência em voz alta. Nós transformamo-la num currículo profissional, pronto a enviar.",
-    bv_gratis: "100% grátis · Sem registo · Sem anúncios",
     bv_p1_t: "Fale",
     bv_p1_d: "Responda a algumas perguntas simples, como numa conversa.",
     bv_p2_t: "Nós escrevemos",
@@ -1704,7 +1695,6 @@ const TEXTOS = {
     aviso_salir: "اضغط على رجوع مرة أخرى للخروج من CVoice.",
     bv_titulo: "سيرتك الذاتية بمجرد الكلام",
     bv_sub: "حدّثنا عن خبرتك بصوتك، ونحن نحوّلها إلى سيرة ذاتية احترافية جاهزة للإرسال.",
-    bv_gratis: "مجاني 100% · بدون تسجيل · بدون إعلانات",
     bv_p1_t: "تحدّث",
     bv_p1_d: "أجب عن بعض الأسئلة البسيطة، كأنها محادثة.",
     bv_p2_t: "نحن نكتبها",
@@ -1764,7 +1754,6 @@ const TEXTOS = {
     aviso_salir: "再按一次返回键即可退出 CVoice。",
     bv_titulo: "只需说话，简历就完成",
     bv_sub: "用声音告诉我们你的经历，我们把它变成一份专业的简历，可以直接发送。",
-    bv_gratis: "完全免费 · 无需注册 · 无广告",
     bv_p1_t: "说",
     bv_p1_d: "像聊天一样，回答几个简单的问题。",
     bv_p2_t: "我们来写",
@@ -1824,7 +1813,6 @@ const TEXTOS = {
     aviso_salir: "もう一度「戻る」を押すと CVoice を終了します。",
     bv_titulo: "話すだけで、あなたの履歴書",
     bv_sub: "あなたの経験を声で教えてください。すぐに送れる、プロらしい履歴書に仕上げます。",
-    bv_gratis: "完全無料 · 登録不要 · 広告なし",
     bv_p1_t: "話す",
     bv_p1_d: "会話のように、いくつかの簡単な質問に答えるだけ。",
     bv_p2_t: "私たちが作成",
@@ -1884,7 +1872,6 @@ const TEXTOS = {
     aviso_salir: "Apasă din nou Înapoi pentru a ieși din CVoice.",
     bv_titulo: "CV-ul tău, doar vorbind",
     bv_sub: "Povestește-ne experiența ta cu vocea. Noi o transformăm într-un CV profesional, gata de trimis.",
-    bv_gratis: "100% gratuit · Fără înregistrare · Fără reclame",
     bv_p1_t: "Vorbește",
     bv_p1_d: "Răspunde la câteva întrebări simple, ca într-o conversație.",
     bv_p2_t: "Noi îl redactăm",
@@ -1944,7 +1931,6 @@ const TEXTOS = {
     aviso_salir: "Naciśnij ponownie Wstecz, aby wyjść z CVoice.",
     bv_titulo: "Twoje CV – wystarczy mówić",
     bv_sub: "Opowiedz nam o swoim doświadczeniu. Zamienimy to w profesjonalne CV, gotowe do wysłania.",
-    bv_gratis: "100% za darmo · Bez rejestracji · Bez reklam",
     bv_p1_t: "Mów",
     bv_p1_d: "Odpowiedz na kilka prostych pytań, jak w rozmowie.",
     bv_p2_t: "My je piszemy",
@@ -2004,7 +1990,6 @@ const TEXTOS = {
     aviso_salir: "Натисніть «Назад» ще раз, щоб вийти з CVoice.",
     bv_titulo: "Ваше резюме — просто голосом",
     bv_sub: "Розкажіть про свій досвід уголос. Ми перетворимо його на професійне резюме, готове до надсилання.",
-    bv_gratis: "100% безкоштовно · Без реєстрації · Без реклами",
     bv_p1_t: "Говоріть",
     bv_p1_d: "Дайте відповідь на кілька простих запитань, як у розмові.",
     bv_p2_t: "Ми пишемо",
@@ -2064,7 +2049,6 @@ const TEXTOS = {
     aviso_salir: "Нажмите «Назад» ещё раз, чтобы выйти из CVoice.",
     bv_titulo: "Ваше резюме — просто голосом",
     bv_sub: "Расскажите о своём опыте вслух. Мы превратим его в профессиональное резюме, готовое к отправке.",
-    bv_gratis: "100% бесплатно · Без регистрации · Без рекламы",
     bv_p1_t: "Говорите",
     bv_p1_d: "Ответьте на несколько простых вопросов, как в разговоре.",
     bv_p2_t: "Мы пишем",
