@@ -1264,7 +1264,7 @@
    - Multiidioma con detección automática
    - Reconocimiento de voz por pasos
    - Foto opcional por cámara
-   - Redacción y traducción del CV con IA (Groq, vía proxy en Vercel)
+   - Redacción del CV con IA, a través de nuestro servidor intermediario
    - 5 plantillas editables con zoom táctil, exportables a PDF
    ========================================================================= */
 
@@ -2619,21 +2619,20 @@ document.getElementById("btn-saltar-foto").addEventListener("click", () => {
   generarCV();
 });
 
-// ---------- 9. Generación inteligente del CV con la API de Groq ----------
+// ---------- 9. Generación inteligente del CV ----------
 
-// URL del proxy serverless en Vercel — la clave de Groq vive allí como
-// variable de entorno, nunca en este archivo ni en el APK de Android.
-const PROXY_URL = "https://cvoice-proxy.vercel.app/api/groq";
-const MODELO_GROQ = "openai/gpt-oss-120b";
+// Servidor intermediario: la clave del servicio de IA y la elección del modelo viven
+// allí, nunca en este archivo ni en el APK de Android.
+const PROXY_URL = "https://cvoice-proxy.vercel.app/api/cv";
 const TIMEOUT_IA_MS = 60000;
 
-// Groq limita los tokens por minuto de la cuenta: si varias personas generan su CV a la vez
-// responde 429. En vez de mostrar un error, se espera lo que indica Groq y se reintenta
+// El servicio de IA limita los tokens por minuto de la cuenta: si varias personas generan
+// su CV a la vez responde 429. En vez de mostrar un error, se espera lo que indica y se reintenta
 // (con un aviso en pantalla) hasta este tiempo máximo.
 const ESPERA_MAX_SATURACION_MS = 90000;
 
 // Llamada a la IA para redactar el CV. Devuelve el JSON ya parseado.
-// Si Groq rechaza la respuesta por JSON inválido (error 400 "json_validate_failed",
+// Si el servicio rechaza la respuesta por JSON inválido (error 400 "json_validate_failed",
 // el modelo a veces genera JSON mal formado), se reintenta una vez.
 async function llamarIA(promptSistema, promptUsuario, temperatura, reintentos = 1){
   const inicio = Date.now();
@@ -2642,7 +2641,7 @@ async function llamarIA(promptSistema, promptUsuario, temperatura, reintentos = 
       try {
         return await llamarIAUnaVez(promptSistema, promptUsuario, temperatura);
       } catch(error){
-        if (error.saturacionGroq && Date.now() - inicio < ESPERA_MAX_SATURACION_MS){
+        if (error.saturacion && Date.now() - inicio < ESPERA_MAX_SATURACION_MS){
           avisoSaturacion(true);
           await new Promise(r => setTimeout(r, error.esperaMs));
           continue;
@@ -2656,7 +2655,7 @@ async function llamarIA(promptSistema, promptUsuario, temperatura, reintentos = 
   }
 }
 
-// Cuánto esperar tras un 429: lo que diga Groq ("try again in 7.2s", "in 1m3s" o la
+// Cuánto esperar tras un 429: lo que diga el servidor ("try again in 7.2s", "in 1m3s" o la
 // cabecera retry-after), entre 2 y 20 s, más un poco al azar para que los usuarios que
 // esperan a la vez no vuelvan todos en el mismo instante
 function esperaTrasSaturacion(retryAfter, detalle){
@@ -2687,9 +2686,8 @@ async function llamarIAUnaVez(promptSistema, promptUsuario, temperatura){
       headers: { "Content-Type": "application/json" },
       signal: control.signal,
       body: JSON.stringify({
-        model: MODELO_GROQ,
         // Razonamiento bajo: CVs de la misma calidad (comparado en 3 casos) con ~17 % menos
-        // tokens, lo que deja más CVs dentro del cupo gratuito de Groq, y más rápido
+        // tokens, lo que deja más CVs dentro del cupo gratuito, y más rápido
         reasoning_effort: "low",
         temperature: temperatura,
         response_format: { type: "json_object" },
@@ -2701,16 +2699,16 @@ async function llamarIAUnaVez(promptSistema, promptUsuario, temperatura){
     });
     if (!respuesta.ok){
       const detalle = await respuesta.text().catch(() => "");
-      const error = new Error(`Groq respondió con error ${respuesta.status}. ${detalle}`);
+      const error = new Error(`El servidor respondió con error ${respuesta.status}. ${detalle}`);
       error.status = respuesta.status;
       error.jsonInvalido = /json_validate_failed|Failed to validate JSON/i.test(detalle);
-      // 429 de Groq (límite de la cuenta, compartido por todos y de segundos): se reintenta.
+      // 429 del servicio de IA (límite de la cuenta, compartido por todos y de segundos): se reintenta.
       // El proxy también responde 429 cuando UNA persona hace demasiadas peticiones
       // ("Demasiadas peticiones"): ese bloqueo dura minutos y reintentar lo alarga.
       // Solo el límite por minuto se libera en segundos; si se agotó el cupo del día
       // (en los dos modelos), esperar no sirve
-      error.saturacionGroq = respuesta.status === 429 && /per minute/i.test(detalle);
-      if (error.saturacionGroq) error.esperaMs = esperaTrasSaturacion(respuesta.headers.get("retry-after"), detalle);
+      error.saturacion = respuesta.status === 429 && /per minute/i.test(detalle);
+      if (error.saturacion) error.esperaMs = esperaTrasSaturacion(respuesta.headers.get("retry-after"), detalle);
       throw error;
     }
     const cuerpo = await respuesta.json();
