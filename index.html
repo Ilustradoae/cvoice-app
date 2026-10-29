@@ -2738,7 +2738,7 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 4. EXPERIENCIA LABORAL: Ordena cronológico inverso (lo más reciente primero). Para cada puesto incluye: título del puesto (profesional y específico), empresa/ciudad, fechas (solo las que diga la persona; si no las dice, deja el campo vacío: nunca inventes fechas ni escribas marcadores como "20XX"), y 3-4 viñetas con funciones concretas usando verbos de acción.
 
-5. ESTUDIOS: Separa título oficial, centro educativo, año. Agrupa cursos cortos como "Formación complementaria".
+5. ESTUDIOS: Separa título oficial, centro educativo, año. Agrupa cursos cortos como "Formación complementaria". Ordena los estudios y los cursos también de lo más reciente a lo más antiguo.
 
 6. CALIDAD: Si la descripción de funciones es vaga ("trabajaba allí", "hacía cosas"), infiere funciones típicas del puesto mencionado y redáctalas de forma profesional. Prioriza siempre la claridad y el impacto sobre el relleno.
 
@@ -2935,28 +2935,32 @@ function filtrarOtrosHTML(html){
 }
 
 
-// Experiencia en orden cronológico inverso aunque la IA la devuelva desordenada:
-// "actualidad/present/…" primero; después, el año más alto de las fechas. Si algún puesto
-// no tiene año, se respeta el orden de la IA.
+// Experiencia, estudios y cursos en orden cronológico inverso aunque la IA los devuelva
+// desordenados: "actualidad/present/…" primero; después, el año más alto. Lo que no tiene
+// año se queda en su sitio y los que sí lo tienen se ordenan entre ellos.
 // (la IA escribe "actualidad", "present", "présent", "heute", "attuale", "الحاضر", "дотепер"…)
 const PALABRAS_ACTUALIDAD = /actual|attual|present|présent|now|hoy|aujourd|à ce jour|heute|jetzt|derzeit|oggi|atual|prezent|obecn|teraz|теперішн|дотепер|нині|настоящ|сейчас|现在|至今|現在|الآن|الحاضر|حالي|حاليا|حاليًا/i;
-function claveFecha(item){
-  const fechas = String(item.fechas || "");
-  if (PALABRAS_ACTUALIDAD.test(fechas)) return 9999;
-  const anios = fechas.match(/\b(19|20)\d{2}\b/g);
+// Estudios que aún se están cursando ("cursando", "in progress", "en cours"…)
+const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|în curs|w trakcie|навча|в процесс|учусь|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار/i;
+// palabrasActuales: solo en campos de fecha ("Curso de actualización" no es la actualidad)
+function claveFecha(texto, ...palabrasActuales){
+  const s = String(texto || "");
+  if (palabrasActuales.some(re => re.test(s))) return 9999;
+  const anios = s.match(/\b(19|20)\d{2}\b/g);
   return anios ? Math.max(...anios.map(Number)) : null;
 }
-function ordenarExperiencia(lista){
-  const claves = lista.map(claveFecha);
-  if (claves.some(c => c === null)) return lista;
-  return lista.map((item, i) => ({ item, i, c: claves[i] }))
-    .sort((a, b) => b.c - a.c || a.i - b.i)
-    .map(x => x.item);
+function ordenarPorFecha(lista, claveDe){
+  const claves = lista.map(claveDe);
+  const conFecha = lista.map((item, i) => ({ item, i, c: claves[i] }))
+    .filter(x => x.c !== null)
+    .sort((a, b) => b.c - a.c || a.i - b.i);
+  let k = 0;
+  return lista.map((item, i) => claves[i] === null ? item : conFecha[k++].item);
 }
 
 function construirHTMLExperiencia(lista){
   if (!Array.isArray(lista) || lista.length === 0) return "";
-  return ordenarExperiencia(lista).map(item => {
+  return ordenarPorFecha(lista, item => claveFecha(item.fechas, PALABRAS_ACTUALIDAD)).map(item => {
     const puesto  = escaparHTML(limpiarTextoIA(item.puesto  || ""));
     const empresa = escaparHTML(limpiarTextoIA(item.empresa || ""));
     const fechas  = escaparHTML(limpiarTextoIA(item.fechas  || ""));
@@ -2976,8 +2980,10 @@ function construirHTMLExperiencia(lista){
 }
 
 function construirHTMLEstudios(listaEstudios, listaFormacionComplementaria){
-  const estudios = Array.isArray(listaEstudios) ? listaEstudios : [];
-  const complementaria = Array.isArray(listaFormacionComplementaria) ? listaFormacionComplementaria : [];
+  const estudios = Array.isArray(listaEstudios)
+    ? ordenarPorFecha(listaEstudios, item => claveFecha(item.año || item.anio, PALABRAS_ACTUALIDAD, PALABRAS_EN_CURSO)) : [];
+  const complementaria = Array.isArray(listaFormacionComplementaria)
+    ? ordenarPorFecha(listaFormacionComplementaria, c => claveFecha(c)) : [];
   if (estudios.length === 0 && complementaria.length === 0) return "";
 
   const estudiosHTML = estudios.map(item => {
