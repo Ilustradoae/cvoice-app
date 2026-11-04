@@ -599,9 +599,10 @@
   .lista-idiomas{ position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
     padding: 1.25rem; background: rgba(28,43,38,.55); }
   .lista-idiomas[hidden]{ display: none; }
-  /* Capa propia: sin ella, Chrome en Android dejaba ver a través de la caja el enlace del pie */
   .lista-idiomas-caja{ width: 100%; max-width: 26rem; max-height: 88vh; overflow-y: auto; background: #fff;
-    border-radius: 1rem; box-shadow: 0 12px 40px rgba(0,0,0,.25); transform: translateZ(0); isolation: isolate; }
+    border-radius: 1rem; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+  /* Chrome en Android pintaba el enlace del pie por encima de la lista: se oculta mientras está abierta */
+  body.con-lista-idiomas > footer{ visibility: hidden; }
   .lista-idiomas-op{ display: flex; align-items: center; gap: .85rem; width: 100%; min-height: 3.6rem;
     padding: .7rem 1.15rem; border: 0; border-bottom: 1px solid #EEE9DE; background: #fff; cursor: pointer;
     font: inherit; font-size: 1.15rem; color: var(--tinta); text-align: start; }
@@ -2406,6 +2407,7 @@ function abrirListaIdiomas(select, conTeclado){
     return op;
   }));
   listaIdiomas.hidden = false;
+  document.body.classList.add("con-lista-idiomas");
   const elegido = caja.querySelector('[aria-selected="true"]');
   elegido?.scrollIntoView({ block: "center" });
   if (conTeclado) elegido?.focus({ preventScroll: true });
@@ -2413,6 +2415,7 @@ function abrirListaIdiomas(select, conTeclado){
 
 function cerrarListaIdiomas(){
   listaIdiomas.hidden = true;
+  document.body.classList.remove("con-lista-idiomas");
   selectListaAbierta?.focus();
   selectListaAbierta = null;
 }
