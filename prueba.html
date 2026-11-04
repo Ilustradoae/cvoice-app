@@ -2816,6 +2816,19 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 8. FORMATO DE SALIDA: Devuelve ESTRICTAMENTE el JSON solicitado. Nunca HTML libre, nunca explicaciones adicionales, nunca texto fuera del JSON.`;
 
+// El modelo escribe peor el euskera que otros idiomas: estas pautas corrigen sus fallos
+// habituales (palabras sin traducir, nombres de empresa declinados, títulos oficiales)
+const NOTAS_EUSKERA = `
+PAUTAS PARA EL CV EN EUSKERA (obligatorias):
+- Escribe en euskera batua correcto y natural, con vocabulario profesional de recursos humanos. Ni una palabra en español o inglés.
+- Nombres de empresas, centros y ciudades en su forma base, sin declinar: "Eroski", "Zara", "Bilbo" (nunca "Eroskin", "Zaran").
+- Trabajo actual: fechas como "2021 - gaur egun" (nunca "present" ni "actualidad").
+- Títulos oficiales: DBH = "Derrigorrezko Bigarren Hezkuntza (DBH)"; "Batxilergoa"; "Erdi-mailako heziketa-zikloa"; "Goi-mailako heziketa-zikloa"; "Gradua". Si la persona lo está estudiando, inclúyelo igualmente y pon "ikasten" en lugar del año.
+- Etiquetas de "otros_html" en euskera: "Hizkuntzak", "Gidabaimena", "Ibilgailu propioa", "Erabilgarritasuna"; Sí/No = "Bai"/"Ez".
+- Niveles de idioma: "ama-hizkuntza", "maila aurreratua", "erdi-maila", "oinarrizko maila".
+- Funciones con sustantivo verbal: "Bezeroei arreta ematea", "Kutxa kudeatzea", "Produktuak antolatzea".
+- No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho.`;
+
 function construirPromptUsuario(datos){
   // El CV se redacta directamente en el idioma elegido en la bienvenida, que puede no ser
   // el idioma en el que se ha hablado
@@ -2826,6 +2839,7 @@ function construirPromptUsuario(datos){
 IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro. Esto incluye las etiquetas <strong> de "otros_html" (Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad…) y valores como "Sí"/"No": tradúcelos también al ${nombreIdioma}. Los ejemplos de este mensaje están en español solo como referencia de formato.
 
 La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, traduce todo con naturalidad y vocabulario profesional al ${nombreIdioma}, sin cambiar los datos. Si un nombre propio (persona, ciudad, empresa) está escrito en un alfabeto distinto del que usa el ${nombreIdioma}, transcríbelo con su forma habitual en ese alfabeto (ej. 'مكرم عايد' → 'Makrem Ayed', 'سوسة، تونس' → 'Sousse, Túnez' para un CV en español).
+${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
