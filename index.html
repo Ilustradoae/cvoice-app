@@ -584,6 +584,16 @@
     font-size: 1.0625rem !important; font-weight: 700; color: var(--tinta); }
   [dir="rtl"] .bv-select{ background-position: left 1rem center; padding: .8rem 1rem .8rem 2.9rem; }
   .bv-select:focus{ border-color: var(--musgo); outline: none; }
+  /* La ikurriña no tiene emoji de bandera que se vea en Android: se dibuja como imagen en el
+     selector cerrado cuando está elegido el euskera (la lista desplegable del móvil solo admite texto) */
+  .bv-select.con-ikurrina{ padding-left: 3.35rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 28'%3E%3Crect width='50' height='28' fill='%23D52B1E'/%3E%3Cpath d='M0 0L50 28M50 0L0 28' stroke='%23009B48' stroke-width='4.4'/%3E%3Cpath d='M25 0V28M0 14H50' stroke='%23fff' stroke-width='4.4'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F5D4F' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat, no-repeat;
+    background-position: left 1rem center, right 1rem center;
+    background-size: 1.75rem 0.98rem, 1.2rem; }
+  [dir="rtl"] .bv-select.con-ikurrina{ padding: .8rem 3.35rem .8rem 2.9rem;
+    background-position: right 1rem center, left 1rem center; }
   .bv-listo{ display: flex; align-items: center; gap: .85rem; background: var(--musgo-claro); border-radius: 1.1rem;
     padding: .95rem 1rem; margin: 1.2rem 0 1.3rem; }
   .bv-check{ flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--musgo); color: #fff;
@@ -2345,6 +2355,7 @@ selectIdiomaCV.addEventListener("change", () => {
 
 // "Hablarás en Español y tu currículum estará en English."
 function actualizarResumenIdiomas(){
+  [selectIdiomaHablar, selectIdiomaCV].forEach(s => s.classList.toggle("con-ikurrina", s.value === "eu"));
   document.getElementById("txt-bv-listo").textContent =
     tx("bv_listo_d", { hablar: IDIOMAS[idiomaActual].nombre, cv: IDIOMAS[idiomaCVDestino].nombre });
 }
