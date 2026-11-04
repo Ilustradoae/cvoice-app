@@ -586,14 +586,14 @@
   .bv-select:focus{ border-color: var(--musgo); outline: none; }
   /* La ikurriña no tiene emoji de bandera que se vea en Android: se dibuja como imagen, en el
      selector cerrado y en la lista propia de idiomas (la lista nativa del móvil solo admite texto) */
-  .bv-select, .lista-idiomas{ --ikurrina: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 28'%3E%3Crect width='50' height='28' fill='%23D52B1E'/%3E%3Cpath d='M0 0L50 28M50 0L0 28' stroke='%23009B48' stroke-width='4.4'/%3E%3Cpath d='M25 0V28M0 14H50' stroke='%23fff' stroke-width='4.4'/%3E%3C/svg%3E"); }
-  .bv-select.con-ikurrina{ padding-left: 3.35rem;
+  .bv-select, .lista-idiomas{ --ikurrina: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'%3E%3Cdefs%3E%3CclipPath id='o'%3E%3Cpath d='M2 5C12 2 20 2 30 4.5S48 7 58 3.5V35.5C48 39 40 38.5 30 36.5S12 34.5 2 37Z'/%3E%3C/clipPath%3E%3ClinearGradient id='p' x1='2' x2='58' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.22'/%3E%3Cstop offset='.18' stop-color='%23fff' stop-opacity='0'/%3E%3Cstop offset='.55' stop-color='%23000' stop-opacity='.2'/%3E%3Cstop offset='.78' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='.94' stop-color='%23fff' stop-opacity='.18'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='.08'/%3E%3C/linearGradient%3E%3ClinearGradient id='v' y1='2' y2='39' x1='0' x2='0' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.12'/%3E%3Cstop offset='.5' stop-color='%23fff' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='.12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg clip-path='url(%23o)'%3E%3Crect width='60' height='40' fill='%23D52B1E'/%3E%3Cpath d='M2 4.5L58 36M58 3.5L2 37' stroke='%23009B48' stroke-width='5'/%3E%3Cpath d='M30 0V40M0 20.5H60' stroke='%23fff' stroke-width='5'/%3E%3Crect width='60' height='40' fill='url(%23p)'/%3E%3Crect width='60' height='40' fill='url(%23v)'/%3E%3C/g%3E%3C/svg%3E"); }
+  .bv-select.con-ikurrina{ padding-left: 2.75rem;
     background-image: var(--ikurrina),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F5D4F' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat, no-repeat;
     background-position: left 1rem center, right 1rem center;
-    background-size: 1.75rem 0.98rem, 1.2rem; }
-  [dir="rtl"] .bv-select.con-ikurrina{ padding: .8rem 3.35rem .8rem 2.9rem;
+    background-size: 1.4rem 0.93rem, 1.2rem; }
+  [dir="rtl"] .bv-select.con-ikurrina{ padding: .8rem 2.75rem .8rem 2.9rem;
     background-position: right 1rem center, left 1rem center; }
   /* Lista de idiomas propia, con el aspecto de la del móvil */
   .lista-idiomas{ position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
@@ -609,7 +609,7 @@
   .lista-idiomas-op:last-child{ border-bottom: 0; }
   .lista-idiomas-op:focus-visible{ outline: 3px solid var(--ambar); outline-offset: -3px; }
   .lista-idiomas-bandera{ width: 1.75rem; flex-shrink: 0; font-size: 1.35rem; line-height: 1; text-align: center; }
-  .lista-idiomas-bandera.ikurrina{ width: 1.55rem; height: .87rem; margin-inline: .1rem; background: var(--ikurrina) center / contain no-repeat; }
+  .lista-idiomas-bandera.ikurrina{ height: 1.07rem; background: var(--ikurrina) center / contain no-repeat; }
   .lista-idiomas-nombre{ flex: 1; }
   .lista-idiomas-radio{ width: 1.4rem; height: 1.4rem; flex-shrink: 0; border-radius: 50%; border: 2px solid #8A8F8C; }
   .lista-idiomas-op[aria-selected="true"] .lista-idiomas-radio{ border-color: var(--ambar);
