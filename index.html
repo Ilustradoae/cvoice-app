@@ -1270,6 +1270,8 @@
 // ---------- 1. Idiomas y textos ----------
 const IDIOMAS = {
   es: { nombre:"Español",   bandera:"🇪🇸", lang:"es-ES", dir:"ltr" },
+  // Sin emoji de bandera propio; "ia" es el nombre que entiende mejor el modelo al redactar
+  eu: { nombre:"Euskara",   bandera:"",     lang:"eu-ES", dir:"ltr", ia:"euskera (euskara batua)" },
   en: { nombre:"English",   bandera:"🇬🇧", lang:"en-US", dir:"ltr" },
   fr: { nombre:"Français",  bandera:"🇫🇷", lang:"fr-FR", dir:"ltr" },
   de: { nombre:"Deutsch",   bandera:"🇩🇪", lang:"de-DE", dir:"ltr" },
@@ -1357,6 +1359,65 @@ const TEXTOS = {
     boton_empezar: "Empezar",
     p2_instruccion: "Cuéntanos todos los trabajos que quieras incluir, uno detrás de otro. De cada uno dinos:",
     p3_instruccion: "Cuéntanos todos tus estudios y cursos, uno detrás de otro. De cada uno dinos:",
+  },
+  eu: {
+    subtitulo: "Hitz egin. Guk idatziko dugu zure curriculuma.",
+    p1_titulo: "Zure datu pertsonalak",
+    p2_titulo: "Zure lan-esperientzia",
+    p3_titulo: "Zure ikasketak",
+    p4_titulo: "Beste datu batzuk",
+    p5_titulo: "Zure argazkia (aukerakoa)",
+    boton_abrir_camara: "Ireki kamera", boton_capturar: "Atera argazkia", boton_repetir: "↺ Errepikatu argazkia", boton_saltar: "Saltatu", boton_continuar: "Jarraitu →",
+    camara_sin_permiso: "Ezin izan dugu kamera erabili. Begiratu nabigatzailearen baimenak.",
+    puedes_corregir: "Hemen ikusiko duzu esaten ari zarena. Ukitu zuzentzeko.", boton_abrir_cv: "Ireki nire CVa", boton_compartir_cv: "Bidali WhatsApp edo e-mail bidez", compartir_titulo: "Bidali nire CVa",
+    boton_siguiente: "Hurrengoa →", boton_anterior: "← Atzera",
+    mensaje_carga: "Zure curriculuma estilo profesionalez idazten ari gara…",
+    error_ia_generico: "Ezin izan dugu zure curriculuma automatikoki idatzi. Begiratu interneteko konexioa eta saiatu berriro.",
+    cv_titulo: "Zure curriculuma prest dago", cv_ayuda: "Ukitu zure CVko edozein testu deskargatu aurretik zuzentzeko.",
+    cv_lateral_contacto: "Datu pertsonalak",
+    cv_lateral_otros: "Beste datu batzuk",
+    cv_formacion_complementaria: "Prestakuntza osagarria",
+    label_telefono: "Telefonoa:", label_email: "E-maila:", label_ubicacion: "Kokapena:",
+    cv_bloque_experiencia: "Lan-esperientzia", cv_bloque_estudios: "Ikasketak",
+    boton_rehacer: "← Berriro grabatu",
+    ia_mucha_demanda: "Jende asko ari da CVoice erabiltzen une honetan. Itxaron pixka bat, zure curriculumarekin jarraitzen dugu…",
+    nombre_predeterminado: "IZENA ABIZENA",
+    p1_instruccion: "Sakatu mikrofonoa eta esan:",
+    p1_item1: "Zure izen-abizenak",
+    p1_item2: "Zure telefono-zenbakia",
+    p1_item3: "Zure helbide elektronikoa",
+    p1_item4: "Zure hiria edo herria",
+    p2_item1: "Enpresaren edo negozioaren izena",
+    p2_item2: "Zure lanpostua edo kargua",
+    p2_item3: "Lan egin zenuen urteak edo datak",
+    p2_item4: "Zer zeregin edo eginkizun zenituen",
+    p3_item1: "Ikastetxearen izena",
+    p3_item2: "Lortutako titulua edo ziurtagiria",
+    p3_item3: "Amaitu zenuen urtea",
+    p3_item4: "Ikastaro edo prestakuntza gehigarriak (badituzu)",
+    p4_item1: "Hitz egiten dituzun hizkuntzak eta maila",
+    p4_item2: "Gidabaimena (baduzu)",
+    p4_item3: "Ordutegi-erabilgarritasuna",
+    p4_item4: "Boluntariotza edo bestelako jarduerak (badituzu)",
+    sin_voz: "Zure nabigatzaileak ez du hau onartzen. Probatu Google Chrome.",
+    mic_sin_permiso: "Ezin dugu mikrofonoa erabili. Eman mikrofonoa erabiltzeko baimena CVoice-ri mugikorraren ezarpenetan.",
+    aviso_salir: "Sakatu Atzera berriro CVoice-tik irteteko.",
+    bv_titulo: "Zure curriculuma, hitz eginez bakarrik",
+    bv_sub: "Kontatu zure esperientzia ahotsez. Guk curriculum profesional bihurtuko dugu, bidaltzeko prest.",
+    bv_p1_t: "Hitz egin",
+    bv_p1_d: "Erantzun galdera erraz batzuei, elkarrizketa batean bezala.",
+    bv_p2_t: "Guk idazten dugu",
+    bv_p2_d: "Esaten duzuna ordenatu eta estilo profesionalez idazten dugu.",
+    bv_p3_t: "Deskargatu",
+    bv_p3_d: "Aukeratu diseinu bat eta eraman zure CVa PDFn, bidaltzeko prest.",
+    bv_idiomas: "Aukeratu zure hizkuntzak",
+    bv_hablar: "Hitz egingo duzun hizkuntza",
+    bv_cv: "Zure curriculumaren hizkuntza",
+    bv_listo_t: "Zorionak, dena prest!",
+    bv_listo_d: "Hitz egiteko hizkuntza: {hablar} · Zure curriculuma: {cv}",
+    boton_empezar: "Hasi",
+    p2_instruccion: "Kontatu sartu nahi dituzun lan guztiak, bata bestearen atzetik. Bakoitzari buruz esan:",
+    p3_instruccion: "Kontatu zure ikasketa eta ikastaro guztiak, bata bestearen atzetik. Bakoitzari buruz esan:",
   },
   en: {
     subtitulo: "Speak. We write your résumé.",
@@ -2080,6 +2141,16 @@ const TEXTOS_EXTRA = {
     aviso_pdf_error: "No se ha podido guardar el currículum. Pulsa descargar otra vez.", aviso_cv_guardado: "Currículum guardado en la carpeta Descargas.", pie_privacidad: "Política de privacidad",
     aria_grabar: "Grabar voz",
   },
+  eu: {
+    cv_bloque_perfil: "Profil profesionala", cv_bloque_habilidades: "Gaitasunak",
+    elige_estilo: "Aukeratu zure curriculumaren diseinua:",
+    diseno_basico: "Klasikoa", diseno_prem1: "Exekutiboa", diseno_prem2: "Editoriala", diseno_prem3: "Modernoa", diseno_prem4: "Korporatiboa",
+    cta_descargar: "DESKARGATU",
+    app_titulo: "Deskargatu zure CVa aplikaziotik", app_desc: "Curriculuma PDFn deskargatzeko aukera Androiderako CVoice aplikazioan dago.", app_boton: "Lortu CVoice Google Playn", cerrar: "Itxi",
+    aviso_descargando: "Zure curriculuma deskargatzen…",
+    aviso_pdf_error: "Ezin izan da curriculuma gorde. Sakatu deskargatu berriro.", aviso_cv_guardado: "Curriculuma Deskargak karpetan gorde da.", pie_privacidad: "Pribatutasun-politika",
+    aria_grabar: "Grabatu ahotsa",
+  },
   en: {
     cv_bloque_perfil: "Professional profile", cv_bloque_habilidades: "Skills",
     elige_estilo: "Choose your résumé design:",
@@ -2249,7 +2320,7 @@ const selectIdiomaCV = document.getElementById("select-idioma-cv");
   Object.entries(IDIOMAS).forEach(([codigo, datos]) => {
     const opcion = document.createElement("option");
     opcion.value = codigo;
-    opcion.textContent = `${datos.bandera}  ${datos.nombre}`;
+    opcion.textContent = datos.bandera ? `${datos.bandera}  ${datos.nombre}` : datos.nombre;
     select.appendChild(opcion);
   });
 });
@@ -2745,16 +2816,32 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 8. FORMATO DE SALIDA: Devuelve ESTRICTAMENTE el JSON solicitado. Nunca HTML libre, nunca explicaciones adicionales, nunca texto fuera del JSON.`;
 
+// El modelo escribe peor el euskera que otros idiomas: estas pautas corrigen sus fallos
+// habituales (palabras sin traducir, nombres de empresa declinados, títulos oficiales)
+const NOTAS_EUSKERA = `
+PAUTAS PARA EL CV EN EUSKERA (obligatorias):
+- Escribe en euskera batua correcto y natural, con vocabulario profesional de recursos humanos. Ni una palabra en español o inglés.
+- Traduce SIEMPRE los puestos: "Sukaldaria" (no "Cocinero"), "Zerbitzaria" (no "Camarero"), "Saltzailea", "Kutxazaina", "Garbitzailea", "Biltegizaina".
+- Nombres de empresas, centros y ciudades en su forma base, sin declinar: "Eroski", "Zara", "Bilbo" (nunca "Eroskin", "Zaran"). Las palabras genéricas que los acompañan se traducen y van detrás: "Arzak jatetxea" (no "Restaurante Arzak"), "Txoko taberna" (no "Bar Txoko").
+- Trabajo actual: fechas como "2021 - gaur egun" (nunca "present" ni "actualidad").
+- Títulos oficiales: DBH = "Derrigorrezko Bigarren Hezkuntza (DBH)"; "Batxilergoa"; "Erdi-mailako heziketa-zikloa"; "Goi-mailako heziketa-zikloa"; "Gradua". Con especialidad: "Sukaldaritzako erdi-mailako heziketa-zikloa", "Merkataritzako goi-mailako heziketa-zikloa" (nunca "Graduo Ertaina"). Si la persona lo está estudiando, inclúyelo igualmente y pon "ikasten" en lugar del año.
+- Etiquetas de "otros_html" en euskera: "Hizkuntzak", "Gidabaimena", "Ibilgailu propioa", "Erabilgarritasuna"; Sí/No = "Bai"/"Ez".
+- Idiomas con su nombre en euskera: "euskara" (nunca "euskera"), "gaztelania", "ingelesa", "frantsesa", "arabiera". Niveles: "ama-hizkuntza", "maila aurreratua", "erdi-maila", "oinarrizko maila"; si no se dijo el nivel, no lo inventes.
+- Funciones con sustantivo verbal: "Bezeroei arreta ematea", "Kutxa kudeatzea", "Produktuak antolatzea".
+- No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho, tampoco en el perfil (nada de "10 urteko esperientzia"). Perfil breve: 2 frases.
+- Palabras correctas: "antolaketa" (no "organizazio"), "talde-lana" (no "lankidetza" para trabajo en equipo).`;
+
 function construirPromptUsuario(datos){
   // El CV se redacta directamente en el idioma elegido en la bienvenida, que puede no ser
   // el idioma en el que se ha hablado
-  const nombreIdioma = IDIOMAS[idiomaCVDestino]?.nombre || "español";
-  const idiomaHablado = IDIOMAS[idiomaActual]?.nombre || nombreIdioma;
+  const nombreIdioma = IDIOMAS[idiomaCVDestino]?.ia || IDIOMAS[idiomaCVDestino]?.nombre || "español";
+  const idiomaHablado = IDIOMAS[idiomaActual]?.ia || IDIOMAS[idiomaActual]?.nombre || nombreIdioma;
   return `Aquí están los textos en bruto, dictados por voz, recogidos en una entrevista de 4 pasos. Devuélvelos procesados.
 
 IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro. Esto incluye las etiquetas <strong> de "otros_html" (Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad…) y valores como "Sí"/"No": tradúcelos también al ${nombreIdioma}. Los ejemplos de este mensaje están en español solo como referencia de formato.
 
 La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, traduce todo con naturalidad y vocabulario profesional al ${nombreIdioma}, sin cambiar los datos. Si un nombre propio (persona, ciudad, empresa) está escrito en un alfabeto distinto del que usa el ${nombreIdioma}, transcríbelo con su forma habitual en ese alfabeto (ej. 'مكرم عايد' → 'Makrem Ayed', 'سوسة، تونس' → 'Sousse, Túnez' para un CV en español).
+${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
@@ -2938,9 +3025,9 @@ function filtrarOtrosHTML(html){
 // desordenados: "actualidad/present/…" primero; después, el año más alto. Lo que no tiene
 // año se queda en su sitio y los que sí lo tienen se ordenan entre ellos.
 // (la IA escribe "actualidad", "present", "présent", "heute", "attuale", "الحاضر", "дотепер"…)
-const PALABRAS_ACTUALIDAD = /actual|attual|present|présent|now|hoy|aujourd|à ce jour|heute|jetzt|derzeit|oggi|atual|prezent|obecn|teraz|теперішн|дотепер|нині|настоящ|сейчас|现在|至今|現在|الآن|الحاضر|حالي|حاليا|حاليًا/i;
+const PALABRAS_ACTUALIDAD = /actual|attual|present|présent|now|hoy|aujourd|à ce jour|heute|jetzt|derzeit|oggi|atual|prezent|obecn|teraz|теперішн|дотепер|нині|настоящ|сейчас|现在|至今|現在|الآن|الحاضر|حالي|حاليا|حاليًا|gaur egun|gaur arte|orain arte|oraindik/i;
 // Estudios que aún se están cursando ("cursando", "in progress", "en cours"…)
-const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|în curs|w trakcie|навча|в процесс|учусь|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار/i;
+const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|în curs|w trakcie|навча|в процесс|учусь|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار|ikasten|egiten ari|martxan/i;
 // palabrasActuales: solo en campos de fecha ("Curso de actualización" no es la actualidad)
 function claveFecha(texto, ...palabrasActuales){
   const s = String(texto || "");
