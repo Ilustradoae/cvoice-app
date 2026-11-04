@@ -596,7 +596,7 @@
   [dir="rtl"] .bv-select.con-ikurrina{ padding: .8rem 3.35rem .8rem 2.9rem;
     background-position: right 1rem center, left 1rem center; }
   /* Lista de idiomas propia, con el aspecto de la del móvil */
-  .lista-idiomas{ position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  .lista-idiomas{ position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
     padding: 1.25rem; background: rgba(28,43,38,.55); }
   .lista-idiomas[hidden]{ display: none; }
   .lista-idiomas-caja{ width: 100%; max-width: 26rem; max-height: 88vh; overflow-y: auto; background: #fff;
@@ -607,7 +607,7 @@
   .lista-idiomas-op:last-child{ border-bottom: 0; }
   .lista-idiomas-op:focus-visible{ outline: 3px solid var(--ambar); outline-offset: -3px; }
   .lista-idiomas-bandera{ width: 1.75rem; flex-shrink: 0; font-size: 1.35rem; line-height: 1; text-align: center; }
-  .lista-idiomas-bandera.ikurrina{ height: .98rem; background: var(--ikurrina) center / contain no-repeat; }
+  .lista-idiomas-bandera.ikurrina{ width: 1.55rem; height: .87rem; margin-inline: .1rem; background: var(--ikurrina) center / contain no-repeat; }
   .lista-idiomas-nombre{ flex: 1; }
   .lista-idiomas-radio{ width: 1.4rem; height: 1.4rem; flex-shrink: 0; border-radius: 50%; border: 2px solid #8A8F8C; }
   .lista-idiomas-op[aria-selected="true"] .lista-idiomas-radio{ border-color: var(--ambar);
@@ -2380,7 +2380,8 @@ listaIdiomas.innerHTML = '<div class="lista-idiomas-caja" role="listbox"></div>'
 document.body.appendChild(listaIdiomas);
 let selectListaAbierta = null;
 
-function abrirListaIdiomas(select){
+// conTeclado: solo entonces se lleva el foco a la opción elegida (con el dedo, el marco del foco sobra)
+function abrirListaIdiomas(select, conTeclado){
   selectListaAbierta = select;
   const caja = listaIdiomas.firstChild;
   caja.setAttribute("aria-label", select.closest("label")?.querySelector(".bv-etiqueta")?.textContent.trim() || "");
@@ -2406,7 +2407,7 @@ function abrirListaIdiomas(select){
   listaIdiomas.hidden = false;
   const elegido = caja.querySelector('[aria-selected="true"]');
   elegido?.scrollIntoView({ block: "center" });
-  elegido?.focus({ preventScroll: true });
+  if (conTeclado) elegido?.focus({ preventScroll: true });
 }
 
 function cerrarListaIdiomas(){
@@ -2439,7 +2440,7 @@ listaIdiomas.addEventListener("keydown", e => {
   select.addEventListener("mousedown", e => e.preventDefault());
   select.addEventListener("click", () => abrirListaIdiomas(select));
   select.addEventListener("keydown", e => {
-    if ([" ", "Enter", "ArrowDown", "ArrowUp"].includes(e.key)){ e.preventDefault(); abrirListaIdiomas(select); }
+    if ([" ", "Enter", "ArrowDown", "ArrowUp"].includes(e.key)){ e.preventDefault(); abrirListaIdiomas(select, true); }
   });
 });
 
