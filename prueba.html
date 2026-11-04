@@ -2821,13 +2821,15 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 const NOTAS_EUSKERA = `
 PAUTAS PARA EL CV EN EUSKERA (obligatorias):
 - Escribe en euskera batua correcto y natural, con vocabulario profesional de recursos humanos. Ni una palabra en español o inglés.
-- Nombres de empresas, centros y ciudades en su forma base, sin declinar: "Eroski", "Zara", "Bilbo" (nunca "Eroskin", "Zaran").
+- Traduce SIEMPRE los puestos: "Sukaldaria" (no "Cocinero"), "Zerbitzaria" (no "Camarero"), "Saltzailea", "Kutxazaina", "Garbitzailea", "Biltegizaina".
+- Nombres de empresas, centros y ciudades en su forma base, sin declinar: "Eroski", "Zara", "Bilbo" (nunca "Eroskin", "Zaran"). Las palabras genéricas que los acompañan se traducen y van detrás: "Arzak jatetxea" (no "Restaurante Arzak"), "Txoko taberna" (no "Bar Txoko").
 - Trabajo actual: fechas como "2021 - gaur egun" (nunca "present" ni "actualidad").
-- Títulos oficiales: DBH = "Derrigorrezko Bigarren Hezkuntza (DBH)"; "Batxilergoa"; "Erdi-mailako heziketa-zikloa"; "Goi-mailako heziketa-zikloa"; "Gradua". Si la persona lo está estudiando, inclúyelo igualmente y pon "ikasten" en lugar del año.
+- Títulos oficiales: DBH = "Derrigorrezko Bigarren Hezkuntza (DBH)"; "Batxilergoa"; "Erdi-mailako heziketa-zikloa"; "Goi-mailako heziketa-zikloa"; "Gradua". Con especialidad: "Sukaldaritzako erdi-mailako heziketa-zikloa", "Merkataritzako goi-mailako heziketa-zikloa" (nunca "Graduo Ertaina"). Si la persona lo está estudiando, inclúyelo igualmente y pon "ikasten" en lugar del año.
 - Etiquetas de "otros_html" en euskera: "Hizkuntzak", "Gidabaimena", "Ibilgailu propioa", "Erabilgarritasuna"; Sí/No = "Bai"/"Ez".
-- Niveles de idioma: "ama-hizkuntza", "maila aurreratua", "erdi-maila", "oinarrizko maila".
+- Idiomas con su nombre en euskera: "euskara" (nunca "euskera"), "gaztelania", "ingelesa", "frantsesa", "arabiera". Niveles: "ama-hizkuntza", "maila aurreratua", "erdi-maila", "oinarrizko maila"; si no se dijo el nivel, no lo inventes.
 - Funciones con sustantivo verbal: "Bezeroei arreta ematea", "Kutxa kudeatzea", "Produktuak antolatzea".
-- No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho.`;
+- No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho, tampoco en el perfil (nada de "10 urteko esperientzia"). Perfil breve: 2 frases.
+- Palabras correctas: "antolaketa" (no "organizazio"), "talde-lana" (no "lankidetza" para trabajo en equipo).`;
 
 function construirPromptUsuario(datos){
   // El CV se redacta directamente en el idioma elegido en la bienvenida, que puede no ser
