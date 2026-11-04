@@ -584,16 +584,36 @@
     font-size: 1.0625rem !important; font-weight: 700; color: var(--tinta); }
   [dir="rtl"] .bv-select{ background-position: left 1rem center; padding: .8rem 1rem .8rem 2.9rem; }
   .bv-select:focus{ border-color: var(--musgo); outline: none; }
-  /* La ikurriña no tiene emoji de bandera que se vea en Android: se dibuja como imagen en el
-     selector cerrado cuando está elegido el euskera (la lista desplegable del móvil solo admite texto) */
+  /* La ikurriña no tiene emoji de bandera que se vea en Android: se dibuja como imagen, en el
+     selector cerrado y en la lista propia de idiomas (la lista nativa del móvil solo admite texto) */
+  .bv-select, .lista-idiomas{ --ikurrina: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 28'%3E%3Crect width='50' height='28' fill='%23D52B1E'/%3E%3Cpath d='M0 0L50 28M50 0L0 28' stroke='%23009B48' stroke-width='4.4'/%3E%3Cpath d='M25 0V28M0 14H50' stroke='%23fff' stroke-width='4.4'/%3E%3C/svg%3E"); }
   .bv-select.con-ikurrina{ padding-left: 3.35rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 28'%3E%3Crect width='50' height='28' fill='%23D52B1E'/%3E%3Cpath d='M0 0L50 28M50 0L0 28' stroke='%23009B48' stroke-width='4.4'/%3E%3Cpath d='M25 0V28M0 14H50' stroke='%23fff' stroke-width='4.4'/%3E%3C/svg%3E"),
+    background-image: var(--ikurrina),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F5D4F' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat, no-repeat;
     background-position: left 1rem center, right 1rem center;
     background-size: 1.75rem 0.98rem, 1.2rem; }
   [dir="rtl"] .bv-select.con-ikurrina{ padding: .8rem 3.35rem .8rem 2.9rem;
     background-position: right 1rem center, left 1rem center; }
+  /* Lista de idiomas propia, con el aspecto de la del móvil */
+  .lista-idiomas{ position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
+    padding: 1.25rem; background: rgba(28,43,38,.55); }
+  .lista-idiomas[hidden]{ display: none; }
+  .lista-idiomas-caja{ width: 100%; max-width: 26rem; max-height: 88vh; overflow-y: auto; background: #fff;
+    border-radius: 1rem; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+  /* Chrome en Android pintaba el enlace del pie por encima de la lista: se oculta mientras está abierta */
+  body.con-lista-idiomas > footer{ visibility: hidden; }
+  .lista-idiomas-op{ display: flex; align-items: center; gap: .85rem; width: 100%; min-height: 3.6rem;
+    padding: .7rem 1.15rem; border: 0; border-bottom: 1px solid #EEE9DE; background: #fff; cursor: pointer;
+    font: inherit; font-size: 1.15rem; color: var(--tinta); text-align: start; }
+  .lista-idiomas-op:last-child{ border-bottom: 0; }
+  .lista-idiomas-op:focus-visible{ outline: 3px solid var(--ambar); outline-offset: -3px; }
+  .lista-idiomas-bandera{ width: 1.75rem; flex-shrink: 0; font-size: 1.35rem; line-height: 1; text-align: center; }
+  .lista-idiomas-bandera.ikurrina{ width: 1.55rem; height: .87rem; margin-inline: .1rem; background: var(--ikurrina) center / contain no-repeat; }
+  .lista-idiomas-nombre{ flex: 1; }
+  .lista-idiomas-radio{ width: 1.4rem; height: 1.4rem; flex-shrink: 0; border-radius: 50%; border: 2px solid #8A8F8C; }
+  .lista-idiomas-op[aria-selected="true"] .lista-idiomas-radio{ border-color: var(--ambar);
+    background: radial-gradient(var(--ambar) 0 45%, transparent 50%); }
   .bv-listo{ display: flex; align-items: center; gap: .85rem; background: var(--musgo-claro); border-radius: 1.1rem;
     padding: .95rem 1rem; margin: 1.2rem 0 1.3rem; }
   .bv-check{ flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--musgo); color: #fff;
@@ -2353,6 +2373,81 @@ selectIdiomaCV.addEventListener("change", () => {
   actualizarResumenIdiomas();
 });
 
+// Lista de idiomas propia en lugar de la del móvil, que solo admite texto y no puede mostrar
+// la ikurriña. El <select> se queda: guarda el valor y lanza "change" como siempre.
+const listaIdiomas = document.createElement("div");
+listaIdiomas.className = "lista-idiomas";
+listaIdiomas.hidden = true;
+listaIdiomas.innerHTML = '<div class="lista-idiomas-caja" role="listbox"></div>';
+document.body.appendChild(listaIdiomas);
+let selectListaAbierta = null;
+
+// conTeclado: solo entonces se lleva el foco a la opción elegida (con el dedo, el marco del foco sobra)
+function abrirListaIdiomas(select, conTeclado){
+  selectListaAbierta = select;
+  const caja = listaIdiomas.firstChild;
+  caja.setAttribute("aria-label", select.closest("label")?.querySelector(".bv-etiqueta")?.textContent.trim() || "");
+  caja.replaceChildren(...Object.entries(IDIOMAS).map(([codigo, datos]) => {
+    const op = document.createElement("button");
+    op.type = "button";
+    op.className = "lista-idiomas-op";
+    op.setAttribute("role", "option");
+    op.setAttribute("aria-selected", String(codigo === select.value));
+    op.dataset.codigo = codigo;
+    const bandera = document.createElement("span");
+    bandera.className = "lista-idiomas-bandera" + (codigo === "eu" ? " ikurrina" : "");
+    bandera.setAttribute("aria-hidden", "true");
+    bandera.textContent = datos.bandera;
+    const nombre = document.createElement("span");
+    nombre.className = "lista-idiomas-nombre";
+    nombre.textContent = datos.nombre;
+    const radio = document.createElement("span");
+    radio.className = "lista-idiomas-radio";
+    op.append(bandera, nombre, radio);
+    return op;
+  }));
+  listaIdiomas.hidden = false;
+  document.body.classList.add("con-lista-idiomas");
+  const elegido = caja.querySelector('[aria-selected="true"]');
+  elegido?.scrollIntoView({ block: "center" });
+  if (conTeclado) elegido?.focus({ preventScroll: true });
+}
+
+function cerrarListaIdiomas(){
+  listaIdiomas.hidden = true;
+  document.body.classList.remove("con-lista-idiomas");
+  selectListaAbierta?.focus();
+  selectListaAbierta = null;
+}
+
+listaIdiomas.addEventListener("click", e => {
+  const op = e.target.closest(".lista-idiomas-op");
+  if (op && selectListaAbierta && op.dataset.codigo !== selectListaAbierta.value){
+    selectListaAbierta.value = op.dataset.codigo;
+    selectListaAbierta.dispatchEvent(new Event("change"));
+  }
+  // Tocar fuera de la caja también la cierra, como la lista del móvil
+  if (op || e.target === listaIdiomas) cerrarListaIdiomas();
+});
+listaIdiomas.addEventListener("keydown", e => {
+  if (e.key === "Escape") cerrarListaIdiomas();
+  if (e.key === "ArrowDown" || e.key === "ArrowUp"){
+    e.preventDefault();
+    const ops = [...listaIdiomas.querySelectorAll(".lista-idiomas-op")];
+    const i = ops.indexOf(document.activeElement) + (e.key === "ArrowDown" ? 1 : -1);
+    ops[Math.max(0, Math.min(ops.length - 1, i))].focus();
+  }
+});
+
+[selectIdiomaHablar, selectIdiomaCV].forEach(select => {
+  // Evita que se abra la lista del móvil
+  select.addEventListener("mousedown", e => e.preventDefault());
+  select.addEventListener("click", () => abrirListaIdiomas(select));
+  select.addEventListener("keydown", e => {
+    if ([" ", "Enter", "ArrowDown", "ArrowUp"].includes(e.key)){ e.preventDefault(); abrirListaIdiomas(select, true); }
+  });
+});
+
 // "Hablarás en Español y tu currículum estará en English."
 function actualizarResumenIdiomas(){
   [selectIdiomaHablar, selectIdiomaCV].forEach(s => s.classList.toggle("con-ikurrina", s.value === "eu"));
@@ -3912,6 +4007,7 @@ function confirmarSalida(){
   return true;
 }
 window.botonAtras = function(){
+  if (!listaIdiomas.hidden){ cerrarListaIdiomas(); return true; }
   const visible = id => !document.getElementById(id).classList.contains("hidden");
   if (visible("modal-app")){ document.getElementById("modal-app").classList.add("hidden"); return true; }
   if (visible("pantalla-carga")){
