@@ -2939,7 +2939,7 @@ PAUTAS PARA EL CV EN EUSKERA (obligatorias):
 - No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho, tampoco en el perfil (nada de "10 urteko esperientzia"). Perfil breve: 2 frases.
 - Palabras correctas: "antolaketa" (no "organizazio"), "talde-lana" (no "lankidetza" para trabajo en equipo).
 - PROHIBIDOS LOS CASTELLANISMOS: nunca pongas terminación vasca a una palabra española. Usa la palabra vasca genuina:
-  gestionatu → kudeatu · organizatu → antolatu · atenditu → artatu / arreta eman · limpiatu → garbitu · reponer/erreposatu → hornitu · enkargatu (persona) → arduraduna · ekipo → talde (lantaldea) · kliente → bezero · proveedore → hornitzaile · almazen → biltegi · ofizina → bulego · eskaparate → erakusleiho · kamarero → zerbitzari · dependiente → saltzaile · kurtso → ikastaro · formazio → prestakuntza · karnet → gidabaimena · disponibilitate → erabilgarritasuna · habilitate → gaitasun / trebetasun · nibel → maila · puntualitate → puntualtasuna · responsabilitate → ardura · experientzia laboral → lan-esperientzia · manejatu → erabili / maneiatu · repartitu → banatu · kobratu → kobratu (válido) · ordenatu → ordenatu (válido).
+  gestionatu → kudeatu · organizatu → antolatu · atenditu → artatu / arreta eman · limpiatu → garbitu · reponer/erreposatu → hornitu · enkargatu (persona) → arduraduna · ekipo → talde (lantaldea) · kliente → bezero · proveedore → hornitzaile · almazen → biltegi · ofizina → bulego · eskaparate → erakusleiho · kamarero → zerbitzari · dependiente → saltzaile · kurtso → ikastaro · formazio → prestakuntza · karnet → gidabaimena · disponibilitate → erabilgarritasuna · habilitate → gaitasun / trebetasun · nibel → maila · puntualitate → puntualtasuna · responsabilitate → ardura · experientzia laboral → lan-esperientzia · manejatu → erabili / maneiatu · repartitu → banatu · karretillero → karretilla-gidari · komunikazio (habilidad) → komunikazio-gaitasuna · inventario → inbentarioa · actividades comerciales → merkataritza-jarduerak · Bilbao → Bilbo · inglés (curso) → ingeleseko ikastaroa · de mañanas y tardes → goizez eta arratsaldez · kobratu → kobratu (válido) · ordenatu → ordenatu (válido).
 - Antes de responder, relee palabra por palabra: si alguna es una palabra española con terminación vasca, sustitúyela por la vasca.`;
 
 // El modelo tiende al portugués de Brasil; quien lo usa aquí busca trabajo en Portugal o en
@@ -2954,6 +2954,45 @@ PAUTAS PARA EL CV EN PORTUGUÉS DE PORTUGAL (obligatorias):
 - Etiquetas de "otros_html": "Línguas", "Carta de condução", "Viatura própria", "Disponibilidade"; Sí/No = "Sim"/"Não".
 - Lenguas y niveles: "Português (língua materna)", "Espanhol (nível avançado)", "Inglês (nível intermédio)", "Francês (nível básico)"; si no se dijo el nivel, no lo inventes.
 - Perfil en estilo de CV portugués, sin primera persona: "Empregada de mesa com experiência em restauração. Simpática, organizada e com espírito de equipa."`;
+
+// Segunda pasada solo para los idiomas en los que los traductores encontraron fallos: un
+// revisor corrige el idioma del CV ya redactado (castellanismos en euskera, brasileñismos en
+// portugués) sin tocar los datos. El proxy admite este prompt ("traductor profesional…")
+const IDIOMAS_CON_REVISION = ["eu", "pt"];
+const PROMPT_REVISION = `Eres un traductor profesional especializado en currículums y corrector nativo. Recibirás el JSON de un CV ya redactado y tu único trabajo es dejar perfecto su idioma, como lo dejaría un técnico de recursos humanos nativo:
+- Corrige ortografía, gramática, declinaciones y concordancia.
+- Sustituye toda palabra de otro idioma, calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
+- No cambies los datos: nombres de personas y empresas, teléfonos, emails, fechas, cifras ni títulos obtenidos. No añadas ni quites elementos de las listas.
+- Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves y el mismo número de elementos en cada lista, sin texto antes ni después.`;
+
+function construirPromptRevision(resultado, codigo){
+  const notas = codigo === "eu" ? NOTAS_EUSKERA : codigo === "pt" ? NOTAS_PORTUGUES : "";
+  return `Idioma del CV: ${IDIOMAS[codigo].ia}.
+${notas}
+
+CV que debes revisar (JSON):
+${JSON.stringify(resultado)}`;
+}
+
+// La revisión solo se acepta si conserva la forma del CV; si falla o la cambia, se usa el original
+function mismaForma(a, b){
+  if (!b || typeof b !== "object") return false;
+  return Object.keys(a).every(k => {
+    if (Array.isArray(a[k])) return Array.isArray(b[k]) && b[k].length === a[k].length;
+    return typeof b[k] === typeof a[k];
+  });
+}
+
+async function revisarIdioma(resultado){
+  if (!IDIOMAS_CON_REVISION.includes(idiomaCVDestino)) return resultado;
+  try {
+    const revisado = await llamarIA(PROMPT_REVISION, construirPromptRevision(resultado, idiomaCVDestino), 0.2);
+    return mismaForma(resultado, revisado) ? revisado : resultado;
+  } catch(error){
+    console.warn("Revisión del idioma no disponible:", error);
+    return resultado;
+  }
+}
 
 // Pautas para cualquier CV que no esté en español: el modelo traduce bien las frases pero
 // deja sin adaptar los títulos españoles, la palabra "actualidad" o algún puesto
@@ -3054,6 +3093,7 @@ function generarCV(){
   window.scrollTo({ top: 0 });
 
   llamarIA(PROMPT_SISTEMA, construirPromptUsuario(datos), 0.4)
+    .then(revisarIdioma)
     .then(pintarCV)
     .catch(error => {
       console.error(error);
