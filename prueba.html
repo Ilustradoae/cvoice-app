@@ -2952,7 +2952,7 @@ PAUTAS PARA EL CV EN EUSKERA (obligatorias):
 - No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho, tampoco en el perfil (nada de "10 urteko esperientzia"). Perfil breve: 2 frases.
 - Palabras correctas: "antolaketa" (no "organizazio"), "talde-lana" (no "lankidetza" para trabajo en equipo).
 - PROHIBIDOS LOS CASTELLANISMOS: nunca pongas terminación vasca a una palabra española. Usa la palabra vasca genuina:
-  gestionatu → kudeatu · organizatu → antolatu · atenditu → artatu / arreta eman · limpiatu → garbitu · reponer/erreposatu → hornitu · enkargatu (persona) → arduraduna · ekipo → talde (lantaldea) · kliente → bezero · proveedore → hornitzaile · almazen → biltegi · ofizina → bulego · eskaparate → erakusleiho · kamarero → zerbitzari · dependiente → saltzaile · kurtso → ikastaro · formazio → prestakuntza · karnet → gidabaimena · disponibilitate → erabilgarritasuna · habilitate → gaitasun / trebetasun · nibel → maila · puntualitate → puntualtasuna · responsabilitate → ardura · experientzia laboral → lan-esperientzia · manejatu → erabili / maneiatu · repartitu → banatu · karretillero → karretilla-gidari · komunikazio (habilidad) → komunikazio-gaitasuna · inventario → inbentarioa · actividades comerciales → merkataritza-jarduerak · Bilbao → Bilbo · inglés (curso) → ingeleseko ikastaroa · de mañanas y tardes → goizez eta arratsaldez · encargado/a de almacén → biltegiko arduraduna (no "biltegizaina") · equipo de reponedores → apalak hornitzen dituen taldea
+  gestionatu → kudeatu · organizatu → antolatu · atenditu → artatu / arreta eman · limpiatu → garbitu · reponer/erreposatu → hornitu · enkargatu (persona) → arduraduna · ekipo → talde (lantaldea) · kliente → bezero · proveedore → hornitzaile · almazen → biltegi · ofizina → bulego · eskaparate → erakusleiho · kamarero → zerbitzari · dependiente → saltzaile · kurtso → ikastaro · formazio → prestakuntza · karnet → gidabaimena · disponibilitate → erabilgarritasuna · habilitate → gaitasun / trebetasun · nibel → maila · puntualitate → puntualtasuna · responsabilitate → ardura · experientzia laboral → lan-esperientzia · manejatu → erabili / maneiatu · repartitu → banatu · karretillero → karretilla-gidari · komunikazio (habilidad) → komunikazio-gaitasuna · inventario → inbentarioa · actividades comerciales → merkataritza-jarduerak · Bilbao → Bilbo · inglés (curso) → ingeleseko ikastaroa · de mañanas y tardes → goizez eta arratsaldez · encargado/a de almacén (jefe) → biltegiko arduraduna · mozo de almacén (trabajador, no jefe) → biltegiko langilea · descargar camiones → kamioiak deskargatzea (nunca "deszarkatu") · carretillero → karretilla-gidaria (nunca "carretilla") · equipo de reponedores → apalak hornitzen dituen taldea
 - Niveles oficiales (A1…C2, B2, First…) se escriben tal cual: "euskara B2".
 - Perfil sin verbos en tercera persona (nada de "lan egiten du", "kudeatzen ditu"): frases nominales, ej. "Biltegiko arduraduna, logistikan eta salmentan esperientziaduna. Antolatua eta talde-lanerako gaitasunarekin." · kobratu → kobratu (válido) · ordenatu → ordenatu (válido).
 - Antes de responder, relee palabra por palabra: si alguna es una palabra española con terminación vasca, sustitúyela por la vasca.`;
@@ -2990,49 +2990,75 @@ const CONVENCIONES_CV = {
   uk: `"2021 – дотепер". Etiquetas: Мови, Водійське посвідчення, Власний автомобіль, Графік роботи; Так/Ні. Niveles: рідна, вільно, середній рівень, базовий. En curso: "навчаюся". Funciones con sustantivo verbal ("Розвантаження вантажівок", "Обслуговування гостей"). Títulos: "Обов'язкова середня освіта Іспанії (ESO)", "Професійна освіта середнього рівня, кухар (Grado Medio)". Ucraniano normativo, sin rusismos.`,
   ru: `"2021 – настоящее время". Etiquetas: Языки, Водительские права, Личный автомобиль, Удобный график; Да/Нет. Niveles: родной, свободно, средний уровень, базовый. En curso: "обучаюсь". Funciones con sustantivo verbal ("Разгрузка грузовиков", "Обслуживание гостей"). Títulos: "Обязательное среднее образование Испании (ESO)", "Среднее профессиональное образование, повар (Grado Medio)".`,
 };
+// Pautas según el idioma en que se HABLA: las pruebas mostraron años dichos con palabras mal
+// convertidos (rumano "două mii nouăsprezece" → 2009, darija "ألفين وتمنطاش" → 2008), palabras
+// de darija mal entendidas y títulos extranjeros confundidos con la ESO
+const NOTAS_HABLA = {
+  ar: `La persona puede hablar en darija (árabe marroquí) o argelino. Números: واحد 1, جوج/زوج 2, تلاتة 3, ربعة 4, خمسة 5, ستة 6, سبعة 7, تمنية 8, تسعود 9, عشرة 10, حضاش 11, طناش 12, تلطاش 13, ربعطاش 14, خمسطاش 15, سطاش 16, سبعطاش 17, تمنطاش 18, تسعطاش 19, عشرين 20; "ألفين وتمنطاش" = 2018, "ألفين وواحد وعشرين" = 2021. Palabras: دابا = ahora, خدمت = trabajé, البني = la construcción, الضص/الضيص = mortero/cemento, الياجور = ladrillos, الفاكية = la fruta, الفلاحة = la agricultura, قريت = estudié, ما خديتهاش = no la obtuve, البيرمي = el carnet de conducir, الطوموبيل = el coche, السبانيول = el español, كنهضر = hablo. "الباكالوريا" = Bachillerato marroquí.`,
+  ro: `Años con palabras: unsprezece 11, doisprezece 12, treisprezece 13, paisprezece 14, cincisprezece 15, șaisprezece 16, șaptesprezece 17, optsprezece 18, nouăsprezece 19, douăzeci 20, douăzeci și unu 21…; "două mii nouăsprezece" = 2019 (nunca 2009). "Liceu" = Bachillerato; "școala profesională" = Formación Profesional.`,
+  uk: `Años con palabras en ordinal: "дві тисячі десятого" = 2010, "двадцять другого" = 2022. "Середня школа" = ESO/Bachillerato según los años; "університет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino (Олена Коваленко → Olena Kovalenko).`,
+  ru: `Años con palabras en ordinal: "две тысячи десятого" = 2010. "Средняя школа" = ESO/Bachillerato según los años; "университет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino.`,
+  zh: `"高中" = Bachillerato; "初中" = ESO; "大学/本科" = Grado universitario; "中专/职高" = Formación Profesional. Años como "二零一六" = 2016. Si dice "服务员" y el nombre es femenino, usa la forma femenina del puesto.`,
+  fr: `"Lycée/Baccalauréat" = Bachillerato; "BEP/CAP/Bac pro" = Formación Profesional; "collège/brevet" = ESO.`,
+  pt: `"Ensino médio/secundário" = Bachillerato; "ensino fundamental/básico" = ESO.`,
+};
+function notasHabla(codigo){
+  return NOTAS_HABLA[codigo] ? `\nPautas del idioma hablado: ${NOTAS_HABLA[codigo]}` : "";
+}
+
 function notasIdiomaCV(codigo){
   return CONVENCIONES_CV[codigo] ? `\nConvenciones del CV en este idioma: ${CONVENCIONES_CV[codigo]} La categoría del carnet (B, C…) solo si se dijo.` : "";
 }
 
-// Segunda pasada solo para los idiomas en los que los traductores encontraron fallos: un
-// revisor corrige el idioma del CV ya redactado (castellanismos en euskera, brasileñismos en
-// portugués) sin tocar los datos. El proxy admite este prompt ("traductor profesional…")
-// Las pruebas en los 14 idiomas (8-11-2026) mostraron fallos de este tipo en casi todos los
-// idiomas distintos del castellano (erratas, palabras sueltas en inglés, verbos mal formados,
-// títulos transliterados), así que la revisión se hace siempre que el CV no está en castellano.
-const IDIOMAS_CON_REVISION = Object.keys(IDIOMAS).filter(c => c !== "es");
-const PROMPT_REVISION = `Eres un traductor profesional especializado en currículums y corrector nativo. Recibirás el JSON de un CV ya redactado y tu único trabajo es dejar perfecto su idioma, como lo dejaría un técnico de recursos humanos nativo:
+// Segunda pasada: un revisor nativo deja perfecto el idioma del CV ya redactado y comprueba los
+// datos contra el dictado original. Las pruebas en los 14 idiomas (8-11-2026) mostraron fallos
+// cuando el CV no está en castellano (erratas, palabras en inglés o en castellano, títulos
+// transliterados) y cuando se habla en otro idioma (años dichos con palabras mal convertidos,
+// emails en cirílico), así que se hace en esos dos casos. El proxy admite este prompt
+// ("traductor profesional…") y lo manda a otro modelo, con su propio cupo.
+function necesitaRevision(){ return idiomaCVDestino !== "es" || idiomaActual !== "es"; }
+const PROMPT_REVISION = `Eres un traductor profesional especializado en currículums y corrector nativo. Recibirás el JSON de un CV ya redactado y el texto que dictó la persona, y tu trabajo es dejar perfecto el CV, como lo dejaría un técnico de recursos humanos nativo:
 - Corrige ortografía, gramática, declinaciones, concordancia y erratas.
 - Sustituye toda palabra de otro idioma (también "present", "Grado Medio" sin traducir, nombres de idiomas como "Arabic" o "Spanish"…), calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
-- Funciones, puestos, títulos y etiquetas con la forma habitual de un CV en ese idioma. Comprueba uno por uno los puestos de "experiencia": ninguno puede quedar en español ("Camarero", "Operario", "Mozo"…). Quita repeticiones como "ESO (ESO)".
-- No cambies los datos: nombres de personas y empresas, teléfonos, emails, fechas ni títulos obtenidos. Excepciones: si el perfil da un número de años de experiencia que no cuadra con las fechas, corrígelo o quítalo; y si un trabajo que sigue en curso termina en el año actual, cámbialo por la palabra de "actualidad" del idioma del CV.
-- No añadas ni quites elementos de las listas.
-- Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves y el mismo número de elementos en cada lista, sin texto antes ni después.`;
+- Funciones, puestos, títulos y etiquetas con la forma habitual de un CV en ese idioma. Comprueba uno por uno los puestos de "experiencia": ninguno puede quedar en otro idioma ("Camarero", "Operario", "Mozo"…). Quita repeticiones como "ESO (ESO)".
+- Comprueba cada dato con el texto dictado: años (sobre todo los dichos con palabras), teléfono, email, nombres, empresas, títulos, idiomas y carnet. Si el CV tiene un error claro de conversión o de comprensión, corrígelo. Si falta un estudio o curso que se dijo, añádelo. Nunca inventes nada que no esté en el dictado.
+- Nombre de la persona y email en el alfabeto del CV; el email solo con caracteres latinos válidos.
+- Si el perfil da un número de años de experiencia que no cuadra con las fechas, corrígelo o quítalo. Un trabajo que sigue en curso nunca termina en el año actual: usa la palabra de "actualidad" del idioma del CV.
+- No quites elementos de las listas.
+- Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves, sin texto antes ni después.`;
 
-function construirPromptRevision(resultado, codigo){
+function construirPromptRevision(resultado, codigo, datos){
   const notas = codigo === "eu" ? NOTAS_EUSKERA : codigo === "pt" ? NOTAS_PORTUGUES : notasIdiomaCV(codigo);
-  return `Idioma del CV: ${IDIOMAS[codigo].ia}. Año actual: ${new Date().getFullYear()}.
-${notas}
+  const hablado = IDIOMAS[idiomaActual]?.ia || "español";
+  return `Idioma del CV: ${IDIOMAS[codigo].ia}. Idioma en que habló la persona: ${hablado}. Año actual: ${new Date().getFullYear()}.
+${notas}${notasHabla(idiomaActual)}
+
+Texto dictado por la persona (reconocimiento de voz, sin puntuación):
+Datos personales: """${datos.datosPersonales || ""}"""
+Experiencia: """${datos.experiencia || ""}"""
+Estudios: """${datos.estudios || ""}"""
+Otros datos: """${datos.otros || ""}"""
 
 CV que debes revisar (JSON):
 ${JSON.stringify(resultado)}`;
 }
 
-// La revisión solo se acepta si conserva la forma del CV; si falla o la cambia, se usa el original
+// La revisión solo se acepta si conserva la forma del CV: mismas claves y listas que no
+// pierden elementos (puede recuperar como mucho dos que faltaban); si no, se usa el original
 function mismaForma(a, b){
   if (!b || typeof b !== "object") return false;
   return Object.keys(a).every(k => {
-    if (Array.isArray(a[k])) return Array.isArray(b[k]) && b[k].length === a[k].length;
+    if (Array.isArray(a[k])) return Array.isArray(b[k]) && b[k].length >= a[k].length && b[k].length <= a[k].length + 2;
     return typeof b[k] === typeof a[k];
   });
 }
 
-async function revisarIdioma(resultado){
-  if (!IDIOMAS_CON_REVISION.includes(idiomaCVDestino)) return resultado;
+async function revisarIdioma(resultado, datos){
+  if (!necesitaRevision()) return resultado;
   try {
     // Un solo intento y sin esperar si el servicio está saturado: la revisión mejora el CV,
     // pero la persona nunca debe esperar más ni ver un error por ella
-    const revisado = await llamarIAUnaVez(PROMPT_REVISION, construirPromptRevision(resultado, idiomaCVDestino), 0.2);
+    const revisado = await llamarIAUnaVez(PROMPT_REVISION, construirPromptRevision(resultado, idiomaCVDestino, datos), 0.2);
     const valida = mismaForma(resultado, revisado);
     console.info(valida ? "Revisión del idioma aplicada" : "Revisión descartada: cambió la forma del CV");
     return valida ? revisado : resultado;
@@ -3068,7 +3094,11 @@ IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otro
 
 La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, traduce todo con naturalidad y vocabulario profesional al ${nombreIdioma}, sin cambiar los datos. Si un nombre propio (persona, ciudad, empresa) está escrito en un alfabeto distinto del que usa el ${nombreIdioma}, transcríbelo con su forma habitual en ese alfabeto (ej. 'مكرم عايد' → 'Makrem Ayed', 'سوسة، تونس' → 'Sousse, Túnez' para un CV en español).
 
-El texto viene del reconocimiento de voz del móvil: no tiene puntuación y puede traer palabras mal reconocidas (sobre todo nombres de empresas, títulos y siglas: "la eso" = ESO, "grado medio de cocina", "Mercadona", "Eroski"), números dichos en letra, muletillas y frases repetidas. Corrige esos errores evidentes por el contexto, sin inventar nada; si no estás seguro de un nombre propio, déjalo tal como se dijo. La persona puede hablar con acento o en una variante dialectal (por ejemplo, árabe marroquí o argelino) y mezclar palabras de otros idiomas (castellano, francés, inglés): entiéndelo todo y redacta solo en ${nombreIdioma}.${notasIdiomaCV(idiomaCVDestino)}
+El texto viene del reconocimiento de voz del móvil: no tiene puntuación y puede traer palabras mal reconocidas (sobre todo nombres de empresas, títulos y siglas: "la eso" = ESO, "grado medio de cocina", "Mercadona", "Eroski"), números dichos en letra, muletillas y frases repetidas. Corrige esos errores evidentes por el contexto, sin inventar nada; si no estás seguro de un nombre propio, déjalo tal como se dijo. La persona puede hablar con acento o en una variante dialectal (por ejemplo, árabe marroquí o argelino) y mezclar palabras de otros idiomas (castellano, francés, inglés): entiéndelo todo y redacta solo en ${nombreIdioma}.${notasIdiomaCV(idiomaCVDestino)}${notasHabla(idiomaActual)}
+- Años y números dichos con palabras: conviértelos con cuidado (decenas y unidades) y comprueba que la cronología tenga sentido.
+- Nombre de la persona, empresas y email en el alfabeto del CV; el email siempre solo con caracteres latinos (a-z, 0-9, punto, guion), transcribiendo cada parte.
+- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).
+- Si dice que no tiene carnet de conducir, inclúyelo igualmente: "Carnet de conducir: No" (traducido).
 ${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
@@ -3150,7 +3180,7 @@ function generarCV(){
   window.scrollTo({ top: 0 });
 
   llamarIA(PROMPT_SISTEMA, construirPromptUsuario(datos), 0.4)
-    .then(revisarIdioma)
+    .then(resultado => revisarIdioma(resultado, datos))
     .then(pintarCV)
     .catch(error => {
       console.error(error);
