@@ -3003,9 +3003,9 @@ function notasIdiomaCV(codigo){
 const IDIOMAS_CON_REVISION = Object.keys(IDIOMAS).filter(c => c !== "es");
 const PROMPT_REVISION = `Eres un traductor profesional especializado en currículums y corrector nativo. Recibirás el JSON de un CV ya redactado y tu único trabajo es dejar perfecto su idioma, como lo dejaría un técnico de recursos humanos nativo:
 - Corrige ortografía, gramática, declinaciones, concordancia y erratas.
-- Sustituye toda palabra de otro idioma (también "present", "Grado Medio" sin traducir…), calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
-- Funciones, puestos, títulos y etiquetas con la forma habitual de un CV en ese idioma. Quita repeticiones como "ESO (ESO)".
-- No cambies los datos: nombres de personas y empresas, teléfonos, emails, fechas ni títulos obtenidos. Única excepción: si el perfil da un número de años de experiencia que no cuadra con las fechas de la experiencia, corrígelo o quítalo.
+- Sustituye toda palabra de otro idioma (también "present", "Grado Medio" sin traducir, nombres de idiomas como "Arabic" o "Spanish"…), calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
+- Funciones, puestos, títulos y etiquetas con la forma habitual de un CV en ese idioma. Comprueba uno por uno los puestos de "experiencia": ninguno puede quedar en español ("Camarero", "Operario", "Mozo"…). Quita repeticiones como "ESO (ESO)".
+- No cambies los datos: nombres de personas y empresas, teléfonos, emails, fechas ni títulos obtenidos. Excepciones: si el perfil da un número de años de experiencia que no cuadra con las fechas, corrígelo o quítalo; y si un trabajo que sigue en curso termina en el año actual, cámbialo por la palabra de "actualidad" del idioma del CV.
 - No añadas ni quites elementos de las listas.
 - Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves y el mismo número de elementos en cada lista, sin texto antes ni después.`;
 
@@ -3050,9 +3050,10 @@ PAUTAS DE TRADUCCIÓN (obligatorias, el CV va en ${nombreIdioma}):
 - Escribe con la ortografía, los acentos y la terminología de recursos humanos propios del ${nombreIdioma}, como lo haría un técnico de selección nativo. Nada de calcos del español.
 - Traduce siempre puestos, funciones, habilidades, nombres de idiomas y niveles. No traduzcas ni declines nombres propios de empresas, centros ni personas; las palabras genéricas que los acompañan sí (ej. "Bar Txoko" → "Txoko Bar" en inglés). Las ciudades, con su nombre habitual en ${nombreIdioma} si lo tienen (ej. "Bilbo" en euskera, "Porto" en portugués, "Seville" en inglés).
 - Grado Medio y Grado Superior son formación profesional, no estudios universitarios: nunca los traduzcas como licenciatura, grado universitario o bachelor.
-- Términos de oficio españoles que hay que traducir siempre (nunca dejarlos en castellano ni calcarlos): carretillero / carretilla elevadora = conductor de carretilla elevadora (forklift); transpaleta = transpalé manual (pallet truck); mozo de almacén = operario de almacén; reponedor = reponedor de supermercado; dependiente = vendedor de tienda; camarero = camarero de sala; manipulador de alimentos = certificado de manipulación de alimentos; peón = peón/operario no cualificado.
+- Los puestos y términos de oficio se traducen SIEMPRE al ${nombreIdioma}; nunca dejes "Camarero", "Operario", "Mozo" ni otra palabra española. Significado de los más comunes: camarero = waiter; mozo de almacén = warehouse worker; carretillero / carretilla elevadora = forklift operator / forklift; transpaleta = pallet truck; reponedor = shelf stacker; dependiente = shop assistant; cajero = cashier; ayudante de cocina = kitchen assistant; limpiador = cleaner; peón = labourer; manipulador de alimentos = food handler certificate.
 - Títulos educativos españoles (ESO, Bachillerato, Grado Medio, Grado Superior, Grado universitario, Certificado de profesionalidad): escribe su equivalente comprensible en ${nombreIdioma} y añade el nombre español entre paréntesis una sola vez, ej. "(ESO)", "(Grado Medio)". Nunca lo transliteres ni lo cambies por un título propio de otro país (Bac pro, CAP, Mittlerer Abschluss, A-levels, licence, bachelor…).
-- Trabajo actual: usa la palabra habitual en ${nombreIdioma} para "hasta hoy" (ej. "2021 – present" en inglés), nunca "actualidad" en español. Estudios en curso: la expresión habitual de "en curso" en lugar del año.
+- Nombres de los idiomas que habla la persona escritos en ${nombreIdioma} (nunca en inglés ni en español si el CV no está en esos idiomas).
+- Trabajo actual: usa la palabra habitual en ${nombreIdioma} para "hasta hoy" (ej. "2021 – present" en inglés), nunca "actualidad" en español ni el año actual como fecha de fin. Estudios en curso: la expresión habitual de "en curso" en lugar del año.
 - Antes de responder, relee el CV entero y corrige cualquier palabra que haya quedado en español o en otro idioma.`;
 }
 
@@ -3109,10 +3110,10 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
   "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
 }
 Reglas estrictas:
-- Año actual: ${new Date().getFullYear()}. Si el perfil menciona años de experiencia, súmalos exactamente con los periodos de TODOS los trabajos ("hasta ahora" = año actual; ej. 2017–2020 y 2021–${new Date().getFullYear()} = ${3 + new Date().getFullYear() - 2021} años); si no puedes calcularlo con seguridad, no pongas ninguna cifra.
+- Año actual: ${new Date().getFullYear()} (solo para calcular; un trabajo que sigue "hasta ahora" nunca termina en este año: se escribe con la palabra de "actualidad" del idioma del CV). Si el perfil menciona años de experiencia, súmalos exactamente con los periodos de TODOS los trabajos ("hasta ahora" = año actual; ej. 2017–2020 y 2021–${new Date().getFullYear()} = ${3 + new Date().getFullYear() - 2021} años); si no puedes calcularlo con seguridad, no pongas ninguna cifra.
 - "habilidades" nunca puede quedar vacío si hay experiencia o estudios.
 - Un curso corto (carretillero, manipulador de alimentos, prevención de riesgos…) va solo en "formacion_complementaria", nunca repetido también en "estudios".
-- Si en "otros_html" se dijo que no tiene coche, inclúyelo también ("Vehículo propio: No", traducido).
+- Si la persona dice que tiene carnet pero no coche, "otros_html" debe incluir las dos líneas: carnet "Sí" y vehículo propio "No" (traducidos).
 - Si el usuario indica que NO tiene experiencia laboral, el array "experiencia" debe ser exactamente [].
 - Si el usuario indica que NO tiene estudios, el array "estudios" debe ser exactamente [].
 - Si no hay cursos cortos o formación no oficial, "formacion_complementaria" debe ser exactamente [].
@@ -3259,7 +3260,7 @@ function filtrarOtrosHTML(html){
 // (la IA escribe "actualidad", "present", "présent", "heute", "attuale", "الحاضر", "дотепер"…)
 const PALABRAS_ACTUALIDAD = /actual|attual|present|présent|now|hoy|aujourd|à ce jour|heute|jetzt|derzeit|oggi|atual|prezent|obecn|teraz|теперішн|дотепер|нині|настоящ|сейчас|现在|至今|現在|الآن|الحاضر|حالي|حاليا|حاليًا|gaur egun|gaur arte|orain arte|oraindik/i;
 // Estudios que aún se están cursando ("cursando", "in progress", "en cours"…)
-const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|a frequentar|în curs|w trakcie|навча|в процесс|учусь|обуча|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار|ikasten|egiten ari|martxan/i;
+const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|a frequentar|în curs|w trakcie|навча|в процес|учусь|обуча|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار|ikasten|egiten ari|martxan/i;
 // palabrasActuales: solo en campos de fecha ("Curso de actualización" no es la actualidad)
 function claveFecha(texto, ...palabrasActuales){
   const s = String(texto || "");
