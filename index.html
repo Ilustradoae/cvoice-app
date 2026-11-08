@@ -1303,7 +1303,7 @@
 const IDIOMAS = {
   es: { nombre:"Español",   bandera:"🇪🇸", lang:"es-ES", dir:"ltr", ia:"español de España" },
   eu: { nombre:"Euskara",   bandera:"",     lang:"eu-ES", dir:"ltr", ia:"euskera (euskara batua)" },
-  en: { nombre:"English",   bandera:"🇬🇧", lang:"en-US", dir:"ltr", ia:"inglés" },
+  en: { nombre:"English",   bandera:"🇬🇧", lang:"en-GB", dir:"ltr", ia:"inglés" },
   fr: { nombre:"Français",  bandera:"🇫🇷", lang:"fr-FR", dir:"ltr", ia:"francés de Francia" },
   de: { nombre:"Deutsch",   bandera:"🇩🇪", lang:"de-DE", dir:"ltr", ia:"alemán de Alemania" },
   it: { nombre:"Italiano",  bandera:"🇮🇹", lang:"it-IT", dir:"ltr", ia:"italiano" },
@@ -1451,7 +1451,7 @@ const TEXTOS = {
     p3_instruccion: "Kontatu zure ikasketa eta ikastaro guztiak, bata bestearen atzetik. Bakoitzari buruz esan:",
   },
   en: {
-    subtitulo: "Speak. We write your résumé.",
+    subtitulo: "Speak. We write your CV.",
     p1_titulo: "Your personal details",
     p2_titulo: "Your work experience",
     p3_titulo: "Your education",
@@ -1459,18 +1459,18 @@ const TEXTOS = {
     p5_titulo: "Your photo (optional)",
     boton_abrir_camara: "Open camera", boton_capturar: "Take photo", boton_repetir: "↺ Retake photo", boton_saltar: "Skip", boton_continuar: "Continue →",
     camara_sin_permiso: "We couldn't access the camera. Check your browser permissions.",
-    puedes_corregir: "You'll see what you're saying here. Tap it to fix it.", boton_abrir_cv: "Open my résumé", boton_compartir_cv: "Send by WhatsApp or email", compartir_titulo: "Send my résumé",
+    puedes_corregir: "You'll see what you're saying here. Tap it to fix it.", boton_abrir_cv: "Open my CV", boton_compartir_cv: "Send by WhatsApp or email", compartir_titulo: "Send my CV",
     boton_siguiente: "Next →", boton_anterior: "← Back",
-    mensaje_carga: "We're writing your résumé with a professional touch…",
-    error_ia_generico: "We couldn't write your résumé automatically. Check your internet connection and try again.",
-    cv_titulo: "Your résumé is ready", cv_ayuda: "Tap any text in your résumé to fix it before downloading.",
+    mensaje_carga: "We're writing your CV with a professional touch…",
+    error_ia_generico: "We couldn't write your CV automatically. Check your internet connection and try again.",
+    cv_titulo: "Your CV is ready", cv_ayuda: "Tap any text in your CV to fix it before downloading.",
     cv_lateral_contacto: "Personal details",
     cv_lateral_otros: "Other details",
     cv_formacion_complementaria: "Additional training",
     label_telefono: "Phone:", label_email: "Email:", label_ubicacion: "Location:",
     cv_bloque_experiencia: "Work experience", cv_bloque_estudios: "Education",
     boton_rehacer: "← Record again",
-    ia_mucha_demanda: "Lots of people are using CVoice right now. One moment, we're still working on your résumé…",
+    ia_mucha_demanda: "Lots of people are using CVoice right now. One moment, we're still working on your CV…",
     nombre_predeterminado: "FULL NAME",
     p1_instruccion: "Tap the microphone and tell us:",
     p1_item1: "Your full name",
@@ -1489,22 +1489,22 @@ const TEXTOS = {
     p4_item2: "Driving licence (if you have one)",
     p4_item3: "Availability or working hours",
     p4_item4: "Volunteering or extra activities (if any)",
-    sin_voz: "Your browser doesn't support this. Try Google Chrome.",
+    sin_voz: "Your browser can't use the microphone for this. Try Google Chrome.",
     mic_sin_permiso: "We can't use the microphone. Allow microphone access for CVoice in your phone settings.",
     aviso_salir: "Press Back again to exit CVoice.",
-    bv_titulo: "Your résumé, just by talking",
-    bv_sub: "Tell us about your experience out loud. We turn it into a professional résumé, ready to send.",
+    bv_titulo: "Your CV, just by talking",
+    bv_sub: "Tell us about your experience out loud. We turn it into a professional CV, ready to send.",
     bv_p1_t: "Talk",
     bv_p1_d: "Answer a few simple questions, like in a conversation.",
     bv_p2_t: "We write it",
     bv_p2_d: "We organise what you say and write it in a professional style.",
     bv_p3_t: "Download it",
-    bv_p3_d: "Choose a design and get your résumé as a PDF, ready to send.",
+    bv_p3_d: "Choose a design and get your CV as a PDF, ready to send.",
     bv_idiomas: "Choose your languages",
     bv_hablar: "Language you'll speak",
-    bv_cv: "Language of your résumé",
+    bv_cv: "Language of your CV",
     bv_listo_t: "Congratulations, you're all set!",
-    bv_listo_d: "You'll speak in {hablar} and your résumé will be in {cv}.",
+    bv_listo_d: "You'll speak in {hablar} and your CV will be in {cv}.",
     boton_empezar: "Start",
     p2_instruccion: "Tell us about every job you want to include, one after another. For each one, say:",
     p3_instruccion: "Tell us about all your studies and courses, one after another. For each one, say:",
@@ -1526,7 +1526,7 @@ const TEXTOS = {
     cv_lateral_contacto: "Informations personnelles",
     cv_lateral_otros: "Autres informations",
     cv_formacion_complementaria: "Formation complémentaire",
-    label_telefono: "Téléphone:", label_email: "E-mail:", label_ubicacion: "Lieu:",
+    label_telefono: "Téléphone :", label_email: "E-mail :", label_ubicacion: "Ville :",
     cv_bloque_experiencia: "Expérience professionnelle", cv_bloque_estudios: "Études",
     boton_rehacer: "← Réenregistrer",
     ia_mucha_demanda: "Beaucoup de personnes utilisent CVoice en ce moment. Un instant, nous continuons avec votre CV…",
@@ -1548,7 +1548,7 @@ const TEXTOS = {
     p4_item2: "Permis de conduire (si vous en avez un)",
     p4_item3: "Disponibilité ou horaires",
     p4_item4: "Bénévolat ou activités extra (si vous en avez)",
-    sin_voz: "Votre navigateur ne le permet pas. Essayez Google Chrome.",
+    sin_voz: "Votre navigateur ne permet pas d'utiliser le micro ici. Essayez Google Chrome.",
     mic_sin_permiso: "Impossible d'utiliser le micro. Autorisez le micro pour CVoice dans les réglages du téléphone.",
     aviso_salir: "Appuyez à nouveau sur Retour pour quitter CVoice.",
     bv_titulo: "Votre CV, simplement en parlant",
@@ -1575,7 +1575,7 @@ const TEXTOS = {
     p3_titulo: "Ihre Ausbildung",
     p4_titulo: "Weitere Angaben",
     p5_titulo: "Ihr Foto (optional)",
-    boton_abrir_camara: "Kamera öffnen", boton_capturar: "Foto aufnehmen", boton_repetir: "↺ Foto wiederholen", boton_saltar: "Überspringen", boton_continuar: "Weiter →",
+    boton_abrir_camara: "Kamera öffnen", boton_capturar: "Foto aufnehmen", boton_repetir: "↺ Foto neu aufnehmen", boton_saltar: "Überspringen", boton_continuar: "Weiter →",
     camara_sin_permiso: "Kein Zugriff auf die Kamera möglich. Prüfen Sie die Browser-Berechtigungen.",
     puedes_corregir: "Hier sehen Sie, was Sie sagen. Tippen Sie darauf, um es zu korrigieren.", boton_abrir_cv: "Lebenslauf öffnen", boton_compartir_cv: "Per WhatsApp oder E-Mail senden", compartir_titulo: "Lebenslauf senden",
     boton_siguiente: "Weiter →", boton_anterior: "← Zurück",
@@ -1584,8 +1584,8 @@ const TEXTOS = {
     cv_titulo: "Ihr Lebenslauf ist fertig", cv_ayuda: "Tippen Sie auf einen beliebigen Text in Ihrem Lebenslauf, um ihn vor dem Download zu korrigieren.",
     cv_lateral_contacto: "Persönliche Daten",
     cv_lateral_otros: "Weitere Angaben",
-    cv_formacion_complementaria: "Zusätzliche Ausbildung",
-    label_telefono: "Telefon:", label_email: "E-Mail:", label_ubicacion: "Ort:",
+    cv_formacion_complementaria: "Weiterbildungen",
+    label_telefono: "Telefon:", label_email: "E-Mail:", label_ubicacion: "Wohnort:",
     cv_bloque_experiencia: "Berufserfahrung", cv_bloque_estudios: "Ausbildung",
     boton_rehacer: "← Neu aufnehmen",
     ia_mucha_demanda: "Gerade nutzen sehr viele Menschen CVoice. Einen Moment, wir arbeiten weiter an Ihrem Lebenslauf…",
@@ -1602,12 +1602,12 @@ const TEXTOS = {
     p3_item1: "Name der Schule oder Einrichtung",
     p3_item2: "Abschluss oder Zertifikat",
     p3_item3: "Abschlussjahr",
-    p3_item4: "Zusätzliche Kurse oder Weiterbildungen",
+    p3_item4: "Zusätzliche Kurse oder Weiterbildungen (falls vorhanden)",
     p4_item1: "Sprachen und Niveau",
     p4_item2: "Führerschein (falls vorhanden)",
     p4_item3: "Verfügbarkeit oder Arbeitszeiten",
-    p4_item4: "Ehrenamt oder Zusatzaktivitäten",
-    sin_voz: "Ihr Browser unterstützt dies nicht. Versuchen Sie Google Chrome.",
+    p4_item4: "Ehrenamt oder weitere Aktivitäten (falls vorhanden)",
+    sin_voz: "Ihr Browser kann das Mikrofon hier nicht verwenden. Versuchen Sie es mit Google Chrome.",
     mic_sin_permiso: "Das Mikrofon kann nicht verwendet werden. Erlauben Sie CVoice den Mikrofonzugriff in den Handy-Einstellungen.",
     aviso_salir: "Drücken Sie erneut Zurück, um CVoice zu verlassen.",
     bv_titulo: "Ihr Lebenslauf – einfach sprechen",
@@ -1661,12 +1661,12 @@ const TEXTOS = {
     p3_item1: "Nome della scuola o istituto",
     p3_item2: "Titolo o certificato ottenuto",
     p3_item3: "Anno di conseguimento",
-    p3_item4: "Corsi extra o formazione aggiuntiva",
+    p3_item4: "Corsi o formazione aggiuntiva (se ne hai)",
     p4_item1: "Lingue parlate e livello",
     p4_item2: "Patente di guida (se ce l'hai)",
     p4_item3: "Disponibilità oraria",
-    p4_item4: "Volontariato o attività extra",
-    sin_voz: "Il tuo browser non lo supporta. Prova con Google Chrome.",
+    p4_item4: "Volontariato o altre attività (se ne hai)",
+    sin_voz: "Il tuo browser non permette di usare il microfono qui. Prova con Google Chrome.",
     mic_sin_permiso: "Non possiamo usare il microfono. Consenti il microfono per CVoice nelle impostazioni del telefono.",
     aviso_salir: "Premi di nuovo Indietro per uscire da CVoice.",
     bv_titulo: "Il tuo curriculum, solo parlando",
@@ -1761,9 +1761,9 @@ const TEXTOS = {
     cv_titulo: "سيرتك الذاتية جاهزة", cv_ayuda: "اضغط على أي نص في سيرتك الذاتية لتصحيحه قبل التحميل.",
     cv_lateral_contacto: "البيانات الشخصية",
     cv_lateral_otros: "بيانات أخرى",
-    cv_formacion_complementaria: "تدريب إضافي",
-    label_telefono: "هاتف:", label_email: "بريد:", label_ubicacion: "الموقع:",
-    cv_bloque_experiencia: "الخبرة العملية", cv_bloque_estudios: "الدراسة",
+    cv_formacion_complementaria: "دورات تدريبية",
+    label_telefono: "الهاتف:", label_email: "البريد الإلكتروني:", label_ubicacion: "المدينة:",
+    cv_bloque_experiencia: "الخبرة العملية", cv_bloque_estudios: "التعليم",
     boton_rehacer: "→ التسجيل من جديد",
     ia_mucha_demanda: "يستخدم الكثيرون CVoice الآن. لحظة من فضلك، ما زلنا نعمل على سيرتك الذاتية…",
     nombre_predeterminado: "الاسم الكامل",
@@ -1784,7 +1784,7 @@ const TEXTOS = {
     p4_item2: "رخصة القيادة (إن كانت لديك)",
     p4_item3: "مدى التوفر أو ساعات العمل",
     p4_item4: "تطوع أو أنشطة إضافية (إن وجدت)",
-    sin_voz: "متصفحك لا يدعم هذه الميزة. جرّب جوجل كروم.",
+    sin_voz: "لا يتيح متصفحك استخدام الميكروفون هنا. جرّب Google Chrome.",
     mic_sin_permiso: "لا يمكننا استخدام الميكروفون. اسمح لتطبيق CVoice باستخدام الميكروفون من إعدادات الهاتف.",
     aviso_salir: "اضغط على رجوع مرة أخرى للخروج من CVoice.",
     bv_titulo: "سيرتك الذاتية بمجرد الكلام",
@@ -1820,11 +1820,11 @@ const TEXTOS = {
     cv_titulo: "你的简历已完成", cv_ayuda: "点击简历中的任意文字，即可在下载前修改。",
     cv_lateral_contacto: "个人信息",
     cv_lateral_otros: "其他信息",
-    cv_formacion_complementaria: "补充培训",
-    label_telefono: "电话：", label_email: "邮箱：", label_ubicacion: "地点：",
+    cv_formacion_complementaria: "其他培训",
+    label_telefono: "电话：", label_email: "邮箱：", label_ubicacion: "所在地：",
     cv_bloque_experiencia: "工作经历", cv_bloque_estudios: "教育经历",
     boton_rehacer: "← 重新录制",
-    ia_mucha_demanda: "目前使用 CVoice 的人很多。请稍候，我们仍在处理您的简历…",
+    ia_mucha_demanda: "目前使用 CVoice 的人很多。请稍候，我们仍在处理你的简历…",
     nombre_predeterminado: "姓名",
     p1_instruccion: "点击麦克风，告诉我们：",
     p1_item1: "你的全名",
@@ -1837,13 +1837,13 @@ const TEXTOS = {
     p2_item4: "你承担的工作任务或职责",
     p3_item1: "学校或机构名称",
     p3_item2: "所获学历或证书",
-    p3_item3: "结业年份",
+    p3_item3: "毕业年份",
     p3_item4: "额外课程或培训（如有）",
     p4_item1: "会说的语言及水平",
     p4_item2: "驾驶证（如有）",
     p4_item3: "工作时间或可用性",
     p4_item4: "志愿服务或其他活动（如有）",
-    sin_voz: "你的浏览器不支持此功能，请尝试使用 Google Chrome。",
+    sin_voz: "你的浏览器无法在这里使用麦克风，请改用 Google Chrome。",
     mic_sin_permiso: "无法使用麦克风。请在手机设置中允许 CVoice 使用麦克风。",
     aviso_salir: "再按一次返回键即可退出 CVoice。",
     bv_titulo: "只需说话，简历就完成",
@@ -1879,8 +1879,8 @@ const TEXTOS = {
     cv_titulo: "履歴書が完成しました", cv_ayuda: "履歴書の文字をタップすると、ダウンロード前に修正できます。",
     cv_lateral_contacto: "個人情報",
     cv_lateral_otros: "その他の情報",
-    cv_formacion_complementaria: "補足的な研修",
-    label_telefono: "電話：", label_email: "メール：", label_ubicacion: "所在地：",
+    cv_formacion_complementaria: "その他の研修・講座",
+    label_telefono: "電話：", label_email: "メール：", label_ubicacion: "居住地：",
     cv_bloque_experiencia: "職務経歴", cv_bloque_estudios: "学歴",
     boton_rehacer: "← 録音し直す",
     ia_mucha_demanda: "ただいま CVoice が混み合っています。少々お待ちください。履歴書の作成を続けています…",
@@ -1902,7 +1902,7 @@ const TEXTOS = {
     p4_item2: "運転免許（あれば）",
     p4_item3: "勤務可能な時間帯",
     p4_item4: "ボランティアや課外活動（あれば）",
-    sin_voz: "お使いのブラウザでは対応していません。Google Chromeをお試しください。",
+    sin_voz: "お使いのブラウザではここでマイクを使えません。Google Chrome をお試しください。",
     mic_sin_permiso: "マイクを使用できません。スマートフォンの設定で CVoice にマイクの使用を許可してください。",
     aviso_salir: "もう一度「戻る」を押すと CVoice を終了します。",
     bv_titulo: "話すだけで、あなたの履歴書",
@@ -1939,7 +1939,7 @@ const TEXTOS = {
     cv_lateral_contacto: "Date personale",
     cv_lateral_otros: "Alte date",
     cv_formacion_complementaria: "Formare complementară",
-    label_telefono: "Telefon:", label_email: "Email:", label_ubicacion: "Locație:",
+    label_telefono: "Telefon:", label_email: "Email:", label_ubicacion: "Localitate:",
     cv_bloque_experiencia: "Experiență profesională", cv_bloque_estudios: "Studii",
     boton_rehacer: "← Înregistrează din nou",
     ia_mucha_demanda: "Multe persoane folosesc CVoice acum. Un moment, continuăm cu CV-ul tău…",
@@ -1960,8 +1960,8 @@ const TEXTOS = {
     p4_item1: "Limbi vorbite și nivel",
     p4_item2: "Permis de conducere (dacă ai)",
     p4_item3: "Disponibilitate sau program de lucru",
-    p4_item4: "Voluntariat sau activități extra",
-    sin_voz: "Browserul tău nu permite acest lucru. Încearcă Google Chrome.",
+    p4_item4: "Voluntariat sau alte activități (dacă ai)",
+    sin_voz: "Browserul tău nu permite folosirea microfonului aici. Încearcă Google Chrome.",
     mic_sin_permiso: "Nu putem folosi microfonul. Permite accesul la microfon pentru CVoice din setările telefonului.",
     aviso_salir: "Apasă din nou Înapoi pentru a ieși din CVoice.",
     bv_titulo: "CV-ul tău, doar vorbind",
@@ -1998,7 +1998,7 @@ const TEXTOS = {
     cv_lateral_contacto: "Dane osobowe",
     cv_lateral_otros: "Inne informacje",
     cv_formacion_complementaria: "Dodatkowe szkolenia",
-    label_telefono: "Telefon:", label_email: "Email:", label_ubicacion: "Lokalizacja:",
+    label_telefono: "Telefon:", label_email: "E-mail:", label_ubicacion: "Miejscowość:",
     cv_bloque_experiencia: "Doświadczenie zawodowe", cv_bloque_estudios: "Edukacja",
     boton_rehacer: "← Nagraj ponownie",
     ia_mucha_demanda: "Wiele osób korzysta teraz z CVoice. Chwileczkę, nadal pracujemy nad Twoim CV…",
@@ -2019,8 +2019,8 @@ const TEXTOS = {
     p4_item1: "Języki i poziom zaawansowania",
     p4_item2: "Prawo jazdy (jeśli masz)",
     p4_item3: "Dyspozycyjność lub godziny pracy",
-    p4_item4: "Wolontariat lub dodatkowe aktywności",
-    sin_voz: "Twoja przeglądarka nie wspiera tej funkcji. Wypróbuj Google Chrome.",
+    p4_item4: "Wolontariat lub inne aktywności (jeśli są)",
+    sin_voz: "Twoja przeglądarka nie pozwala tu użyć mikrofonu. Spróbuj w Google Chrome.",
     mic_sin_permiso: "Nie możemy użyć mikrofonu. Zezwól aplikacji CVoice na dostęp do mikrofonu w ustawieniach telefonu.",
     aviso_salir: "Naciśnij ponownie Wstecz, aby wyjść z CVoice.",
     bv_titulo: "Twoje CV – wystarczy mówić",
@@ -2047,7 +2047,7 @@ const TEXTOS = {
     p3_titulo: "Ваша освіта",
     p4_titulo: "Інші дані",
     p5_titulo: "Ваше фото (необов'язково)",
-    boton_abrir_camara: "Відкрити камеру", boton_capturar: "Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "Пропустити", boton_continuar: "← Продовжити",
+    boton_abrir_camara: "Відкрити камеру", boton_capturar: "Зробити фото", boton_repetir: "↺ Зробити ще раз", boton_saltar: "Пропустити", boton_continuar: "Продовжити →",
     camara_sin_permiso: "Не вдалося отримати доступ до камери. Перевірте дозволи браузера.",
     puedes_corregir: "Тут з'явиться те, що ви говорите. Торкніться, щоб виправити.", boton_abrir_cv: "Відкрити моє резюме", boton_compartir_cv: "Надіслати через WhatsApp або email", compartir_titulo: "Надіслати резюме",
     boton_siguiente: "Далі →", boton_anterior: "← Назад",
@@ -2057,10 +2057,10 @@ const TEXTOS = {
     cv_lateral_contacto: "Особисті дані",
     cv_lateral_otros: "Інші дані",
     cv_formacion_complementaria: "Додаткова підготовка",
-    label_telefono: "Телефон:", label_email: "Email:", label_ubicacion: "Місце:",
+    label_telefono: "Телефон:", label_email: "Ел. пошта:", label_ubicacion: "Місто:",
     cv_bloque_experiencia: "Досвід роботи", cv_bloque_estudios: "Освіта",
     boton_rehacer: "← Записати знову",
-    ia_mucha_demanda: "Зараз CVoice користується багато людей. Хвилинку, ми продовжуємо працювати над вашим резюме…",
+    ia_mucha_demanda: "Зараз багато людей користується CVoice. Хвилинку, ми продовжуємо працювати над вашим резюме…",
     nombre_predeterminado: "ІМ'Я ТА ПРІЗВИЩЕ",
     p1_instruccion: "Натисніть на мікрофон і розкажіть нам:",
     p1_item1: "Ваше повне ім'я",
@@ -2077,9 +2077,9 @@ const TEXTOS = {
     p3_item4: "Додаткові курси або навчання (якщо є)",
     p4_item1: "Мови та рівень володіння",
     p4_item2: "Водійське посвідчення (якщо є)",
-    p4_item3: "Доступність або графік роботи",
-    p4_item4: "Волонтерство або додаткові активності",
-    sin_voz: "Ваш браузер не підтримує цю функцію. Спробуйте Google Chrome.",
+    p4_item3: "Зручний графік роботи",
+    p4_item4: "Волонтерство або інша діяльність (якщо є)",
+    sin_voz: "Ваш браузер не дозволяє тут використати мікрофон. Спробуйте Google Chrome.",
     mic_sin_permiso: "Не вдається використати мікрофон. Дозвольте CVoice доступ до мікрофона в налаштуваннях телефона.",
     aviso_salir: "Натисніть «Назад» ще раз, щоб вийти з CVoice.",
     bv_titulo: "Ваше резюме — просто голосом",
@@ -2106,7 +2106,7 @@ const TEXTOS = {
     p3_titulo: "Ваше образование",
     p4_titulo: "Другие данные",
     p5_titulo: "Ваше фото (необязательно)",
-    boton_abrir_camara: "Открыть камеру", boton_capturar: "Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "Пропустить", boton_continuar: "← Продолжить",
+    boton_abrir_camara: "Открыть камеру", boton_capturar: "Сделать фото", boton_repetir: "↺ Переснять", boton_saltar: "Пропустить", boton_continuar: "Продолжить →",
     camara_sin_permiso: "Не удалось получить доступ к камере. Проверьте разрешения браузера.",
     puedes_corregir: "Здесь появится то, что вы говорите. Коснитесь, чтобы исправить.", boton_abrir_cv: "Открыть моё резюме", boton_compartir_cv: "Отправить в WhatsApp или по email", compartir_titulo: "Отправить резюме",
     boton_siguiente: "Далее →", boton_anterior: "← Назад",
@@ -2116,10 +2116,10 @@ const TEXTOS = {
     cv_lateral_contacto: "Личные данные",
     cv_lateral_otros: "Другие данные",
     cv_formacion_complementaria: "Дополнительное обучение",
-    label_telefono: "Телефон:", label_email: "Email:", label_ubicacion: "Место:",
+    label_telefono: "Телефон:", label_email: "Эл. почта:", label_ubicacion: "Город:",
     cv_bloque_experiencia: "Опыт работы", cv_bloque_estudios: "Образование",
     boton_rehacer: "← Записать снова",
-    ia_mucha_demanda: "Сейчас CVoice пользуется много людей. Минутку, мы продолжаем работу над вашим резюме…",
+    ia_mucha_demanda: "Сейчас CVoice пользуются многие. Минутку, мы продолжаем работу над вашим резюме…",
     nombre_predeterminado: "ИМЯ ФАМИЛИЯ",
     p1_instruccion: "Нажмите на микрофон и расскажите нам:",
     p1_item1: "Ваше полное имя",
@@ -2136,9 +2136,9 @@ const TEXTOS = {
     p3_item4: "Дополнительные курсы или обучение (если есть)",
     p4_item1: "Языки и уровень владения",
     p4_item2: "Водительские права (если есть)",
-    p4_item3: "Доступность или график работы",
-    p4_item4: "Волонтёрство или дополнительные занятия",
-    sin_voz: "Ваш браузер не поддерживает эту функцию. Попробуйте Google Chrome.",
+    p4_item3: "Удобный график работы",
+    p4_item4: "Волонтёрство или другая деятельность (если есть)",
+    sin_voz: "Ваш браузер не позволяет здесь использовать микрофон. Попробуйте Google Chrome.",
     mic_sin_permiso: "Не удаётся использовать микрофон. Разрешите CVoice доступ к микрофону в настройках телефона.",
     aviso_salir: "Нажмите «Назад» ещё раз, чтобы выйти из CVoice.",
     bv_titulo: "Ваше резюме — просто голосом",
@@ -2184,12 +2184,12 @@ const TEXTOS_EXTRA = {
   },
   en: {
     cv_bloque_perfil: "Professional profile", cv_bloque_habilidades: "Skills",
-    elige_estilo: "Choose your résumé design:",
+    elige_estilo: "Choose your CV design:",
     diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate",
     cta_descargar: "DOWNLOAD",
-    app_titulo: "Download your CV in the app", app_desc: "Downloading your résumé as a PDF is available in the CVoice app for Android.", app_boton: "Get CVoice on Google Play", cerrar: "Close",
-    aviso_descargando: "Downloading your résumé…",
-    aviso_pdf_error: "Your résumé couldn't be saved. Tap download again.", aviso_cv_guardado: "Résumé saved to your Downloads folder.", pie_privacidad: "Privacy policy",
+    app_titulo: "Download your CV in the app", app_desc: "Downloading your CV as a PDF is available in the CVoice app for Android.", app_boton: "Get CVoice on Google Play", cerrar: "Close",
+    aviso_descargando: "Downloading your CV…",
+    aviso_pdf_error: "Your CV couldn't be saved. Tap download again.", aviso_cv_guardado: "CV saved to your Downloads folder.", pie_privacidad: "Privacy policy",
     aria_grabar: "Record voice",
   },
   fr: {
@@ -2278,7 +2278,7 @@ const TEXTOS_EXTRA = {
     diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny",
     cta_descargar: "POBIERZ",
     app_titulo: "Pobierz CV w aplikacji", app_desc: "Pobieranie CV w PDF jest dostępne w aplikacji CVoice na Androida.", app_boton: "Pobierz CVoice z Google Play", cerrar: "Zamknij",
-    aviso_descargando: "Pobieranie twojego CV…",
+    aviso_descargando: "Pobieranie Twojego CV…",
     aviso_pdf_error: "Nie udało się zapisać CV. Naciśnij ponownie pobierz.", aviso_cv_guardado: "CV zapisane w folderze Pobrane.", pie_privacidad: "Polityka prywatności",
     aria_grabar: "Nagraj głos",
   },
@@ -2579,16 +2579,28 @@ window.addEventListener("resize", () => {
 // se habla; en Android a veces llegan acumulados ("hola", "hola qué tal"), así que un
 // fragmento que contiene al anterior lo sustituye en vez de sumarse.
 
+// Chino y japonés no separan las palabras con espacios
+function separadorVoz(){ return ["zh", "ja"].includes(idiomaActual) ? "" : " "; }
+
 function unirFragmentos(fragmentos){
+  const sep = separadorVoz();
   let texto = "";
   for (const f of fragmentos){
     if (!f) continue;
     const a = texto.toLowerCase(), b = f.toLowerCase();
     if (b.startsWith(a)) texto = f;            // acumulado: el nuevo ya incluye lo anterior
     else if (a.endsWith(b)) continue;          // repetido
-    else texto = texto ? texto + " " + f : f;
+    else texto = texto ? texto + sep + f : f;
   }
   return texto;
+}
+
+// Variante de reconocimiento de voz: si el móvil está en una variante del mismo idioma
+// (pt-BR, ar-MA, en-US, es-MX…), se usa esa, que entiende mejor el acento de la persona
+function idiomaReconocimiento(codigo){
+  const delMovil = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language])
+    .find(l => l && l.includes("-") && l.toLowerCase().split("-")[0] === codigo);
+  return delMovil || IDIOMAS[codigo].lang;
 }
 
 function iniciarEscucha(boton){
@@ -2609,11 +2621,12 @@ function iniciarEscucha(boton){
   // Texto acumulado de ESTA escucha (local: si se apaga y se enciende el micro rápido,
   // los últimos resultados de la sesión anterior no se mezclan con la nueva).
   // Parte de lo que ya hubiera en la caja (escrito a mano o de escuchas previas).
-  let acumulado = caja.value ? caja.value.trim() + " " : "";
+  const sep = separadorVoz();
+  let acumulado = caja.value ? caja.value.trim() + sep : "";
 
   function nuevaSesion(){
     const rec = new SpeechRec();
-    rec.lang = IDIOMAS[idiomaActual].lang;
+    rec.lang = idiomaReconocimiento(idiomaActual);
     rec.continuous = false;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
@@ -2625,7 +2638,7 @@ function iniciarEscucha(boton){
         (evento.results[i].isFinal ? finales : parciales).push(fragmento);
       }
       const final = unirFragmentos(finales);
-      if (final && !acumulado.endsWith(final + " ")) acumulado += final + " ";
+      if (final && !acumulado.endsWith(final + sep)) acumulado += final + sep;
       caja.value = (acumulado + unirFragmentos(parciales)).trim();
     };
 
@@ -2910,7 +2923,7 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 1. EXTRACCIÓN: Extrae solo información útil. Ignora muletillas, repeticiones, "pues", "o sea", "tipo", "bueno", etc.
 
-2. FORMATO DE DATOS: Convierte números hablados a cifras (seis seis seis → 666). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
+2. FORMATO DE DATOS: Convierte números hablados a cifras copiando cada dígito exactamente, uno por uno, sin añadir ni quitar ninguno (seis cero cero uno uno uno dos dos dos → 600 111 222). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
 
 3. TONO PROFESIONAL: Reescribe las funciones laborales usando verbos de acción e impacto en infinitivo: "Coordinar", "Gestionar", "Supervisar", "Implementar", "Optimizar", "Liderar", "Desarrollar", "Ejecutar". Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
 
@@ -2939,7 +2952,7 @@ PAUTAS PARA EL CV EN EUSKERA (obligatorias):
 - No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho, tampoco en el perfil (nada de "10 urteko esperientzia"). Perfil breve: 2 frases.
 - Palabras correctas: "antolaketa" (no "organizazio"), "talde-lana" (no "lankidetza" para trabajo en equipo).
 - PROHIBIDOS LOS CASTELLANISMOS: nunca pongas terminación vasca a una palabra española. Usa la palabra vasca genuina:
-  gestionatu → kudeatu · organizatu → antolatu · atenditu → artatu / arreta eman · limpiatu → garbitu · reponer/erreposatu → hornitu · enkargatu (persona) → arduraduna · ekipo → talde (lantaldea) · kliente → bezero · proveedore → hornitzaile · almazen → biltegi · ofizina → bulego · eskaparate → erakusleiho · kamarero → zerbitzari · dependiente → saltzaile · kurtso → ikastaro · formazio → prestakuntza · karnet → gidabaimena · disponibilitate → erabilgarritasuna · habilitate → gaitasun / trebetasun · nibel → maila · puntualitate → puntualtasuna · responsabilitate → ardura · experientzia laboral → lan-esperientzia · manejatu → erabili / maneiatu · repartitu → banatu · karretillero → karretilla-gidari · komunikazio (habilidad) → komunikazio-gaitasuna · inventario → inbentarioa · actividades comerciales → merkataritza-jarduerak · Bilbao → Bilbo · inglés (curso) → ingeleseko ikastaroa · de mañanas y tardes → goizez eta arratsaldez · encargado/a de almacén → biltegiko arduraduna (no "biltegizaina") · equipo de reponedores → apalak hornitzen dituen taldea
+  gestionatu → kudeatu · organizatu → antolatu · atenditu → artatu / arreta eman · limpiatu → garbitu · reponer/erreposatu → hornitu · enkargatu (persona) → arduraduna · ekipo → talde (lantaldea) · kliente → bezero · proveedore → hornitzaile · almazen → biltegi · ofizina → bulego · eskaparate → erakusleiho · kamarero → zerbitzari · dependiente → saltzaile · kurtso → ikastaro · formazio → prestakuntza · karnet → gidabaimena · disponibilitate → erabilgarritasuna · habilitate → gaitasun / trebetasun · nibel → maila · puntualitate → puntualtasuna · responsabilitate → ardura · experientzia laboral → lan-esperientzia · manejatu → erabili / maneiatu · repartitu → banatu · karretillero → karretilla-gidari · komunikazio (habilidad) → komunikazio-gaitasuna · inventario → inbentarioa · actividades comerciales → merkataritza-jarduerak · Bilbao → Bilbo · inglés (curso) → ingeleseko ikastaroa · de mañanas y tardes → goizez eta arratsaldez · encargado/a de almacén (jefe) → biltegiko arduraduna · mozo de almacén (trabajador, no jefe) → biltegiko langilea · descargar camiones → kamioiak deskargatzea (nunca "deszarkatu") · carretillero → karretilla-gidaria (nunca "carretilla") · equipo de reponedores → apalak hornitzen dituen taldea
 - Niveles oficiales (A1…C2, B2, First…) se escriben tal cual: "euskara B2".
 - Perfil sin verbos en tercera persona (nada de "lan egiten du", "kudeatzen ditu"): frases nominales, ej. "Biltegiko arduraduna, logistikan eta salmentan esperientziaduna. Antolatua eta talde-lanerako gaitasunarekin." · kobratu → kobratu (válido) · ordenatu → ordenatu (válido).
 - Antes de responder, relee palabra por palabra: si alguna es una palabra española con terminación vasca, sustitúyela por la vasca.`;
@@ -2958,39 +2971,97 @@ PAUTAS PARA EL CV EN PORTUGUÉS DE PORTUGAL (obligatorias):
 - Lenguas y niveles: "Português (língua materna)", "Espanhol (nível avançado)", "Inglês (nível intermédio)", "Francês (nível básico)"; si no se dijo el nivel, no lo inventes.
 - Perfil en estilo de CV portugués, sin primera persona: "Empregada de mesa com experiência em restauração. Simpática, organizada e com espírito de equipa."`;
 
-// Segunda pasada solo para los idiomas en los que los traductores encontraron fallos: un
-// revisor corrige el idioma del CV ya redactado (castellanismos en euskera, brasileñismos en
-// portugués) sin tocar los datos. El proxy admite este prompt ("traductor profesional…")
-const IDIOMAS_CON_REVISION = ["eu", "pt"];
-const PROMPT_REVISION = `Eres un traductor profesional especializado en currículums y corrector nativo. Recibirás el JSON de un CV ya redactado y tu único trabajo es dejar perfecto su idioma, como lo dejaría un técnico de recursos humanos nativo:
-- Corrige ortografía, gramática, declinaciones y concordancia.
-- Sustituye toda palabra de otro idioma, calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
-- No cambies los datos: nombres de personas y empresas, teléfonos, emails, fechas, cifras ni títulos obtenidos. No añadas ni quites elementos de las listas.
-- Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves y el mismo número de elementos en cada lista, sin texto antes ni después.`;
+// Convenciones de CV de cada idioma (euskera y portugués tienen pautas propias más largas).
+// El trabajo actual usa una palabra que reconoce PALABRAS_ACTUALIDAD para ordenar las fechas.
+// Para cada idioma: forma del trabajo actual, etiquetas, niveles, cómo escribir las funciones
+// y cómo traducir los títulos españoles más comunes (los modelos los transliteraban o los
+// cambiaban por títulos de otros países).
+const CONVENCIONES_CV = {
+  es: `"2021 – actualidad". Etiquetas: Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad; Sí/No. Niveles: nativo, avanzado, intermedio, básico. Estudios en curso: "en curso". Títulos con su nombre oficial: "Educación Secundaria Obligatoria (ESO)", "Grado Medio en Cocina y Gastronomía".`,
+  en: `Inglés británico (organised, licence, CV). "2021 – present". Etiquetas: Languages, Driving licence, Own car, Availability; Yes/No. Niveles: native, fluent, intermediate, basic. En curso: "in progress". Funciones en pasado o imperativo de CV ("Served customers", "Unloaded lorries"). Títulos: "Compulsory Secondary Education (ESO)", "Intermediate Vocational Training in Cooking (Grado Medio)", "Higher Vocational Training in … (Grado Superior)".`,
+  fr: `Francés de Francia, con espacio antes de ":" y "?". "2021 – aujourd'hui". Etiquetas: Langues, Permis de conduire, Véhicule personnel, Disponibilité; Oui/Non. Niveles: langue maternelle, courant, intermédiaire, notions. En curso: "en cours". Funciones en infinitivo ("Accueillir les clients", "Décharger les camions"). Títulos: "Enseignement secondaire obligatoire (ESO)", "Formation professionnelle de niveau intermédiaire en cuisine (Grado Medio)" (nunca "Bac pro" ni "CAP").`,
+  de: `Alemán de Alemania. "2021 – heute". Etiquetas: Sprachen, Führerschein, Eigener PKW, Verfügbarkeit; Ja/Nein. Niveles: Muttersprache, fließend, gute Kenntnisse, Grundkenntnisse. En curso: "laufend". Funciones en estilo nominal ("Entladen von LKWs", "Betreuung der Gäste"). Títulos: "Spanischer Sekundarschulabschluss (ESO)", "Berufsausbildung zum Koch, spanische Fachschule (Grado Medio)" (nunca "Mittlerer Abschluss" ni "Abitur").`,
+  it: `"2021 – oggi" (nunca "present"). Etiquetas: Lingue, Patente di guida, Automunito/a, Disponibilità; Sì/No. Niveles: madrelingua, ottimo, buono, base. En curso: "in corso". Funciones con sustantivo ("Scarico dei camion", "Servizio ai tavoli"). Títulos: "Istruzione secondaria obbligatoria (ESO)", "Formazione professionale di livello intermedio in cucina (Grado Medio)".`,
+  ar: `Árabe estándar moderno; cifras occidentales (2021, 600 111 222) en fechas y teléfonos. "2021 – حتى الآن". Etiquetas: اللغات، رخصة القيادة، سيارة خاصة، التوفر؛ نعم/لا. Niveles: اللغة الأم، متقدم، متوسط، مبتدئ. En curso: "قيد الدراسة". Funciones con masdar ("تفريغ الشاحنات"، "خدمة الزبائن"). Mañana/tarde: "صباحًا ومساءً". Títulos: "التعليم الثانوي الإلزامي (ESO)"، "تكوين مهني متوسط في الطبخ (Grado Medio)". Empresas, emails y ciudades con nombre latino se pueden dejar en alfabeto latino.`,
+  zh: `Chino simplificado, sin espacios entre palabras. "2021 – 至今". Etiquetas: 语言、驾驶证、私家车、可工作时间；有/无. Niveles: 母语、流利、中级、基础. En curso: "在读". Títulos: "西班牙义务中等教育（ESO）"、"中等职业教育·烹饪专业（Grado Medio）" (la sigla una sola vez). Empresas extranjeras tal cual ("Mercadona"); ciudades con su nombre chino habitual (毕尔巴鄂).`,
+  ja: `Japonés en estilo de 履歴書/職務経歴書, frases nominales sin です/ます. "2021年 – 現在". Etiquetas: 語学、運転免許、自家用車、勤務可能時間；あり/なし. Niveles: ネイティブ、ビジネスレベル、日常会話レベル、初級. En curso: "在学中". Títulos traducidos, nunca transliterados: "スペイン義務中等教育（ESO）"、"調理の中級職業訓練課程（Grado Medio）". Funciones con sustantivo, sin する ("トラックの荷降ろし"、"テーブルサービス"、"在庫管理"). Empresas extranjeras en alfabeto latino.`,
+  ro: `"2021 – prezent". Etiquetas: Limbi străine, Permis de conducere, Autoturism propriu, Disponibilitate; Da/Nu. Niveles: nativ, avansat, mediu, începător. En curso: "în curs". Puestos en rumano ("Ospătar", "Lucrător depozit"). Funciones con sustantivo ("Descărcarea camioanelor", "Servirea clienților"), nunca verbos sueltos. Títulos: "Învățământ secundar obligatoriu (ESO)", "Formare profesională de nivel mediu în bucătărie (Grado Medio)". Diacríticos correctos (ș, ț).`,
+  pl: `"2021 – obecnie". Etiquetas: Języki, Prawo jazdy, Własny samochód, Dyspozycyjność; Tak/Nie. Niveles: ojczysty, zaawansowany, średnio zaawansowany, podstawowy. En curso: "w trakcie". Funciones con sustantivo verbal ("Rozładunek ciężarówek", "Obsługa gości"). Títulos: "Hiszpańskie obowiązkowe wykształcenie średnie (ESO)", "Szkoła zawodowa, kierunek kucharz (Grado Medio)".`,
+  uk: `"2021 – дотепер". Etiquetas: Мови, Водійське посвідчення, Власний автомобіль, Графік роботи; Так/Ні. Niveles: рідна, вільно, середній рівень, базовий. En curso: "навчаюся". Funciones con sustantivo verbal ("Розвантаження вантажівок", "Обслуговування гостей"). Títulos: "Обов'язкова середня освіта Іспанії (ESO)", "Професійна освіта середнього рівня, кухар (Grado Medio)". Ucraniano normativo, sin rusismos.`,
+  ru: `"2021 – настоящее время". Etiquetas: Языки, Водительские права, Личный автомобиль, Удобный график; Да/Нет. Niveles: родной, свободно, средний уровень, базовый. En curso: "обучаюсь". Funciones con sustantivo verbal ("Разгрузка грузовиков", "Обслуживание гостей"). Títulos: "Обязательное среднее образование Испании (ESO)", "Среднее профессиональное образование, повар (Grado Medio)".`,
+};
+// Pautas según el idioma en que se HABLA: las pruebas mostraron años dichos con palabras mal
+// convertidos (rumano "două mii nouăsprezece" → 2009, darija "ألفين وتمنطاش" → 2008), palabras
+// de darija mal entendidas y títulos extranjeros confundidos con la ESO
+const NOTAS_HABLA = {
+  ar: `La persona puede hablar en darija (árabe marroquí) o argelino. Números: واحد 1, جوج/زوج 2, تلاتة 3, ربعة 4, خمسة 5, ستة 6, سبعة 7, تمنية 8, تسعود 9, عشرة 10, حضاش 11, طناش 12, تلطاش 13, ربعطاش 14, خمسطاش 15, سطاش 16, سبعطاش 17, تمنطاش 18, تسعطاش 19, عشرين 20; "ألفين وتمنطاش" = 2018, "ألفين وعشرين" = 2020, "ألفين وواحد وعشرين" = 2021, "ألفين وجوج وعشرين" = 2022; "من … حتى …" = de … a …. Palabras: دابا = ahora, خدمت = trabajé, البني = la construcción, الضص/الضيص = mortero/cemento, الياجور = ladrillos, الفاكية = la fruta, الفلاحة = la agricultura, قريت = estudié, ما خديتهاش = no la obtuve, البيرمي = el carnet de conducir, الطوموبيل = el coche, السبانيول = el español, كنهضر = hablo. "الباكالوريا" = Bachillerato marroquí.`,
+  ro: `Años con palabras: unsprezece 11, doisprezece 12, treisprezece 13, paisprezece 14, cincisprezece 15, șaisprezece 16, șaptesprezece 17, optsprezece 18, nouăsprezece 19, douăzeci 20, douăzeci și unu 21…; "două mii nouăsprezece" = 2019 (nunca 2009). "Liceu" = Bachillerato; "școala profesională" = Formación Profesional.`,
+  uk: `Años con palabras en ordinal: "дві тисячі десятого" = 2010, "двадцять другого" = 2022. "Середня школа" = ESO/Bachillerato según los años; "університет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino (Олена Коваленко → Olena Kovalenko).`,
+  ru: `Años con palabras en ordinal: "две тысячи десятого" = 2010. "Средняя школа" = ESO/Bachillerato según los años; "университет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino.`,
+  zh: `"高中" = Bachillerato; "初中" = ESO; "大学/本科" = Grado universitario; "中专/职高" = Formación Profesional. Años como "二零一六" = 2016. Si dice "服务员" y el nombre es femenino, usa la forma femenina del puesto.`,
+  fr: `"Lycée/Baccalauréat" = Bachillerato; "BEP/CAP/Bac pro" = Formación Profesional; "collège/brevet" = ESO.`,
+  pt: `"Ensino médio/secundário" = Bachillerato; "ensino fundamental/básico" = ESO.`,
+};
+function notasHabla(codigo){
+  return NOTAS_HABLA[codigo] ? `\nPautas del idioma hablado: ${NOTAS_HABLA[codigo]}` : "";
+}
 
-function construirPromptRevision(resultado, codigo){
-  const notas = codigo === "eu" ? NOTAS_EUSKERA : codigo === "pt" ? NOTAS_PORTUGUES : "";
-  return `Idioma del CV: ${IDIOMAS[codigo].ia}.
-${notas}
+function notasIdiomaCV(codigo){
+  return CONVENCIONES_CV[codigo] ? `\nConvenciones del CV en este idioma: ${CONVENCIONES_CV[codigo]} La categoría del carnet (B, C…) solo si se dijo.` : "";
+}
+
+// Segunda pasada: un revisor nativo deja perfecto el idioma del CV ya redactado y comprueba los
+// datos contra el dictado original. Las pruebas en los 14 idiomas (8-11-2026) mostraron fallos
+// cuando el CV no está en castellano (erratas, palabras en inglés o en castellano, títulos
+// transliterados) y cuando se habla en otro idioma (años dichos con palabras mal convertidos,
+// emails en cirílico), así que se hace en esos dos casos. El proxy admite este prompt
+// ("traductor profesional…") y lo manda a otro modelo, con su propio cupo.
+function necesitaRevision(){ return idiomaCVDestino !== "es" || idiomaActual !== "es"; }
+const PROMPT_REVISION = `Eres un traductor profesional especializado en currículums y corrector nativo. Recibirás el JSON de un CV ya redactado y el texto que dictó la persona, y tu trabajo es dejar perfecto el CV, como lo dejaría un técnico de recursos humanos nativo:
+- Corrige ortografía, gramática, declinaciones, concordancia y erratas.
+- Sustituye toda palabra de otro idioma (también "present", "Grado Medio" sin traducir, nombres de idiomas como "Arabic" o "Spanish"…), calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
+- Funciones, puestos, títulos y etiquetas con la forma habitual de un CV en ese idioma. Comprueba uno por uno los puestos de "experiencia": ninguno puede quedar en otro idioma ("Camarero", "Operario", "Mozo"…). Quita repeticiones como "ESO (ESO)".
+- Comprueba cada dato con el texto dictado: años (sobre todo los dichos con palabras), teléfono, email, nombres, empresas, títulos, idiomas y carnet. Si el CV tiene un error claro de conversión o de comprensión, corrígelo. Si falta un estudio o curso que se dijo, añádelo. Nunca inventes nada que no esté en el dictado, y quita lo inventado en datos concretos (categoría de un hotel, "Disponibilidad: Sí" sin que se dijera, cifras…).
+- Nombre de la persona y email en el alfabeto del CV; el email solo con caracteres latinos válidos.
+- Si el perfil da un número de años de experiencia que no cuadra con las fechas, corrígelo o quítalo. Un trabajo que sigue en curso nunca termina en el año actual: usa la palabra de "actualidad" del idioma del CV.
+- No quites elementos de las listas.
+- Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves, sin texto antes ni después.`;
+
+function construirPromptRevision(resultado, codigo, datos){
+  const notas = codigo === "eu" ? NOTAS_EUSKERA : codigo === "pt" ? NOTAS_PORTUGUES : notasIdiomaCV(codigo);
+  const hablado = IDIOMAS[idiomaActual]?.ia || "español";
+  return `Idioma del CV: ${IDIOMAS[codigo].ia}. Idioma en que habló la persona: ${hablado}. Año actual: ${new Date().getFullYear()}.
+${notas}${notasHabla(idiomaActual)}
+
+Texto dictado por la persona (reconocimiento de voz, sin puntuación):
+Datos personales: """${datos.datosPersonales || ""}"""
+Experiencia: """${datos.experiencia || ""}"""
+Estudios: """${datos.estudios || ""}"""
+Otros datos: """${datos.otros || ""}"""
 
 CV que debes revisar (JSON):
 ${JSON.stringify(resultado)}`;
 }
 
-// La revisión solo se acepta si conserva la forma del CV; si falla o la cambia, se usa el original
+// La revisión solo se acepta si conserva la forma del CV: mismas claves y listas que no
+// pierden elementos (puede recuperar como mucho dos que faltaban); si no, se usa el original
 function mismaForma(a, b){
   if (!b || typeof b !== "object") return false;
   return Object.keys(a).every(k => {
-    if (Array.isArray(a[k])) return Array.isArray(b[k]) && b[k].length === a[k].length;
+    if (Array.isArray(a[k])) return Array.isArray(b[k]) && b[k].length >= a[k].length && b[k].length <= a[k].length + 2;
     return typeof b[k] === typeof a[k];
   });
 }
 
-async function revisarIdioma(resultado){
-  if (!IDIOMAS_CON_REVISION.includes(idiomaCVDestino)) return resultado;
+async function revisarIdioma(resultado, datos){
+  if (!necesitaRevision()) return resultado;
   try {
-    const revisado = await llamarIA(PROMPT_REVISION, construirPromptRevision(resultado, idiomaCVDestino), 0.2);
-    return mismaForma(resultado, revisado) ? revisado : resultado;
+    // Un solo intento y sin esperar si el servicio está saturado: la revisión mejora el CV,
+    // pero la persona nunca debe esperar más ni ver un error por ella
+    const revisado = await llamarIAUnaVez(PROMPT_REVISION, construirPromptRevision(resultado, idiomaCVDestino, datos), 0.2);
+    const valida = mismaForma(resultado, revisado);
+    console.info(valida ? "Revisión del idioma aplicada" : "Revisión descartada: cambió la forma del CV");
+    return valida ? revisado : resultado;
   } catch(error){
     console.warn("Revisión del idioma no disponible:", error);
     return resultado;
@@ -3005,8 +3076,10 @@ PAUTAS DE TRADUCCIÓN (obligatorias, el CV va en ${nombreIdioma}):
 - Escribe con la ortografía, los acentos y la terminología de recursos humanos propios del ${nombreIdioma}, como lo haría un técnico de selección nativo. Nada de calcos del español.
 - Traduce siempre puestos, funciones, habilidades, nombres de idiomas y niveles. No traduzcas ni declines nombres propios de empresas, centros ni personas; las palabras genéricas que los acompañan sí (ej. "Bar Txoko" → "Txoko Bar" en inglés). Las ciudades, con su nombre habitual en ${nombreIdioma} si lo tienen (ej. "Bilbo" en euskera, "Porto" en portugués, "Seville" en inglés).
 - Grado Medio y Grado Superior son formación profesional, no estudios universitarios: nunca los traduzcas como licenciatura, grado universitario o bachelor.
-- Títulos educativos españoles (ESO, Bachillerato, Grado Medio, Grado Superior, Grado universitario, Certificado de profesionalidad): escribe su equivalente comprensible en ${nombreIdioma} y añade el nombre español entre paréntesis, ej. "(ESO)", "(Grado Medio)".
-- Trabajo actual: usa la palabra habitual en ${nombreIdioma} para "hasta hoy" (ej. "2021 – present" en inglés), nunca "actualidad" en español. Estudios en curso: la expresión habitual de "en curso" en lugar del año.
+- Los puestos y términos de oficio se traducen SIEMPRE al ${nombreIdioma}; nunca dejes "Camarero", "Operario", "Mozo" ni otra palabra española. Significado de los más comunes: camarero = waiter; mozo de almacén = warehouse worker; carretillero / carretilla elevadora = forklift operator / forklift; transpaleta = pallet truck; reponedor = shelf stacker; dependiente = shop assistant; cajero = cashier; ayudante de cocina = kitchen assistant; limpiador = cleaner; peón = labourer; manipulador de alimentos = food handler certificate.
+- Títulos educativos españoles (ESO, Bachillerato, Grado Medio, Grado Superior, Grado universitario, Certificado de profesionalidad): escribe su equivalente comprensible en ${nombreIdioma} y añade el nombre español entre paréntesis una sola vez, ej. "(ESO)", "(Grado Medio)". Nunca lo transliteres ni lo cambies por un título propio de otro país (Bac pro, CAP, Mittlerer Abschluss, A-levels, licence, bachelor…).
+- Nombres de los idiomas que habla la persona escritos en ${nombreIdioma} (nunca en inglés ni en español si el CV no está en esos idiomas).
+- Trabajo actual: usa la palabra habitual en ${nombreIdioma} para "hasta hoy" (ej. "2021 – present" en inglés), nunca "actualidad" en español ni el año actual como fecha de fin. Estudios en curso: la expresión habitual de "en curso" en lugar del año.
 - Antes de responder, relee el CV entero y corrige cualquier palabra que haya quedado en español o en otro idioma.`;
 }
 
@@ -3020,7 +3093,11 @@ function construirPromptUsuario(datos){
 IMPORTANTE: Redacta TODO el contenido del CV (puestos, funciones, estudios, otros datos) en ${nombreIdioma}. No uses español si el idioma seleccionado es otro. Esto incluye las etiquetas <strong> de "otros_html" (Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad…) y valores como "Sí"/"No": tradúcelos también al ${nombreIdioma}. Los ejemplos de este mensaje están en español solo como referencia de formato.
 
 La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, traduce todo con naturalidad y vocabulario profesional al ${nombreIdioma}, sin cambiar los datos. Si un nombre propio (persona, ciudad, empresa) está escrito en un alfabeto distinto del que usa el ${nombreIdioma}, transcríbelo con su forma habitual en ese alfabeto (ej. 'مكرم عايد' → 'Makrem Ayed', 'سوسة، تونس' → 'Sousse, Túnez' para un CV en español).
-${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
+
+El texto viene del reconocimiento de voz del móvil: no tiene puntuación y puede traer palabras mal reconocidas (sobre todo nombres de empresas, títulos y siglas: "la eso" = ESO, "grado medio de cocina", "Mercadona", "Eroski"), números dichos en letra, muletillas y frases repetidas. Corrige esos errores evidentes por el contexto, sin inventar nada; si no estás seguro de un nombre propio, déjalo tal como se dijo. La persona puede hablar con acento o en una variante dialectal (por ejemplo, árabe marroquí o argelino) y mezclar palabras de otros idiomas (castellano, francés, inglés): entiéndelo todo y redacta solo en ${nombreIdioma}.${notasIdiomaCV(idiomaCVDestino)}${notasHabla(idiomaActual)}
+- Años y números dichos con palabras: conviértelos con cuidado (decenas y unidades) y comprueba que la cronología tenga sentido.
+- Nombre de la persona, empresas y email en el alfabeto del CV; el email siempre solo con caracteres latinos (a-z, 0-9, punto, guion), transcribiendo cada parte.
+- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
@@ -3052,7 +3129,7 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
     {
       "titulo": "título oficial obtenido, ej. Grado Medio en Comercio",
       "centro": "centro educativo y/o ciudad, ej. IES Lope de Vega, Madrid",
-      "año": "año de finalización, o cadena vacía si no se mencionó"
+      "año": "año de finalización; si la persona lo está estudiando ahora, la expresión 'en curso' en el idioma del CV (nunca un año ni vacío); cadena vacía solo si no se dijo nada"
     }
   ],
   "formacion_complementaria": ["curso corto 1 con su año si se mencionó", "curso corto 2"],
@@ -3061,6 +3138,10 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
   "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
 }
 Reglas estrictas:
+- Año actual: ${new Date().getFullYear()} (solo para calcular; un trabajo que sigue "hasta ahora" nunca termina en este año: se escribe con la palabra de "actualidad" del idioma del CV). Si el perfil menciona años de experiencia, súmalos exactamente con los periodos de TODOS los trabajos ("hasta ahora" = año actual; ej. 2017–2020 y 2021–${new Date().getFullYear()} = ${3 + new Date().getFullYear() - 2021} años); si no puedes calcularlo con seguridad, no pongas ninguna cifra.
+- "habilidades" nunca puede quedar vacío si hay experiencia o estudios.
+- Un curso corto (carretillero, manipulador de alimentos, prevención de riesgos…) va solo en "formacion_complementaria", nunca repetido también en "estudios".
+- Si la persona dice que tiene carnet pero no coche, "otros_html" debe incluir las dos líneas: carnet "Sí" y vehículo propio "No" (traducidos).
 - Si el usuario indica que NO tiene experiencia laboral, el array "experiencia" debe ser exactamente [].
 - Si el usuario indica que NO tiene estudios, el array "estudios" debe ser exactamente [].
 - Si no hay cursos cortos o formación no oficial, "formacion_complementaria" debe ser exactamente [].
@@ -3097,7 +3178,7 @@ function generarCV(){
   window.scrollTo({ top: 0 });
 
   llamarIA(PROMPT_SISTEMA, construirPromptUsuario(datos), 0.4)
-    .then(revisarIdioma)
+    .then(resultado => revisarIdioma(resultado, datos))
     .then(pintarCV)
     .catch(error => {
       console.error(error);
@@ -3207,7 +3288,7 @@ function filtrarOtrosHTML(html){
 // (la IA escribe "actualidad", "present", "présent", "heute", "attuale", "الحاضر", "дотепер"…)
 const PALABRAS_ACTUALIDAD = /actual|attual|present|présent|now|hoy|aujourd|à ce jour|heute|jetzt|derzeit|oggi|atual|prezent|obecn|teraz|теперішн|дотепер|нині|настоящ|сейчас|现在|至今|現在|الآن|الحاضر|حالي|حاليا|حاليًا|gaur egun|gaur arte|orain arte|oraindik/i;
 // Estudios que aún se están cursando ("cursando", "in progress", "en cours"…)
-const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|a frequentar|în curs|w trakcie|навча|в процесс|учусь|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار|ikasten|egiten ari|martxan/i;
+const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|a frequentar|în curs|w trakcie|навча|в процес|учусь|обуча|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار|ikasten|egiten ari|martxan/i;
 // palabrasActuales: solo en campos de fecha ("Curso de actualización" no es la actualidad)
 function claveFecha(texto, ...palabrasActuales){
   const s = String(texto || "");
