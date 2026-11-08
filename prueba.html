@@ -2984,7 +2984,7 @@ const CONVENCIONES_CV = {
   it: `"2021 – oggi" (nunca "present"). Etiquetas: Lingue, Patente di guida, Automunito/a, Disponibilità; Sì/No. Niveles: madrelingua, ottimo, buono, base. En curso: "in corso". Funciones con sustantivo ("Scarico dei camion", "Servizio ai tavoli"). Títulos: "Istruzione secondaria obbligatoria (ESO)", "Formazione professionale di livello intermedio in cucina (Grado Medio)".`,
   ar: `Árabe estándar moderno; cifras occidentales (2021, 600 111 222) en fechas y teléfonos. "2021 – حتى الآن". Etiquetas: اللغات، رخصة القيادة، سيارة خاصة، التوفر؛ نعم/لا. Niveles: اللغة الأم، متقدم، متوسط، مبتدئ. En curso: "قيد الدراسة". Funciones con masdar ("تفريغ الشاحنات"، "خدمة الزبائن"). Mañana/tarde: "صباحًا ومساءً". Títulos: "التعليم الثانوي الإلزامي (ESO)"، "تكوين مهني متوسط في الطبخ (Grado Medio)". Empresas, emails y ciudades con nombre latino se pueden dejar en alfabeto latino.`,
   zh: `Chino simplificado, sin espacios entre palabras. "2021 – 至今". Etiquetas: 语言、驾驶证、私家车、可工作时间；有/无. Niveles: 母语、流利、中级、基础. En curso: "在读". Títulos: "西班牙义务中等教育（ESO）"、"中等职业教育·烹饪专业（Grado Medio）" (la sigla una sola vez). Empresas extranjeras tal cual ("Mercadona"); ciudades con su nombre chino habitual (毕尔巴鄂).`,
-  ja: `Japonés en estilo de 履歴書/職務経歴書, frases nominales sin です/ます. "2021年 – 現在". Etiquetas: 語学、運転免許、自家用車、勤務可能時間；あり/なし. Niveles: ネイティブ、ビジネスレベル、日常会話レベル、初級. En curso: "在学中". Títulos traducidos, nunca transliterados: "スペイン義務中等教育（ESO）"、"調理の中級職業訓練課程（Grado Medio）". Empresas extranjeras en alfabeto latino.`,
+  ja: `Japonés en estilo de 履歴書/職務経歴書, frases nominales sin です/ます. "2021年 – 現在". Etiquetas: 語学、運転免許、自家用車、勤務可能時間；あり/なし. Niveles: ネイティブ、ビジネスレベル、日常会話レベル、初級. En curso: "在学中". Títulos traducidos, nunca transliterados: "スペイン義務中等教育（ESO）"、"調理の中級職業訓練課程（Grado Medio）". Funciones con sustantivo, sin する ("トラックの荷降ろし"、"テーブルサービス"、"在庫管理"). Empresas extranjeras en alfabeto latino.`,
   ro: `"2021 – prezent". Etiquetas: Limbi străine, Permis de conducere, Autoturism propriu, Disponibilitate; Da/Nu. Niveles: nativ, avansat, mediu, începător. En curso: "în curs". Puestos en rumano ("Ospătar", "Lucrător depozit"). Funciones con sustantivo ("Descărcarea camioanelor", "Servirea clienților"), nunca verbos sueltos. Títulos: "Învățământ secundar obligatoriu (ESO)", "Formare profesională de nivel mediu în bucătărie (Grado Medio)". Diacríticos correctos (ș, ț).`,
   pl: `"2021 – obecnie". Etiquetas: Języki, Prawo jazdy, Własny samochód, Dyspozycyjność; Tak/Nie. Niveles: ojczysty, zaawansowany, średnio zaawansowany, podstawowy. En curso: "w trakcie". Funciones con sustantivo verbal ("Rozładunek ciężarówek", "Obsługa gości"). Títulos: "Hiszpańskie obowiązkowe wykształcenie średnie (ESO)", "Szkoła zawodowa, kierunek kucharz (Grado Medio)".`,
   uk: `"2021 – дотепер". Etiquetas: Мови, Водійське посвідчення, Власний автомобіль, Графік роботи; Так/Ні. Niveles: рідна, вільно, середній рівень, базовий. En curso: "навчаюся". Funciones con sustantivo verbal ("Розвантаження вантажівок", "Обслуговування гостей"). Títulos: "Обов'язкова середня освіта Іспанії (ESO)", "Професійна освіта середнього рівня, кухар (Grado Medio)". Ucraniano normativo, sin rusismos.`,
@@ -3030,8 +3030,12 @@ function mismaForma(a, b){
 async function revisarIdioma(resultado){
   if (!IDIOMAS_CON_REVISION.includes(idiomaCVDestino)) return resultado;
   try {
-    const revisado = await llamarIA(PROMPT_REVISION, construirPromptRevision(resultado, idiomaCVDestino), 0.2);
-    return mismaForma(resultado, revisado) ? revisado : resultado;
+    // Un solo intento y sin esperar si el servicio está saturado: la revisión mejora el CV,
+    // pero la persona nunca debe esperar más ni ver un error por ella
+    const revisado = await llamarIAUnaVez(PROMPT_REVISION, construirPromptRevision(resultado, idiomaCVDestino), 0.2);
+    const valida = mismaForma(resultado, revisado);
+    console.info(valida ? "Revisión del idioma aplicada" : "Revisión descartada: cambió la forma del CV");
+    return valida ? revisado : resultado;
   } catch(error){
     console.warn("Revisión del idioma no disponible:", error);
     return resultado;
@@ -3046,6 +3050,7 @@ PAUTAS DE TRADUCCIÓN (obligatorias, el CV va en ${nombreIdioma}):
 - Escribe con la ortografía, los acentos y la terminología de recursos humanos propios del ${nombreIdioma}, como lo haría un técnico de selección nativo. Nada de calcos del español.
 - Traduce siempre puestos, funciones, habilidades, nombres de idiomas y niveles. No traduzcas ni declines nombres propios de empresas, centros ni personas; las palabras genéricas que los acompañan sí (ej. "Bar Txoko" → "Txoko Bar" en inglés). Las ciudades, con su nombre habitual en ${nombreIdioma} si lo tienen (ej. "Bilbo" en euskera, "Porto" en portugués, "Seville" en inglés).
 - Grado Medio y Grado Superior son formación profesional, no estudios universitarios: nunca los traduzcas como licenciatura, grado universitario o bachelor.
+- Términos de oficio españoles que hay que traducir siempre (nunca dejarlos en castellano ni calcarlos): carretillero / carretilla elevadora = conductor de carretilla elevadora (forklift); transpaleta = transpalé manual (pallet truck); mozo de almacén = operario de almacén; reponedor = reponedor de supermercado; dependiente = vendedor de tienda; camarero = camarero de sala; manipulador de alimentos = certificado de manipulación de alimentos; peón = peón/operario no cualificado.
 - Títulos educativos españoles (ESO, Bachillerato, Grado Medio, Grado Superior, Grado universitario, Certificado de profesionalidad): escribe su equivalente comprensible en ${nombreIdioma} y añade el nombre español entre paréntesis una sola vez, ej. "(ESO)", "(Grado Medio)". Nunca lo transliteres ni lo cambies por un título propio de otro país (Bac pro, CAP, Mittlerer Abschluss, A-levels, licence, bachelor…).
 - Trabajo actual: usa la palabra habitual en ${nombreIdioma} para "hasta hoy" (ej. "2021 – present" en inglés), nunca "actualidad" en español. Estudios en curso: la expresión habitual de "en curso" en lugar del año.
 - Antes de responder, relee el CV entero y corrige cualquier palabra que haya quedado en español o en otro idioma.`;
@@ -3104,8 +3109,9 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
   "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
 }
 Reglas estrictas:
-- Año actual: ${new Date().getFullYear()}. Si el perfil menciona años de experiencia, súmalos exactamente a partir de las fechas dichas ("hasta ahora" = año actual); si no puedes calcularlo con seguridad, no pongas ninguna cifra.
+- Año actual: ${new Date().getFullYear()}. Si el perfil menciona años de experiencia, súmalos exactamente con los periodos de TODOS los trabajos ("hasta ahora" = año actual; ej. 2017–2020 y 2021–${new Date().getFullYear()} = ${3 + new Date().getFullYear() - 2021} años); si no puedes calcularlo con seguridad, no pongas ninguna cifra.
 - "habilidades" nunca puede quedar vacío si hay experiencia o estudios.
+- Un curso corto (carretillero, manipulador de alimentos, prevención de riesgos…) va solo en "formacion_complementaria", nunca repetido también en "estudios".
 - Si en "otros_html" se dijo que no tiene coche, inclúyelo también ("Vehículo propio: No", traducido).
 - Si el usuario indica que NO tiene experiencia laboral, el array "experiencia" debe ser exactamente [].
 - Si el usuario indica que NO tiene estudios, el array "estudios" debe ser exactamente [].
