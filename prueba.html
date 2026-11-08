@@ -2946,7 +2946,7 @@ PAUTAS PARA EL CV EN EUSKERA (obligatorias):
 - Nombres de empresas, centros y ciudades en su forma base, sin declinar: "Eroski", "Zara", "Bilbo" (nunca "Eroskin", "Zaran"). Las palabras genéricas que los acompañan se traducen y van detrás: "Arzak jatetxea" (no "Restaurante Arzak"), "Txoko taberna" (no "Bar Txoko").
 - Trabajo actual: fechas como "2021 - gaur egun" (nunca "present" ni "actualidad").
 - Títulos oficiales: DBH = "Derrigorrezko Bigarren Hezkuntza (DBH)"; "Batxilergoa"; "Erdi-mailako heziketa-zikloa"; "Goi-mailako heziketa-zikloa"; "Gradua". Con especialidad: "Sukaldaritzako erdi-mailako heziketa-zikloa", "Merkataritza-jardueretako erdi-mailako heziketa-zikloa", "Merkataritzako goi-mailako heziketa-zikloa" (nunca "Graduo Ertaina" ni "komertzial"). Si la persona lo está estudiando, inclúyelo igualmente y pon "ikasten" en lugar del año.
-- Etiquetas de "otros_html" en euskera: "Hizkuntzak", "Gidabaimena", "Ibilgailu propioa", "Erabilgarritasuna"; Sí/No = "Bai"/"Ez".
+- Etiquetas de "otros_html" en euskera: "Hizkuntzak", "Gidabaimena", "Ibilgailu propioa", "Eskuragarritasuna" (nunca "Erabilgarritasuna", que significa usabilidad); Sí/No = "Bai"/"Ez".
 - Idiomas con su nombre en euskera: "euskara" (nunca "euskera"), "gaztelania", "ingelesa", "frantsesa", "arabiera". Niveles: "ama-hizkuntza", "maila aurreratua", "erdi-maila", "oinarrizko maila"; si no se dijo el nivel, no lo inventes.
 - Funciones con sustantivo verbal: "Bezeroei arreta ematea", "Kutxa kudeatzea", "Produktuak antolatzea".
 - No calcules ni inventes años de experiencia ni cifras que la persona no haya dicho, tampoco en el perfil (nada de "10 urteko esperientzia"). Perfil breve: 2 frases.
@@ -3001,6 +3001,7 @@ const NOTAS_HABLA = {
   zh: `"高中" = Bachillerato; "初中" = ESO; "大学/本科" = Grado universitario; "中专/职高" = Formación Profesional. Años como "二零一六" = 2016. Si dice "服务员" y el nombre es femenino, usa la forma femenina del puesto.`,
   fr: `"Lycée/Baccalauréat" = Bachillerato; "BEP/CAP/Bac pro" = Formación Profesional; "collège/brevet" = ESO.`,
   pt: `"Ensino médio/secundário" = Bachillerato; "ensino fundamental/básico" = ESO.`,
+  eu: `En los emails, "a bildua", "abildua" o "bildua" = @ (ane etxeberria a bildua gmail puntu com → ane.etxeberria@gmail.com); "puntu" = punto; "gidoi" = guion. "DBH" = ESO; "Batxilergoa" = Bachillerato; "erdi mailako zikloa" = Grado Medio; "goi mailako zikloa" = Grado Superior.`,
 };
 function notasHabla(codigo){
   return NOTAS_HABLA[codigo] ? `\nPautas del idioma hablado: ${NOTAS_HABLA[codigo]}` : "";
@@ -3024,6 +3025,9 @@ const PROMPT_REVISION = `Eres un traductor profesional especializado en currícu
 - Comprueba cada dato con el texto dictado: años (sobre todo los dichos con palabras), teléfono, email, nombres, empresas, títulos, idiomas y carnet. Si el CV tiene un error claro de conversión o de comprensión, corrígelo. Si falta un estudio o curso que se dijo, añádelo. Nunca inventes nada que no esté en el dictado, y quita lo inventado en datos concretos (categoría de un hotel, "Disponibilidad: Sí" sin que se dijera, cifras…).
 - Nombre de la persona y email en el alfabeto del CV; el email solo con caracteres latinos válidos.
 - Si el perfil da un número de años de experiencia que no cuadra con las fechas, corrígelo o quítalo. Un trabajo que sigue en curso nunca termina en el año actual: usa la palabra de "actualidad" del idioma del CV.
+- La disponibilidad nunca es solo "Sí": escribe lo que se dijo (ej. "Total", "Mañanas"). Quita del perfil lo que no se dijo ("incorporación inmediata", "coordinar equipos"…) y cambia cada habilidad que suponga una máquina, permiso o programa que no se mencionó por otra que sí se deduzca de lo dicho. Nunca escribas "(sin especificar)" ni similares: si no se dijo la empresa, deja solo lo que se sepa (ej. "Hotel", la ciudad).
+- Estudios hechos en otro país: su equivalente con el país entre paréntesis (ej. "Bachillerato (Ucrania)").
+- Mismo género gramatical en todos los puestos y en el perfil (el que se deduzca del nombre o de cómo habla la persona). Quita las funciones que no se deduzcan de lo dicho.
 - No quites elementos de las listas.
 - Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves, sin texto antes ni después.`;
 
@@ -3133,13 +3137,15 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
     }
   ],
   "formacion_complementaria": ["curso corto 1 con su año si se mencionó", "curso corto 2"],
-  "otros_html": "HTML breve usando <ul><li>...</li></ul> con idiomas (indicando nivel si se mencionó), carnet de conducir, vehículo propio, disponibilidad horaria y voluntariados; usa <strong> solo para la etiqueta del dato (ej. <strong>Idiomas:</strong> Español nativo, inglés básico). Cadena vacía si no se dijo nada en este apartado.",
+  "otros_html": "HTML breve usando <ul><li>...</li></ul> con idiomas (indicando nivel si se mencionó), carnet de conducir, vehículo propio, disponibilidad horaria (con lo que se dijo, ej. 'Total', 'Mañanas'; nunca solo 'Sí') y voluntariados; usa <strong> solo para la etiqueta del dato (ej. <strong>Idiomas:</strong> Español nativo, inglés básico). Cadena vacía si no se dijo nada en este apartado.",
   "perfil": "Perfil profesional de 2 o 3 frases (máximo 50 palabras) que redactas TÚ a partir de todo lo anterior: a qué se dedica la persona, años de experiencia si se deducen de las fechas, sus puntos fuertes y lo que aporta a una empresa. Tono profesional y positivo, en el estilo impersonal propio de un CV: ni primera persona ('yo', 'soy', 'tengo') ni tercera persona (nunca 'él', 'ella', 'posee', 'es', 'tiene', 'cuenta con'); usa frases nominales que empiecen por la profesión (ej. 'Repartidor con 4 años de experiencia en entregas a domicilio. Puntual, organizado y orientado al cliente.'). Cadena vacía solo si no hay ningún dato con el que redactarlo.",
-  "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
+  "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Atención al cliente', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
 }
 Reglas estrictas:
 - Año actual: ${new Date().getFullYear()} (solo para calcular; un trabajo que sigue "hasta ahora" nunca termina en este año: se escribe con la palabra de "actualidad" del idioma del CV). Si el perfil menciona años de experiencia, súmalos exactamente con los periodos de TODOS los trabajos ("hasta ahora" = año actual; ej. 2017–2020 y 2021–${new Date().getFullYear()} = ${3 + new Date().getFullYear() - 2021} años); si no puedes calcularlo con seguridad, no pongas ninguna cifra.
-- "habilidades" nunca puede quedar vacío si hay experiencia o estudios.
+- "habilidades" nunca puede quedar vacío si hay experiencia o estudios. Ninguna habilidad puede suponer una máquina, permiso, programa o certificado que la persona no haya dicho (carretilla, grúa, Excel, manipulador de alimentos…), ni el perfil puede atribuirle tareas que no dijo (coordinar equipos, dirigir…).
+- Nunca escribas "(sin especificar)", "N/A", "desconocido" ni similares: si no se dijo un dato, deja solo lo que se sepa o la cadena vacía.
+- La disponibilidad se escribe con lo que se dijo (ej. "Total", "Mañanas", "Fines de semana", traducido), nunca solo "Sí".
 - Un curso corto (carretillero, manipulador de alimentos, prevención de riesgos…) va solo en "formacion_complementaria", nunca repetido también en "estudios".
 - Si la persona dice que tiene carnet pero no coche, "otros_html" debe incluir las dos líneas: carnet "Sí" y vehículo propio "No" (traducidos).
 - Si el usuario indica que NO tiene experiencia laboral, el array "experiencia" debe ser exactamente [].
