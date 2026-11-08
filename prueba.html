@@ -2923,7 +2923,7 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 1. EXTRACCIÓN: Extrae solo información útil. Ignora muletillas, repeticiones, "pues", "o sea", "tipo", "bueno", etc.
 
-2. FORMATO DE DATOS: Convierte números hablados a cifras (seis seis seis → 666). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
+2. FORMATO DE DATOS: Convierte números hablados a cifras copiando cada dígito exactamente, uno por uno, sin añadir ni quitar ninguno (seis cero cero uno uno uno dos dos dos → 600 111 222). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
 
 3. TONO PROFESIONAL: Reescribe las funciones laborales usando verbos de acción e impacto en infinitivo: "Coordinar", "Gestionar", "Supervisar", "Implementar", "Optimizar", "Liderar", "Desarrollar", "Ejecutar". Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
 
@@ -2973,19 +2973,22 @@ PAUTAS PARA EL CV EN PORTUGUÉS DE PORTUGAL (obligatorias):
 
 // Convenciones de CV de cada idioma (euskera y portugués tienen pautas propias más largas).
 // El trabajo actual usa una palabra que reconoce PALABRAS_ACTUALIDAD para ordenar las fechas.
+// Para cada idioma: forma del trabajo actual, etiquetas, niveles, cómo escribir las funciones
+// y cómo traducir los títulos españoles más comunes (los modelos los transliteraban o los
+// cambiaban por títulos de otros países).
 const CONVENCIONES_CV = {
-  es: `"2021 – actualidad". Etiquetas: Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad; Sí/No. Niveles: nativo, avanzado, intermedio, básico.`,
-  en: `Inglés británico (organised, licence, CV). "2021 – present". Etiquetas: Languages, Driving licence, Own car, Availability; Yes/No. Niveles: native, fluent, intermediate, basic. Funciones con verbo en infinitivo sin "to" o en pasado ("Served customers", "Managed the till").`,
-  fr: `Francés de Francia, con espacio antes de ":" y "?". "2021 – aujourd'hui". Etiquetas: Langues, Permis de conduire, Véhicule personnel, Disponibilité; Oui/Non. Niveles: langue maternelle, courant, intermédiaire, notions. Funciones en infinitivo ("Accueillir les clients", "Gérer la caisse").`,
-  de: `Alemán de Alemania. "2021 – heute". Etiquetas: Sprachen, Führerschein, Eigener PKW, Verfügbarkeit; Ja/Nein. Niveles: Muttersprache, fließend, gute Kenntnisse, Grundkenntnisse. Funciones en estilo nominal o infinitivo ("Kundenbetreuung", "Kasse führen").`,
-  it: `"2021 – oggi". Etiquetas: Lingue, Patente di guida, Automunito/a, Disponibilità; Sì/No. Niveles: madrelingua, ottimo, buono, base. Funciones en infinitivo o sustantivo ("Accoglienza clienti", "Gestire la cassa").`,
-  ar: `Árabe estándar moderno; cifras occidentales (2021, 600 111 222) en fechas y teléfonos. "2021 – حتى الآن". Etiquetas: اللغات، رخصة القيادة، سيارة خاصة، التوفر؛ نعم/لا. Niveles: اللغة الأم، متقدم، متوسط، مبتدئ. Empresas, emails y ciudades con nombre latino se dejan en alfabeto latino.`,
-  zh: `Chino simplificado, sin espacios entre palabras. "2021 – 至今". Etiquetas: 语言、驾驶证、私家车、可工作时间；有/无. Niveles: 母语、流利、中级、基础. Empresas y ciudades extranjeras en su forma habitual (马德里, pero "Mercadona" tal cual).`,
-  ja: `Japonés en estilo de 履歴書/職務経歴書, frases nominales sin です/ます. "2021年 – 現在". Etiquetas: 語学、運転免許、自家用車、勤務可能時間；あり/なし. Niveles: ネイティブ、ビジネスレベル、日常会話レベル、初級. Empresas extranjeras en alfabeto latino.`,
-  ro: `"2021 – prezent". Etiquetas: Limbi străine, Permis de conducere, Autoturism propriu, Disponibilitate; Da/Nu. Niveles: nativ, avansat, mediu, începător. Diacríticos rumanos correctos (ș, ț).`,
-  pl: `"2021 – obecnie". Etiquetas: Języki, Prawo jazdy, Własny samochód, Dyspozycyjność; Tak/Nie. Niveles: ojczysty, zaawansowany, średnio zaawansowany, podstawowy.`,
-  uk: `"2021 – дотепер". Etiquetas: Мови, Водійське посвідчення, Власний автомобіль, Графік роботи; Так/Ні. Niveles: рідна, вільно, середній рівень, базовий. Ucraniano normativo, sin rusismos.`,
-  ru: `"2021 – настоящее время". Etiquetas: Языки, Водительские права, Личный автомобиль, Удобный график; Да/Нет. Niveles: родной, свободно, средний уровень, базовый.`,
+  es: `"2021 – actualidad". Etiquetas: Idiomas, Carnet de conducir, Vehículo propio, Disponibilidad; Sí/No. Niveles: nativo, avanzado, intermedio, básico. Estudios en curso: "en curso". Títulos con su nombre oficial: "Educación Secundaria Obligatoria (ESO)", "Grado Medio en Cocina y Gastronomía".`,
+  en: `Inglés británico (organised, licence, CV). "2021 – present". Etiquetas: Languages, Driving licence, Own car, Availability; Yes/No. Niveles: native, fluent, intermediate, basic. En curso: "in progress". Funciones en pasado o imperativo de CV ("Served customers", "Unloaded lorries"). Títulos: "Compulsory Secondary Education (ESO)", "Intermediate Vocational Training in Cooking (Grado Medio)", "Higher Vocational Training in … (Grado Superior)".`,
+  fr: `Francés de Francia, con espacio antes de ":" y "?". "2021 – aujourd'hui". Etiquetas: Langues, Permis de conduire, Véhicule personnel, Disponibilité; Oui/Non. Niveles: langue maternelle, courant, intermédiaire, notions. En curso: "en cours". Funciones en infinitivo ("Accueillir les clients", "Décharger les camions"). Títulos: "Enseignement secondaire obligatoire (ESO)", "Formation professionnelle de niveau intermédiaire en cuisine (Grado Medio)" (nunca "Bac pro" ni "CAP").`,
+  de: `Alemán de Alemania. "2021 – heute". Etiquetas: Sprachen, Führerschein, Eigener PKW, Verfügbarkeit; Ja/Nein. Niveles: Muttersprache, fließend, gute Kenntnisse, Grundkenntnisse. En curso: "laufend". Funciones en estilo nominal ("Entladen von LKWs", "Betreuung der Gäste"). Títulos: "Spanischer Sekundarschulabschluss (ESO)", "Berufsausbildung zum Koch, spanische Fachschule (Grado Medio)" (nunca "Mittlerer Abschluss" ni "Abitur").`,
+  it: `"2021 – oggi" (nunca "present"). Etiquetas: Lingue, Patente di guida, Automunito/a, Disponibilità; Sì/No. Niveles: madrelingua, ottimo, buono, base. En curso: "in corso". Funciones con sustantivo ("Scarico dei camion", "Servizio ai tavoli"). Títulos: "Istruzione secondaria obbligatoria (ESO)", "Formazione professionale di livello intermedio in cucina (Grado Medio)".`,
+  ar: `Árabe estándar moderno; cifras occidentales (2021, 600 111 222) en fechas y teléfonos. "2021 – حتى الآن". Etiquetas: اللغات، رخصة القيادة، سيارة خاصة، التوفر؛ نعم/لا. Niveles: اللغة الأم، متقدم، متوسط، مبتدئ. En curso: "قيد الدراسة". Funciones con masdar ("تفريغ الشاحنات"، "خدمة الزبائن"). Mañana/tarde: "صباحًا ومساءً". Títulos: "التعليم الثانوي الإلزامي (ESO)"، "تكوين مهني متوسط في الطبخ (Grado Medio)". Empresas, emails y ciudades con nombre latino se pueden dejar en alfabeto latino.`,
+  zh: `Chino simplificado, sin espacios entre palabras. "2021 – 至今". Etiquetas: 语言、驾驶证、私家车、可工作时间；有/无. Niveles: 母语、流利、中级、基础. En curso: "在读". Títulos: "西班牙义务中等教育（ESO）"、"中等职业教育·烹饪专业（Grado Medio）" (la sigla una sola vez). Empresas extranjeras tal cual ("Mercadona"); ciudades con su nombre chino habitual (毕尔巴鄂).`,
+  ja: `Japonés en estilo de 履歴書/職務経歴書, frases nominales sin です/ます. "2021年 – 現在". Etiquetas: 語学、運転免許、自家用車、勤務可能時間；あり/なし. Niveles: ネイティブ、ビジネスレベル、日常会話レベル、初級. En curso: "在学中". Títulos traducidos, nunca transliterados: "スペイン義務中等教育（ESO）"、"調理の中級職業訓練課程（Grado Medio）". Empresas extranjeras en alfabeto latino.`,
+  ro: `"2021 – prezent". Etiquetas: Limbi străine, Permis de conducere, Autoturism propriu, Disponibilitate; Da/Nu. Niveles: nativ, avansat, mediu, începător. En curso: "în curs". Puestos en rumano ("Ospătar", "Lucrător depozit"). Funciones con sustantivo ("Descărcarea camioanelor", "Servirea clienților"), nunca verbos sueltos. Títulos: "Învățământ secundar obligatoriu (ESO)", "Formare profesională de nivel mediu în bucătărie (Grado Medio)". Diacríticos correctos (ș, ț).`,
+  pl: `"2021 – obecnie". Etiquetas: Języki, Prawo jazdy, Własny samochód, Dyspozycyjność; Tak/Nie. Niveles: ojczysty, zaawansowany, średnio zaawansowany, podstawowy. En curso: "w trakcie". Funciones con sustantivo verbal ("Rozładunek ciężarówek", "Obsługa gości"). Títulos: "Hiszpańskie obowiązkowe wykształcenie średnie (ESO)", "Szkoła zawodowa, kierunek kucharz (Grado Medio)".`,
+  uk: `"2021 – дотепер". Etiquetas: Мови, Водійське посвідчення, Власний автомобіль, Графік роботи; Так/Ні. Niveles: рідна, вільно, середній рівень, базовий. En curso: "навчаюся". Funciones con sustantivo verbal ("Розвантаження вантажівок", "Обслуговування гостей"). Títulos: "Обов'язкова середня освіта Іспанії (ESO)", "Професійна освіта середнього рівня, кухар (Grado Medio)". Ucraniano normativo, sin rusismos.`,
+  ru: `"2021 – настоящее время". Etiquetas: Языки, Водительские права, Личный автомобиль, Удобный график; Да/Нет. Niveles: родной, свободно, средний уровень, базовый. En curso: "обучаюсь". Funciones con sustantivo verbal ("Разгрузка грузовиков", "Обслуживание гостей"). Títulos: "Обязательное среднее образование Испании (ESO)", "Среднее профессиональное образование, повар (Grado Medio)".`,
 };
 function notasIdiomaCV(codigo){
   return CONVENCIONES_CV[codigo] ? `\nConvenciones del CV en este idioma: ${CONVENCIONES_CV[codigo]} La categoría del carnet (B, C…) solo si se dijo.` : "";
@@ -2994,16 +2997,21 @@ function notasIdiomaCV(codigo){
 // Segunda pasada solo para los idiomas en los que los traductores encontraron fallos: un
 // revisor corrige el idioma del CV ya redactado (castellanismos en euskera, brasileñismos en
 // portugués) sin tocar los datos. El proxy admite este prompt ("traductor profesional…")
-const IDIOMAS_CON_REVISION = ["eu", "pt"];
+// Las pruebas en los 14 idiomas (8-11-2026) mostraron fallos de este tipo en casi todos los
+// idiomas distintos del castellano (erratas, palabras sueltas en inglés, verbos mal formados,
+// títulos transliterados), así que la revisión se hace siempre que el CV no está en castellano.
+const IDIOMAS_CON_REVISION = Object.keys(IDIOMAS).filter(c => c !== "es");
 const PROMPT_REVISION = `Eres un traductor profesional especializado en currículums y corrector nativo. Recibirás el JSON de un CV ya redactado y tu único trabajo es dejar perfecto su idioma, como lo dejaría un técnico de recursos humanos nativo:
-- Corrige ortografía, gramática, declinaciones y concordancia.
-- Sustituye toda palabra de otro idioma, calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
-- No cambies los datos: nombres de personas y empresas, teléfonos, emails, fechas, cifras ni títulos obtenidos. No añadas ni quites elementos de las listas.
+- Corrige ortografía, gramática, declinaciones, concordancia y erratas.
+- Sustituye toda palabra de otro idioma (también "present", "Grado Medio" sin traducir…), calco o palabra inventada por el término genuino y habitual del idioma del CV. Si no existe una palabra exacta, usa una expresión clara en ese idioma.
+- Funciones, puestos, títulos y etiquetas con la forma habitual de un CV en ese idioma. Quita repeticiones como "ESO (ESO)".
+- No cambies los datos: nombres de personas y empresas, teléfonos, emails, fechas ni títulos obtenidos. Única excepción: si el perfil da un número de años de experiencia que no cuadra con las fechas de la experiencia, corrígelo o quítalo.
+- No añadas ni quites elementos de las listas.
 - Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves y el mismo número de elementos en cada lista, sin texto antes ni después.`;
 
 function construirPromptRevision(resultado, codigo){
-  const notas = codigo === "eu" ? NOTAS_EUSKERA : codigo === "pt" ? NOTAS_PORTUGUES : "";
-  return `Idioma del CV: ${IDIOMAS[codigo].ia}.
+  const notas = codigo === "eu" ? NOTAS_EUSKERA : codigo === "pt" ? NOTAS_PORTUGUES : notasIdiomaCV(codigo);
+  return `Idioma del CV: ${IDIOMAS[codigo].ia}. Año actual: ${new Date().getFullYear()}.
 ${notas}
 
 CV que debes revisar (JSON):
@@ -3038,7 +3046,7 @@ PAUTAS DE TRADUCCIÓN (obligatorias, el CV va en ${nombreIdioma}):
 - Escribe con la ortografía, los acentos y la terminología de recursos humanos propios del ${nombreIdioma}, como lo haría un técnico de selección nativo. Nada de calcos del español.
 - Traduce siempre puestos, funciones, habilidades, nombres de idiomas y niveles. No traduzcas ni declines nombres propios de empresas, centros ni personas; las palabras genéricas que los acompañan sí (ej. "Bar Txoko" → "Txoko Bar" en inglés). Las ciudades, con su nombre habitual en ${nombreIdioma} si lo tienen (ej. "Bilbo" en euskera, "Porto" en portugués, "Seville" en inglés).
 - Grado Medio y Grado Superior son formación profesional, no estudios universitarios: nunca los traduzcas como licenciatura, grado universitario o bachelor.
-- Títulos educativos españoles (ESO, Bachillerato, Grado Medio, Grado Superior, Grado universitario, Certificado de profesionalidad): escribe su equivalente comprensible en ${nombreIdioma} y añade el nombre español entre paréntesis, ej. "(ESO)", "(Grado Medio)".
+- Títulos educativos españoles (ESO, Bachillerato, Grado Medio, Grado Superior, Grado universitario, Certificado de profesionalidad): escribe su equivalente comprensible en ${nombreIdioma} y añade el nombre español entre paréntesis una sola vez, ej. "(ESO)", "(Grado Medio)". Nunca lo transliteres ni lo cambies por un título propio de otro país (Bac pro, CAP, Mittlerer Abschluss, A-levels, licence, bachelor…).
 - Trabajo actual: usa la palabra habitual en ${nombreIdioma} para "hasta hoy" (ej. "2021 – present" en inglés), nunca "actualidad" en español. Estudios en curso: la expresión habitual de "en curso" en lugar del año.
 - Antes de responder, relee el CV entero y corrige cualquier palabra que haya quedado en español o en otro idioma.`;
 }
@@ -3087,7 +3095,7 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
     {
       "titulo": "título oficial obtenido, ej. Grado Medio en Comercio",
       "centro": "centro educativo y/o ciudad, ej. IES Lope de Vega, Madrid",
-      "año": "año de finalización, o cadena vacía si no se mencionó"
+      "año": "año de finalización; si la persona lo está estudiando ahora, la expresión 'en curso' en el idioma del CV (nunca un año ni vacío); cadena vacía solo si no se dijo nada"
     }
   ],
   "formacion_complementaria": ["curso corto 1 con su año si se mencionó", "curso corto 2"],
@@ -3096,6 +3104,9 @@ Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin
   "habilidades": ["entre 5 y 8 habilidades cortas (1 a 4 palabras cada una) DEDUCIDAS de la experiencia, los estudios y los otros datos: mezcla habilidades técnicas del oficio (ej. 'Gestión de caja', 'Manejo de carretilla', 'Excel') y personales (ej. 'Trabajo en equipo', 'Puntualidad'). No incluyas idiomas ni el carnet de conducir, que ya van en otros datos"]
 }
 Reglas estrictas:
+- Año actual: ${new Date().getFullYear()}. Si el perfil menciona años de experiencia, súmalos exactamente a partir de las fechas dichas ("hasta ahora" = año actual); si no puedes calcularlo con seguridad, no pongas ninguna cifra.
+- "habilidades" nunca puede quedar vacío si hay experiencia o estudios.
+- Si en "otros_html" se dijo que no tiene coche, inclúyelo también ("Vehículo propio: No", traducido).
 - Si el usuario indica que NO tiene experiencia laboral, el array "experiencia" debe ser exactamente [].
 - Si el usuario indica que NO tiene estudios, el array "estudios" debe ser exactamente [].
 - Si no hay cursos cortos o formación no oficial, "formacion_complementaria" debe ser exactamente [].
@@ -3242,7 +3253,7 @@ function filtrarOtrosHTML(html){
 // (la IA escribe "actualidad", "present", "présent", "heute", "attuale", "الحاضر", "дотепер"…)
 const PALABRAS_ACTUALIDAD = /actual|attual|present|présent|now|hoy|aujourd|à ce jour|heute|jetzt|derzeit|oggi|atual|prezent|obecn|teraz|теперішн|дотепер|нині|настоящ|сейчас|现在|至今|現在|الآن|الحاضر|حالي|حاليا|حاليًا|gaur egun|gaur arte|orain arte|oraindik/i;
 // Estudios que aún se están cursando ("cursando", "in progress", "en cours"…)
-const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|a frequentar|în curs|w trakcie|навча|в процесс|учусь|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار|ikasten|egiten ari|martxan/i;
+const PALABRAS_EN_CURSO = /cursando|en curso|in progress|ongoing|en cours|laufend|in corso|em curso|em andamento|a frequentar|în curs|w trakcie|навча|в процесс|учусь|обуча|在读|在學|在学|就读|قيد الدراسة|جارٍ|جار|ikasten|egiten ari|martxan/i;
 // palabrasActuales: solo en campos de fecha ("Curso de actualización" no es la actualidad)
 function claveFecha(texto, ...palabrasActuales){
   const s = String(texto || "");
