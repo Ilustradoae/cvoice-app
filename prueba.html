@@ -2595,6 +2595,84 @@ function unirFragmentos(fragmentos){
   return texto;
 }
 
+// El reconocimiento de voz unas veces escribe los números con cifras y otras con letras
+// ("2019" / "dos mil diecinueve"), y eso despista mientras se habla. En castellano se pasan
+// siempre a cifras. Cada palabra tiene un valor y un "hueco": centenas (3), decenas (2),
+// número de dos cifras completo (1: once, veintitrés) y unidades (0). Una palabra solo se
+// suma al número en curso si va en un hueco menor ("seiscientos once" = 611); si no,
+// empieza otro número ("seis cinco cinco" = "6 5 5", como se dictó). "Un/una/uno" solos
+// no se tocan ("un bar", "una vez").
+const NUMEROS_ES = (() => {
+  const n = {};
+  const poner = (palabras, valor, hueco) => palabras.split(" ").forEach(p => n[p] = [valor, hueco]);
+  "cero uno un una dos tres cuatro cinco seis siete ocho nueve".split(" ")
+    .forEach((p, i) => poner(p, i === 0 ? 0 : i <= 3 ? 1 : i - 2, 0));
+  "diez once doce trece catorce quince dieciseis diecisiete dieciocho diecinueve".split(" ")
+    .forEach((p, i) => poner(p, 10 + i, 1));
+  "veintiuno veintiun veintiuna veintidos veintitres veinticuatro veinticinco veintiseis veintisiete veintiocho veintinueve".split(" ")
+    .forEach((p, i) => poner(p, 21 + Math.max(0, i - 2), 1));
+  "veinte treinta cuarenta cincuenta sesenta setenta ochenta noventa".split(" ")
+    .forEach((p, i) => poner(p, 20 + i * 10, 2));
+  poner("cien ciento", 100, 3);
+  "doscientos trescientos cuatrocientos quinientos seiscientos setecientos ochocientos novecientos".split(" ")
+    .forEach((p, i) => { poner(p, 200 + i * 100, 3); poner(p.replace(/os$/, "as"), 200 + i * 100, 3); });
+  return n;
+})();
+const sinTildes = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+function numerosEnCifras(texto){
+  if (idiomaActual !== "es" || !texto) return texto;
+  const trozos = texto.split(/([\p{L}]+)/u); // palabras en posiciones impares
+  const salida = [];
+  let num = null; // { total, actual, hueco, palabras, inicio }
+  const cerrar = () => {
+    if (!num) return;
+    const soloUn = num.palabras.length === 1 && /^un[oa]?$/.test(num.palabras[0]);
+    if (soloUn) salida.push(...num.trozos);
+    else salida.push(String(num.total + num.actual));
+    num = null;
+  };
+  for (let i = 0; i < trozos.length; i++){
+    const t = trozos[i];
+    if (i % 2 === 0){
+      // Separador: si es solo espacio y sigue el número, se guarda dentro de él
+      if (num && /^\s*$/.test(t)) { num.pendiente = (num.pendiente || []).concat(t); continue; }
+      cerrar(); salida.push(t); continue;
+    }
+    const w = sinTildes(t);
+    // "treinta y cinco": la "y" solo une decenas con unidades
+    if (w === "y" && num && num.hueco === 2){
+      const sig = NUMEROS_ES[sinTildes(trozos[i + 2] || "")];
+      if (sig && sig[1] === 0){ num.pendiente = (num.pendiente || []).concat(t); continue; }
+    }
+    if (w === "mil" && num && !num.conMil){
+      num.total = (num.total + Math.max(num.actual, 1)) * 1000; num.actual = 0; num.hueco = 4; num.conMil = true;
+      num.palabras.push(w); num.trozos.push(...(num.pendiente || []), t); num.pendiente = null;
+      continue;
+    }
+    if (w === "mil" && !num){
+      num = { total: 1000, actual: 0, hueco: 4, conMil: true, palabras: [w], trozos: [t] };
+      continue;
+    }
+    const v = NUMEROS_ES[w];
+    if (v && num && v[1] < num.hueco){
+      num.actual += v[0]; num.hueco = v[1];
+      num.palabras.push(w); num.trozos.push(...(num.pendiente || []), t); num.pendiente = null;
+      continue;
+    }
+    // La palabra no continúa el número: se cierra (devolviendo el espacio pendiente)
+    const pendiente = num ? num.pendiente : null;
+    cerrar();
+    if (pendiente) salida.push(...pendiente);
+    if (v) num = { total: 0, actual: v[0], hueco: v[1], palabras: [w], trozos: [t] };
+    else salida.push(t);
+  }
+  const pendiente = num ? num.pendiente : null;
+  cerrar();
+  if (pendiente) salida.push(...pendiente);
+  return salida.join("");
+}
+
 // Variante de reconocimiento de voz: si el móvil está en una variante del mismo idioma
 // (pt-BR, ar-MA, en-US, es-MX…), se usa esa, que entiende mejor el acento de la persona
 function idiomaReconocimiento(codigo){
@@ -2639,7 +2717,7 @@ function iniciarEscucha(boton){
       }
       const final = unirFragmentos(finales);
       if (final && !acumulado.endsWith(final + sep)) acumulado += final + sep;
-      caja.value = (acumulado + unirFragmentos(parciales)).trim();
+      caja.value = numerosEnCifras((acumulado + unirFragmentos(parciales)).trim());
     };
 
     rec.onerror = (ev) => {
@@ -3690,6 +3768,63 @@ function altoContenido(clon){
   return alto;
 }
 
+// CV de varias páginas: html2pdf calcula los saltos con una página de 1123px (su caja de 794px
+// de ancho), pero corta la imagen cada 1273px (la hoja mide 900px), así que los saltos caían
+// en mitad de una línea. Aquí se hacen los saltos a mano: cada bloque de texto que cruzaría
+// el final de una página baja entero a la siguiente, con margen arriba y abajo, y los
+// títulos de sección no se quedan solos al final de una página.
+const PDF_MARGEN_PAGINA_PX = 48;
+function paginarHojaPDF(clon){
+  // Alto exacto de una página del PDF en px de la hoja (1272,85): con 1273 sobraba casi un
+  // píxel y jsPDF añadía una página en blanco al final
+  const ALTO = PDF_ANCHO_PX * A4_ALTO_PT / A4_ANCHO_PT;
+  const caja = document.createElement("div");
+  caja.style.cssText = `position:absolute;left:-20000px;top:0;width:${PDF_ANCHO_PX}px;visibility:hidden;pointer-events:none`;
+  const alturaMinima = clon.style.minHeight;
+  clon.style.minHeight = "0";
+  caja.appendChild(clon);
+  document.body.appendChild(caja);
+  const esBloque = el => {
+    const d = getComputedStyle(el).display;
+    return d !== "inline" && d !== "contents" && d !== "none";
+  };
+  // Bloques "hoja": sin otros bloques dentro (una línea de dato, una viñeta, un título…)
+  const bloques = [...clon.querySelectorAll("*")].filter(el =>
+    el.offsetHeight > 0 && esBloque(el) && (el.tagName === "IMG" ||
+      (el.textContent.trim() && ![...el.children].some(h => esBloque(h) && h.offsetHeight > 0))));
+  for (const el of bloques){
+    const base = clon.getBoundingClientRect().top;
+    const r = el.getBoundingClientRect();
+    const arriba = r.top - base;
+    // Un título (mayúsculas, letra pequeña con espaciado) necesita sitio para algo debajo
+    const esTitulo = /^H[1-4]$/.test(el.tagName) || getComputedStyle(el).textTransform === "uppercase";
+    const abajo = r.bottom - base + (esTitulo ? 60 : 0);
+    const pagina = Math.floor(arriba / ALTO);
+    const finPagina = (pagina + 1) * ALTO - PDF_MARGEN_PAGINA_PX;
+    if (abajo > finPagina && r.height < ALTO / 2){
+      // Primera viñeta de una lista (las tareas de un trabajo): baja todo el bloque, para que
+      // el puesto y la empresa no se queden solos al final de la página
+      let objetivo = el, arribaObjetivo = arriba;
+      const bloque = el.tagName === "LI" && !el.previousElementSibling && el.parentElement && el.parentElement.parentElement;
+      if (bloque && bloque !== clon){
+        const rb = bloque.getBoundingClientRect();
+        const arribaBloque = rb.top - base;
+        if (Math.floor(arribaBloque / ALTO) === pagina && rb.height < ALTO / 2){ objetivo = bloque; arribaObjetivo = arribaBloque; }
+      }
+      const empuje = (pagina + 1) * ALTO + PDF_MARGEN_PAGINA_PX - arribaObjetivo;
+      const actual = parseFloat(getComputedStyle(objetivo).marginTop) || 0;
+      objetivo.style.marginTop = (actual + empuje) + "px";
+    }
+  }
+  // La hoja ocupa páginas enteras, para que los fondos de color lleguen al final de la última
+  const paginas = Math.max(1, Math.ceil(clon.offsetHeight / ALTO));
+  caja.remove();
+  clon.remove();
+  clon.style.minHeight = alturaMinima;
+  clon.style.height = Math.floor(paginas * ALTO) + "px";
+  clon.style.overflow = "hidden";
+}
+
 // Devuelve true si el PDF se generó y se entregó a la descarga, false si falló
 // y null si ya había otra descarga en curso
 // html2canvas parte el texto árabe en trozos y a veces lo dibuja letra a letra (letras sin
@@ -3768,6 +3903,7 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
   // sin dejar una franja blanca. Si no cabe ni con la letra mínima, va en varias páginas.
   const unaPagina = altoContenido(clon) <= PDF_ALTO_PX;
   if (unaPagina) Object.assign(clon.style, { height: PDF_ALTO_PX + "px", overflow: "hidden" });
+  else { try { paginarHojaPDF(clon); } catch(e) { console.error("Paginación:", e); } }
   // La foto (data URL) debe estar decodificada antes de pintar, o sale un hueco en blanco
   await Promise.all([...clon.querySelectorAll("img")].filter(i => i.getAttribute("src"))
     .map(i => (i.decode ? i.decode() : Promise.resolve()).catch(() => {})));
@@ -3801,7 +3937,8 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
       ...(unaPagina ? { height: PDF_ALTO_PX } : {})
     },
     jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
-    pagebreak: { mode: ["css", "legacy"], avoid: ["li", "p", "h1", "h2", "h3", "img"] }
+    // Los saltos de página ya los ha hecho paginarHojaPDF (los de html2pdf caían mal)
+    pagebreak: { mode: [] }
   };
 
   // Con la interfaz en árabe (página de derecha a izquierda) html2canvas calcula mal la
