@@ -252,19 +252,19 @@
     color: #64748b; margin-bottom: calc(.2 * var(--u));
   }
   .prem-valor{
-    display: block; font-size: calc(.85 * var(--u)); color: #fff;
+    display: block; font-size: calc(.88 * var(--u)); color: #fff;
     padding: calc(.2 * var(--u)) calc(.3 * var(--u)); border-radius: calc(.25 * var(--u));
     word-break: break-word;
   }
   .prem-valor-azul{ color: #60a5fa; }
   .prem-seccion-titulo-izq{
-    font-size: calc(.7 * var(--u)); font-weight: 700; color: #94a3b8;
+    font-size: calc(.76 * var(--u)); font-weight: 700; color: #94a3b8;
     text-transform: uppercase; letter-spacing: .1em;
     margin: calc(1.5 * var(--ue)) 0 calc(.75 * var(--u));
   }
 
   .prem-seccion-titulo-der{
-    font-size: calc(.82 * var(--u)); font-weight: 700; color: #0f172a;
+    font-size: calc(.76 * var(--u)); font-weight: 700; color: #0f172a;
     text-transform: uppercase; letter-spacing: .1em;
     border-bottom: 2px solid #f1f5f9;
     padding-bottom: calc(.5 * var(--u)); margin-bottom: calc(1.25 * var(--u));
@@ -292,7 +292,7 @@
   .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: calc(2.4 * var(--u)); font-weight: 700; color: #1a1a1a; line-height: calc(1.1 * var(--li)); }
   .p2-cargo{ font-size: calc(.8 * var(--u)); color: #666; letter-spacing: .08em; text-transform: uppercase; margin-top: calc(.4 * var(--u)); }
   .p2-contactband{ display: flex; align-items: center; border-top: 2px solid #1a1a1a; border-bottom: 2px solid #1a1a1a; padding: calc(.65 * var(--u)) calc(2.5 * var(--u)); }
-  .p2-citem{ display: flex; align-items: center; gap: calc(.4 * var(--u)); font-size: calc(.75 * var(--u)); color: #333; flex: 1; }
+  .p2-citem{ display: flex; align-items: center; gap: calc(.4 * var(--u)); font-size: calc(.8 * var(--u)); color: #333; flex: 1; }
   /* Separador vertical solo entre datos de contacto visibles */
   .p2-citem:not(.cv-vacio) ~ .p2-citem:not(.cv-vacio){ border-left: 1px solid #ccc; padding-left: calc(.75 * var(--u)); margin-left: calc(.75 * var(--u)); }
   .p2-body{ padding: 0 calc(2.5 * var(--u)) calc(2 * var(--u)); }
@@ -300,6 +300,8 @@
   .p2-row:last-child{ border-bottom: none; }
   .p2-etiqueta{ font-size: calc(.58 * var(--u)); font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #1a1a1a; padding-top: calc(.2 * var(--u)); }
   .p2-contenido{ display: flex; flex-direction: column; gap: calc(.75 * var(--u)); }
+  /* Mismo tamaño de texto que el resto de apartados (antes "otros datos" salía más grande) */
+  #p2-otros, #p4-otros{ font-size: calc(.88 * var(--u)); line-height: calc(1.6 * var(--li)); }
 
   /* ============================================================
      DISEÑO PREMIUM 3 — ÁMBAR MODERNO (acento dorado/ámbar)
@@ -316,8 +318,8 @@
   .p3-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p3-nombre{ font-size: calc(1.05 * var(--u)); font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: calc(.2 * var(--u)); }
   .p3-sub{ font-size: calc(.62 * var(--u)); color: #C4874A; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; text-align: center; margin-bottom: calc(1.25 * var(--ue)); }
-  .p3-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #C4874A; margin: calc(1 * var(--ue)) 0 calc(.4 * var(--u)); }
-  .p3-valor{ font-size: calc(.78 * var(--u)); color: #1a1a1a; margin-bottom: calc(.4 * var(--u)); display: flex; align-items: flex-start; gap: calc(.35 * var(--u)); word-break: break-word; }
+  .p3-sec{ font-size: calc(.6 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #C4874A; margin: calc(1 * var(--ue)) 0 calc(.4 * var(--u)); }
+  .p3-valor{ font-size: calc(.88 * var(--u)); color: #1a1a1a; margin-bottom: calc(.4 * var(--u)); display: flex; align-items: flex-start; gap: calc(.35 * var(--u)); word-break: break-word; }
   .p3-dot{ width: 5px; height: 5px; border-radius: 50%; background: #C4874A; flex-shrink: 0; margin-top: calc(.35 * var(--u)); }
   /* Textos largos sin espacios (emails) se parten en su línea en vez de saltar bajo el punto */
   .p3-valor > span:not(.p3-dot){ min-width: 0; overflow-wrap: anywhere; }
@@ -341,7 +343,7 @@
   .p4-nombre{ font-size: calc(1.4 * var(--u)); font-weight: 700; color: #fff; letter-spacing: .02em; }
   .p4-sub{ font-size: calc(.65 * var(--u)); color: #93B5D4; text-transform: uppercase; letter-spacing: .12em; margin-top: calc(.25 * var(--u)); }
   .p4-contacts{ display: flex; flex-wrap: wrap; gap: calc(.25 * var(--u)) calc(.75 * var(--u)); margin-top: calc(.5 * var(--u)); }
-  .p4-c{ font-size: calc(.65 * var(--u)); color: #7A9FBF; }
+  .p4-c{ font-size: calc(.8 * var(--u)); color: #93B5D4; }
   /* Punto separador solo entre datos de contacto visibles */
   .p4-c:not(.cv-vacio) ~ .p4-c:not(.cv-vacio)::before{ content: "·"; margin-right: calc(.75 * var(--u)); }
   /* Cuerpo: una sola columna */
@@ -397,10 +399,10 @@
 
   .cv-lateral-seccion{ margin-top: calc(1.25 * var(--ue)); padding-top: calc(1 * var(--ue)); border-top: 1.5px solid #1a1a1a; }
   .cv-lateral-titulo{
-    font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.58 * var(--u)); letter-spacing:.18em;
+    font-family:'Inter', sans-serif; font-weight:700; font-size:calc(.6 * var(--u)); letter-spacing:.18em;
     text-transform:uppercase; color: #1a1a1a; margin-bottom: calc(.5 * var(--u));
   }
-  .cv-lateral-dato{ font-size:calc(.92 * var(--u)); line-height: calc(1.6 * var(--li)); word-break:break-word; margin-bottom: calc(.35 * var(--u)); }
+  .cv-lateral-dato{ font-size:calc(.88 * var(--u)); line-height: calc(1.6 * var(--li)); word-break:break-word; margin-bottom: calc(.35 * var(--u)); }
   .cv-lateral-dato:last-child{ margin-bottom: 0; }
   .cv-lateral-dato .cv-etiqueta{ display:block; font-family:'Inter', sans-serif; font-weight:600; font-size:calc(.68 * var(--u));
     text-transform:uppercase; letter-spacing:.06em; color:var(--cv-acento); margin-bottom: calc(.1 * var(--u)); }
@@ -423,7 +425,7 @@
   .cv-bloque-contenido li::before{
     content:"–"; position:absolute; inset-inline-start:0; color: #888; font-weight:700;
   }
-  .cv-bloque-contenido strong{ font-family:'Inter', sans-serif; font-weight:600; font-size:calc(.9 * var(--u)); }
+  .cv-bloque-contenido strong{ font-family:'Inter', sans-serif; font-weight:600; font-size:inherit; }
 
   /* ---- Experiencia laboral: tarjetas puesto/empresa/fechas + viñetas ---- */
   .cv-experiencia-item{ margin-bottom: calc(1.4 * var(--ue)); }
@@ -436,7 +438,7 @@
   .cv-experiencia-fechas{ font-size:calc(.72 * var(--u)); color:#888; white-space:nowrap; }
   .cv-experiencia-empresa{ font-size:calc(.82 * var(--u)); font-style:italic; color:#666; margin-bottom: calc(.4 * var(--u)); }
   .cv-experiencia-funciones{ list-style:none; padding: 0; margin: 0; }
-  .cv-experiencia-funciones li{ position:relative; padding-inline-start: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.87 * var(--u)); line-height: calc(1.6 * var(--li)); }
+  .cv-experiencia-funciones li{ position:relative; padding-inline-start: calc(.9 * var(--u)); margin-bottom: calc(.3 * var(--u)); font-size:calc(.88 * var(--u)); line-height: calc(1.6 * var(--li)); }
   .cv-experiencia-funciones li::before{ content:"–"; position:absolute; inset-inline-start:0; color:#888; font-weight:700; }
 
   /* ---- Estudios: título oficial + formación complementaria agrupada ---- */
@@ -447,7 +449,7 @@
   .cv-formacion-complementaria{ margin-top: calc(1.1 * var(--ue)); padding-top: calc(1 * var(--u)); border-top:1px dashed var(--cv-linea); }
   .cv-formacion-complementaria-titulo{ font-family:'Jost', sans-serif; font-weight:600; font-size:calc(.78 * var(--u)); letter-spacing:.1em; text-transform:uppercase; color:var(--cv-acento); margin-bottom: calc(.5 * var(--u)); }
   .cv-formacion-complementaria-lista{ list-style:none; padding: 0; margin: 0; }
-  .cv-formacion-complementaria-lista li{ font-size:calc(.97 * var(--u)); line-height: calc(1.6 * var(--li)); margin-bottom: calc(.3 * var(--u)); position:relative; padding-inline-start: calc(1 * var(--u)); }
+  .cv-formacion-complementaria-lista li{ font-size:calc(.88 * var(--u)); line-height: calc(1.6 * var(--li)); margin-bottom: calc(.3 * var(--u)); position:relative; padding-inline-start: calc(1 * var(--u)); }
   .cv-formacion-complementaria-lista li::before{ content:"–"; position:absolute; inset-inline-start:0; color:var(--cv-acento); }
 
   /* ---- Perfil profesional (lo redacta la IA) y habilidades (las deduce la IA) ---- */
@@ -1072,7 +1074,7 @@
 
         <div id="prem-seccion-otros" class="hidden">
           <p class="prem-seccion-titulo-izq" data-i18n="cv_lateral_otros">Otros datos</p>
-          <div contenteditable="true" id="prem-otros" style="font-size:calc(.78 * var(--u)); color:#94a3b8; line-height: calc(1.6 * var(--li));"></div>
+          <div contenteditable="true" id="prem-otros" style="font-size:calc(.88 * var(--u)); color:#94a3b8; line-height: calc(1.6 * var(--li));"></div>
         </div>
       </div>
 
