@@ -175,6 +175,8 @@
   #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
     --u: 16px;
     --aire: 1;
+    /* Foto: mismo tamaño fijo en los 5 diseños (no depende de --u, que cambia con el texto) */
+    --foto: 168px;
     --li: 1;
     /* --ue: unidad de los espacios VERTICALES (márgenes y rellenos arriba/abajo) = --u × --aire */
     --ue: calc(var(--u) * var(--aire));
@@ -231,7 +233,7 @@
     justify-content: flex-start;
   }
   .prem-avatar{
-    width: calc(11 * var(--u)); height: calc(11 * var(--u));
+    width: var(--foto); height: var(--foto);
     border-radius: 50%;
     border: 2px solid #334155;
     background: #1e293b;
@@ -287,7 +289,7 @@
     background: #fff; overflow: hidden; border-radius: calc(1 * var(--u)); color: #1a1a1a;
   }
   .p2-head{ display: flex; align-items: center; gap: calc(2 * var(--u)); padding: calc(2.5 * var(--u)) calc(2.5 * var(--u)) calc(1.5 * var(--u)); }
-  .p2-avatar{ width: calc(12 * var(--u)); height: calc(12 * var(--u)); border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f0f0f0; border: 2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
+  .p2-avatar{ width: var(--foto); height: var(--foto); border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f0f0f0; border: 2px solid #e0e0e0; display:flex; align-items:center; justify-content:center; }
   .p2-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p2-nombre{ font-family:'Source Serif 4', Georgia, serif; font-size: calc(2.4 * var(--u)); font-weight: 700; color: #1a1a1a; line-height: calc(1.1 * var(--li)); }
   .p2-cargo{ font-size: calc(.8 * var(--u)); color: #666; letter-spacing: .08em; text-transform: uppercase; margin-top: calc(.4 * var(--u)); }
@@ -314,7 +316,7 @@
     align-items: stretch;
   }
   .p3-izq{ background: #FBF8F3; border-right: 1px solid #f0e8d8; padding: calc(2.5 * var(--u)) calc(1.75 * var(--u)); display: flex; flex-direction: column; }
-  .p3-avatar{ width: calc(10 * var(--u)); height: calc(10 * var(--u)); border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto calc(1.25 * var(--ue)); }
+  .p3-avatar{ width: var(--foto); height: var(--foto); border-radius: 50%; border: 3px solid #C4874A; background: #f5e6d4; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto calc(1.25 * var(--ue)); }
   .p3-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p3-nombre{ font-size: calc(1.05 * var(--u)); font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: calc(.2 * var(--u)); }
   .p3-sub{ font-size: calc(.62 * var(--u)); color: #C4874A; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; text-align: center; margin-bottom: calc(1.25 * var(--ue)); }
@@ -337,7 +339,7 @@
     background: #fff; overflow: hidden; border-radius: calc(1 * var(--u));
   }
   .p4-header{ background: #1B3A5C; padding: calc(1.5 * var(--u)) calc(2 * var(--u)); display: flex; align-items: center; gap: calc(1.25 * var(--u)); border-bottom: 4px solid #2D6A9F; }
-  .p4-avatar{ width: calc(7.8 * var(--u)); height: calc(7.8 * var(--u)); border-radius: calc(.6 * var(--u)); border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+  .p4-avatar{ width: var(--foto); height: var(--foto); border-radius: calc(.6 * var(--u)); border: 2px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
   .p4-avatar img{ width:100%; height:100%; object-fit:cover; }
   .p4-hinfo{ flex: 1; }
   .p4-nombre{ font-size: calc(1.4 * var(--u)); font-weight: 700; color: #fff; letter-spacing: .02em; }
@@ -384,7 +386,7 @@
   }
 
   .cv-avatar{
-    width:calc(10.5 * var(--u)); height:calc(10.5 * var(--u)); border-radius:50%; overflow:hidden;
+    width:var(--foto); height:var(--foto); border-radius:50%; overflow:hidden;
     border:2px solid #1a1a1a;
     margin: 0 auto calc(1.25 * var(--ue)); background:#f0f0f0;
     display:flex; align-items:center; justify-content:center;
@@ -424,13 +426,13 @@
   .prem-avatar{ margin-bottom: calc(.8 * var(--u)); }
   .p3-avatar{ margin-bottom: calc(.7 * var(--u)); }
   #hoja-cv:has(#cv-foto-img:not(.hidden)) #cv-seccion-perfil:not(.hidden){
-    min-height: calc(10.5 * var(--u)); display: flex; flex-direction: column; justify-content: center;
+    min-height: var(--foto); display: flex; flex-direction: column; justify-content: center;
   }
   #hoja-cv-premium:has(#prem-foto:not(.hidden)) #prem-seccion-perfil:not(.hidden){
-    min-height: calc(11 * var(--u)); display: flex; flex-direction: column; justify-content: center;
+    min-height: var(--foto); display: flex; flex-direction: column; justify-content: center;
   }
   #hoja-cv-prem3:has(#p3-foto:not(.hidden)) #p3-sec-perfil:not(.hidden){
-    min-height: calc(10 * var(--u)); display: flex; flex-direction: column; justify-content: center;
+    min-height: var(--foto); display: flex; flex-direction: column; justify-content: center;
   }
   #hoja-cv-prem3:has(#p3-foto:not(.hidden)) #p3-sec-perfil .p3-sec-der{ margin-top: 0; align-self: flex-start; }
   .cv-bloque-contenido{ font-size:calc(.88 * var(--u)); line-height: calc(1.65 * var(--li)); }
@@ -1149,13 +1151,13 @@
         <div class="p2-etiqueta" data-i18n="cv_bloque_perfil">Perfil</div>
         <div class="p2-contenido"><p contenteditable="true" id="p2-perfil" class="cv-perfil pista-edicion"></p></div>
       </div>
-      <div id="p2-sec-est" class="p2-row hidden">
-        <div class="p2-etiqueta" data-i18n="cv_bloque_estudios">Formación</div>
-        <div class="p2-contenido" contenteditable="true" id="p2-estudios"></div>
-      </div>
       <div id="p2-sec-exp" class="p2-row hidden">
         <div class="p2-etiqueta" data-i18n="cv_bloque_experiencia">Experiencia</div>
         <div class="p2-contenido" contenteditable="true" id="p2-experiencia"></div>
+      </div>
+      <div id="p2-sec-est" class="p2-row hidden">
+        <div class="p2-etiqueta" data-i18n="cv_bloque_estudios">Formación</div>
+        <div class="p2-contenido" contenteditable="true" id="p2-estudios"></div>
       </div>
       <div id="p2-sec-hab" class="p2-row hidden">
         <div class="p2-etiqueta" data-i18n="cv_bloque_habilidades">Habilidades</div>
