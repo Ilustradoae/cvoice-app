@@ -416,6 +416,23 @@
 
   .cv-bloque{ margin-bottom: calc(1.75 * var(--ue)); }
   .cv-bloque:last-child{ margin-bottom: 0; }
+
+  /* Clásico, Ejecutivo y Moderno: con foto, el nombre va pegado a ella (espacio fijo, no
+     se estira al llenar el A4) y el Perfil profesional ocupa la misma franja que la foto,
+     centrado frente a ella (si el perfil es más largo, empieza a la altura de la foto). */
+  .cv-avatar{ margin-bottom: calc(.7 * var(--u)); }
+  .prem-avatar{ margin-bottom: calc(.8 * var(--u)); }
+  .p3-avatar{ margin-bottom: calc(.7 * var(--u)); }
+  #hoja-cv:has(#cv-foto-img:not(.hidden)) #cv-seccion-perfil:not(.hidden){
+    min-height: calc(10.5 * var(--u)); display: flex; flex-direction: column; justify-content: center;
+  }
+  #hoja-cv-premium:has(#prem-foto:not(.hidden)) #prem-seccion-perfil:not(.hidden){
+    min-height: calc(11 * var(--u)); display: flex; flex-direction: column; justify-content: center;
+  }
+  #hoja-cv-prem3:has(#p3-foto:not(.hidden)) #p3-sec-perfil:not(.hidden){
+    min-height: calc(10 * var(--u)); display: flex; flex-direction: column; justify-content: center;
+  }
+  #hoja-cv-prem3:has(#p3-foto:not(.hidden)) #p3-sec-perfil .p3-sec-der{ margin-top: 0; align-self: flex-start; }
   .cv-bloque-contenido{ font-size:calc(.88 * var(--u)); line-height: calc(1.65 * var(--li)); }
   .cv-bloque-contenido p{ margin-bottom: calc(.45 * var(--u)); }
   .cv-bloque-contenido ul{ list-style:none; padding: 0; margin: 0; }
