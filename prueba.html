@@ -1127,7 +1127,7 @@
       </div>
       <div>
         <div contenteditable="true" id="p2-nombre" class="p2-nombre pista-edicion">Nombre Apellido</div>
-        <div id="p2-cargo" class="p2-cargo"></div>
+        <div contenteditable="true" id="p2-cargo" class="p2-cargo pista-edicion"></div>
       </div>
     </div>
     <!-- Banda de contacto -->
@@ -1177,7 +1177,7 @@
         <img id="p3-foto" alt="Foto" class="hidden">
       </div>
       <div contenteditable="true" id="p3-nombre" class="p3-nombre pista-edicion">Nombre Apellido</div>
-      <div id="p3-sub-cargo" class="p3-sub"></div>
+      <div contenteditable="true" id="p3-sub-cargo" class="p3-sub pista-edicion"></div>
       <div class="p3-sec" data-i18n="cv_lateral_contacto">Contacto</div>
       <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-telefono" class="pista-edicion">—</span></div>
       <div class="p3-valor"><span class="p3-dot"></span><span contenteditable="true" id="p3-email" class="pista-edicion">—</span></div>
@@ -1216,7 +1216,7 @@
       </div>
       <div class="p4-hinfo">
         <div contenteditable="true" id="p4-nombre" class="p4-nombre pista-edicion">Nombre Apellido</div>
-        <div id="p4-sub-cargo" class="p4-sub"></div>
+        <div contenteditable="true" id="p4-sub-cargo" class="p4-sub pista-edicion"></div>
         <div class="p4-contacts">
           <span contenteditable="true" id="p4-telefono" class="p4-c pista-edicion">—</span>
           <span contenteditable="true" id="p4-email" class="p4-c pista-edicion">—</span>
@@ -3466,6 +3466,7 @@ function pintarCV(resultado){
   // CV nuevo: el panel "CV guardado" (Abrir / Enviar) era del PDF anterior
   plantillaGuardada = null;
   cvCambiadoTrasGuardar = false;
+  cargoManual = null;  // CV nuevo: el subtítulo vuelve a salir del primer puesto
   versionDatosCV++;
   actualizarPanelCVGuardado();
   // La librería del PDF se descarga ahora, mientras la persona revisa su CV
@@ -4057,13 +4058,16 @@ function rellenarPlantilla(modelo){
   actualizarDerivados(p);
 }
 
-// Subtítulo/cargo bajo el nombre (prem2, prem3, prem4): no se edita a mano, es el primer
-// puesto de la experiencia
+// Subtítulo/cargo bajo el nombre (prem2, prem3, prem4): por defecto es el primer puesto de
+// la experiencia; si la persona lo corrige (o lo borra) en cualquiera de esos diseños, manda
+// su versión en los tres. Un CV nuevo vuelve al automático (pintarCV pone cargoManual = null).
+let cargoManual = null;
+const ES_CARGO = /^(p2-cargo|p3-sub-cargo|p4-sub-cargo)$/;
 function actualizarDerivados(p){
   const subEl = document.getElementById(`${p}-sub-cargo`) || document.getElementById(`${p}-cargo`);
   if (subEl){
     const primerPuesto = document.querySelector("#cv-experiencia .cv-experiencia-puesto");
-    subEl.textContent = primerPuesto ? primerPuesto.textContent.trim() : "";
+    subEl.textContent = cargoManual !== null ? cargoManual : (primerPuesto ? primerPuesto.textContent.trim() : "");
   }
 }
 
@@ -4185,7 +4189,14 @@ function abrirOEnviarCV(accion){
 // con los cambios antes de abrirlo o enviarlo.
 document.getElementById("contenedor-cvs").addEventListener("input", e => {
   const editable = e.target.closest && e.target.closest("[contenteditable='true'][id]");
-  if (e.target.closest && e.target.closest("#hoja-cv")) versionDatosCV++;
+  if (editable && ES_CARGO.test(editable.id)){
+    // Subtítulo corregido: los otros diseños lo recogen al mostrarse; este no se rellena
+    // otra vez (para no mover el cursor)
+    cargoManual = editable.textContent.trim();
+    versionDatosCV++;
+    editable.closest("[id^='hoja-cv']").dataset.version = String(versionDatosCV);
+  }
+  else if (e.target.closest && e.target.closest("#hoja-cv")) versionDatosCV++;
   else if (editable) volcarCorreccionEnBasico(editable);
   if (plantillaGuardada) cvCambiadoTrasGuardar = true;
 });
