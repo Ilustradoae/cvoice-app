@@ -716,9 +716,6 @@
 <!-- ============== CABECERA ============== -->
 <!-- Sin logo dentro de la app (un tester: así parece una web y no una utilidad). La marca
      se ve en la pantalla de arranque (splash) de la app Android. -->
-<header class="w-full max-w-2xl text-center mb-4 hidden">
-  <p id="txt-subtitulo" class="text-base sm:text-lg">Habla. Nosotros redactamos tu currículum.</p>
-</header>
 
 <!-- ============== BIENVENIDA (paso cero) ==============
      Lo pidió un tester: explicar en una pantalla qué hace la app y cómo, y preguntar al
@@ -2602,7 +2599,6 @@ function mostrarBienvenida(soloIdiomas){
   detenerCamara();
   document.getElementById("pantalla-bienvenida").classList.toggle("solo-idiomas", !!soloIdiomas);
   ["pantalla-entrevista", "pantalla-carga", "pantalla-cv"].forEach(id => document.getElementById(id).classList.add("hidden"));
-  document.querySelector("body > header").classList.add("hidden");
   document.getElementById("pantalla-bienvenida").classList.remove("hidden");
   window.scrollTo({ top: 0 });
 }
@@ -2618,7 +2614,6 @@ document.getElementById("btn-empezar").addEventListener("click", () => {
 // ---------- 4. Aplicar traducciones al DOM ----------
 function aplicarTextos(){
   const t = TEXTOS[idiomaActual];
-  document.getElementById("txt-subtitulo").textContent = t.subtitulo;
 
   // Excluimos las 5 hojas de CV: sus etiquetas van en el idioma del CV (idiomaCV),
   // gestionado por traducirEtiquetasCV(), independiente del idioma de la interfaz.
@@ -2922,8 +2917,6 @@ function irAPaso(numero){
   document.querySelector(`.paso[data-paso="${numero}"]`).classList.add("activo");
   pasoActual = numero;
   actualizarContador();
-  // "Habla. Nosotros redactamos tu currículum." es la instrucción de la primera pantalla
-  document.querySelector("body > header").classList.toggle("hidden", numero !== 1);
   ajustarBotonesConIcono();
   // Cada paso se ve desde arriba (barra de progreso y título)
   window.scrollTo({ top: 0 });
@@ -3894,7 +3887,6 @@ function pintarCV(resultado){
 
   document.getElementById("pantalla-carga").classList.add("hidden");
   document.getElementById("pantalla-cv").classList.remove("hidden");
-  document.querySelector("body > header").classList.add("hidden");
   ajustarBotonesConIcono();
   window.scrollTo({ top: 0 });
 }
