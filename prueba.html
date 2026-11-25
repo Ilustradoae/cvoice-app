@@ -3566,6 +3566,8 @@ function limpiarTextoIA(texto){
   s = s.replace(/\s*\*+\s*$/, "");           // asteriscos al final
   s = s.replace(/\*\*([^*]+)\*\*/g, "$1");  // **negrita**
   s = s.replace(/\*([^*]+)\*/g, "$1");       // *cursiva*
+  // CV en árabe: la coma latina entre palabras árabes se cambia por la árabe «،»
+  if (idiomaCVDestino === "ar") s = s.replace(/([؀-ۿ)])\s*,\s*(?=[؀-ۿ(])/g, "$1، ");
   return s.trim();
 }
 
@@ -3605,6 +3607,8 @@ function filtrarOtrosHTML(html){
   const PATRONES_NEGATIVOS = [
     /:\s*(no\b|ninguno|ninguna|n\/a|no\s+posee|no\s+tiene|no\s+aplica|no\s+disponible|sin\s+información|-)\s*$/i,
     /^(no\s+posee|no\s+tiene|no\s+aplica|n\/a|ninguno|ninguna|sin\s+datos)$/i,
+    // El mismo "No" en los demás idiomas del CV (en árabe salía «سيارة خاصة: لا»)
+    /[:：]\s*(non|nein|não|nao|nu|nie|ні|нет|ez|否|无|没有|なし|いいえ|لا|لا يوجد|لا يملك|غير متوفر)\s*[.。]?\s*$/i,
   ];
 
   const div = sanitizarHTML(html);
@@ -3616,6 +3620,12 @@ function filtrarOtrosHTML(html){
       el.textContent = limpiarTextoIA(el.textContent);
     }
   });
+
+  // CV en árabe: comas árabes también en el texto que va detrás de cada etiqueta
+  if (idiomaCVDestino === "ar"){
+    const w = document.createTreeWalker(div, NodeFilter.SHOW_TEXT); let t;
+    while ((t = w.nextNode())) t.nodeValue = t.nodeValue.replace(/([؀-ۿ)])\s*,\s*(?=[؀-ۿ(])/g, "$1، ");
+  }
 
   // Carnet: la IA a veces escribe la categoría delante ("B Sí"): se deja como "Sí (B)"
   div.querySelectorAll("li").forEach(li => {
