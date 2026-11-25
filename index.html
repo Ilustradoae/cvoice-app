@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- Seguridad: la página solo puede cargar código y datos de estos sitios. Aunque alguien lograra
      inyectar código, no podría enviar el CV (datos personales) a ningún otro servidor. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; connect-src https://cvoice-proxy.vercel.app blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; connect-src 'self' https://cvoice-proxy.vercel.app blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>CVoice — Tu currículum hablando</title>
 
@@ -67,7 +67,7 @@
   /* Las 5 hojas mantienen SIEMPRE su layout de 900px: el zoom CSS (zoomBase × escalaZoom)
      las escala sin estrechar el texto. Si no caben, el contenedor hace scroll horizontal. */
   #contenedor-cvs > #hoja-cv, #contenedor-cvs > #hoja-cv-premium, #contenedor-cvs > #hoja-cv-prem2,
-  #contenedor-cvs > #hoja-cv-prem3, #contenedor-cvs > #hoja-cv-prem4 {
+  #contenedor-cvs > #hoja-cv-prem3, #contenedor-cvs > #hoja-cv-prem4, #contenedor-cvs > #hoja-cv-prem5 {
     width: 900px;
     max-width: none;
   }
@@ -172,7 +172,7 @@
      Todas las medidas de los CV usan la unidad --u (16px por defecto) en vez de rem.
      ajustarCVaA4() la cambia en cada hoja para que el contenido llene un A4 sin pasarse:
      más grande si hay poca información, más compacto si hay mucha. */
-  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
+  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4, #hoja-cv-prem5 {
     --u: 16px;
     --aire: 1;
     /* Foto: mismo tamaño fijo en los 5 diseños (no depende de --u, que cambia con el texto) */
@@ -188,14 +188,14 @@
     min-height: 1273px;
   }
   /* Emails largos: el generador de PDF (html2canvas) solo los parte con break-all */
-  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
+  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email, #p5-email{ word-break: break-all; }
   /* Email y teléfono se leen siempre de izquierda a derecha, también en un CV en árabe
      (si no, "nombre06@gmail.com" se desordena como "gmail.com@nombre06") */
   /* El árabe se escribe con las letras unidas: sin espaciado entre letras en los CV en
      árabe (los títulos en mayúsculas espaciadas salían con las letras sueltas) */
   [id^="hoja-cv"][dir="rtl"], [id^="hoja-cv"][dir="rtl"] *{ letter-spacing: normal !important; }
-  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email,
-  #cv-telefono, #prem-telefono, #p2-telefono, #p3-telefono, #p4-telefono{
+  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email, #p5-email,
+  #cv-telefono, #prem-telefono, #p2-telefono, #p3-telefono, #p4-telefono, #p5-telefono{
     direction: ltr; unicode-bidi: isolate;
   }
   /* Al medir para el A4 se mide como en el PDF: sin los iconos ✎ de edición */
@@ -354,6 +354,55 @@
   /* Idiomas/otros datos: al final, en banda gris clara */
   .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: calc(1 * var(--u)) calc(2 * var(--u)); }
   .p4-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin-bottom: calc(.4 * var(--u)); }
+
+  /* ============================================================
+     DISEÑO 6 — ATS (para portales de empleo y filtros automáticos)
+     Una sola columna en orden de lectura, títulos estándar, contacto con etiquetas
+     escritas, fechas junto al puesto (no en columna aparte), viñetas «•», habilidades
+     como texto seguido y sin fondos ni cajas. El verde de CVoice solo en títulos y líneas.
+  ============================================================ */
+  #hoja-cv-prem5{
+    font-family: 'Inter', Arial, sans-serif;
+    display: flex; flex-direction: column;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u)); color: #1f2937;
+  }
+  .p5-head{ display: flex; align-items: center; gap: calc(1.6 * var(--u)); padding: calc(2 * var(--u)) calc(2.6 * var(--u)) calc(1.1 * var(--u)); }
+  .p5-avatar{ width: var(--foto); height: var(--foto); border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f3f4f6; border: 2px solid #e5e7eb; display: flex; align-items: center; justify-content: center; }
+  .p5-avatar img{ width: 100%; height: 100%; object-fit: cover; }
+  .p5-hinfo{ flex: 1; min-width: 0; }
+  .p5-nombre{ font-size: calc(2.1 * var(--u)); font-weight: 800; color: #111827; line-height: 1.15; letter-spacing: .01em; }
+  .p5-sub{ font-size: calc(1 * var(--u)); font-weight: 600; color: #2F5D4F; margin-top: calc(.35 * var(--u)); }
+  .p5-contacts{ display: flex; flex-wrap: wrap; row-gap: calc(.3 * var(--u)); margin-top: calc(.8 * var(--u)); font-size: calc(.86 * var(--u)); color: #374151; }
+  .p5-c b{ font-weight: 600; color: #111827; }
+  .p5-c:not(.cv-vacio) ~ .p5-c:not(.cv-vacio)::before{ content: "|"; color: #9ca3af; margin: 0 calc(.65 * var(--u)); }
+  .p5-linea{ height: 3px; background: #2F5D4F; margin: 0 calc(2.6 * var(--u)); border-radius: 2px; }
+  .p5-body{ padding: calc(.4 * var(--u)) calc(2.6 * var(--u)) calc(2.2 * var(--u)); }
+  .p5-sec{ font-size: calc(.88 * var(--u)); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #2F5D4F; border-bottom: 1px solid #d1d5db; padding-bottom: calc(.3 * var(--u)); margin: calc(1.15 * var(--ue)) 0 calc(.6 * var(--u)); }
+  #hoja-cv-prem5 .cv-perfil{ color: #1f2937; font-size: calc(.92 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-cabecera{ display: block; margin-bottom: calc(.15 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-puesto{ font-size: calc(1 * var(--u)); color: #111827; }
+  #hoja-cv-prem5 .cv-experiencia-fechas{ font-size: calc(.88 * var(--u)); color: #374151; }
+  #hoja-cv-prem5 .cv-experiencia-fechas::before{ content: "|"; color: #9ca3af; margin: 0 calc(.55 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-empresa{ font-style: normal; font-weight: 600; color: #374151; font-size: calc(.9 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-funciones li{ color: #1f2937; font-size: calc(.9 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-funciones li::before,
+  #hoja-cv-prem5 .cv-formacion-complementaria-lista li::before,
+  #hoja-cv-prem5 .cv-bloque-contenido li::before{ content: "•"; color: #2F5D4F; font-weight: 700; }
+  #hoja-cv-prem5 .cv-estudio-titulo{ color: #111827; font-size: calc(.98 * var(--u)); }
+  #hoja-cv-prem5 .cv-estudio-centro{ color: #374151; font-size: calc(.88 * var(--u)); }
+  #hoja-cv-prem5 .cv-formacion-complementaria{ border-top: none; padding-top: 0; }
+  #hoja-cv-prem5 .cv-formacion-complementaria-titulo{ font-family: inherit; color: #111827; letter-spacing: .04em; }
+  #hoja-cv-prem5 .cv-formacion-complementaria-lista li{ color: #1f2937; font-size: calc(.9 * var(--u)); }
+  /* Cada habilidad es un bloque que no se parte: van seguidas y la que no cabe baja entera a
+     la línea siguiente. (Con las habilidades "inline", el WebView de la app cortaba la línea
+     mucho antes del borde: "Trabajo en / equipo") */
+  #p5-habilidades{ display: flex; flex-wrap: wrap; gap: 0; }
+  #p5-habilidades li{ display: block; white-space: nowrap; background: none; padding: 0; border-radius: 0; font-size: calc(.92 * var(--u)); line-height: calc(1.55 * var(--li)); color: #1f2937; }
+  #hoja-cv-prem5 .cv-experiencia-item{ margin-bottom: calc(1.1 * var(--ue)); }
+  #hoja-cv-prem5 .cv-experiencia-empresa{ margin-bottom: calc(.3 * var(--u)); }
+  #p5-habilidades li + li::before{ content: "•"; color: #2F5D4F; font-weight: 700; margin: 0 calc(.55 * var(--u)); }
+  #p5-otros{ font-size: calc(.92 * var(--u)); line-height: calc(1.6 * var(--li)); color: #1f2937; }
   /* ===== MODELO BÁSICO — Minimalista (blanco/negro, líneas finas) ===== */
   #hoja-cv{
     font-family:'Inter', system-ui, sans-serif;
@@ -997,6 +1046,28 @@
         <span class="car-nombre" data-i18n="diseno_prem4">Diseño</span>
       </button>
 
+      <!-- 6. ATS (una columna, para portales de empleo) -->
+      <button id="car-prem5" onclick="seleccionarPlantilla('prem5')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff;border:1px solid #e5e5e5">
+          <div style="padding:6px 5px 3px">
+            <div style="height:4px;width:40px;background:#111827;border-radius:1px;margin-bottom:3px"></div>
+            <div style="height:1.5px;width:30px;background:#2F5D4F;border-radius:1px;margin-bottom:2px"></div>
+            <div style="height:1.5px;width:44px;background:#d1d5db;border-radius:1px"></div>
+          </div>
+          <div style="height:2px;background:#2F5D4F;margin:0 5px 4px"></div>
+          <div style="padding:0 5px">
+            <div style="height:1.5px;width:35%;background:#2F5D4F;margin-bottom:3px"></div>
+            <div style="height:1.5px;width:85%;background:#e5e7eb;border-radius:1px;margin-bottom:2px"></div>
+            <div style="height:1.5px;width:75%;background:#e5e7eb;border-radius:1px;margin-bottom:4px"></div>
+            <div style="height:1.5px;width:35%;background:#2F5D4F;margin-bottom:3px"></div>
+            <div style="height:1.5px;width:80%;background:#e5e7eb;border-radius:1px"></div>
+          </div>
+        </div>
+        <span class="car-nombre" data-i18n="diseno_prem5">ATS</span>
+      </button>
+
     </div><!-- /flex carrusel -->
   </div><!-- /carrusel-plantillas -->
 
@@ -1249,7 +1320,48 @@
       <div contenteditable="true" id="p4-otros" class="pista-edicion"></div>
     </div>
   </div>
-  </div><!-- /contenedor-cvs (contiene las 5 plantillas) -->
+
+  <!-- ===== PLANTILLA 6: ATS (una columna, pensada para portales y filtros automáticos) ===== -->
+  <div id="hoja-cv-prem5" class="cv-oculto rounded-2xl shadow-2xl">
+    <div class="p5-head">
+      <div class="p5-avatar">
+        <img id="p5-foto" alt="Foto" class="hidden">
+      </div>
+      <div class="p5-hinfo">
+        <div contenteditable="true" id="p5-nombre" class="p5-nombre pista-edicion">Nombre Apellido</div>
+        <div contenteditable="true" id="p5-sub-cargo" class="p5-sub pista-edicion"></div>
+        <div class="p5-contacts">
+          <span class="p5-c"><b data-cv-label="label_telefono">Teléfono:</b> <span contenteditable="true" id="p5-telefono" class="pista-edicion">—</span></span>
+          <span class="p5-c"><b data-cv-label="label_email">Email:</b> <span contenteditable="true" id="p5-email" class="pista-edicion">—</span></span>
+          <span class="p5-c"><b data-cv-label="label_ubicacion">Ubicación:</b> <span contenteditable="true" id="p5-ubicacion" class="pista-edicion">—</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="p5-linea"></div>
+    <div class="p5-body">
+      <div id="p5-sec-perfil" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_perfil">Perfil profesional</div>
+        <p contenteditable="true" id="p5-perfil" class="cv-perfil pista-edicion"></p>
+      </div>
+      <div id="p5-sec-exp" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
+        <div contenteditable="true" id="p5-experiencia" class="pista-edicion"></div>
+      </div>
+      <div id="p5-sec-est" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_estudios">Estudios y formación</div>
+        <div contenteditable="true" id="p5-estudios" class="pista-edicion"></div>
+      </div>
+      <div id="p5-sec-hab" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <ul contenteditable="true" id="p5-habilidades" class="cv-habilidades"></ul>
+      </div>
+      <div id="p5-sec-otros" class="hidden">
+        <div class="p5-sec" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div contenteditable="true" id="p5-otros" class="pista-edicion"></div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /contenedor-cvs (contiene las 6 plantillas) -->
 
   <!-- ===== Zona de descarga ===== -->
   <div id="zona-descarga" class="max-w-3xl mx-auto mt-4 mb-3 px-2">
@@ -2186,7 +2298,7 @@ const TEXTOS_EXTRA = {
   es: {
     cv_bloque_perfil: "Perfil profesional", cv_bloque_habilidades: "Habilidades",
     elige_estilo: "Elige el diseño de tu currículum:",
-    diseno_basico: "Clásico", diseno_prem1: "Ejecutivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    diseno_basico: "Clásico", diseno_prem1: "Ejecutivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo", diseno_prem5: "ATS",
     cta_descargar: "DESCARGAR",
     app_titulo: "Descarga tu CV desde la app", app_desc: "La descarga del currículum en PDF está disponible en la app CVoice para Android.", app_boton: "Conseguir CVoice en Google Play", cerrar: "Cerrar",
     aviso_descargando: "Descargando tu currículum…",
@@ -2196,7 +2308,7 @@ const TEXTOS_EXTRA = {
   eu: {
     cv_bloque_perfil: "Profil profesionala", cv_bloque_habilidades: "Gaitasunak",
     elige_estilo: "Aukeratu zure curriculumaren diseinua:",
-    diseno_basico: "Klasikoa", diseno_prem1: "Exekutiboa", diseno_prem2: "Editoriala", diseno_prem3: "Modernoa", diseno_prem4: "Korporatiboa",
+    diseno_basico: "Klasikoa", diseno_prem1: "Exekutiboa", diseno_prem2: "Editoriala", diseno_prem3: "Modernoa", diseno_prem4: "Korporatiboa", diseno_prem5: "ATS",
     cta_descargar: "DESKARGATU",
     app_titulo: "Deskargatu zure CVa aplikaziotik", app_desc: "Curriculuma PDFn deskargatzeko aukera Androiderako CVoice aplikazioan dago.", app_boton: "Lortu CVoice Google Playn", cerrar: "Itxi",
     aviso_descargando: "Zure curriculuma deskargatzen…",
@@ -2206,7 +2318,7 @@ const TEXTOS_EXTRA = {
   en: {
     cv_bloque_perfil: "Professional profile", cv_bloque_habilidades: "Skills",
     elige_estilo: "Choose your CV design:",
-    diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate",
+    diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate", diseno_prem5: "ATS",
     cta_descargar: "DOWNLOAD",
     app_titulo: "Download your CV in the app", app_desc: "Downloading your CV as a PDF is available in the CVoice app for Android.", app_boton: "Get CVoice on Google Play", cerrar: "Close",
     aviso_descargando: "Downloading your CV…",
@@ -2216,7 +2328,7 @@ const TEXTOS_EXTRA = {
   fr: {
     cv_bloque_perfil: "Profil professionnel", cv_bloque_habilidades: "Compétences",
     elige_estilo: "Choisissez le design de votre CV :",
-    diseno_basico: "Classique", diseno_prem1: "Exécutif", diseno_prem2: "Éditorial", diseno_prem3: "Moderne", diseno_prem4: "Entreprise",
+    diseno_basico: "Classique", diseno_prem1: "Exécutif", diseno_prem2: "Éditorial", diseno_prem3: "Moderne", diseno_prem4: "Entreprise", diseno_prem5: "ATS",
     cta_descargar: "TÉLÉCHARGER",
     app_titulo: "Téléchargez votre CV dans l'application", app_desc: "Le téléchargement du CV en PDF est disponible dans l'application CVoice pour Android.", app_boton: "Obtenir CVoice sur Google Play", cerrar: "Fermer",
     aviso_descargando: "Téléchargement de votre CV…",
@@ -2226,7 +2338,7 @@ const TEXTOS_EXTRA = {
   de: {
     cv_bloque_perfil: "Berufsprofil", cv_bloque_habilidades: "Fähigkeiten",
     elige_estilo: "Wählen Sie das Design Ihres Lebenslaufs:",
-    diseno_basico: "Klassisch", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Business",
+    diseno_basico: "Klassisch", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Business", diseno_prem5: "ATS",
     cta_descargar: "HERUNTERLADEN",
     app_titulo: "Laden Sie Ihren Lebenslauf in der App herunter", app_desc: "Der Download des Lebenslaufs als PDF ist in der CVoice-App für Android verfügbar.", app_boton: "CVoice bei Google Play holen", cerrar: "Schließen",
     aviso_descargando: "Ihr Lebenslauf wird heruntergeladen…",
@@ -2236,7 +2348,7 @@ const TEXTOS_EXTRA = {
   it: {
     cv_bloque_perfil: "Profilo professionale", cv_bloque_habilidades: "Competenze",
     elige_estilo: "Scegli il design del tuo curriculum:",
-    diseno_basico: "Classico", diseno_prem1: "Executive", diseno_prem2: "Editoriale", diseno_prem3: "Moderno", diseno_prem4: "Aziendale",
+    diseno_basico: "Classico", diseno_prem1: "Executive", diseno_prem2: "Editoriale", diseno_prem3: "Moderno", diseno_prem4: "Aziendale", diseno_prem5: "ATS",
     cta_descargar: "SCARICA",
     app_titulo: "Scarica il tuo CV dall'app", app_desc: "Il download del curriculum in PDF è disponibile nell'app CVoice per Android.", app_boton: "Scarica CVoice da Google Play", cerrar: "Chiudi",
     aviso_descargando: "Download del tuo curriculum…",
@@ -2246,7 +2358,7 @@ const TEXTOS_EXTRA = {
   pt: {
     cv_bloque_perfil: "Perfil profissional", cv_bloque_habilidades: "Competências",
     elige_estilo: "Escolha o design do seu currículo:",
-    diseno_basico: "Clássico", diseno_prem1: "Executivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    diseno_basico: "Clássico", diseno_prem1: "Executivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo", diseno_prem5: "ATS",
     cta_descargar: "DESCARREGAR",
     app_titulo: "Descarregue o seu currículo na app", app_desc: "Pode descarregar o currículo em PDF na app CVoice para Android.", app_boton: "Obter o CVoice no Google Play", cerrar: "Fechar",
     aviso_descargando: "A descarregar o seu currículo…",
@@ -2256,7 +2368,7 @@ const TEXTOS_EXTRA = {
   ar: {
     cv_bloque_perfil: "الملف المهني", cv_bloque_habilidades: "المهارات",
     elige_estilo: "اختر تصميم سيرتك الذاتية:",
-    diseno_basico: "كلاسيكي", diseno_prem1: "تنفيذي", diseno_prem2: "تحريري", diseno_prem3: "عصري", diseno_prem4: "مؤسسي",
+    diseno_basico: "كلاسيكي", diseno_prem1: "تنفيذي", diseno_prem2: "تحريري", diseno_prem3: "عصري", diseno_prem4: "مؤسسي", diseno_prem5: "ATS",
     cta_descargar: "تنزيل",
     app_titulo: "نزّل سيرتك الذاتية من التطبيق", app_desc: "تنزيل السيرة الذاتية بصيغة PDF متاح في تطبيق CVoice لنظام Android.", app_boton: "احصل على CVoice من Google Play", cerrar: "إغلاق",
     aviso_descargando: "جارٍ تنزيل سيرتك الذاتية…",
@@ -2266,7 +2378,7 @@ const TEXTOS_EXTRA = {
   zh: {
     cv_bloque_perfil: "个人简介", cv_bloque_habilidades: "技能",
     elige_estilo: "选择简历设计：",
-    diseno_basico: "经典", diseno_prem1: "商务", diseno_prem2: "杂志", diseno_prem3: "现代", diseno_prem4: "企业",
+    diseno_basico: "经典", diseno_prem1: "商务", diseno_prem2: "杂志", diseno_prem3: "现代", diseno_prem4: "企业", diseno_prem5: "ATS",
     cta_descargar: "下载",
     app_titulo: "在应用中下载你的简历", app_desc: "PDF 简历下载功能仅在 Android 版 CVoice 应用中提供。", app_boton: "在 Google Play 获取 CVoice", cerrar: "关闭",
     aviso_descargando: "正在下载你的简历…",
@@ -2276,7 +2388,7 @@ const TEXTOS_EXTRA = {
   ja: {
     cv_bloque_perfil: "プロフィール", cv_bloque_habilidades: "スキル",
     elige_estilo: "履歴書のデザインを選んでください：",
-    diseno_basico: "クラシック", diseno_prem1: "エグゼクティブ", diseno_prem2: "エディトリアル", diseno_prem3: "モダン", diseno_prem4: "コーポレート",
+    diseno_basico: "クラシック", diseno_prem1: "エグゼクティブ", diseno_prem2: "エディトリアル", diseno_prem3: "モダン", diseno_prem4: "コーポレート", diseno_prem5: "ATS",
     cta_descargar: "ダウンロード",
     app_titulo: "アプリで履歴書をダウンロード", app_desc: "PDF での履歴書ダウンロードは Android 版 CVoice アプリで利用できます。", app_boton: "Google Play で CVoice を入手", cerrar: "閉じる",
     aviso_descargando: "履歴書をダウンロードしています…",
@@ -2286,7 +2398,7 @@ const TEXTOS_EXTRA = {
   ro: {
     cv_bloque_perfil: "Profil profesional", cv_bloque_habilidades: "Competențe",
     elige_estilo: "Alege designul CV-ului tău:",
-    diseno_basico: "Clasic", diseno_prem1: "Executiv", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporativ",
+    diseno_basico: "Clasic", diseno_prem1: "Executiv", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporativ", diseno_prem5: "ATS",
     cta_descargar: "DESCARCĂ",
     app_titulo: "Descarcă CV-ul din aplicație", app_desc: "Descărcarea CV-ului în PDF este disponibilă în aplicația CVoice pentru Android.", app_boton: "Obține CVoice pe Google Play", cerrar: "Închide",
     aviso_descargando: "Se descarcă CV-ul tău…",
@@ -2296,7 +2408,7 @@ const TEXTOS_EXTRA = {
   pl: {
     cv_bloque_perfil: "Profil zawodowy", cv_bloque_habilidades: "Umiejętności",
     elige_estilo: "Wybierz wygląd swojego CV:",
-    diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny",
+    diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny", diseno_prem5: "ATS",
     cta_descargar: "POBIERZ",
     app_titulo: "Pobierz CV w aplikacji", app_desc: "Pobieranie CV w PDF jest dostępne w aplikacji CVoice na Androida.", app_boton: "Pobierz CVoice z Google Play", cerrar: "Zamknij",
     aviso_descargando: "Pobieranie Twojego CV…",
@@ -2306,7 +2418,7 @@ const TEXTOS_EXTRA = {
   uk: {
     cv_bloque_perfil: "Професійний профіль", cv_bloque_habilidades: "Навички",
     elige_estilo: "Оберіть дизайн резюме:",
-    diseno_basico: "Класичний", diseno_prem1: "Діловий", diseno_prem2: "Редакційний", diseno_prem3: "Сучасний", diseno_prem4: "Корпоративний",
+    diseno_basico: "Класичний", diseno_prem1: "Діловий", diseno_prem2: "Редакційний", diseno_prem3: "Сучасний", diseno_prem4: "Корпоративний", diseno_prem5: "ATS",
     cta_descargar: "ЗАВАНТАЖИТИ",
     app_titulo: "Завантажте резюме в застосунку", app_desc: "Завантаження резюме у PDF доступне в застосунку CVoice для Android.", app_boton: "Отримати CVoice у Google Play", cerrar: "Закрити",
     aviso_descargando: "Завантаження вашого резюме…",
@@ -2316,7 +2428,7 @@ const TEXTOS_EXTRA = {
   ru: {
     cv_bloque_perfil: "Профессиональный профиль", cv_bloque_habilidades: "Навыки",
     elige_estilo: "Выберите дизайн резюме:",
-    diseno_basico: "Классический", diseno_prem1: "Деловой", diseno_prem2: "Редакционный", diseno_prem3: "Современный", diseno_prem4: "Корпоративный",
+    diseno_basico: "Классический", diseno_prem1: "Деловой", diseno_prem2: "Редакционный", diseno_prem3: "Современный", diseno_prem4: "Корпоративный", diseno_prem5: "ATS",
     cta_descargar: "СКАЧАТЬ",
     app_titulo: "Скачайте резюме в приложении", app_desc: "Скачивание резюме в PDF доступно в приложении CVoice для Android.", app_boton: "Скачать CVoice в Google Play", cerrar: "Закрыть",
     aviso_descargando: "Скачиваем ваше резюме…",
@@ -2722,6 +2834,12 @@ function iniciarEscucha(boton){
   // Parte de lo que ya hubiera en la caja (escrito a mano o de escuchas previas).
   const sep = separadorVoz();
   let acumulado = caja.value ? caja.value.trim() + sep : "";
+  // Si la persona corrige o borra texto en la caja con el micro aún encendido, su versión
+  // pasa a ser la base: lo borrado no vuelve a aparecer con la siguiente frase reconocida.
+  // (El evento "input" solo salta con cambios hechos a mano, no con los de la voz.)
+  if (caja._alEditarAMano) caja.removeEventListener("input", caja._alEditarAMano);
+  caja._alEditarAMano = () => { acumulado = caja.value.trim() ? caja.value.trim() + sep : ""; };
+  caja.addEventListener("input", caja._alEditarAMano);
 
   function nuevaSesion(){
     const rec = new SpeechRec();
@@ -2729,14 +2847,18 @@ function iniciarEscucha(boton){
     rec.continuous = false;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
+    // Resultados finales de esta sesión ya añadidos (por posición): cada frase se añade
+    // una sola vez aunque el reconocedor la repita en eventos posteriores
+    let finalesUsados = 0;
 
     rec.onresult = (evento) => {
-      const finales = [], parciales = [];
+      const nuevos = [], parciales = [];
       for (let i = 0; i < evento.results.length; i++){
         const fragmento = evento.results[i][0].transcript.trim();
-        (evento.results[i].isFinal ? finales : parciales).push(fragmento);
+        if (!evento.results[i].isFinal) parciales.push(fragmento);
+        else if (i >= finalesUsados){ nuevos.push(fragmento); finalesUsados = i + 1; }
       }
-      const final = unirFragmentos(finales);
+      const final = unirFragmentos(nuevos);
       if (final && !acumulado.endsWith(final + sep)) acumulado += final + sep;
       caja.value = numerosEnCifras((acumulado + unirFragmentos(parciales)).trim());
     };
@@ -3024,7 +3146,7 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 2. FORMATO DE DATOS: Convierte números hablados a cifras copiando cada dígito exactamente, uno por uno, sin añadir ni quitar ninguno (seis cero cero uno uno uno dos dos dos → 600 111 222). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
 
-3. TONO PROFESIONAL: Reescribe las funciones laborales usando verbos de acción e impacto en infinitivo: "Coordinar", "Gestionar", "Supervisar", "Implementar", "Optimizar", "Liderar", "Desarrollar", "Ejecutar". Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
+3. TONO PROFESIONAL: Reescribe las funciones laborales en infinitivo, con verbos concretos del oficio que describan tareas reales ("Atender", "Preparar", "Cargar y descargar", "Limpiar", "Reponer", "Cobrar", "Montar", "Conducir"). "Coordinar", "Supervisar", "Liderar", "Optimizar" o "Gestionar equipos/rutas" solo si la persona dijo que tenía esa responsabilidad: nunca atribuyas un nivel superior al del puesto. Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
 
 4. EXPERIENCIA LABORAL: Ordena cronológico inverso (lo más reciente primero). Para cada puesto incluye: título del puesto (profesional y específico), empresa/ciudad, fechas (solo las que diga la persona; si no las dice, deja el campo vacío: nunca inventes fechas ni escribas marcadores como "20XX"), y 3-4 viñetas con funciones concretas usando verbos de acción.
 
@@ -3093,7 +3215,14 @@ const CONVENCIONES_CV = {
 // convertidos (rumano "două mii nouăsprezece" → 2009, darija "ألفين وتمنطاش" → 2008), palabras
 // de darija mal entendidas y títulos extranjeros confundidos con la ESO
 const NOTAS_HABLA = {
-  ar: `La persona puede hablar en darija (árabe marroquí) o argelino. Números: واحد 1, جوج/زوج 2, تلاتة 3, ربعة 4, خمسة 5, ستة 6, سبعة 7, تمنية 8, تسعود 9, عشرة 10, حضاش 11, طناش 12, تلطاش 13, ربعطاش 14, خمسطاش 15, سطاش 16, سبعطاش 17, تمنطاش 18, تسعطاش 19, عشرين 20; "ألفين وتمنطاش" = 2018, "ألفين وعشرين" = 2020, "ألفين وواحد وعشرين" = 2021, "ألفين وجوج وعشرين" = 2022; "من … حتى …" = de … a …. Palabras: دابا = ahora, خدمت = trabajé, البني = la construcción, الضص/الضيص = mortero/cemento, الياجور = ladrillos, الفاكية = la fruta, الفلاحة = la agricultura, قريت = estudié, ما خديتهاش = no la obtuve, البيرمي = el carnet de conducir, الطوموبيل = el coche, السبانيول = el español, كنهضر = hablo. "الباكالوريا" = Bachillerato marroquí.`,
+  ar: `La persona puede hablar en darija (árabe marroquí) o argelino. Números: واحد 1, جوج/زوج 2, تلاتة 3, ربعة 4, خمسة 5, ستة 6, سبعة 7, تمنية 8, تسعود 9, عشرة 10, حضاش 11, طناش 12, تلطاش 13, ربعطاش 14, خمسطاش 15, سطاش 16, سبعطاش 17, تمنطاش 18, تسعطاش 19, عشرين 20; "ألفين وتمنطاش" = 2018, "ألفين وعشرين" = 2020, "ألفين وواحد وعشرين" = 2021, "ألفين وجوج وعشرين" = 2022; "من … حتى …" = de … a …. Palabras: دابا = ahora, خدمت = trabajé, البني = la construcción, الضص/الضيص = mortero/cemento, الياجور = ladrillos, الفاكية = la fruta, الفلاحة = la agricultura, قريت = estudié, ما خديتهاش = no la obtuve, البيرمي = el carnet de conducir, الطوموبيل = el coche, السبانيول = el español, كنهضر = hablo. "الباكالوريا" = Bachillerato marroquí. Emails: أروباز / أروبا / أروبيس = @, بوان / نقطة = punto, تيري = guion, جيميل = gmail, هوتميل = hotmail, ياهو = yahoo, كوم = com. La "ف" o "ب" pegada delante es "en" (فبلباو = en Bilbao). Ciudades: بلباو / بيلباو = Bilbao, باراكالدو = Barakaldo, غيتشو / خيتشو = Getxo (nunca Gijón), سانتورسي = Santurtzi, بورتوغاليتي = Portugalete, سيستاو = Sestao, باساوري = Basauri, دونوستي / سان سيباستيان = Donostia-San Sebastián, فيتوريا = Vitoria-Gasteiz, لمرية / ألمرية = Almería, مورسية = Murcia, طنجة = Tánger, وهران = Orán, الدار البيضاء / كازا = Casablanca. "البلاستيك" en el campo = los invernaderos.
+Argelino: تاع = de, ضرك / دركا = ahora, مليح = bien, نيمرو = número, لاداريس = la dirección o el email.
+Palabras francesas y españolas muy usadas en darija y argelino (tradúcelas por su oficio, nunca por otro): النتواياج / الميناج = limpieza; الشمبرات / الشامبرات = habitaciones (limpiar habitaciones de un hotel = Camarera/o de pisos); الأوطيل = hotel; الريسطورا = restaurante; الكوزينة = cocina; الماعن = platos (fregar platos); سودور / سودير = soldador, السودور / السوداج = soldadura; ماصون = albañil; بلومبيي = fontanero; إليكتريسيان = electricista; شوفور = conductor; ريبونيدور = reponedor; لاكيس = la caja; كاريستا / الكلارك = carretillero; البيرمي = carnet de conducir; الطوموبيل / الطونوبيل = coche.
+Estudios: "إعدادي" = secundaria (colegio, equivale a la ESO); "التالتة إعدادي" = 3.º de secundaria; "الثانوي" / "الليسي" = bachillerato; "الباك" / "الباكالوريا" = bachillerato (examen final): "ما جبتش الباك" / "ما خديتهاش" = Bachillerato sin finalizar. "التكوين المهني" = Formación Profesional.
+Niveles: "بطلاقة" / "مزيان بزاف" = avanzado (nunca "nativo": nativo es solo la lengua materna); "مزيان" / "مليح" = intermedio o avanzado; "شوية" = básico.
+Género: femenino solo si habla en femenino ("ساكنة", "كنت خدامة") o el nombre es de mujer (فاطمة، خديجة، مريم…); si habla en masculino ("عملت ممرضا", "كنت خدام") o el nombre es de hombre (عمر، كريم، يوسف…), en masculino.
+Quien habla en árabe tiene el árabe como lengua materna: "Árabe: nativo" siempre. Los estudios hechos en Marruecos, Argelia, Siria, Túnez… llevan siempre el país entre paréntesis.`,
+  pl: `Años con palabras: "dwa tysiące szesnastego" = 2016 (nunca 2006), "dwa tysiące dwudziestego pierwszego" = 2021. Números por centenas: "sześćset dwanaście trzysta czterdzieści pięć sześćset siedemdziesiąt osiem" = 612 345 678. "małpa" = @, "kropka" = punto. "Liceum" = Bachillerato; "technikum" = Formación Profesional de nivel técnico (Polonia); "pokojówka" = Camarera de pisos.`,
   ro: `Años con palabras: unsprezece 11, doisprezece 12, treisprezece 13, paisprezece 14, cincisprezece 15, șaisprezece 16, șaptesprezece 17, optsprezece 18, nouăsprezece 19, douăzeci 20, douăzeci și unu 21…; "două mii nouăsprezece" = 2019 (nunca 2009). "Liceu" = Bachillerato; "școala profesională" = Formación Profesional.`,
   uk: `Años con palabras en ordinal: "дві тисячі десятого" = 2010, "двадцять другого" = 2022. "Середня школа" = ESO/Bachillerato según los años; "університет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino (Олена Коваленко → Olena Kovalenko).`,
   ru: `Años con palabras en ordinal: "две тысячи десятого" = 2010. "Средняя школа" = ESO/Bachillerato según los años; "университет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino.`,
@@ -3102,12 +3231,33 @@ const NOTAS_HABLA = {
   pt: `"Ensino médio/secundário" = Bachillerato; "ensino fundamental/básico" = ESO.`,
   eu: `En los emails, "a bildua", "abildua" o "bildua" = @ (ane etxeberria a bildua gmail puntu com → ane.etxeberria@gmail.com); "puntu" = punto; "gidoi" = guion. "DBH" = ESO; "Batxilergoa" = Bachillerato; "erdi mailako zikloa" = Grado Medio; "goi mailako zikloa" = Grado Superior.`,
 };
+// Lo más habitual en CVoice es hablar en otro idioma y pedir el CV en español. Las pruebas del
+// 25-11-2026 (9 idiomas → español) mostraron trabajos llevados a otro país, empresas "corregidas"
+// a otra palabra, la lengua materna como "intermedio", estudios extranjeros convertidos en
+// títulos españoles o "en curso" cuando se dejaron, y puestos mal traducidos
+const REGLAS_OTRO_IDIOMA = `
+REGLAS PARA UN DICTADO EN OTRO IDIOMA (obligatorias):
+- Cada trabajo, en el lugar donde la persona dijo que lo hizo: nunca lo pases a otra ciudad ni a otro país. Si no dijo dónde, pon solo la empresa o el tipo de empresa, sin ciudad: nunca le pongas la ciudad del trabajo anterior (ej. "trabajé de cajera en Cracovia y ahora trabajo en un hotel" → la empresa del segundo es solo "Hotel").
+- Empresas tal como se dijeron. Solo corrige una empresa conocida mal reconocida (Mercadona, Eroski, Lidl); nunca cambies un nombre por otra palabra parecida (ej. "Garbialdi" sigue siendo "Garbialdi").
+- Ciudades de España con su nombre oficial aunque se dijeran en otro idioma o alfabeto (بلباو → Bilbao, باراكالدو → Barakaldo, Більбао → Bilbao, Сан-Себастьян → San Sebastián). Ciudades extranjeras con su nombre habitual en el idioma del CV (Járkov, Cracovia, Tiflis, Tánger, Dakar).
+- Idiomas: el idioma en el que habla la persona es su lengua materna ("nativo", traducido) salvo que diga otro nivel para él. Un nivel dicho después de una lista se refiere solo al último idioma de la lista. A los demás idiomas sin nivel no les pongas ninguno. Ejemplos: dictado en ruso "говорю на грузинском русском и испанском средне" → "Georgiano, ruso nativo, español intermedio"; dictado en ucraniano "українською російською англійською на середньому рівні" → "Ucraniano nativo, ruso, inglés intermedio".
+- Estudios de otro país: equivalente en el sistema español + entre paréntesis la sigla o el nombre original si es conocido y el país. Si no lo terminó, no aprobó el examen final o no tiene el título: "sin finalizar" (nunca "en curso" si lo dejó). Nunca lo conviertas en un título español sin el país, ni subas de nivel (un año de universidad no es un Grado Medio). Ejemplos: "Bachillerato (Marruecos), sin finalizar"; "Educación secundaria (BFEM, Senegal)"; "Educación secundaria superior (WAEC, Nigeria)"; "Estudios universitarios de Informática (Nigeria), sin finalizar"; "Grado universitario en Contabilidad y Auditoría (Ucrania)"; "Bachillerato (Liceo, Rumanía), sin título de bacalaureat".
+- TODO estudio hecho fuera de España lleva el país entre paréntesis en el título, también el bachillerato y los cursos (ej. "Bachillerato (China)", "Curso técnico de Enfermería (Brasil), sin finalizar").
+- "Un poco", "a little", "un peu", "puțin", "трохи", "немного", "trochę", "一点点", "شوية" = nivel básico. "Con fluidez", "fluently", "couramment", "بطلاقة" = avanzado; "nativo" solo para la lengua materna.
+- Puestos y perfil en femenino si la persona es una mujer (nombre de mujer o formas femeninas al hablar: "pracowałam", "працювала", "cuidadora", "serveuse").
+- Las palabras genéricas de otro idioma se traducen ("boutique" → tienda, "firma" → empresa, "magazin" → tienda); solo se dejan los nombres propios. En el CV no puede quedar ninguna palabra en otro alfabeto (árabe, cirílico, chino…): tradúcela o transcríbela (ej. "شركة تاع الحديد" → "empresa siderúrgica").
+- Nunca inventes una ciudad, centro o empresa que no se entienda: si una palabra no está clara, déjala fuera.
+- Perfil: los años de experiencia de una profesión son solo los de los trabajos de esa profesión.`;
+// Nombres de puesto habituales en España para los oficios que más se dictan en otros idiomas
+const PUESTOS_EN_ESPANA = `
+- Puestos con el nombre habitual en España, nunca calcos: kitchen porter / plongeur → Friegaplatos; security guard / agent de sécurité / охранник → Vigilante de seguridad; housekeeper / femme de chambre / pokojówka / горничная / покоївка → Camarera de pisos; cleaner / agent de nettoyage / faxineira / sprzątaczka → Limpiador/a; caregiver / cuidadora de idosos / доглядальниця / aide à domicile → Cuidador/a de personas mayores; truck driver / șofer de camion / водитель → Conductor de camión; warehouse worker / magasinier → Mozo de almacén; labourer / разнорабочий / manœuvre → Peón; farm worker / ouvrier agricole / الفلاحة → Peón agrícola; trabajo en "los plásticos" (البلاستيك) de Almería = invernaderos; harvest / cules de struguri → Temporero/a de la vendimia; плиточник / carreleur → Alicatador; welder / soudeur / сварщик → Soldador; waiter / serveur / ober → Camarero/a; shop assistant / vendeur → Dependiente/a; cashier / kasjerka → Cajero/a; accountant / бухгалтер / comptable → Contable; sprzedawczyni / vendeuse → Dependienta. Español de España: nunca "Chofer", "Obrero", "Contador/a", "Brindar", "Puertera". No añadas tareas sanitarias ("Administrar medicación") si la persona no las dijo.`;
+
 function notasHabla(codigo){
   return NOTAS_HABLA[codigo] ? `\nPautas del idioma hablado: ${NOTAS_HABLA[codigo]}` : "";
 }
 
 function notasIdiomaCV(codigo){
-  return CONVENCIONES_CV[codigo] ? `\nConvenciones del CV en este idioma: ${CONVENCIONES_CV[codigo]} La categoría del carnet (B, C…) solo si se dijo.` : "";
+  return CONVENCIONES_CV[codigo] ? `\nConvenciones del CV en este idioma: ${CONVENCIONES_CV[codigo]} La categoría del carnet (B, C…) solo si se dijo, y entonces va detrás del Sí y entre paréntesis: "Sí (B)", traducido (nunca "B Sí" ni "B: Sí").` : "";
 }
 
 // Segunda pasada: un revisor nativo deja perfecto el idioma del CV ya redactado y comprueba los
@@ -3125,7 +3275,10 @@ const PROMPT_REVISION = `Eres un traductor profesional especializado en currícu
 - Nombre de la persona y email en el alfabeto del CV; el email solo con caracteres latinos válidos.
 - Si el perfil da un número de años de experiencia que no cuadra con las fechas, corrígelo o quítalo. Un trabajo que sigue en curso nunca termina en el año actual: usa la palabra de "actualidad" del idioma del CV.
 - La disponibilidad nunca es solo "Sí": escribe lo que se dijo (ej. "Total", "Mañanas"). Quita del perfil lo que no se dijo ("incorporación inmediata", "coordinar equipos"…) y cambia cada habilidad que suponga una máquina, permiso o programa que no se mencionó por otra que sí se deduzca de lo dicho. Nunca escribas "(sin especificar)" ni similares: si no se dijo la empresa, deja solo lo que se sepa (ej. "Hotel", la ciudad).
-- Estudios hechos en otro país: su equivalente con el país entre paréntesis (ej. "Bachillerato (Ucrania)").
+- Estudios hechos en otro país: su equivalente con el país entre paréntesis (ej. "Bachillerato (Ucrania)"); "sin finalizar" si no lo terminó o no tiene el título (nunca "en curso" si lo dejó), y nunca de un nivel superior al que dijo.
+- Cada trabajo, en la ciudad o el país donde se dijo que se hizo (nunca en otro); empresas tal como se dijeron, sin cambiarlas por otra palabra parecida; ciudades de España con su nombre oficial.
+- Idiomas: el idioma en el que habló la persona es su lengua materna salvo que dijera otro nivel para él; un nivel dicho tras una lista es solo del último idioma.
+- Puestos con el nombre habitual en el país del CV (en España: Friegaplatos, Vigilante de seguridad, Camarera de pisos, Conductor de camión, Peón…), nunca un calco. Funciones con tareas reales del puesto: quita "Coordinar", "Supervisar", "Optimizar"… si la persona no dijo esa responsabilidad.
 - Mismo género gramatical en todos los puestos y en el perfil (el que se deduzca del nombre o de cómo habla la persona). Quita las funciones que no se deduzcan de lo dicho.
 - No quites elementos de las listas.
 - Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves, sin texto antes ni después.`;
@@ -3200,7 +3353,7 @@ La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, tr
 El texto viene del reconocimiento de voz del móvil: no tiene puntuación y puede traer palabras mal reconocidas (sobre todo nombres de empresas, títulos y siglas: "la eso" = ESO, "grado medio de cocina", "Mercadona", "Eroski"), números dichos en letra, muletillas y frases repetidas. Corrige esos errores evidentes por el contexto, sin inventar nada; si no estás seguro de un nombre propio, déjalo tal como se dijo. La persona puede hablar con acento o en una variante dialectal (por ejemplo, árabe marroquí o argelino) y mezclar palabras de otros idiomas (castellano, francés, inglés): entiéndelo todo y redacta solo en ${nombreIdioma}.${notasIdiomaCV(idiomaCVDestino)}${notasHabla(idiomaActual)}
 - Años y números dichos con palabras: conviértelos con cuidado (decenas y unidades) y comprueba que la cronología tenga sentido.
 - Nombre de la persona, empresas y email en el alfabeto del CV; el email siempre solo con caracteres latinos (a-z, 0-9, punto, guion), transcribiendo cada parte.
-- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
+- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).${idiomaHablado !== nombreIdioma ? REGLAS_OTRO_IDIOMA : ""}${idiomaCVDestino === "es" && idiomaActual !== "es" ? PUESTOS_EN_ESPANA : ""}${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
@@ -3213,7 +3366,11 @@ PASO 3 — Estudios, tal como se dijo:
 
 PASO 4 — Otros datos (idiomas con nivel, carnet de conducir, vehículo propio, disponibilidad horaria, voluntariados), tal como se dijo:
 """${datos.otros || "(no se ha dicho nada)"}"""
-
+${datos.cambiosAMano && datos.cambiosAMano.length ? `
+CORRECCIONES HECHAS A MANO (PRIORIDAD MÁXIMA): con estos textos ya se generó un CV, y la persona lo corrigió a mano. Estos son sus cambios, y deben aparecer EXACTAMENTE así en el CV nuevo, aunque lo dictado diga otra cosa:
+${datos.cambiosAMano.join("\n")}
+Lo que la persona borró no se vuelve a poner. Todo lo demás se redacta a partir de los textos dictados, como siempre (incluida la información nueva que haya añadido al volver a grabar).
+` : ""}
 Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin bloque de código markdown, con esta forma EXACTA:
 {
   "nombre": "NOMBRE COMPLETO EN MAYÚSCULAS, o cadena vacía si no se dijo",
@@ -3257,6 +3414,174 @@ Reglas estrictas:
 }
 
 // ---------- 10. Generar el CV final (orquesta: carga → IA → pintado) ----------
+// Si la persona corrige a mano el CV (en cualquier diseño) y vuelve a grabar para añadir algo,
+// el CV nuevo no debe deshacer sus correcciones. Para saber QUÉ corrigió, se guarda el CV tal
+// como lo pintó la IA (cvSegunIA) y, al volver a grabar, se compara con cómo está ahora. Esos
+// cambios se mandan a la IA como lista y, además, se vuelven a aplicar sobre su respuesta (la
+// IA no siempre los respeta). Se guardan los de toda la sesión, porque lo dictado sigue
+// diciendo lo de antes.
+let cvCorregidoAMano = false;
+let cvSegunIA = null;
+
+// Lee el CV básico por apartados (está oculto mientras se graba: no sirve innerText)
+function leerCVBasico(){
+  const $ = id => document.getElementById(id);
+  const txt = el => el ? el.textContent.replace(/\s+/g, " ").trim() : "";
+  const visible = id => $(id) && !$(id).classList.contains("hidden");
+  const lista = (raiz, sel) => raiz ? [...raiz.querySelectorAll(sel)].map(txt).filter(Boolean) : [];
+  const fila = c => visible(`cv-fila-${c}`) ? txt($(`cv-${c}`)) : "";
+  const otros = visible("cv-seccion-otros-datos")
+    ? ([...$("cv-otros").querySelectorAll("li")].length ? lista($("cv-otros"), "li") : [txt($("cv-otros"))].filter(Boolean))
+    : [];
+  return {
+    nombre: txt($("cv-nombre")),
+    telefono: fila("telefono"), email: fila("email"), ubicacion: fila("ubicacion"),
+    perfil: visible("cv-seccion-perfil") ? txt($("cv-perfil")) : "",
+    experiencia: visible("cv-seccion-experiencia") ? [...$("cv-experiencia").querySelectorAll(".cv-experiencia-item")].map(it => ({
+      puesto: txt(it.querySelector(".cv-experiencia-puesto")),
+      empresa: txt(it.querySelector(".cv-experiencia-empresa")),
+      fechas: txt(it.querySelector(".cv-experiencia-fechas")),
+      funciones: lista(it, ".cv-experiencia-funciones li"),
+    })) : [],
+    estudios: visible("cv-seccion-estudios") ? [...$("cv-estudios").querySelectorAll(".cv-estudio-item")].map(it => ({
+      titulo: txt(it.querySelector(".cv-estudio-titulo")),
+      centro: txt(it.querySelector(".cv-estudio-centro")),
+    })) : [],
+    formacion: visible("cv-seccion-estudios") ? lista($("cv-estudios"), ".cv-formacion-complementaria-lista li") : [],
+    habilidades: visible("cv-seccion-habilidades") ? lista($("cv-habilidades"), "li") : [],
+    otros,
+  };
+}
+
+const normalizarCV = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+const igualCV = (a, b) => normalizarCV(Array.isArray(a) ? a.join("|") : a) === normalizarCV(Array.isArray(b) ? b.join("|") : b);
+
+// Correcciones de toda la sesión: pares {antes, ahora}
+let correccionesSesion = [];
+function registrarCorreccionesAMano(){
+  if (!cvCorregidoAMano || !cvSegunIA) return;
+  const ahora = leerCVBasico();
+  if (cambiosEntre(cvSegunIA, ahora).length) correccionesSesion.push({ antes: cvSegunIA, ahora });
+  // Lo corregido ya queda registrado: si la IA falla y se reintenta, no se apunta dos veces
+  cvSegunIA = ahora;
+  cvCorregidoAMano = false;
+}
+function cambiosDeLaSesion(){
+  registrarCorreccionesAMano();
+  return [...new Set(correccionesSesion.flatMap(x => cambiosEntre(x.antes, x.ahora)))];
+}
+
+// Lista de lo que la persona cambió a mano entre el CV que hizo la IA (antes) y el suyo (ahora)
+function cambiosEntre(antes, ahora){
+  const c = [];
+  const cambio = (que, a, b) => c.push(b ? `- ${que}: antes «${a || "(vacío)"}», ahora «${b}»` : `- ${que}: lo borró (antes «${a}»)`);
+  [["nombre", "Nombre"], ["telefono", "Teléfono"], ["email", "Email"], ["ubicacion", "Ubicación"], ["perfil", "Perfil"]]
+    .forEach(([k, e]) => { if (!igualCV(antes[k], ahora[k])) cambio(e, antes[k], ahora[k]); });
+  antes.experiencia.forEach((a, i) => {
+    const b = ahora.experiencia[i];
+    if (!b){ c.push(`- Experiencia: borró el puesto «${a.puesto}» (${a.empresa})`); return; }
+    const quien = `Experiencia «${a.puesto}${a.empresa ? ", " + a.empresa : ""}»`;
+    [["puesto", "puesto"], ["empresa", "empresa"], ["fechas", "fechas"]].forEach(([k, e]) => {
+      if (!igualCV(a[k], b[k])) cambio(`${quien}, ${e}`, a[k], b[k]);
+    });
+    if (!igualCV(a.funciones, b.funciones)) cambio(`${quien}, funciones`, a.funciones.join("; "), b.funciones.join("; "));
+  });
+  antes.estudios.forEach((a, i) => {
+    const b = ahora.estudios[i];
+    if (!b){ c.push(`- Estudios: borró «${a.titulo}»`); return; }
+    if (!igualCV(a.titulo, b.titulo)) cambio(`Estudio «${a.titulo}», título`, a.titulo, b.titulo);
+    if (!igualCV(a.centro, b.centro)) cambio(`Estudio «${a.titulo}», centro y año`, a.centro, b.centro);
+  });
+  [["formacion", "Formación complementaria"], ["habilidades", "Habilidades"], ["otros", "Otros datos"]].forEach(([k, e]) => {
+    if (!igualCV(antes[k], ahora[k])) cambio(e, antes[k].join("; "), ahora[k].join("; "));
+  });
+  return c;
+}
+
+// Vuelve a poner en la respuesta de la IA lo que la persona corrigió a mano
+function aplicarCambiosAMano(resultado, antes, ahora){
+  if (!antes || !ahora || !resultado) return resultado;
+  ["nombre", "telefono", "email", "ubicacion", "perfil"].forEach(k => {
+    if (!igualCV(antes[k], ahora[k])) resultado[k] = ahora[k];
+  });
+  if (!igualCV(antes.habilidades, ahora.habilidades)) resultado.habilidades = ahora.habilidades.slice();
+  const exp = Array.isArray(resultado.experiencia) ? resultado.experiencia : [];
+  antes.experiencia.forEach((a, i) => {
+    const b = ahora.experiencia[i];
+    if (!b) return;
+    // El mismo trabajo en la respuesta nueva: coincide el puesto o la empresa (de antes o de ahora)
+    const r = exp.find(x => [a.puesto, b.puesto].some(p => p && igualCV(x.puesto, p)))
+           || exp.find(x => [a.empresa, b.empresa].some(e => e && igualCV(x.empresa, e)));
+    if (!r) return;
+    ["puesto", "empresa", "fechas"].forEach(k => { if (!igualCV(a[k], b[k])) r[k] = b[k]; });
+    if (!igualCV(a.funciones, b.funciones)) r.funciones = b.funciones.slice(0, 4);
+  });
+  const est = Array.isArray(resultado.estudios) ? resultado.estudios : [];
+  antes.estudios.forEach((a, i) => {
+    const b = ahora.estudios[i];
+    if (!b) return;
+    const r = est.find(x => [a.titulo, b.titulo].some(t => t && igualCV(x.titulo, t)));
+    if (!r) return;
+    if (!igualCV(a.titulo, b.titulo)) r.titulo = b.titulo;
+    // En la hoja centro y año van juntos («IES X · 2015»): se pone la línea tal cual
+    if (!igualCV(a.centro, b.centro)){ r.centro = b.centro; r.año = ""; r.anio = ""; }
+  });
+  return resultado;
+}
+
+// Años y teléfonos dichos con palabras en árabe (estándar y darija) → cifras, antes de
+// mandarlos a la IA: aun con las pautas, la IA convertía "ألفين وتمنطاش" (2018) en 2020 o
+// 2008 y a veces se comía una cifra del teléfono
+const AR_UNIDADES = { "واحد":1, "وحدة":1, "واحدة":1, "اثنين":2, "اثنان":2, "إثنين":2, "زوج":2, "جوج":2, "تنين":2, "ثلاثة":3, "ثلاث":3, "تلاتة":3, "تلات":3,
+  "أربعة":4, "اربعة":4, "ربعة":4, "أربع":4, "اربع":4, "خمسة":5, "خمس":5, "ستة":6, "ست":6, "سبعة":7, "سبع":7, "ثمانية":8, "ثمان":8, "تمنية":8, "تمانية":8,
+  "تسعة":9, "تسع":9, "تسعود":9, "تسعاود":9 };
+const AR_DIEZ_A_19 = { "عشرة":10, "عشر":10, "حداش":11, "احداش":11, "حضاش":11, "طناش":12, "اطناش":12, "تناش":12, "تلطاش":13, "ثلطاش":13, "تلتاش":13,
+  "ربعطاش":14, "أربعطاش":14, "اربعطاش":14, "ربعتاش":14, "خمسطاش":15, "خمستاش":15, "سطاش":16, "ستاش":16, "سبعطاش":17, "سبعتاش":17,
+  "تمنطاش":18, "ثمنطاش":18, "تمنتاش":18, "تسعطاش":19, "تسعتاش":19 };
+const AR_DECENAS = { "عشرين":20, "عشرون":20, "ثلاثين":30, "تلاتين":30, "ثلاثون":30 };
+function anosArabesACifras(texto){
+  if (!texto) return texto;
+  const p = texto.split(/(\s+)/);  // conserva los espacios
+  const palabras = [];             // índices de p que son palabras
+  p.forEach((t, i) => { if (t.trim()) palabras.push(i); });
+  const sinY = w => w && w.startsWith("و") && w.length > 2 ? w.slice(1) : null;
+  for (let k = 0; k < palabras.length; k++){
+    const m = p[palabras[k]].match(/^([وفبل]?)(ألفين|الفين|ألفان|الفان)$/);
+    if (!m) continue;
+    let ano = 2000, usadas = 0;
+    const w1 = sinY(p[palabras[k + 1]]), w2 = p[palabras[k + 2]], w2y = sinY(w2);
+    if (w1 && AR_DIEZ_A_19[w1]){ ano += AR_DIEZ_A_19[w1]; usadas = 1; }
+    else if (w1 && AR_UNIDADES[w1] && w2 === "عشر"){ ano += 10 + AR_UNIDADES[w1]; usadas = 2; }
+    else if (w1 && AR_UNIDADES[w1] && w2y && AR_DECENAS[w2y]){ ano += AR_UNIDADES[w1] + AR_DECENAS[w2y]; usadas = 2; }
+    else if (w1 && AR_DECENAS[w1]){ ano += AR_DECENAS[w1]; usadas = 1; }
+    else if (w1 && AR_UNIDADES[w1]){ ano += AR_UNIDADES[w1]; usadas = 1; }
+    // "ألفين و…" con una palabra que no se conoce: se deja como se dijo (antes salía "2000")
+    else if (w1) continue;
+    p[palabras[k]] = (m[1] ? m[1] + " " : "") + ano;
+    for (let j = 1; j <= usadas; j++){ p[palabras[k + j]] = ""; p[palabras[k + j] - 1] = ""; }
+    k += usadas;
+  }
+  // Teléfonos dichos cifra a cifra ("ستة واحد واحد اثنان…"): la IA a veces se comía una
+  const cifra = s => s === "صفر" || s === "زيرو" ? 0 : AR_UNIDADES[s];
+  const CIFRA = w => cifra(w) ?? (w.startsWith("و") ? cifra(w.slice(1)) : undefined);
+  const salida = [];
+  let serie = [];
+  // 7 o más cifras seguidas = un número de teléfono: se escribe con cifras
+  const cerrar = () => { salida.push(...(serie.length >= 7 ? [serie.map(CIFRA).join("")] : serie)); serie = []; };
+  p.join("").trim().split(/\s+/).forEach(w => { if (CIFRA(w) !== undefined) serie.push(w); else { cerrar(); salida.push(w); } });
+  cerrar();
+  return salida.join(" ");
+}
+
+// Teléfonos españoles siempre agrupados igual: 612 345 678 (con +34 delante si se dijo)
+function formatearTelefono(t){
+  const s = String(t || "").trim();
+  const d = s.replace(/[^\d+]/g, "");
+  const m = d.match(/^(\+34|0034|34)?([6789]\d{8})$/);
+  if (!m) return s;
+  return (m[1] ? "+34 " : "") + m[2].slice(0, 3) + " " + m[2].slice(3, 6) + " " + m[2].slice(6);
+}
+
 function generarCV(){
   detenerEscucha();
   detenerCamara();
@@ -3266,7 +3591,10 @@ function generarCV(){
     experiencia:     document.querySelector('[data-texto-paso="2"]').value.trim(),
     estudios:        document.querySelector('[data-texto-paso="3"]').value.trim(),
     otros:           document.querySelector('[data-texto-paso="4"]').value.trim(),
+    cambiosAMano:    cambiosDeLaSesion(),
   };
+  if (idiomaActual === "ar") ["datosPersonales", "experiencia", "estudios", "otros"].forEach(k => { datos[k] = anosArabesACifras(datos[k]); });
+  const cargoAntes = cargoManual;
 
   const t = TEXTOS[idiomaActual];
   const avisoErrorIA = document.getElementById("aviso-error-ia");
@@ -3284,7 +3612,14 @@ function generarCV(){
 
   llamarIA(PROMPT_SISTEMA, construirPromptUsuario(datos), 0.4)
     .then(resultado => revisarIdioma(resultado, datos))
-    .then(pintarCV)
+    .then(resultado => {
+      correccionesSesion.forEach(x => aplicarCambiosAMano(resultado, x.antes, x.ahora));
+      pintarCV(resultado);
+      // Lo que pintó la IA (ya con las correcciones): base para detectar las siguientes
+      cvSegunIA = leerCVBasico();
+      // El subtítulo corregido a mano también se conserva al volver a grabar
+      if (cargoAntes !== null){ cargoManual = cargoAntes; versionDatosCV++; }
+    })
     .catch(error => {
       console.error(error);
       avisoErrorIA.textContent = t.error_ia_generico + mensajeErrorCorto(error);
@@ -3320,6 +3655,9 @@ function limpiarTextoIA(texto){
   s = s.replace(/\s*\*+\s*$/, "");           // asteriscos al final
   s = s.replace(/\*\*([^*]+)\*\*/g, "$1");  // **negrita**
   s = s.replace(/\*([^*]+)\*/g, "$1");       // *cursiva*
+  s = s.replace(/[­​]/g, "");     // guiones y espacios invisibles ("Gar­bialdi")
+  // CV en árabe: la coma latina entre palabras árabes se cambia por la árabe «،»
+  if (idiomaCVDestino === "ar") s = s.replace(/([؀-ۿ)])\s*,\s*(?=[؀-ۿ(])/g, "$1، ");
   return s.trim();
 }
 
@@ -3359,6 +3697,8 @@ function filtrarOtrosHTML(html){
   const PATRONES_NEGATIVOS = [
     /:\s*(no\b|ninguno|ninguna|n\/a|no\s+posee|no\s+tiene|no\s+aplica|no\s+disponible|sin\s+información|-)\s*$/i,
     /^(no\s+posee|no\s+tiene|no\s+aplica|n\/a|ninguno|ninguna|sin\s+datos)$/i,
+    // El mismo "No" en los demás idiomas del CV (en árabe salía «سيارة خاصة: لا»)
+    /[:：]\s*(non|nein|não|nao|nu|nie|ні|нет|ez|否|无|没有|なし|いいえ|لا|لا يوجد|لا يملك|غير متوفر)\s*[.。]?\s*$/i,
   ];
 
   const div = sanitizarHTML(html);
@@ -3368,6 +3708,21 @@ function filtrarOtrosHTML(html){
     // Limpiar solo nodos hoja de texto (sin hijos elementos)
     if (el.children.length === 0){
       el.textContent = limpiarTextoIA(el.textContent);
+    }
+  });
+
+  // CV en árabe: comas árabes también en el texto que va detrás de cada etiqueta
+  if (idiomaCVDestino === "ar"){
+    const w = document.createTreeWalker(div, NodeFilter.SHOW_TEXT); let t;
+    while ((t = w.nextNode())) t.nodeValue = t.nodeValue.replace(/([؀-ۿ)])\s*,\s*(?=[؀-ۿ(])/g, "$1، ");
+  }
+
+  // Carnet: la IA a veces escribe la categoría delante ("B Sí"): se deja como "Sí (B)"
+  div.querySelectorAll("li").forEach(li => {
+    const ultimo = li.lastChild;
+    if (ultimo && ultimo.nodeType === Node.TEXT_NODE){
+      ultimo.nodeValue = ultimo.nodeValue.replace(
+        /^(\s*)((?:AM|[A-D]1?E?)(?:\s*[,/+]\s*(?:AM|[A-D]1?E?))*)\s+([^\s\d(),.:;]+)\s*$/u, "$1$3 ($2)");
     }
   });
 
@@ -3477,7 +3832,7 @@ function pintarCV(resultado){
   const filaEmail = document.getElementById("cv-fila-email");
   const filaUbicacion = document.getElementById("cv-fila-ubicacion");
 
-  if (resultado.telefono){ document.getElementById("cv-telefono").textContent = resultado.telefono; filaTelefono.classList.remove("hidden"); }
+  if (resultado.telefono){ document.getElementById("cv-telefono").textContent = formatearTelefono(resultado.telefono); filaTelefono.classList.remove("hidden"); }
   else filaTelefono.classList.add("hidden");
 
   if (resultado.email){ document.getElementById("cv-email").textContent = resultado.email; filaEmail.classList.remove("hidden"); }
@@ -3593,7 +3948,7 @@ document.getElementById("btn-volver-editar").addEventListener("click", () => {
 // Solo una de las 5 hojas está visible a la vez; todas siguen en el DOM
 // (y en #contenedor-cvs) para conservar lo editado y permitir el zoom táctil.
 
-const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem2", prem3:"hoja-cv-prem3", prem4:"hoja-cv-prem4" };
+const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem2", prem3:"hoja-cv-prem3", prem4:"hoja-cv-prem4", prem5:"hoja-cv-prem5" };
 const CV_IDS  = Object.values(CV_MAP);
 
 let plantillaActiva = "basico";   // "basico" | "prem1" | "prem2" | "prem3" | "prem4"
@@ -3737,21 +4092,40 @@ function medirCapaDeTexto(clon){
   const lineas = new Map();
   const rango = document.createRange();
   const recorrido = document.createTreeWalker(clon, NodeFilter.SHOW_TEXT);
-  let nodo, n = 0;
+  // Una línea = las palabras de un mismo bloque a la misma altura. (Se agrupa por bloque y no
+  // por nodo de texto: en árabe cada palabra va en su propia cajita y saldría suelta)
+  const idBloque = new Map();
+  const bloqueDe = el => {
+    while (el && el !== clon && /^inline/.test(getComputedStyle(el).display)) el = el.parentElement;
+    if (!idBloque.has(el)) idBloque.set(el, idBloque.size);
+    return idBloque.get(el);
+  };
+  let nodo;
   while ((nodo = recorrido.nextNode())){
-    n++;
-    const texto = nodo.nodeValue;
+    // Fuera las marcas invisibles de dirección (RLM…), que no son texto
+    const texto = nodo.nodeValue.replace(/[‎‏؜]/g, " ");
     if (!texto.trim()) continue;
     const tam = parseFloat(getComputedStyle(nodo.parentElement).fontSize) || 12;
+    const bloque = bloqueDe(nodo.parentElement);
+    let ultima = null;
     for (const m of texto.matchAll(/\S+/g)){
       rango.setStart(nodo, m.index);
       rango.setEnd(nodo, m.index + m[0].length);
       const r = rango.getBoundingClientRect();
       if (!r.width) continue; // palabra oculta
-      const clave = n + ":" + Math.round(r.top);
-      const linea = lineas.get(clave);
-      if (linea) linea.texto += " " + m[0];
-      else lineas.set(clave, { texto: m[0], x: r.left - base.left, y: r.bottom - base.top - tam * 0.22, tam });
+      const clave = bloque + ":" + Math.round(r.top);
+      if (!lineas.has(clave)) lineas.set(clave, { palabras: [], y: r.bottom - base.top - tam * 0.22, tam });
+      ultima = { texto: m[0], x: r.left - base.left, d: r.right - base.left };
+      lineas.get(clave).palabras.push(ultima);
+    }
+    // Habilidades: el separador que se ve (pastilla o «•») es solo decorativo y no es texto.
+    // Para que un ATS sepa dónde acaba cada una, en la capa invisible se añade una coma
+    // tras cada habilidad salvo la última (a la vista no cambia nada).
+    // (Solo tras el último trozo de texto de la habilidad: en árabe cada palabra va aparte)
+    const li = nodo.parentElement.closest(".cv-habilidades li");
+    const ultimoTextoDe = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let t, u = null; while ((t = w.nextNode())) if (t.nodeValue.trim()) u = t; return u; };
+    if (ultima && li && li.nextElementSibling && ultimoTextoDe(li) === nodo && !/[,;.،]$/.test(ultima.texto)){
+      ultima.texto += /[؀-ۿ]/.test(ultima.texto) ? "،" : ",";
     }
   }
   caja.remove();
@@ -3759,19 +4133,86 @@ function medirCapaDeTexto(clon){
   return [...lineas.values()];
 }
 
-// Las posiciones se miden en px de la hoja (900px de ancho) y se pasan a pt del A4
+// Tipografías para la capa de texto: las estándar del PDF (helvetica) solo tienen el alfabeto
+// latino básico. Para cirílico y letras como ł, ș o ă se incrusta Noto Sans, y para el árabe
+// IBM Plex Sans Arabic, que trae también las letras latinas (emails, "B" del carnet…).
+// Ambas con licencia OFL, en la propia web, y se descargan solo si el CV las necesita.
+const FUENTES_CAPA = {
+  PlexArabe:  { archivo: "fuentes/IBMPlexSansArabic-Regular.ttf", datos: null },
+  NotoLatina: { archivo: "fuentes/NotoSans-Regular.ttf",          datos: null },
+};
+const LETRAS_CJK = /[぀-ヿ㐀-鿿豈-﫿ｦ-ﾟ]/;
+const LETRAS_ARABES_CAPA = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
+function fuenteDePalabra(p){
+  if (LETRAS_CJK.test(p)) return null;  // chino/japonés: sin tipografía (pesaría varios MB)
+  if (LETRAS_ARABES_CAPA.test(p)) return "PlexArabe";
+  if (/[^\u0000-ÿ€–—‘’“”•…·]/.test(p)) return "NotoLatina";
+  return "helvetica";
+}
+// Una línea con árabe se escribe entera, en su orden lógico y con una sola tipografía: así
+// jsPDF la ordena como lo haría un procesador de textos y quien lee el PDF la recupera bien
+// (escrita a trozos, el teléfono salía «678 345 612» y el email desordenado)
+const lineaArabe = l => l.palabras.some(p => LETRAS_ARABES_CAPA.test(p.texto));
+async function cargarFuentesCapa(lineas){
+  const hacen = new Set(lineas.flatMap(l => lineaArabe(l) ? ["PlexArabe"] : l.palabras.map(p => fuenteDePalabra(p.texto))));
+  await Promise.all(Object.keys(FUENTES_CAPA).filter(f => hacen.has(f) && !FUENTES_CAPA[f].datos).map(async f => {
+    try {
+      const buf = new Uint8Array(await (await fetch(FUENTES_CAPA[f].archivo)).arrayBuffer());
+      let s = "";
+      for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+      FUENTES_CAPA[f].datos = btoa(s);
+    } catch(e) { console.error("Tipografía de la capa de texto:", e); }
+  }));
+}
+
+// Las posiciones se miden en px de la hoja (900px de ancho) y se pasan a pt del A4.
+// Cada línea se escribe en tramos de palabras seguidas con la misma tipografía, cada uno en
+// su sitio (el árabe lo une y ordena jsPDF; los lectores de PDF lo devuelven bien ordenado).
 function escribirCapaDeTexto(pdf, lineas){
   const paginas = pdf.internal.getNumberOfPages();
   const altoPaginaPx = A4_ALTO_PT / PT_POR_PX;
-  pdf.setFont("helvetica");
+  const disponibles = new Set(["helvetica"]);
+  for (const [nombre, f] of Object.entries(FUENTES_CAPA)){
+    if (!f.datos) continue;
+    pdf.addFileToVFS(nombre + ".ttf", f.datos);
+    pdf.addFont(nombre + ".ttf", nombre, "normal");
+    disponibles.add(nombre);
+  }
   for (const l of lineas){
-    // Las fuentes estándar de PDF solo cubren el alfabeto latino: el resto se omite
-    if (/[^\u0000-ÿ€–—‘’“”•…·]/.test(l.texto)) continue;
     const pagina = Math.floor(l.y / altoPaginaPx);
     if (pagina >= paginas) continue;
     pdf.setPage(pagina + 1);
     pdf.setFontSize(l.tam * PT_POR_PX);
-    pdf.text(l.texto, l.x * PT_POR_PX, (l.y - pagina * altoPaginaPx) * PT_POR_PX, { renderingMode: "invisible" });
+    const tramos = [];
+    if (lineaArabe(l)){
+      // Emails y webs van aparte, una línea más abajo: dentro de una línea árabe los lectores
+      // de PDF los desordenaban ("com.gmail@nombre")
+      const esDireccion = p => /@|^www\.|^https?:/i.test(p.texto);
+      const resto = l.palabras.filter(p => !esDireccion(p));
+      // Los paréntesis, en árabe, salían dados la vuelta: en la capa invisible no hacen falta
+      const texto = resto.map(p => p.texto.replace(/[()[\]{}]/g, " ")).join(" ").replace(/\s+/g, " ").trim();
+      if (texto) tramos.push({ fuente: "PlexArabe", textos: [texto], derecha: Math.max(...resto.map(p => p.d)) });
+      l.palabras.filter(esDireccion).forEach(p => tramos.push({ fuente: fuenteDePalabra(p.texto), textos: [p.texto], x: p.x, abajo: true }));
+    }
+    else for (const p of l.palabras){
+      const fuente = fuenteDePalabra(p.texto);
+      const ultimo = tramos[tramos.length - 1];
+      if (ultimo && ultimo.fuente === fuente){ ultimo.textos.push(p.texto); ultimo.x = Math.min(ultimo.x, p.x); }
+      else tramos.push({ fuente, textos: [p.texto], x: p.x });
+    }
+    const anchoPagina = A4_ANCHO_PT;
+    for (const t of tramos){
+      if (!disponibles.has(t.fuente)) continue;  // sin tipografía para ese alfabeto: se omite
+      pdf.setFont(t.fuente, "normal");
+      const texto = t.textos.join(" ");
+      const ancho = pdf.getTextWidth(texto);
+      // El árabe se alinea por la derecha (donde empieza); nada se sale de la página, o los
+      // lectores de PDF se comen lo que queda fuera
+      let x = t.derecha !== undefined ? t.derecha * PT_POR_PX - ancho : t.x * PT_POR_PX;
+      x = Math.max(0, Math.min(x, anchoPagina - ancho));
+      const y = (l.y - pagina * altoPaginaPx + (t.abajo ? l.tam * 1.25 : 0)) * PT_POR_PX;
+      pdf.text(texto, x, y, { renderingMode: "invisible" });
+    }
   }
 }
 
@@ -3971,6 +4412,7 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
 
   let capa = [];
   try { capa = medirCapaDeTexto(clon); } catch(e) { console.error("Capa de texto:", e); }
+  await cargarFuentesCapa(capa).catch(e => console.error("Capa de texto:", e));
 
   const generar = html2pdf().set(opciones).from(clon).toPdf().get("pdf")
     .then(function(pdf){
@@ -4010,7 +4452,7 @@ function nombreCVActual(){
 // Copia los datos del CV básico (fuente única: lo que generó/tradujo la IA más las
 // correcciones del usuario) a la plantilla premium indicada.
 function rellenarPlantilla(modelo){
-  const prefijos = { prem1: "prem", prem2: "p2", prem3: "p3", prem4: "p4" };
+  const prefijos = { prem1: "prem", prem2: "p2", prem3: "p3", prem4: "p4", prem5: "p5" };
   const p = prefijos[modelo];
   if (!p) return;
   const $ = id => document.getElementById(id);
@@ -4027,7 +4469,7 @@ function rellenarPlantilla(modelo){
     if (!el) return;
     const valor = $(`cv-fila-${campo}`).classList.contains("hidden") ? "" : $(`cv-${campo}`).textContent.trim();
     el.textContent = valor;
-    const fila = el.closest(".p2-citem, .p3-valor, [id^='prem-fila-']") || el;
+    const fila = el.closest(".p2-citem, .p3-valor, .p5-c, [id^='prem-fila-']") || el;
     fila.classList.toggle("cv-vacio", !valor);
   });
 
@@ -4062,7 +4504,7 @@ function rellenarPlantilla(modelo){
 // la experiencia; si la persona lo corrige (o lo borra) en cualquiera de esos diseños, manda
 // su versión en los tres. Un CV nuevo vuelve al automático (pintarCV pone cargoManual = null).
 let cargoManual = null;
-const ES_CARGO = /^(p2-cargo|p3-sub-cargo|p4-sub-cargo)$/;
+const ES_CARGO = /^(p2-cargo|p3-sub-cargo|p4-sub-cargo|p5-sub-cargo)$/;
 function actualizarDerivados(p){
   const subEl = document.getElementById(`${p}-sub-cargo`) || document.getElementById(`${p}-cargo`);
   if (subEl){
@@ -4076,9 +4518,9 @@ function actualizarDerivados(p){
 // recogen al mostrarlos (rellenarSiHaceFalta); el que se está editando no se vuelve a
 // rellenar, para no mover el cursor.
 const CAMPOS_TEXTO_CV = ["nombre", "telefono", "email", "ubicacion"];
-const PREFIJO_A_MODELO = { prem: "prem1", p2: "prem2", p3: "prem3", p4: "prem4" };
+const PREFIJO_A_MODELO = { prem: "prem1", p2: "prem2", p3: "prem3", p4: "prem4", p5: "prem5" };
 function volcarCorreccionEnBasico(editable){
-  const m = /^(prem|p2|p3|p4)-(\w+)$/.exec(editable.id || "");
+  const m = /^(prem|p2|p3|p4|p5)-(\w+)$/.exec(editable.id || "");
   if (!m) return;
   const destino = document.getElementById("cv-" + m[2]);
   if (!destino) return;
@@ -4124,6 +4566,16 @@ async function guardarPDF(plantilla, accion){
   cvCambiadoTrasGuardar = false;
   avisoBreve(tx("aviso_descargando"), 3000);
   if (plantilla !== "basico") rellenarSiHaceFalta(plantilla);
+  // Nombre del archivo: "CV_Nombre_Apellidos.pdf" (lo que esperan los portales y quien lo
+  // recibe). La app (desde la 1.4.3) lo limpia de tildes y espacios; las versiones
+  // anteriores no tienen esta función y siguen usando la fecha.
+  try {
+    if (window.Android && typeof window.Android.ponerNombreCV === "function"){
+      const nombre = (document.getElementById("cv-nombre").textContent || "").trim().toLowerCase()
+        .replace(/(^|[\s'-])(\S)/g, (m, sep, letra) => sep + letra.toUpperCase());
+      window.Android.ponerNombreCV(nombre);
+    }
+  } catch(e) { console.warn("Nombre del PDF:", e); }
   const ok = await descargarHojaComoPDF(document.getElementById(CV_MAP[plantilla]), nombreCVActual());
   if (ok === null) return; // ya había un PDF en marcha
   if (!ok) noSeGuardo();
@@ -4188,6 +4640,7 @@ function abrirOEnviarCV(accion){
 // descargado se corrige, el PDF guardado se queda viejo: Abrir y Enviar lo guardan otra vez
 // con los cambios antes de abrirlo o enviarlo.
 document.getElementById("contenedor-cvs").addEventListener("input", e => {
+  cvCorregidoAMano = true;
   const editable = e.target.closest && e.target.closest("[contenteditable='true'][id]");
   if (editable && ES_CARGO.test(editable.id)){
     // Subtítulo corregido: los otros diseños lo recogen al mostrarse; este no se rellena
