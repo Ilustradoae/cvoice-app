@@ -3407,13 +3407,12 @@ Reglas estrictas:
 }
 
 // ---------- 10. Generar el CV final (orquesta: carga → IA → pintado) ----------
-// Si la persona ya corrigió a mano el CV (en cualquier diseño) y vuelve a grabar para añadir
-// algo, el CV nuevo no debe deshacer sus correcciones: a la IA se le manda también el CV
-// tal como lo dejó, con la orden de respetarlo. Se mantiene durante toda la sesión, porque
-// cada CV nuevo ya lleva dentro las correcciones anteriores.
-// Para saber QUÉ corrigió la persona, se guarda el CV tal como lo pintó la IA (cvSegunIA) y,
-// al volver a grabar, se compara con cómo está ahora. Esos cambios se mandan a la IA como
-// lista y, además, se vuelven a aplicar sobre su respuesta (la IA no siempre los respeta).
+// Si la persona corrige a mano el CV (en cualquier diseño) y vuelve a grabar para añadir algo,
+// el CV nuevo no debe deshacer sus correcciones. Para saber QUÉ corrigió, se guarda el CV tal
+// como lo pintó la IA (cvSegunIA) y, al volver a grabar, se compara con cómo está ahora. Esos
+// cambios se mandan a la IA como lista y, además, se vuelven a aplicar sobre su respuesta (la
+// IA no siempre los respeta). Se guardan los de toda la sesión, porque lo dictado sigue
+// diciendo lo de antes.
 let cvCorregidoAMano = false;
 let cvSegunIA = null;
 
@@ -3450,13 +3449,19 @@ function leerCVBasico(){
 const normalizarCV = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
 const igualCV = (a, b) => normalizarCV(Array.isArray(a) ? a.join("|") : a) === normalizarCV(Array.isArray(b) ? b.join("|") : b);
 
-// Correcciones de toda la sesión ({antes, ahora}): se guardan todas porque lo dictado sigue
-// diciendo lo de antes, y al volver a grabar una 3ª vez la IA lo pondría otra vez
+// Correcciones de toda la sesión: pares {antes, ahora}
 let correccionesSesion = [];
 function registrarCorreccionesAMano(){
   if (!cvCorregidoAMano || !cvSegunIA) return;
   const ahora = leerCVBasico();
   if (cambiosEntre(cvSegunIA, ahora).length) correccionesSesion.push({ antes: cvSegunIA, ahora });
+  // Lo corregido ya queda registrado: si la IA falla y se reintenta, no se apunta dos veces
+  cvSegunIA = ahora;
+  cvCorregidoAMano = false;
+}
+function cambiosDeLaSesion(){
+  registrarCorreccionesAMano();
+  return [...new Set(correccionesSesion.flatMap(x => cambiosEntre(x.antes, x.ahora)))];
 }
 
 // Lista de lo que la persona cambió a mano entre el CV que hizo la IA (antes) y el suyo (ahora)
@@ -3566,7 +3571,7 @@ function generarCV(){
     experiencia:     document.querySelector('[data-texto-paso="2"]').value.trim(),
     estudios:        document.querySelector('[data-texto-paso="3"]').value.trim(),
     otros:           document.querySelector('[data-texto-paso="4"]').value.trim(),
-    cambiosAMano:    (registrarCorreccionesAMano(), [...new Set(correccionesSesion.flatMap(x => cambiosEntre(x.antes, x.ahora)))]),
+    cambiosAMano:    cambiosDeLaSesion(),
   };
   if (idiomaActual === "ar") ["datosPersonales", "experiencia", "estudios", "otros"].forEach(k => { datos[k] = anosArabesACifras(datos[k]); });
   const cargoAntes = cargoManual;
@@ -3592,7 +3597,6 @@ function generarCV(){
       pintarCV(resultado);
       // Lo que pintó la IA (ya con las correcciones): base para detectar las siguientes
       cvSegunIA = leerCVBasico();
-      cvCorregidoAMano = false;
       // El subtítulo corregido a mano también se conserva al volver a grabar
       if (cargoAntes !== null){ cargoManual = cargoAntes; versionDatosCV++; }
     })
