@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- Seguridad: la página solo puede cargar código y datos de estos sitios. Aunque alguien lograra
      inyectar código, no podría enviar el CV (datos personales) a ningún otro servidor. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; connect-src https://cvoice-proxy.vercel.app blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; connect-src 'self' https://cvoice-proxy.vercel.app blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>CVoice — Tu currículum hablando</title>
 
@@ -394,8 +394,11 @@
   #hoja-cv-prem5 .cv-formacion-complementaria{ border-top: none; padding-top: 0; }
   #hoja-cv-prem5 .cv-formacion-complementaria-titulo{ font-family: inherit; color: #111827; letter-spacing: .04em; }
   #hoja-cv-prem5 .cv-formacion-complementaria-lista li{ color: #1f2937; font-size: calc(.9 * var(--u)); }
-  #p5-habilidades{ display: block; }
-  #p5-habilidades li{ display: inline; background: none; padding: 0; border-radius: 0; font-size: calc(.92 * var(--u)); line-height: calc(1.55 * var(--li)); color: #1f2937; }
+  /* Cada habilidad es un bloque que no se parte: van seguidas y la que no cabe baja entera a
+     la línea siguiente. (Con las habilidades "inline", el WebView de la app cortaba la línea
+     mucho antes del borde: "Trabajo en / equipo") */
+  #p5-habilidades{ display: flex; flex-wrap: wrap; gap: 0; }
+  #p5-habilidades li{ display: block; white-space: nowrap; background: none; padding: 0; border-radius: 0; font-size: calc(.92 * var(--u)); line-height: calc(1.55 * var(--li)); color: #1f2937; }
   #hoja-cv-prem5 .cv-experiencia-item{ margin-bottom: calc(1.1 * var(--ue)); }
   #hoja-cv-prem5 .cv-experiencia-empresa{ margin-bottom: calc(.3 * var(--u)); }
   #p5-habilidades li + li::before{ content: "•"; color: #2F5D4F; font-weight: 700; margin: 0 calc(.55 * var(--u)); }
@@ -3989,30 +3992,40 @@ function medirCapaDeTexto(clon){
   const lineas = new Map();
   const rango = document.createRange();
   const recorrido = document.createTreeWalker(clon, NodeFilter.SHOW_TEXT);
-  let nodo, n = 0;
+  // Una línea = las palabras de un mismo bloque a la misma altura. (Se agrupa por bloque y no
+  // por nodo de texto: en árabe cada palabra va en su propia cajita y saldría suelta)
+  const idBloque = new Map();
+  const bloqueDe = el => {
+    while (el && el !== clon && /^inline/.test(getComputedStyle(el).display)) el = el.parentElement;
+    if (!idBloque.has(el)) idBloque.set(el, idBloque.size);
+    return idBloque.get(el);
+  };
+  let nodo;
   while ((nodo = recorrido.nextNode())){
-    n++;
-    const texto = nodo.nodeValue;
+    // Fuera las marcas invisibles de dirección (RLM…), que no son texto
+    const texto = nodo.nodeValue.replace(/[‎‏؜]/g, " ");
     if (!texto.trim()) continue;
     const tam = parseFloat(getComputedStyle(nodo.parentElement).fontSize) || 12;
-    let ultimaClave = null;
+    const bloque = bloqueDe(nodo.parentElement);
+    let ultima = null;
     for (const m of texto.matchAll(/\S+/g)){
       rango.setStart(nodo, m.index);
       rango.setEnd(nodo, m.index + m[0].length);
       const r = rango.getBoundingClientRect();
       if (!r.width) continue; // palabra oculta
-      const clave = n + ":" + Math.round(r.top);
-      const linea = lineas.get(clave);
-      if (linea) linea.texto += " " + m[0];
-      else lineas.set(clave, { texto: m[0], x: r.left - base.left, y: r.bottom - base.top - tam * 0.22, tam });
-      ultimaClave = clave;
+      const clave = bloque + ":" + Math.round(r.top);
+      if (!lineas.has(clave)) lineas.set(clave, { palabras: [], y: r.bottom - base.top - tam * 0.22, tam });
+      ultima = { texto: m[0], x: r.left - base.left, d: r.right - base.left };
+      lineas.get(clave).palabras.push(ultima);
     }
     // Habilidades: el separador que se ve (pastilla o «•») es solo decorativo y no es texto.
     // Para que un ATS sepa dónde acaba cada una, en la capa invisible se añade una coma
     // tras cada habilidad salvo la última (a la vista no cambia nada).
+    // (Solo tras el último trozo de texto de la habilidad: en árabe cada palabra va aparte)
     const li = nodo.parentElement.closest(".cv-habilidades li");
-    if (ultimaClave && li && li.nextElementSibling && !/[,;.]$/.test(lineas.get(ultimaClave).texto)){
-      lineas.get(ultimaClave).texto += ",";
+    const ultimoTextoDe = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let t, u = null; while ((t = w.nextNode())) if (t.nodeValue.trim()) u = t; return u; };
+    if (ultima && li && li.nextElementSibling && ultimoTextoDe(li) === nodo && !/[,;.،]$/.test(ultima.texto)){
+      ultima.texto += /[؀-ۿ]/.test(ultima.texto) ? "،" : ",";
     }
   }
   caja.remove();
@@ -4020,19 +4033,86 @@ function medirCapaDeTexto(clon){
   return [...lineas.values()];
 }
 
-// Las posiciones se miden en px de la hoja (900px de ancho) y se pasan a pt del A4
+// Tipografías para la capa de texto: las estándar del PDF (helvetica) solo tienen el alfabeto
+// latino básico. Para cirílico y letras como ł, ș o ă se incrusta Noto Sans, y para el árabe
+// IBM Plex Sans Arabic, que trae también las letras latinas (emails, "B" del carnet…).
+// Ambas con licencia OFL, en la propia web, y se descargan solo si el CV las necesita.
+const FUENTES_CAPA = {
+  PlexArabe:  { archivo: "fuentes/IBMPlexSansArabic-Regular.ttf", datos: null },
+  NotoLatina: { archivo: "fuentes/NotoSans-Regular.ttf",          datos: null },
+};
+const LETRAS_CJK = /[぀-ヿ㐀-鿿豈-﫿ｦ-ﾟ]/;
+const LETRAS_ARABES_CAPA = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
+function fuenteDePalabra(p){
+  if (LETRAS_CJK.test(p)) return null;  // chino/japonés: sin tipografía (pesaría varios MB)
+  if (LETRAS_ARABES_CAPA.test(p)) return "PlexArabe";
+  if (/[^\u0000-ÿ€–—‘’“”•…·]/.test(p)) return "NotoLatina";
+  return "helvetica";
+}
+// Una línea con árabe se escribe entera, en su orden lógico y con una sola tipografía: así
+// jsPDF la ordena como lo haría un procesador de textos y quien lee el PDF la recupera bien
+// (escrita a trozos, el teléfono salía «678 345 612» y el email desordenado)
+const lineaArabe = l => l.palabras.some(p => LETRAS_ARABES_CAPA.test(p.texto));
+async function cargarFuentesCapa(lineas){
+  const hacen = new Set(lineas.flatMap(l => lineaArabe(l) ? ["PlexArabe"] : l.palabras.map(p => fuenteDePalabra(p.texto))));
+  await Promise.all(Object.keys(FUENTES_CAPA).filter(f => hacen.has(f) && !FUENTES_CAPA[f].datos).map(async f => {
+    try {
+      const buf = new Uint8Array(await (await fetch(FUENTES_CAPA[f].archivo)).arrayBuffer());
+      let s = "";
+      for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+      FUENTES_CAPA[f].datos = btoa(s);
+    } catch(e) { console.error("Tipografía de la capa de texto:", e); }
+  }));
+}
+
+// Las posiciones se miden en px de la hoja (900px de ancho) y se pasan a pt del A4.
+// Cada línea se escribe en tramos de palabras seguidas con la misma tipografía, cada uno en
+// su sitio (el árabe lo une y ordena jsPDF; los lectores de PDF lo devuelven bien ordenado).
 function escribirCapaDeTexto(pdf, lineas){
   const paginas = pdf.internal.getNumberOfPages();
   const altoPaginaPx = A4_ALTO_PT / PT_POR_PX;
-  pdf.setFont("helvetica");
+  const disponibles = new Set(["helvetica"]);
+  for (const [nombre, f] of Object.entries(FUENTES_CAPA)){
+    if (!f.datos) continue;
+    pdf.addFileToVFS(nombre + ".ttf", f.datos);
+    pdf.addFont(nombre + ".ttf", nombre, "normal");
+    disponibles.add(nombre);
+  }
   for (const l of lineas){
-    // Las fuentes estándar de PDF solo cubren el alfabeto latino: el resto se omite
-    if (/[^\u0000-ÿ€–—‘’“”•…·]/.test(l.texto)) continue;
     const pagina = Math.floor(l.y / altoPaginaPx);
     if (pagina >= paginas) continue;
     pdf.setPage(pagina + 1);
     pdf.setFontSize(l.tam * PT_POR_PX);
-    pdf.text(l.texto, l.x * PT_POR_PX, (l.y - pagina * altoPaginaPx) * PT_POR_PX, { renderingMode: "invisible" });
+    const tramos = [];
+    if (lineaArabe(l)){
+      // Emails y webs van aparte, una línea más abajo: dentro de una línea árabe los lectores
+      // de PDF los desordenaban ("com.gmail@nombre")
+      const esDireccion = p => /@|^www\.|^https?:/i.test(p.texto);
+      const resto = l.palabras.filter(p => !esDireccion(p));
+      // Los paréntesis, en árabe, salían dados la vuelta: en la capa invisible no hacen falta
+      const texto = resto.map(p => p.texto.replace(/[()[\]{}]/g, " ")).join(" ").replace(/\s+/g, " ").trim();
+      if (texto) tramos.push({ fuente: "PlexArabe", textos: [texto], derecha: Math.max(...resto.map(p => p.d)) });
+      l.palabras.filter(esDireccion).forEach(p => tramos.push({ fuente: fuenteDePalabra(p.texto), textos: [p.texto], x: p.x, abajo: true }));
+    }
+    else for (const p of l.palabras){
+      const fuente = fuenteDePalabra(p.texto);
+      const ultimo = tramos[tramos.length - 1];
+      if (ultimo && ultimo.fuente === fuente){ ultimo.textos.push(p.texto); ultimo.x = Math.min(ultimo.x, p.x); }
+      else tramos.push({ fuente, textos: [p.texto], x: p.x });
+    }
+    const anchoPagina = A4_ANCHO_PT;
+    for (const t of tramos){
+      if (!disponibles.has(t.fuente)) continue;  // sin tipografía para ese alfabeto: se omite
+      pdf.setFont(t.fuente, "normal");
+      const texto = t.textos.join(" ");
+      const ancho = pdf.getTextWidth(texto);
+      // El árabe se alinea por la derecha (donde empieza); nada se sale de la página, o los
+      // lectores de PDF se comen lo que queda fuera
+      let x = t.derecha !== undefined ? t.derecha * PT_POR_PX - ancho : t.x * PT_POR_PX;
+      x = Math.max(0, Math.min(x, anchoPagina - ancho));
+      const y = (l.y - pagina * altoPaginaPx + (t.abajo ? l.tam * 1.25 : 0)) * PT_POR_PX;
+      pdf.text(texto, x, y, { renderingMode: "invisible" });
+    }
   }
 }
 
@@ -4232,6 +4312,7 @@ async function descargarHojaComoPDF(elemento, nombreArchivo){
 
   let capa = [];
   try { capa = medirCapaDeTexto(clon); } catch(e) { console.error("Capa de texto:", e); }
+  await cargarFuentesCapa(capa).catch(e => console.error("Capa de texto:", e));
 
   const generar = html2pdf().set(opciones).from(clon).toPdf().get("pdf")
     .then(function(pdf){
