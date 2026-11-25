@@ -3852,6 +3852,7 @@ function medirCapaDeTexto(clon){
     const texto = nodo.nodeValue;
     if (!texto.trim()) continue;
     const tam = parseFloat(getComputedStyle(nodo.parentElement).fontSize) || 12;
+    let ultimaClave = null;
     for (const m of texto.matchAll(/\S+/g)){
       rango.setStart(nodo, m.index);
       rango.setEnd(nodo, m.index + m[0].length);
@@ -3861,6 +3862,14 @@ function medirCapaDeTexto(clon){
       const linea = lineas.get(clave);
       if (linea) linea.texto += " " + m[0];
       else lineas.set(clave, { texto: m[0], x: r.left - base.left, y: r.bottom - base.top - tam * 0.22, tam });
+      ultimaClave = clave;
+    }
+    // Habilidades: el separador que se ve (pastilla o «•») es solo decorativo y no es texto.
+    // Para que un ATS sepa dónde acaba cada una, en la capa invisible se añade una coma
+    // tras cada habilidad salvo la última (a la vista no cambia nada).
+    const li = nodo.parentElement.closest(".cv-habilidades li");
+    if (ultimaClave && li && li.nextElementSibling && !/[,;.]$/.test(lineas.get(ultimaClave).texto)){
+      lineas.get(ultimaClave).texto += ",";
     }
   }
   caja.remove();
