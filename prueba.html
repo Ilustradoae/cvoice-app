@@ -67,7 +67,7 @@
   /* Las 5 hojas mantienen SIEMPRE su layout de 900px: el zoom CSS (zoomBase × escalaZoom)
      las escala sin estrechar el texto. Si no caben, el contenedor hace scroll horizontal. */
   #contenedor-cvs > #hoja-cv, #contenedor-cvs > #hoja-cv-premium, #contenedor-cvs > #hoja-cv-prem2,
-  #contenedor-cvs > #hoja-cv-prem3, #contenedor-cvs > #hoja-cv-prem4 {
+  #contenedor-cvs > #hoja-cv-prem3, #contenedor-cvs > #hoja-cv-prem4, #contenedor-cvs > #hoja-cv-prem5 {
     width: 900px;
     max-width: none;
   }
@@ -172,7 +172,7 @@
      Todas las medidas de los CV usan la unidad --u (16px por defecto) en vez de rem.
      ajustarCVaA4() la cambia en cada hoja para que el contenido llene un A4 sin pasarse:
      más grande si hay poca información, más compacto si hay mucha. */
-  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4 {
+  #hoja-cv, #hoja-cv-premium, #hoja-cv-prem2, #hoja-cv-prem3, #hoja-cv-prem4, #hoja-cv-prem5 {
     --u: 16px;
     --aire: 1;
     /* Foto: mismo tamaño fijo en los 5 diseños (no depende de --u, que cambia con el texto) */
@@ -188,14 +188,14 @@
     min-height: 1273px;
   }
   /* Emails largos: el generador de PDF (html2canvas) solo los parte con break-all */
-  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email{ word-break: break-all; }
+  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email, #p5-email{ word-break: break-all; }
   /* Email y teléfono se leen siempre de izquierda a derecha, también en un CV en árabe
      (si no, "nombre06@gmail.com" se desordena como "gmail.com@nombre06") */
   /* El árabe se escribe con las letras unidas: sin espaciado entre letras en los CV en
      árabe (los títulos en mayúsculas espaciadas salían con las letras sueltas) */
   [id^="hoja-cv"][dir="rtl"], [id^="hoja-cv"][dir="rtl"] *{ letter-spacing: normal !important; }
-  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email,
-  #cv-telefono, #prem-telefono, #p2-telefono, #p3-telefono, #p4-telefono{
+  #cv-email, #prem-email, #p2-email, #p3-email, #p4-email, #p5-email,
+  #cv-telefono, #prem-telefono, #p2-telefono, #p3-telefono, #p4-telefono, #p5-telefono{
     direction: ltr; unicode-bidi: isolate;
   }
   /* Al medir para el A4 se mide como en el PDF: sin los iconos ✎ de edición */
@@ -354,6 +354,52 @@
   /* Idiomas/otros datos: al final, en banda gris clara */
   .p4-footer{ background: #F5F9FC; border-top: 1px solid #E0EBF5; padding: calc(1 * var(--u)) calc(2 * var(--u)); }
   .p4-sec{ font-size: calc(.58 * var(--u)); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1B3A5C; margin-bottom: calc(.4 * var(--u)); }
+
+  /* ============================================================
+     DISEÑO 6 — ATS (para portales de empleo y filtros automáticos)
+     Una sola columna en orden de lectura, títulos estándar, contacto con etiquetas
+     escritas, fechas junto al puesto (no en columna aparte), viñetas «•», habilidades
+     como texto seguido y sin fondos ni cajas. El verde de CVoice solo en títulos y líneas.
+  ============================================================ */
+  #hoja-cv-prem5{
+    font-family: 'Inter', Arial, sans-serif;
+    display: flex; flex-direction: column;
+    width: 900px; max-width: 100%; margin: 0 auto;
+    background: #fff; overflow: hidden; border-radius: calc(1 * var(--u)); color: #1f2937;
+  }
+  .p5-head{ display: flex; align-items: center; gap: calc(1.6 * var(--u)); padding: calc(2 * var(--u)) calc(2.6 * var(--u)) calc(1.1 * var(--u)); }
+  .p5-avatar{ width: var(--foto); height: var(--foto); border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #f3f4f6; border: 2px solid #e5e7eb; display: flex; align-items: center; justify-content: center; }
+  .p5-avatar img{ width: 100%; height: 100%; object-fit: cover; }
+  .p5-hinfo{ flex: 1; min-width: 0; }
+  .p5-nombre{ font-size: calc(2.1 * var(--u)); font-weight: 800; color: #111827; line-height: 1.15; letter-spacing: .01em; }
+  .p5-sub{ font-size: calc(1 * var(--u)); font-weight: 600; color: #2F5D4F; margin-top: calc(.35 * var(--u)); }
+  .p5-contacts{ display: flex; flex-wrap: wrap; row-gap: calc(.3 * var(--u)); margin-top: calc(.8 * var(--u)); font-size: calc(.86 * var(--u)); color: #374151; }
+  .p5-c b{ font-weight: 600; color: #111827; }
+  .p5-c:not(.cv-vacio) ~ .p5-c:not(.cv-vacio)::before{ content: "|"; color: #9ca3af; margin: 0 calc(.65 * var(--u)); }
+  .p5-linea{ height: 3px; background: #2F5D4F; margin: 0 calc(2.6 * var(--u)); border-radius: 2px; }
+  .p5-body{ padding: calc(.4 * var(--u)) calc(2.6 * var(--u)) calc(2.2 * var(--u)); }
+  .p5-sec{ font-size: calc(.88 * var(--u)); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #2F5D4F; border-bottom: 1px solid #d1d5db; padding-bottom: calc(.3 * var(--u)); margin: calc(1.15 * var(--ue)) 0 calc(.6 * var(--u)); }
+  #hoja-cv-prem5 .cv-perfil{ color: #1f2937; font-size: calc(.92 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-cabecera{ display: block; margin-bottom: calc(.15 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-puesto{ font-size: calc(1 * var(--u)); color: #111827; }
+  #hoja-cv-prem5 .cv-experiencia-fechas{ font-size: calc(.88 * var(--u)); color: #374151; }
+  #hoja-cv-prem5 .cv-experiencia-fechas::before{ content: "|"; color: #9ca3af; margin: 0 calc(.55 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-empresa{ font-style: normal; font-weight: 600; color: #374151; font-size: calc(.9 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-funciones li{ color: #1f2937; font-size: calc(.9 * var(--u)); }
+  #hoja-cv-prem5 .cv-experiencia-funciones li::before,
+  #hoja-cv-prem5 .cv-formacion-complementaria-lista li::before,
+  #hoja-cv-prem5 .cv-bloque-contenido li::before{ content: "•"; color: #2F5D4F; font-weight: 700; }
+  #hoja-cv-prem5 .cv-estudio-titulo{ color: #111827; font-size: calc(.98 * var(--u)); }
+  #hoja-cv-prem5 .cv-estudio-centro{ color: #374151; font-size: calc(.88 * var(--u)); }
+  #hoja-cv-prem5 .cv-formacion-complementaria{ border-top: none; padding-top: 0; }
+  #hoja-cv-prem5 .cv-formacion-complementaria-titulo{ font-family: inherit; color: #111827; letter-spacing: .04em; }
+  #hoja-cv-prem5 .cv-formacion-complementaria-lista li{ color: #1f2937; font-size: calc(.9 * var(--u)); }
+  #p5-habilidades{ display: block; }
+  #p5-habilidades li{ display: inline; background: none; padding: 0; border-radius: 0; font-size: calc(.92 * var(--u)); line-height: calc(1.55 * var(--li)); color: #1f2937; }
+  #hoja-cv-prem5 .cv-experiencia-item{ margin-bottom: calc(1.1 * var(--ue)); }
+  #hoja-cv-prem5 .cv-experiencia-empresa{ margin-bottom: calc(.3 * var(--u)); }
+  #p5-habilidades li + li::before{ content: "•"; color: #2F5D4F; font-weight: 700; margin: 0 calc(.55 * var(--u)); }
+  #p5-otros{ font-size: calc(.92 * var(--u)); line-height: calc(1.6 * var(--li)); color: #1f2937; }
   /* ===== MODELO BÁSICO — Minimalista (blanco/negro, líneas finas) ===== */
   #hoja-cv{
     font-family:'Inter', system-ui, sans-serif;
@@ -997,6 +1043,28 @@
         <span class="car-nombre" data-i18n="diseno_prem4">Diseño</span>
       </button>
 
+      <!-- 6. ATS (una columna, para portales de empleo) -->
+      <button id="car-prem5" onclick="seleccionarPlantilla('prem5')"
+        class="flex-shrink-0 rounded-xl border-2 p-2 text-center transition"
+        style="width:72px;border-color:var(--linea);background:white">
+        <div class="w-full rounded-lg mb-1 overflow-hidden" style="height:80px;background:#fff;border:1px solid #e5e5e5">
+          <div style="padding:6px 5px 3px">
+            <div style="height:4px;width:40px;background:#111827;border-radius:1px;margin-bottom:3px"></div>
+            <div style="height:1.5px;width:30px;background:#2F5D4F;border-radius:1px;margin-bottom:2px"></div>
+            <div style="height:1.5px;width:44px;background:#d1d5db;border-radius:1px"></div>
+          </div>
+          <div style="height:2px;background:#2F5D4F;margin:0 5px 4px"></div>
+          <div style="padding:0 5px">
+            <div style="height:1.5px;width:35%;background:#2F5D4F;margin-bottom:3px"></div>
+            <div style="height:1.5px;width:85%;background:#e5e7eb;border-radius:1px;margin-bottom:2px"></div>
+            <div style="height:1.5px;width:75%;background:#e5e7eb;border-radius:1px;margin-bottom:4px"></div>
+            <div style="height:1.5px;width:35%;background:#2F5D4F;margin-bottom:3px"></div>
+            <div style="height:1.5px;width:80%;background:#e5e7eb;border-radius:1px"></div>
+          </div>
+        </div>
+        <span class="car-nombre" data-i18n="diseno_prem5">ATS</span>
+      </button>
+
     </div><!-- /flex carrusel -->
   </div><!-- /carrusel-plantillas -->
 
@@ -1249,7 +1317,48 @@
       <div contenteditable="true" id="p4-otros" class="pista-edicion"></div>
     </div>
   </div>
-  </div><!-- /contenedor-cvs (contiene las 5 plantillas) -->
+
+  <!-- ===== PLANTILLA 6: ATS (una columna, pensada para portales y filtros automáticos) ===== -->
+  <div id="hoja-cv-prem5" class="cv-oculto rounded-2xl shadow-2xl">
+    <div class="p5-head">
+      <div class="p5-avatar">
+        <img id="p5-foto" alt="Foto" class="hidden">
+      </div>
+      <div class="p5-hinfo">
+        <div contenteditable="true" id="p5-nombre" class="p5-nombre pista-edicion">Nombre Apellido</div>
+        <div contenteditable="true" id="p5-sub-cargo" class="p5-sub pista-edicion"></div>
+        <div class="p5-contacts">
+          <span class="p5-c"><b data-cv-label="label_telefono">Teléfono:</b> <span contenteditable="true" id="p5-telefono" class="pista-edicion">—</span></span>
+          <span class="p5-c"><b data-cv-label="label_email">Email:</b> <span contenteditable="true" id="p5-email" class="pista-edicion">—</span></span>
+          <span class="p5-c"><b data-cv-label="label_ubicacion">Ubicación:</b> <span contenteditable="true" id="p5-ubicacion" class="pista-edicion">—</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="p5-linea"></div>
+    <div class="p5-body">
+      <div id="p5-sec-perfil" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_perfil">Perfil profesional</div>
+        <p contenteditable="true" id="p5-perfil" class="cv-perfil pista-edicion"></p>
+      </div>
+      <div id="p5-sec-exp" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_experiencia">Experiencia laboral</div>
+        <div contenteditable="true" id="p5-experiencia" class="pista-edicion"></div>
+      </div>
+      <div id="p5-sec-est" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_estudios">Estudios y formación</div>
+        <div contenteditable="true" id="p5-estudios" class="pista-edicion"></div>
+      </div>
+      <div id="p5-sec-hab" class="hidden">
+        <div class="p5-sec" data-i18n="cv_bloque_habilidades">Habilidades</div>
+        <ul contenteditable="true" id="p5-habilidades" class="cv-habilidades"></ul>
+      </div>
+      <div id="p5-sec-otros" class="hidden">
+        <div class="p5-sec" data-i18n="cv_lateral_otros">Otros datos</div>
+        <div contenteditable="true" id="p5-otros" class="pista-edicion"></div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /contenedor-cvs (contiene las 6 plantillas) -->
 
   <!-- ===== Zona de descarga ===== -->
   <div id="zona-descarga" class="max-w-3xl mx-auto mt-4 mb-3 px-2">
@@ -2186,7 +2295,7 @@ const TEXTOS_EXTRA = {
   es: {
     cv_bloque_perfil: "Perfil profesional", cv_bloque_habilidades: "Habilidades",
     elige_estilo: "Elige el diseño de tu currículum:",
-    diseno_basico: "Clásico", diseno_prem1: "Ejecutivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    diseno_basico: "Clásico", diseno_prem1: "Ejecutivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo", diseno_prem5: "ATS",
     cta_descargar: "DESCARGAR",
     app_titulo: "Descarga tu CV desde la app", app_desc: "La descarga del currículum en PDF está disponible en la app CVoice para Android.", app_boton: "Conseguir CVoice en Google Play", cerrar: "Cerrar",
     aviso_descargando: "Descargando tu currículum…",
@@ -2196,7 +2305,7 @@ const TEXTOS_EXTRA = {
   eu: {
     cv_bloque_perfil: "Profil profesionala", cv_bloque_habilidades: "Gaitasunak",
     elige_estilo: "Aukeratu zure curriculumaren diseinua:",
-    diseno_basico: "Klasikoa", diseno_prem1: "Exekutiboa", diseno_prem2: "Editoriala", diseno_prem3: "Modernoa", diseno_prem4: "Korporatiboa",
+    diseno_basico: "Klasikoa", diseno_prem1: "Exekutiboa", diseno_prem2: "Editoriala", diseno_prem3: "Modernoa", diseno_prem4: "Korporatiboa", diseno_prem5: "ATS",
     cta_descargar: "DESKARGATU",
     app_titulo: "Deskargatu zure CVa aplikaziotik", app_desc: "Curriculuma PDFn deskargatzeko aukera Androiderako CVoice aplikazioan dago.", app_boton: "Lortu CVoice Google Playn", cerrar: "Itxi",
     aviso_descargando: "Zure curriculuma deskargatzen…",
@@ -2206,7 +2315,7 @@ const TEXTOS_EXTRA = {
   en: {
     cv_bloque_perfil: "Professional profile", cv_bloque_habilidades: "Skills",
     elige_estilo: "Choose your CV design:",
-    diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate",
+    diseno_basico: "Classic", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporate", diseno_prem5: "ATS",
     cta_descargar: "DOWNLOAD",
     app_titulo: "Download your CV in the app", app_desc: "Downloading your CV as a PDF is available in the CVoice app for Android.", app_boton: "Get CVoice on Google Play", cerrar: "Close",
     aviso_descargando: "Downloading your CV…",
@@ -2216,7 +2325,7 @@ const TEXTOS_EXTRA = {
   fr: {
     cv_bloque_perfil: "Profil professionnel", cv_bloque_habilidades: "Compétences",
     elige_estilo: "Choisissez le design de votre CV :",
-    diseno_basico: "Classique", diseno_prem1: "Exécutif", diseno_prem2: "Éditorial", diseno_prem3: "Moderne", diseno_prem4: "Entreprise",
+    diseno_basico: "Classique", diseno_prem1: "Exécutif", diseno_prem2: "Éditorial", diseno_prem3: "Moderne", diseno_prem4: "Entreprise", diseno_prem5: "ATS",
     cta_descargar: "TÉLÉCHARGER",
     app_titulo: "Téléchargez votre CV dans l'application", app_desc: "Le téléchargement du CV en PDF est disponible dans l'application CVoice pour Android.", app_boton: "Obtenir CVoice sur Google Play", cerrar: "Fermer",
     aviso_descargando: "Téléchargement de votre CV…",
@@ -2226,7 +2335,7 @@ const TEXTOS_EXTRA = {
   de: {
     cv_bloque_perfil: "Berufsprofil", cv_bloque_habilidades: "Fähigkeiten",
     elige_estilo: "Wählen Sie das Design Ihres Lebenslaufs:",
-    diseno_basico: "Klassisch", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Business",
+    diseno_basico: "Klassisch", diseno_prem1: "Executive", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Business", diseno_prem5: "ATS",
     cta_descargar: "HERUNTERLADEN",
     app_titulo: "Laden Sie Ihren Lebenslauf in der App herunter", app_desc: "Der Download des Lebenslaufs als PDF ist in der CVoice-App für Android verfügbar.", app_boton: "CVoice bei Google Play holen", cerrar: "Schließen",
     aviso_descargando: "Ihr Lebenslauf wird heruntergeladen…",
@@ -2236,7 +2345,7 @@ const TEXTOS_EXTRA = {
   it: {
     cv_bloque_perfil: "Profilo professionale", cv_bloque_habilidades: "Competenze",
     elige_estilo: "Scegli il design del tuo curriculum:",
-    diseno_basico: "Classico", diseno_prem1: "Executive", diseno_prem2: "Editoriale", diseno_prem3: "Moderno", diseno_prem4: "Aziendale",
+    diseno_basico: "Classico", diseno_prem1: "Executive", diseno_prem2: "Editoriale", diseno_prem3: "Moderno", diseno_prem4: "Aziendale", diseno_prem5: "ATS",
     cta_descargar: "SCARICA",
     app_titulo: "Scarica il tuo CV dall'app", app_desc: "Il download del curriculum in PDF è disponibile nell'app CVoice per Android.", app_boton: "Scarica CVoice da Google Play", cerrar: "Chiudi",
     aviso_descargando: "Download del tuo curriculum…",
@@ -2246,7 +2355,7 @@ const TEXTOS_EXTRA = {
   pt: {
     cv_bloque_perfil: "Perfil profissional", cv_bloque_habilidades: "Competências",
     elige_estilo: "Escolha o design do seu currículo:",
-    diseno_basico: "Clássico", diseno_prem1: "Executivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo",
+    diseno_basico: "Clássico", diseno_prem1: "Executivo", diseno_prem2: "Editorial", diseno_prem3: "Moderno", diseno_prem4: "Corporativo", diseno_prem5: "ATS",
     cta_descargar: "DESCARREGAR",
     app_titulo: "Descarregue o seu currículo na app", app_desc: "Pode descarregar o currículo em PDF na app CVoice para Android.", app_boton: "Obter o CVoice no Google Play", cerrar: "Fechar",
     aviso_descargando: "A descarregar o seu currículo…",
@@ -2256,7 +2365,7 @@ const TEXTOS_EXTRA = {
   ar: {
     cv_bloque_perfil: "الملف المهني", cv_bloque_habilidades: "المهارات",
     elige_estilo: "اختر تصميم سيرتك الذاتية:",
-    diseno_basico: "كلاسيكي", diseno_prem1: "تنفيذي", diseno_prem2: "تحريري", diseno_prem3: "عصري", diseno_prem4: "مؤسسي",
+    diseno_basico: "كلاسيكي", diseno_prem1: "تنفيذي", diseno_prem2: "تحريري", diseno_prem3: "عصري", diseno_prem4: "مؤسسي", diseno_prem5: "ATS",
     cta_descargar: "تنزيل",
     app_titulo: "نزّل سيرتك الذاتية من التطبيق", app_desc: "تنزيل السيرة الذاتية بصيغة PDF متاح في تطبيق CVoice لنظام Android.", app_boton: "احصل على CVoice من Google Play", cerrar: "إغلاق",
     aviso_descargando: "جارٍ تنزيل سيرتك الذاتية…",
@@ -2266,7 +2375,7 @@ const TEXTOS_EXTRA = {
   zh: {
     cv_bloque_perfil: "个人简介", cv_bloque_habilidades: "技能",
     elige_estilo: "选择简历设计：",
-    diseno_basico: "经典", diseno_prem1: "商务", diseno_prem2: "杂志", diseno_prem3: "现代", diseno_prem4: "企业",
+    diseno_basico: "经典", diseno_prem1: "商务", diseno_prem2: "杂志", diseno_prem3: "现代", diseno_prem4: "企业", diseno_prem5: "ATS",
     cta_descargar: "下载",
     app_titulo: "在应用中下载你的简历", app_desc: "PDF 简历下载功能仅在 Android 版 CVoice 应用中提供。", app_boton: "在 Google Play 获取 CVoice", cerrar: "关闭",
     aviso_descargando: "正在下载你的简历…",
@@ -2276,7 +2385,7 @@ const TEXTOS_EXTRA = {
   ja: {
     cv_bloque_perfil: "プロフィール", cv_bloque_habilidades: "スキル",
     elige_estilo: "履歴書のデザインを選んでください：",
-    diseno_basico: "クラシック", diseno_prem1: "エグゼクティブ", diseno_prem2: "エディトリアル", diseno_prem3: "モダン", diseno_prem4: "コーポレート",
+    diseno_basico: "クラシック", diseno_prem1: "エグゼクティブ", diseno_prem2: "エディトリアル", diseno_prem3: "モダン", diseno_prem4: "コーポレート", diseno_prem5: "ATS",
     cta_descargar: "ダウンロード",
     app_titulo: "アプリで履歴書をダウンロード", app_desc: "PDF での履歴書ダウンロードは Android 版 CVoice アプリで利用できます。", app_boton: "Google Play で CVoice を入手", cerrar: "閉じる",
     aviso_descargando: "履歴書をダウンロードしています…",
@@ -2286,7 +2395,7 @@ const TEXTOS_EXTRA = {
   ro: {
     cv_bloque_perfil: "Profil profesional", cv_bloque_habilidades: "Competențe",
     elige_estilo: "Alege designul CV-ului tău:",
-    diseno_basico: "Clasic", diseno_prem1: "Executiv", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporativ",
+    diseno_basico: "Clasic", diseno_prem1: "Executiv", diseno_prem2: "Editorial", diseno_prem3: "Modern", diseno_prem4: "Corporativ", diseno_prem5: "ATS",
     cta_descargar: "DESCARCĂ",
     app_titulo: "Descarcă CV-ul din aplicație", app_desc: "Descărcarea CV-ului în PDF este disponibilă în aplicația CVoice pentru Android.", app_boton: "Obține CVoice pe Google Play", cerrar: "Închide",
     aviso_descargando: "Se descarcă CV-ul tău…",
@@ -2296,7 +2405,7 @@ const TEXTOS_EXTRA = {
   pl: {
     cv_bloque_perfil: "Profil zawodowy", cv_bloque_habilidades: "Umiejętności",
     elige_estilo: "Wybierz wygląd swojego CV:",
-    diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny",
+    diseno_basico: "Klasyczny", diseno_prem1: "Biznesowy", diseno_prem2: "Redakcyjny", diseno_prem3: "Nowoczesny", diseno_prem4: "Korporacyjny", diseno_prem5: "ATS",
     cta_descargar: "POBIERZ",
     app_titulo: "Pobierz CV w aplikacji", app_desc: "Pobieranie CV w PDF jest dostępne w aplikacji CVoice na Androida.", app_boton: "Pobierz CVoice z Google Play", cerrar: "Zamknij",
     aviso_descargando: "Pobieranie Twojego CV…",
@@ -2306,7 +2415,7 @@ const TEXTOS_EXTRA = {
   uk: {
     cv_bloque_perfil: "Професійний профіль", cv_bloque_habilidades: "Навички",
     elige_estilo: "Оберіть дизайн резюме:",
-    diseno_basico: "Класичний", diseno_prem1: "Діловий", diseno_prem2: "Редакційний", diseno_prem3: "Сучасний", diseno_prem4: "Корпоративний",
+    diseno_basico: "Класичний", diseno_prem1: "Діловий", diseno_prem2: "Редакційний", diseno_prem3: "Сучасний", diseno_prem4: "Корпоративний", diseno_prem5: "ATS",
     cta_descargar: "ЗАВАНТАЖИТИ",
     app_titulo: "Завантажте резюме в застосунку", app_desc: "Завантаження резюме у PDF доступне в застосунку CVoice для Android.", app_boton: "Отримати CVoice у Google Play", cerrar: "Закрити",
     aviso_descargando: "Завантаження вашого резюме…",
@@ -2316,7 +2425,7 @@ const TEXTOS_EXTRA = {
   ru: {
     cv_bloque_perfil: "Профессиональный профиль", cv_bloque_habilidades: "Навыки",
     elige_estilo: "Выберите дизайн резюме:",
-    diseno_basico: "Классический", diseno_prem1: "Деловой", diseno_prem2: "Редакционный", diseno_prem3: "Современный", diseno_prem4: "Корпоративный",
+    diseno_basico: "Классический", diseno_prem1: "Деловой", diseno_prem2: "Редакционный", diseno_prem3: "Современный", diseno_prem4: "Корпоративный", diseno_prem5: "ATS",
     cta_descargar: "СКАЧАТЬ",
     app_titulo: "Скачайте резюме в приложении", app_desc: "Скачивание резюме в PDF доступно в приложении CVoice для Android.", app_boton: "Скачать CVoice в Google Play", cerrar: "Закрыть",
     aviso_descargando: "Скачиваем ваше резюме…",
@@ -3593,7 +3702,7 @@ document.getElementById("btn-volver-editar").addEventListener("click", () => {
 // Solo una de las 5 hojas está visible a la vez; todas siguen en el DOM
 // (y en #contenedor-cvs) para conservar lo editado y permitir el zoom táctil.
 
-const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem2", prem3:"hoja-cv-prem3", prem4:"hoja-cv-prem4" };
+const CV_MAP  = { basico:"hoja-cv", prem1:"hoja-cv-premium", prem2:"hoja-cv-prem2", prem3:"hoja-cv-prem3", prem4:"hoja-cv-prem4", prem5:"hoja-cv-prem5" };
 const CV_IDS  = Object.values(CV_MAP);
 
 let plantillaActiva = "basico";   // "basico" | "prem1" | "prem2" | "prem3" | "prem4"
@@ -4010,7 +4119,7 @@ function nombreCVActual(){
 // Copia los datos del CV básico (fuente única: lo que generó/tradujo la IA más las
 // correcciones del usuario) a la plantilla premium indicada.
 function rellenarPlantilla(modelo){
-  const prefijos = { prem1: "prem", prem2: "p2", prem3: "p3", prem4: "p4" };
+  const prefijos = { prem1: "prem", prem2: "p2", prem3: "p3", prem4: "p4", prem5: "p5" };
   const p = prefijos[modelo];
   if (!p) return;
   const $ = id => document.getElementById(id);
@@ -4027,7 +4136,7 @@ function rellenarPlantilla(modelo){
     if (!el) return;
     const valor = $(`cv-fila-${campo}`).classList.contains("hidden") ? "" : $(`cv-${campo}`).textContent.trim();
     el.textContent = valor;
-    const fila = el.closest(".p2-citem, .p3-valor, [id^='prem-fila-']") || el;
+    const fila = el.closest(".p2-citem, .p3-valor, .p5-c, [id^='prem-fila-']") || el;
     fila.classList.toggle("cv-vacio", !valor);
   });
 
@@ -4062,7 +4171,7 @@ function rellenarPlantilla(modelo){
 // la experiencia; si la persona lo corrige (o lo borra) en cualquiera de esos diseños, manda
 // su versión en los tres. Un CV nuevo vuelve al automático (pintarCV pone cargoManual = null).
 let cargoManual = null;
-const ES_CARGO = /^(p2-cargo|p3-sub-cargo|p4-sub-cargo)$/;
+const ES_CARGO = /^(p2-cargo|p3-sub-cargo|p4-sub-cargo|p5-sub-cargo)$/;
 function actualizarDerivados(p){
   const subEl = document.getElementById(`${p}-sub-cargo`) || document.getElementById(`${p}-cargo`);
   if (subEl){
@@ -4076,9 +4185,9 @@ function actualizarDerivados(p){
 // recogen al mostrarlos (rellenarSiHaceFalta); el que se está editando no se vuelve a
 // rellenar, para no mover el cursor.
 const CAMPOS_TEXTO_CV = ["nombre", "telefono", "email", "ubicacion"];
-const PREFIJO_A_MODELO = { prem: "prem1", p2: "prem2", p3: "prem3", p4: "prem4" };
+const PREFIJO_A_MODELO = { prem: "prem1", p2: "prem2", p3: "prem3", p4: "prem4", p5: "prem5" };
 function volcarCorreccionEnBasico(editable){
-  const m = /^(prem|p2|p3|p4)-(\w+)$/.exec(editable.id || "");
+  const m = /^(prem|p2|p3|p4|p5)-(\w+)$/.exec(editable.id || "");
   if (!m) return;
   const destino = document.getElementById("cv-" + m[2]);
   if (!destino) return;
