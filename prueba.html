@@ -3146,7 +3146,7 @@ const PROMPT_SISTEMA = `Eres un redactor experto en currículums vitae con 20 a�
 
 2. FORMATO DE DATOS: Convierte números hablados a cifras copiando cada dígito exactamente, uno por uno, sin añadir ni quitar ninguno (seis cero cero uno uno uno dos dos dos → 600 111 222). Convierte emails hablados (arroba hotmail punto com → @hotmail.com). Nombres en MAYÚSCULAS.
 
-3. TONO PROFESIONAL: Reescribe las funciones laborales usando verbos de acción e impacto en infinitivo: "Coordinar", "Gestionar", "Supervisar", "Implementar", "Optimizar", "Liderar", "Desarrollar", "Ejecutar". Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
+3. TONO PROFESIONAL: Reescribe las funciones laborales en infinitivo, con verbos concretos del oficio que describan tareas reales ("Atender", "Preparar", "Cargar y descargar", "Limpiar", "Reponer", "Cobrar", "Montar", "Conducir"). "Coordinar", "Supervisar", "Liderar", "Optimizar" o "Gestionar equipos/rutas" solo si la persona dijo que tenía esa responsabilidad: nunca atribuyas un nivel superior al del puesto. Nunca uses lenguaje coloquial en el CV. Adapta el vocabulario al sector que se deduce del trabajo (construcción, hostelería, logística, salud, ventas, etc.).
 
 4. EXPERIENCIA LABORAL: Ordena cronológico inverso (lo más reciente primero). Para cada puesto incluye: título del puesto (profesional y específico), empresa/ciudad, fechas (solo las que diga la persona; si no las dice, deja el campo vacío: nunca inventes fechas ni escribas marcadores como "20XX"), y 3-4 viñetas con funciones concretas usando verbos de acción.
 
@@ -3215,7 +3215,8 @@ const CONVENCIONES_CV = {
 // convertidos (rumano "două mii nouăsprezece" → 2009, darija "ألفين وتمنطاش" → 2008), palabras
 // de darija mal entendidas y títulos extranjeros confundidos con la ESO
 const NOTAS_HABLA = {
-  ar: `La persona puede hablar en darija (árabe marroquí) o argelino. Números: واحد 1, جوج/زوج 2, تلاتة 3, ربعة 4, خمسة 5, ستة 6, سبعة 7, تمنية 8, تسعود 9, عشرة 10, حضاش 11, طناش 12, تلطاش 13, ربعطاش 14, خمسطاش 15, سطاش 16, سبعطاش 17, تمنطاش 18, تسعطاش 19, عشرين 20; "ألفين وتمنطاش" = 2018, "ألفين وعشرين" = 2020, "ألفين وواحد وعشرين" = 2021, "ألفين وجوج وعشرين" = 2022; "من … حتى …" = de … a …. Palabras: دابا = ahora, خدمت = trabajé, البني = la construcción, الضص/الضيص = mortero/cemento, الياجور = ladrillos, الفاكية = la fruta, الفلاحة = la agricultura, قريت = estudié, ما خديتهاش = no la obtuve, البيرمي = el carnet de conducir, الطوموبيل = el coche, السبانيول = el español, كنهضر = hablo. "الباكالوريا" = Bachillerato marroquí.`,
+  ar: `La persona puede hablar en darija (árabe marroquí) o argelino. Números: واحد 1, جوج/زوج 2, تلاتة 3, ربعة 4, خمسة 5, ستة 6, سبعة 7, تمنية 8, تسعود 9, عشرة 10, حضاش 11, طناش 12, تلطاش 13, ربعطاش 14, خمسطاش 15, سطاش 16, سبعطاش 17, تمنطاش 18, تسعطاش 19, عشرين 20; "ألفين وتمنطاش" = 2018, "ألفين وعشرين" = 2020, "ألفين وواحد وعشرين" = 2021, "ألفين وجوج وعشرين" = 2022; "من … حتى …" = de … a …. Palabras: دابا = ahora, خدمت = trabajé, البني = la construcción, الضص/الضيص = mortero/cemento, الياجور = ladrillos, الفاكية = la fruta, الفلاحة = la agricultura, قريت = estudié, ما خديتهاش = no la obtuve, البيرمي = el carnet de conducir, الطوموبيل = el coche, السبانيول = el español, كنهضر = hablo. "الباكالوريا" = Bachillerato marroquí. Emails: أروباز / أروبا / أروبيس = @, بوان / نقطة = punto, تيري = guion, جيميل = gmail, هوتميل = hotmail, ياهو = yahoo, كوم = com. La "ف" o "ب" pegada delante es "en" (فبلباو = en Bilbao). Ciudades: بلباو / بيلباو = Bilbao, باراكالدو = Barakaldo, لمرية / ألمرية = Almería, مورسية = Murcia, طنجة = Tánger, الدار البيضاء / كازا = Casablanca. "البلاستيك" en el campo = los invernaderos.`,
+  pl: `Años con palabras: "dwa tysiące szesnastego" = 2016 (nunca 2006), "dwa tysiące dwudziestego pierwszego" = 2021. Números por centenas: "sześćset dwanaście trzysta czterdzieści pięć sześćset siedemdziesiąt osiem" = 612 345 678. "małpa" = @, "kropka" = punto. "Liceum" = Bachillerato; "technikum" = Formación Profesional de nivel técnico (Polonia); "pokojówka" = Camarera de pisos.`,
   ro: `Años con palabras: unsprezece 11, doisprezece 12, treisprezece 13, paisprezece 14, cincisprezece 15, șaisprezece 16, șaptesprezece 17, optsprezece 18, nouăsprezece 19, douăzeci 20, douăzeci și unu 21…; "două mii nouăsprezece" = 2019 (nunca 2009). "Liceu" = Bachillerato; "școala profesională" = Formación Profesional.`,
   uk: `Años con palabras en ordinal: "дві тисячі десятого" = 2010, "двадцять другого" = 2022. "Середня школа" = ESO/Bachillerato según los años; "університет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino (Олена Коваленко → Olena Kovalenko).`,
   ru: `Años con palabras en ordinal: "две тысячи десятого" = 2010. "Средняя школа" = ESO/Bachillerato según los años; "университет" = Grado universitario. Nombres, empresas y email en cirílico se transcriben al alfabeto latino.`,
@@ -3224,6 +3225,22 @@ const NOTAS_HABLA = {
   pt: `"Ensino médio/secundário" = Bachillerato; "ensino fundamental/básico" = ESO.`,
   eu: `En los emails, "a bildua", "abildua" o "bildua" = @ (ane etxeberria a bildua gmail puntu com → ane.etxeberria@gmail.com); "puntu" = punto; "gidoi" = guion. "DBH" = ESO; "Batxilergoa" = Bachillerato; "erdi mailako zikloa" = Grado Medio; "goi mailako zikloa" = Grado Superior.`,
 };
+// Lo más habitual en CVoice es hablar en otro idioma y pedir el CV en español. Las pruebas del
+// 25-11-2026 (9 idiomas → español) mostraron trabajos llevados a otro país, empresas "corregidas"
+// a otra palabra, la lengua materna como "intermedio", estudios extranjeros convertidos en
+// títulos españoles o "en curso" cuando se dejaron, y puestos mal traducidos
+const REGLAS_OTRO_IDIOMA = `
+REGLAS PARA UN DICTADO EN OTRO IDIOMA (obligatorias):
+- Cada trabajo, en el lugar donde la persona dijo que lo hizo: nunca lo pases a otra ciudad ni a otro país. Si no dijo dónde, pon solo la empresa o el tipo de empresa.
+- Empresas tal como se dijeron. Solo corrige una empresa conocida mal reconocida (Mercadona, Eroski, Lidl); nunca cambies un nombre por otra palabra parecida (ej. "Garbialdi" sigue siendo "Garbialdi").
+- Ciudades de España con su nombre oficial aunque se dijeran en otro idioma o alfabeto (بلباو → Bilbao, باراكالدو → Barakaldo, Більбао → Bilbao, Сан-Себастьян → San Sebastián). Ciudades extranjeras con su nombre habitual en el idioma del CV (Járkov, Cracovia, Tiflis, Tánger, Dakar).
+- Idiomas: el idioma en el que habla la persona es su lengua materna ("nativo", traducido) salvo que diga otro nivel para él. Un nivel dicho después de una lista se refiere solo al último idioma de la lista. A los demás idiomas sin nivel no les pongas ninguno.
+- Estudios de otro país: equivalente en el sistema español + entre paréntesis la sigla o el nombre original si es conocido y el país. Si no lo terminó, no aprobó el examen final o no tiene el título: "sin finalizar" (nunca "en curso" si lo dejó). Nunca lo conviertas en un título español sin el país, ni subas de nivel (un año de universidad no es un Grado Medio). Ejemplos: "Bachillerato (Marruecos), sin finalizar"; "Educación secundaria (BFEM, Senegal)"; "Educación secundaria superior (WAEC, Nigeria)"; "Estudios universitarios de Informática (Nigeria), sin finalizar"; "Grado universitario en Contabilidad y Auditoría (Ucrania)"; "Bachillerato (Liceo, Rumanía), sin título de bacalaureat".
+- Perfil: los años de experiencia de una profesión son solo los de los trabajos de esa profesión.`;
+// Nombres de puesto habituales en España para los oficios que más se dictan en otros idiomas
+const PUESTOS_EN_ESPANA = `
+- Puestos con el nombre habitual en España, nunca calcos: kitchen porter / plongeur → Friegaplatos; security guard / agent de sécurité / охранник → Vigilante de seguridad; housekeeper / femme de chambre / pokojówka / горничная / покоївка → Camarera de pisos; cleaner / agent de nettoyage / faxineira / sprzątaczka → Limpiador/a; caregiver / cuidadora de idosos / доглядальниця / aide à domicile → Cuidador/a de personas mayores; truck driver / șofer de camion / водитель → Conductor de camión; warehouse worker / magasinier → Mozo de almacén; labourer / разнорабочий / manœuvre → Peón; farm worker / ouvrier agricole / الفلاحة → Peón agrícola; trabajo en "los plásticos" (البلاستيك) de Almería = invernaderos; harvest / cules de struguri → Temporero/a de la vendimia; плиточник / carreleur → Alicatador; welder / soudeur / сварщик → Soldador; waiter / serveur / ober → Camarero/a; shop assistant / vendeur → Dependiente/a; cashier / kasjerka → Cajero/a. Español de España: nunca "Chofer", "Obrero", "Brindar", "Puertera".`;
+
 function notasHabla(codigo){
   return NOTAS_HABLA[codigo] ? `\nPautas del idioma hablado: ${NOTAS_HABLA[codigo]}` : "";
 }
@@ -3247,7 +3264,10 @@ const PROMPT_REVISION = `Eres un traductor profesional especializado en currícu
 - Nombre de la persona y email en el alfabeto del CV; el email solo con caracteres latinos válidos.
 - Si el perfil da un número de años de experiencia que no cuadra con las fechas, corrígelo o quítalo. Un trabajo que sigue en curso nunca termina en el año actual: usa la palabra de "actualidad" del idioma del CV.
 - La disponibilidad nunca es solo "Sí": escribe lo que se dijo (ej. "Total", "Mañanas"). Quita del perfil lo que no se dijo ("incorporación inmediata", "coordinar equipos"…) y cambia cada habilidad que suponga una máquina, permiso o programa que no se mencionó por otra que sí se deduzca de lo dicho. Nunca escribas "(sin especificar)" ni similares: si no se dijo la empresa, deja solo lo que se sepa (ej. "Hotel", la ciudad).
-- Estudios hechos en otro país: su equivalente con el país entre paréntesis (ej. "Bachillerato (Ucrania)").
+- Estudios hechos en otro país: su equivalente con el país entre paréntesis (ej. "Bachillerato (Ucrania)"); "sin finalizar" si no lo terminó o no tiene el título (nunca "en curso" si lo dejó), y nunca de un nivel superior al que dijo.
+- Cada trabajo, en la ciudad o el país donde se dijo que se hizo (nunca en otro); empresas tal como se dijeron, sin cambiarlas por otra palabra parecida; ciudades de España con su nombre oficial.
+- Idiomas: el idioma en el que habló la persona es su lengua materna salvo que dijera otro nivel para él; un nivel dicho tras una lista es solo del último idioma.
+- Puestos con el nombre habitual en el país del CV (en España: Friegaplatos, Vigilante de seguridad, Camarera de pisos, Conductor de camión, Peón…), nunca un calco. Funciones con tareas reales del puesto: quita "Coordinar", "Supervisar", "Optimizar"… si la persona no dijo esa responsabilidad.
 - Mismo género gramatical en todos los puestos y en el perfil (el que se deduzca del nombre o de cómo habla la persona). Quita las funciones que no se deduzcan de lo dicho.
 - No quites elementos de las listas.
 - Devuelve EXCLUSIVAMENTE el mismo JSON, con exactamente las mismas claves, sin texto antes ni después.`;
@@ -3322,7 +3342,7 @@ La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, tr
 El texto viene del reconocimiento de voz del móvil: no tiene puntuación y puede traer palabras mal reconocidas (sobre todo nombres de empresas, títulos y siglas: "la eso" = ESO, "grado medio de cocina", "Mercadona", "Eroski"), números dichos en letra, muletillas y frases repetidas. Corrige esos errores evidentes por el contexto, sin inventar nada; si no estás seguro de un nombre propio, déjalo tal como se dijo. La persona puede hablar con acento o en una variante dialectal (por ejemplo, árabe marroquí o argelino) y mezclar palabras de otros idiomas (castellano, francés, inglés): entiéndelo todo y redacta solo en ${nombreIdioma}.${notasIdiomaCV(idiomaCVDestino)}${notasHabla(idiomaActual)}
 - Años y números dichos con palabras: conviértelos con cuidado (decenas y unidades) y comprueba que la cronología tenga sentido.
 - Nombre de la persona, empresas y email en el alfabeto del CV; el email siempre solo con caracteres latinos (a-z, 0-9, punto, guion), transcribiendo cada parte.
-- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
+- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).${idiomaHablado !== nombreIdioma ? REGLAS_OTRO_IDIOMA : ""}${idiomaCVDestino === "es" && idiomaActual !== "es" ? PUESTOS_EN_ESPANA : ""}${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
@@ -3493,6 +3513,46 @@ function aplicarCambiosAMano(resultado, antes, ahora){
   return resultado;
 }
 
+// Años dichos con palabras en árabe (estándar y darija) → cifras, antes de mandarlos a la IA:
+// aun con las pautas, la IA convertía "ألفين وتمنطاش" (2018) en 2020 o 2008
+const AR_UNIDADES = { "واحد":1, "وحدة":1, "واحدة":1, "اثنين":2, "اثنان":2, "إثنين":2, "زوج":2, "جوج":2, "تنين":2, "ثلاثة":3, "ثلاث":3, "تلاتة":3, "تلات":3,
+  "أربعة":4, "اربعة":4, "ربعة":4, "أربع":4, "اربع":4, "خمسة":5, "خمس":5, "ستة":6, "ست":6, "سبعة":7, "سبع":7, "ثمانية":8, "ثمان":8, "تمنية":8, "تمانية":8,
+  "تسعة":9, "تسع":9, "تسعود":9 };
+const AR_DIEZ_A_19 = { "عشرة":10, "حداش":11, "حضاش":11, "طناش":12, "تناش":12, "تلطاش":13, "ربعطاش":14, "خمسطاش":15, "سطاش":16, "سبعطاش":17,
+  "تمنطاش":18, "ثمنطاش":18, "تسعطاش":19 };
+const AR_DECENAS = { "عشرين":20, "عشرون":20, "ثلاثين":30, "تلاتين":30, "ثلاثون":30 };
+function anosArabesACifras(texto){
+  if (!texto) return texto;
+  const p = texto.split(/(\s+)/);  // conserva los espacios
+  const palabras = [];             // índices de p que son palabras
+  p.forEach((t, i) => { if (t.trim()) palabras.push(i); });
+  const sinY = w => w && w.startsWith("و") && w.length > 2 ? w.slice(1) : null;
+  for (let k = 0; k < palabras.length; k++){
+    const m = p[palabras[k]].match(/^([وفبل]?)(ألفين|الفين|ألفان|الفان)$/);
+    if (!m) continue;
+    let ano = 2000, usadas = 0;
+    const w1 = sinY(p[palabras[k + 1]]), w2 = p[palabras[k + 2]], w2y = sinY(w2);
+    if (w1 && AR_DIEZ_A_19[w1]){ ano += AR_DIEZ_A_19[w1]; usadas = 1; }
+    else if (w1 && AR_UNIDADES[w1] && w2 === "عشر"){ ano += 10 + AR_UNIDADES[w1]; usadas = 2; }
+    else if (w1 && AR_UNIDADES[w1] && w2y && AR_DECENAS[w2y]){ ano += AR_UNIDADES[w1] + AR_DECENAS[w2y]; usadas = 2; }
+    else if (w1 && AR_DECENAS[w1]){ ano += AR_DECENAS[w1]; usadas = 1; }
+    else if (w1 && AR_UNIDADES[w1]){ ano += AR_UNIDADES[w1]; usadas = 1; }
+    p[palabras[k]] = (m[1] ? m[1] + " " : "") + ano;
+    for (let j = 1; j <= usadas; j++){ p[palabras[k + j]] = ""; p[palabras[k + j] - 1] = ""; }
+    k += usadas;
+  }
+  return p.join("").replace(/\s{2,}/g, " ");
+}
+
+// Teléfonos españoles siempre agrupados igual: 612 345 678 (con +34 delante si se dijo)
+function formatearTelefono(t){
+  const s = String(t || "").trim();
+  const d = s.replace(/[^\d+]/g, "");
+  const m = d.match(/^(\+34|0034|34)?([6789]\d{8})$/);
+  if (!m) return s;
+  return (m[1] ? "+34 " : "") + m[2].slice(0, 3) + " " + m[2].slice(3, 6) + " " + m[2].slice(6);
+}
+
 function generarCV(){
   detenerEscucha();
   detenerCamara();
@@ -3504,6 +3564,7 @@ function generarCV(){
     otros:           document.querySelector('[data-texto-paso="4"]').value.trim(),
     cambiosAMano:    (registrarCorreccionesAMano(), [...new Set(correccionesSesion.flatMap(x => cambiosEntre(x.antes, x.ahora)))]),
   };
+  if (idiomaActual === "ar") ["datosPersonales", "experiencia", "estudios", "otros"].forEach(k => { datos[k] = anosArabesACifras(datos[k]); });
   const cargoAntes = cargoManual;
 
   const t = TEXTOS[idiomaActual];
@@ -3742,7 +3803,7 @@ function pintarCV(resultado){
   const filaEmail = document.getElementById("cv-fila-email");
   const filaUbicacion = document.getElementById("cv-fila-ubicacion");
 
-  if (resultado.telefono){ document.getElementById("cv-telefono").textContent = resultado.telefono; filaTelefono.classList.remove("hidden"); }
+  if (resultado.telefono){ document.getElementById("cv-telefono").textContent = formatearTelefono(resultado.telefono); filaTelefono.classList.remove("hidden"); }
   else filaTelefono.classList.add("hidden");
 
   if (resultado.email){ document.getElementById("cv-email").textContent = resultado.email; filaEmail.classList.remove("hidden"); }
