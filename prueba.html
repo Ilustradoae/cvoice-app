@@ -3231,10 +3231,10 @@ const NOTAS_HABLA = {
 // títulos españoles o "en curso" cuando se dejaron, y puestos mal traducidos
 const REGLAS_OTRO_IDIOMA = `
 REGLAS PARA UN DICTADO EN OTRO IDIOMA (obligatorias):
-- Cada trabajo, en el lugar donde la persona dijo que lo hizo: nunca lo pases a otra ciudad ni a otro país. Si no dijo dónde, pon solo la empresa o el tipo de empresa.
+- Cada trabajo, en el lugar donde la persona dijo que lo hizo: nunca lo pases a otra ciudad ni a otro país. Si no dijo dónde, pon solo la empresa o el tipo de empresa, sin ciudad: nunca le pongas la ciudad del trabajo anterior (ej. "trabajé de cajera en Cracovia y ahora trabajo en un hotel" → la empresa del segundo es solo "Hotel").
 - Empresas tal como se dijeron. Solo corrige una empresa conocida mal reconocida (Mercadona, Eroski, Lidl); nunca cambies un nombre por otra palabra parecida (ej. "Garbialdi" sigue siendo "Garbialdi").
 - Ciudades de España con su nombre oficial aunque se dijeran en otro idioma o alfabeto (بلباو → Bilbao, باراكالدو → Barakaldo, Більбао → Bilbao, Сан-Себастьян → San Sebastián). Ciudades extranjeras con su nombre habitual en el idioma del CV (Járkov, Cracovia, Tiflis, Tánger, Dakar).
-- Idiomas: el idioma en el que habla la persona es su lengua materna ("nativo", traducido) salvo que diga otro nivel para él. Un nivel dicho después de una lista se refiere solo al último idioma de la lista. A los demás idiomas sin nivel no les pongas ninguno.
+- Idiomas: el idioma en el que habla la persona es su lengua materna ("nativo", traducido) salvo que diga otro nivel para él. Un nivel dicho después de una lista se refiere solo al último idioma de la lista. A los demás idiomas sin nivel no les pongas ninguno. Ejemplos: dictado en ruso "говорю на грузинском русском и испанском средне" → "Georgiano, ruso nativo, español intermedio"; dictado en ucraniano "українською російською англійською на середньому рівні" → "Ucraniano nativo, ruso, inglés intermedio".
 - Estudios de otro país: equivalente en el sistema español + entre paréntesis la sigla o el nombre original si es conocido y el país. Si no lo terminó, no aprobó el examen final o no tiene el título: "sin finalizar" (nunca "en curso" si lo dejó). Nunca lo conviertas en un título español sin el país, ni subas de nivel (un año de universidad no es un Grado Medio). Ejemplos: "Bachillerato (Marruecos), sin finalizar"; "Educación secundaria (BFEM, Senegal)"; "Educación secundaria superior (WAEC, Nigeria)"; "Estudios universitarios de Informática (Nigeria), sin finalizar"; "Grado universitario en Contabilidad y Auditoría (Ucrania)"; "Bachillerato (Liceo, Rumanía), sin título de bacalaureat".
 - TODO estudio hecho fuera de España lleva el país entre paréntesis en el título, también el bachillerato y los cursos (ej. "Bachillerato (China)", "Curso técnico de Enfermería (Brasil), sin finalizar").
 - "Un poco", "a little", "un peu", "puțin", "трохи", "немного", "trochę", "一点点" = nivel básico.
@@ -3631,6 +3631,7 @@ function limpiarTextoIA(texto){
   s = s.replace(/\s*\*+\s*$/, "");           // asteriscos al final
   s = s.replace(/\*\*([^*]+)\*\*/g, "$1");  // **negrita**
   s = s.replace(/\*([^*]+)\*/g, "$1");       // *cursiva*
+  s = s.replace(/[­​]/g, "");     // guiones y espacios invisibles ("Gar­bialdi")
   // CV en árabe: la coma latina entre palabras árabes se cambia por la árabe «،»
   if (idiomaCVDestino === "ar") s = s.replace(/([؀-ۿ)])\s*,\s*(?=[؀-ۿ(])/g, "$1، ");
   return s.trim();
