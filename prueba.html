@@ -2831,6 +2831,12 @@ function iniciarEscucha(boton){
   // Parte de lo que ya hubiera en la caja (escrito a mano o de escuchas previas).
   const sep = separadorVoz();
   let acumulado = caja.value ? caja.value.trim() + sep : "";
+  // Si la persona corrige o borra texto en la caja con el micro aún encendido, su versión
+  // pasa a ser la base: lo borrado no vuelve a aparecer con la siguiente frase reconocida.
+  // (El evento "input" solo salta con cambios hechos a mano, no con los de la voz.)
+  if (caja._alEditarAMano) caja.removeEventListener("input", caja._alEditarAMano);
+  caja._alEditarAMano = () => { acumulado = caja.value.trim() ? caja.value.trim() + sep : ""; };
+  caja.addEventListener("input", caja._alEditarAMano);
 
   function nuevaSesion(){
     const rec = new SpeechRec();
@@ -2838,14 +2844,18 @@ function iniciarEscucha(boton){
     rec.continuous = false;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
+    // Resultados finales de esta sesión ya añadidos (por posición): cada frase se añade
+    // una sola vez aunque el reconocedor la repita en eventos posteriores
+    let finalesUsados = 0;
 
     rec.onresult = (evento) => {
-      const finales = [], parciales = [];
+      const nuevos = [], parciales = [];
       for (let i = 0; i < evento.results.length; i++){
         const fragmento = evento.results[i][0].transcript.trim();
-        (evento.results[i].isFinal ? finales : parciales).push(fragmento);
+        if (!evento.results[i].isFinal) parciales.push(fragmento);
+        else if (i >= finalesUsados){ nuevos.push(fragmento); finalesUsados = i + 1; }
       }
-      const final = unirFragmentos(finales);
+      const final = unirFragmentos(nuevos);
       if (final && !acumulado.endsWith(final + sep)) acumulado += final + sep;
       caja.value = numerosEnCifras((acumulado + unirFragmentos(parciales)).trim());
     };
@@ -3322,7 +3332,15 @@ PASO 3 — Estudios, tal como se dijo:
 
 PASO 4 — Otros datos (idiomas con nivel, carnet de conducir, vehículo propio, disponibilidad horaria, voluntariados), tal como se dijo:
 """${datos.otros || "(no se ha dicho nada)"}"""
-
+${datos.cvCorregido ? `
+CORRECCIONES DE LA PERSONA (PRIORIDAD MÁXIMA): ya se generó un CV con estos textos y la persona lo revisó y corrigió a mano. Ahora ha vuelto a grabar para añadir o cambiar información. Este es el CV anterior tal como lo dejó:
+"""${datos.cvCorregido}"""
+Reglas:
+- Todo lo que la persona corrigió en ese CV (nombre, teléfono, email, ubicación, puestos, empresas, fechas, funciones, estudios, perfil, habilidades, otros datos) se mantiene EXACTAMENTE como está ahí, aunque lo dictado diga otra cosa.
+- Añade la información nueva que aparezca en los textos dictados y que no esté en ese CV.
+- Si algo de ese CV ya no aparece de ninguna forma en los textos dictados, es que la persona lo quitó: no lo incluyas.
+- Mantén el idioma del CV indicado arriba.
+` : ""}
 Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin bloque de código markdown, con esta forma EXACTA:
 {
   "nombre": "NOMBRE COMPLETO EN MAYÚSCULAS, o cadena vacía si no se dijo",
@@ -3366,6 +3384,52 @@ Reglas estrictas:
 }
 
 // ---------- 10. Generar el CV final (orquesta: carga → IA → pintado) ----------
+// Si la persona ya corrigió a mano el CV (en cualquier diseño) y vuelve a grabar para añadir
+// algo, el CV nuevo no debe deshacer sus correcciones: a la IA se le manda también el CV
+// tal como lo dejó, con la orden de respetarlo. Se mantiene durante toda la sesión, porque
+// cada CV nuevo ya lleva dentro las correcciones anteriores.
+let cvCorregidoAMano = false;
+function textoCVCorregido(){
+  if (!cvCorregidoAMano) return "";
+  // El básico es la fuente de todos los diseños (las correcciones de los demás se copian a
+  // él). Está oculto mientras se graba, así que se lee por apartados y no con innerText.
+  const $ = id => document.getElementById(id);
+  const txt = el => el ? el.textContent.replace(/\s+/g, " ").trim() : "";
+  const visible = id => $(id) && !$(id).classList.contains("hidden");
+  const l = [];
+  if (txt($("cv-nombre"))) l.push("Nombre: " + txt($("cv-nombre")));
+  if (cargoManual !== null) l.push("Puesto bajo el nombre: " + (cargoManual || "(ninguno)"));
+  [["telefono", "Teléfono"], ["email", "Email"], ["ubicacion", "Ubicación"]].forEach(([c, e]) => {
+    if (visible(`cv-fila-${c}`) && txt($(`cv-${c}`))) l.push(`${e}: ${txt($(`cv-${c}`))}`);
+  });
+  if (visible("cv-seccion-perfil") && txt($("cv-perfil"))) l.push("Perfil: " + txt($("cv-perfil")));
+  if (visible("cv-seccion-experiencia")){
+    l.push("Experiencia:");
+    $("cv-experiencia").querySelectorAll(".cv-experiencia-item").forEach(it => {
+      const cab = [".cv-experiencia-puesto", ".cv-experiencia-empresa", ".cv-experiencia-fechas"]
+        .map(s => txt(it.querySelector(s))).filter(Boolean).join(" | ");
+      l.push("- " + cab);
+      it.querySelectorAll(".cv-experiencia-funciones li").forEach(li => l.push("    · " + txt(li)));
+    });
+  }
+  if (visible("cv-seccion-estudios")){
+    l.push("Estudios:");
+    $("cv-estudios").querySelectorAll(".cv-estudio-item").forEach(it =>
+      l.push("- " + [".cv-estudio-titulo", ".cv-estudio-centro"].map(s => txt(it.querySelector(s))).filter(Boolean).join(" | ")));
+    $("cv-estudios").querySelectorAll(".cv-formacion-complementaria-lista li").forEach(li => l.push("- Formación complementaria: " + txt(li)));
+  }
+  if (visible("cv-seccion-habilidades")){
+    const hab = [...$("cv-habilidades").querySelectorAll("li")].map(txt).filter(Boolean);
+    if (hab.length) l.push("Habilidades: " + hab.join(", "));
+  }
+  if (visible("cv-seccion-otros-datos")){
+    const bloques = [...$("cv-otros").children].map(txt).filter(Boolean);
+    const otros = bloques.length ? bloques : [txt($("cv-otros"))].filter(Boolean);
+    if (otros.length) l.push("Otros datos: " + otros.join(" / "));
+  }
+  return l.join("\n");
+}
+
 function generarCV(){
   detenerEscucha();
   detenerCamara();
@@ -3375,7 +3439,9 @@ function generarCV(){
     experiencia:     document.querySelector('[data-texto-paso="2"]').value.trim(),
     estudios:        document.querySelector('[data-texto-paso="3"]').value.trim(),
     otros:           document.querySelector('[data-texto-paso="4"]').value.trim(),
+    cvCorregido:     textoCVCorregido(),
   };
+  const cargoAntes = cargoManual;
 
   const t = TEXTOS[idiomaActual];
   const avisoErrorIA = document.getElementById("aviso-error-ia");
@@ -3393,7 +3459,11 @@ function generarCV(){
 
   llamarIA(PROMPT_SISTEMA, construirPromptUsuario(datos), 0.4)
     .then(resultado => revisarIdioma(resultado, datos))
-    .then(pintarCV)
+    .then(resultado => {
+      pintarCV(resultado);
+      // El subtítulo corregido a mano también se conserva al volver a grabar
+      if (datos.cvCorregido && cargoAntes !== null){ cargoManual = cargoAntes; versionDatosCV++; }
+    })
     .catch(error => {
       console.error(error);
       avisoErrorIA.textContent = t.error_ia_generico + mensajeErrorCorto(error);
@@ -4242,6 +4312,16 @@ async function guardarPDF(plantilla, accion){
   cvCambiadoTrasGuardar = false;
   avisoBreve(tx("aviso_descargando"), 3000);
   if (plantilla !== "basico") rellenarSiHaceFalta(plantilla);
+  // Nombre del archivo: "CV_Nombre_Apellidos.pdf" (lo que esperan los portales y quien lo
+  // recibe). La app (desde la 1.4.3) lo limpia de tildes y espacios; las versiones
+  // anteriores no tienen esta función y siguen usando la fecha.
+  try {
+    if (window.Android && typeof window.Android.ponerNombreCV === "function"){
+      const nombre = (document.getElementById("cv-nombre").textContent || "").trim().toLowerCase()
+        .replace(/(^|[\s'-])(\S)/g, (m, sep, letra) => sep + letra.toUpperCase());
+      window.Android.ponerNombreCV(nombre);
+    }
+  } catch(e) { console.warn("Nombre del PDF:", e); }
   const ok = await descargarHojaComoPDF(document.getElementById(CV_MAP[plantilla]), nombreCVActual());
   if (ok === null) return; // ya había un PDF en marcha
   if (!ok) noSeGuardo();
@@ -4306,6 +4386,7 @@ function abrirOEnviarCV(accion){
 // descargado se corrige, el PDF guardado se queda viejo: Abrir y Enviar lo guardan otra vez
 // con los cambios antes de abrirlo o enviarlo.
 document.getElementById("contenedor-cvs").addEventListener("input", e => {
+  cvCorregidoAMano = true;
   const editable = e.target.closest && e.target.closest("[contenteditable='true'][id]");
   if (editable && ES_CARGO.test(editable.id)){
     // Subtítulo corregido: los otros diseños lo recogen al mostrarse; este no se rellena
