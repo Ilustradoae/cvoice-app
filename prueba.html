@@ -3332,14 +3332,10 @@ PASO 3 — Estudios, tal como se dijo:
 
 PASO 4 — Otros datos (idiomas con nivel, carnet de conducir, vehículo propio, disponibilidad horaria, voluntariados), tal como se dijo:
 """${datos.otros || "(no se ha dicho nada)"}"""
-${datos.cvCorregido ? `
-CORRECCIONES DE LA PERSONA (PRIORIDAD MÁXIMA): ya se generó un CV con estos textos y la persona lo revisó y corrigió a mano. Ahora ha vuelto a grabar para añadir o cambiar información. Este es el CV anterior tal como lo dejó:
-"""${datos.cvCorregido}"""
-Reglas:
-- Todo lo que la persona corrigió en ese CV (nombre, teléfono, email, ubicación, puestos, empresas, fechas, funciones, estudios, perfil, habilidades, otros datos) se mantiene EXACTAMENTE como está ahí, aunque lo dictado diga otra cosa.
-- Añade la información nueva que aparezca en los textos dictados y que no esté en ese CV.
-- Si algo de ese CV ya no aparece de ninguna forma en los textos dictados, es que la persona lo quitó: no lo incluyas.
-- Mantén el idioma del CV indicado arriba.
+${datos.cambiosAMano && datos.cambiosAMano.length ? `
+CORRECCIONES HECHAS A MANO (PRIORIDAD MÁXIMA): con estos textos ya se generó un CV, y la persona lo corrigió a mano. Estos son sus cambios, y deben aparecer EXACTAMENTE así en el CV nuevo, aunque lo dictado diga otra cosa:
+${datos.cambiosAMano.join("\n")}
+Lo que la persona borró no se vuelve a poner. Todo lo demás se redacta a partir de los textos dictados, como siempre (incluida la información nueva que haya añadido al volver a grabar).
 ` : ""}
 Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto antes ni después, sin bloque de código markdown, con esta forma EXACTA:
 {
@@ -3388,46 +3384,110 @@ Reglas estrictas:
 // algo, el CV nuevo no debe deshacer sus correcciones: a la IA se le manda también el CV
 // tal como lo dejó, con la orden de respetarlo. Se mantiene durante toda la sesión, porque
 // cada CV nuevo ya lleva dentro las correcciones anteriores.
+// Para saber QUÉ corrigió la persona, se guarda el CV tal como lo pintó la IA (cvSegunIA) y,
+// al volver a grabar, se compara con cómo está ahora. Esos cambios se mandan a la IA como
+// lista y, además, se vuelven a aplicar sobre su respuesta (la IA no siempre los respeta).
 let cvCorregidoAMano = false;
-function textoCVCorregido(){
-  if (!cvCorregidoAMano) return "";
-  // El básico es la fuente de todos los diseños (las correcciones de los demás se copian a
-  // él). Está oculto mientras se graba, así que se lee por apartados y no con innerText.
+let cvSegunIA = null;
+
+// Lee el CV básico por apartados (está oculto mientras se graba: no sirve innerText)
+function leerCVBasico(){
   const $ = id => document.getElementById(id);
   const txt = el => el ? el.textContent.replace(/\s+/g, " ").trim() : "";
   const visible = id => $(id) && !$(id).classList.contains("hidden");
-  const l = [];
-  if (txt($("cv-nombre"))) l.push("Nombre: " + txt($("cv-nombre")));
-  if (cargoManual !== null) l.push("Puesto bajo el nombre: " + (cargoManual || "(ninguno)"));
-  [["telefono", "Teléfono"], ["email", "Email"], ["ubicacion", "Ubicación"]].forEach(([c, e]) => {
-    if (visible(`cv-fila-${c}`) && txt($(`cv-${c}`))) l.push(`${e}: ${txt($(`cv-${c}`))}`);
-  });
-  if (visible("cv-seccion-perfil") && txt($("cv-perfil"))) l.push("Perfil: " + txt($("cv-perfil")));
-  if (visible("cv-seccion-experiencia")){
-    l.push("Experiencia:");
-    $("cv-experiencia").querySelectorAll(".cv-experiencia-item").forEach(it => {
-      const cab = [".cv-experiencia-puesto", ".cv-experiencia-empresa", ".cv-experiencia-fechas"]
-        .map(s => txt(it.querySelector(s))).filter(Boolean).join(" | ");
-      l.push("- " + cab);
-      it.querySelectorAll(".cv-experiencia-funciones li").forEach(li => l.push("    · " + txt(li)));
+  const lista = (raiz, sel) => raiz ? [...raiz.querySelectorAll(sel)].map(txt).filter(Boolean) : [];
+  const fila = c => visible(`cv-fila-${c}`) ? txt($(`cv-${c}`)) : "";
+  const otros = visible("cv-seccion-otros-datos")
+    ? ([...$("cv-otros").querySelectorAll("li")].length ? lista($("cv-otros"), "li") : [txt($("cv-otros"))].filter(Boolean))
+    : [];
+  return {
+    nombre: txt($("cv-nombre")),
+    telefono: fila("telefono"), email: fila("email"), ubicacion: fila("ubicacion"),
+    perfil: visible("cv-seccion-perfil") ? txt($("cv-perfil")) : "",
+    experiencia: visible("cv-seccion-experiencia") ? [...$("cv-experiencia").querySelectorAll(".cv-experiencia-item")].map(it => ({
+      puesto: txt(it.querySelector(".cv-experiencia-puesto")),
+      empresa: txt(it.querySelector(".cv-experiencia-empresa")),
+      fechas: txt(it.querySelector(".cv-experiencia-fechas")),
+      funciones: lista(it, ".cv-experiencia-funciones li"),
+    })) : [],
+    estudios: visible("cv-seccion-estudios") ? [...$("cv-estudios").querySelectorAll(".cv-estudio-item")].map(it => ({
+      titulo: txt(it.querySelector(".cv-estudio-titulo")),
+      centro: txt(it.querySelector(".cv-estudio-centro")),
+    })) : [],
+    formacion: visible("cv-seccion-estudios") ? lista($("cv-estudios"), ".cv-formacion-complementaria-lista li") : [],
+    habilidades: visible("cv-seccion-habilidades") ? lista($("cv-habilidades"), "li") : [],
+    otros,
+  };
+}
+
+const normalizarCV = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+const igualCV = (a, b) => normalizarCV(Array.isArray(a) ? a.join("|") : a) === normalizarCV(Array.isArray(b) ? b.join("|") : b);
+
+// Correcciones de toda la sesión ({antes, ahora}): se guardan todas porque lo dictado sigue
+// diciendo lo de antes, y al volver a grabar una 3ª vez la IA lo pondría otra vez
+let correccionesSesion = [];
+function registrarCorreccionesAMano(){
+  if (!cvCorregidoAMano || !cvSegunIA) return;
+  const ahora = leerCVBasico();
+  if (cambiosEntre(cvSegunIA, ahora).length) correccionesSesion.push({ antes: cvSegunIA, ahora });
+}
+
+// Lista de lo que la persona cambió a mano entre el CV que hizo la IA (antes) y el suyo (ahora)
+function cambiosEntre(antes, ahora){
+  const c = [];
+  const cambio = (que, a, b) => c.push(b ? `- ${que}: antes «${a || "(vacío)"}», ahora «${b}»` : `- ${que}: lo borró (antes «${a}»)`);
+  [["nombre", "Nombre"], ["telefono", "Teléfono"], ["email", "Email"], ["ubicacion", "Ubicación"], ["perfil", "Perfil"]]
+    .forEach(([k, e]) => { if (!igualCV(antes[k], ahora[k])) cambio(e, antes[k], ahora[k]); });
+  antes.experiencia.forEach((a, i) => {
+    const b = ahora.experiencia[i];
+    if (!b){ c.push(`- Experiencia: borró el puesto «${a.puesto}» (${a.empresa})`); return; }
+    const quien = `Experiencia «${a.puesto}${a.empresa ? ", " + a.empresa : ""}»`;
+    [["puesto", "puesto"], ["empresa", "empresa"], ["fechas", "fechas"]].forEach(([k, e]) => {
+      if (!igualCV(a[k], b[k])) cambio(`${quien}, ${e}`, a[k], b[k]);
     });
-  }
-  if (visible("cv-seccion-estudios")){
-    l.push("Estudios:");
-    $("cv-estudios").querySelectorAll(".cv-estudio-item").forEach(it =>
-      l.push("- " + [".cv-estudio-titulo", ".cv-estudio-centro"].map(s => txt(it.querySelector(s))).filter(Boolean).join(" | ")));
-    $("cv-estudios").querySelectorAll(".cv-formacion-complementaria-lista li").forEach(li => l.push("- Formación complementaria: " + txt(li)));
-  }
-  if (visible("cv-seccion-habilidades")){
-    const hab = [...$("cv-habilidades").querySelectorAll("li")].map(txt).filter(Boolean);
-    if (hab.length) l.push("Habilidades: " + hab.join(", "));
-  }
-  if (visible("cv-seccion-otros-datos")){
-    const bloques = [...$("cv-otros").children].map(txt).filter(Boolean);
-    const otros = bloques.length ? bloques : [txt($("cv-otros"))].filter(Boolean);
-    if (otros.length) l.push("Otros datos: " + otros.join(" / "));
-  }
-  return l.join("\n");
+    if (!igualCV(a.funciones, b.funciones)) cambio(`${quien}, funciones`, a.funciones.join("; "), b.funciones.join("; "));
+  });
+  antes.estudios.forEach((a, i) => {
+    const b = ahora.estudios[i];
+    if (!b){ c.push(`- Estudios: borró «${a.titulo}»`); return; }
+    if (!igualCV(a.titulo, b.titulo)) cambio(`Estudio «${a.titulo}», título`, a.titulo, b.titulo);
+    if (!igualCV(a.centro, b.centro)) cambio(`Estudio «${a.titulo}», centro y año`, a.centro, b.centro);
+  });
+  [["formacion", "Formación complementaria"], ["habilidades", "Habilidades"], ["otros", "Otros datos"]].forEach(([k, e]) => {
+    if (!igualCV(antes[k], ahora[k])) cambio(e, antes[k].join("; "), ahora[k].join("; "));
+  });
+  return c;
+}
+
+// Vuelve a poner en la respuesta de la IA lo que la persona corrigió a mano
+function aplicarCambiosAMano(resultado, antes, ahora){
+  if (!antes || !ahora || !resultado) return resultado;
+  ["nombre", "telefono", "email", "ubicacion", "perfil"].forEach(k => {
+    if (!igualCV(antes[k], ahora[k])) resultado[k] = ahora[k];
+  });
+  if (!igualCV(antes.habilidades, ahora.habilidades)) resultado.habilidades = ahora.habilidades.slice();
+  const exp = Array.isArray(resultado.experiencia) ? resultado.experiencia : [];
+  antes.experiencia.forEach((a, i) => {
+    const b = ahora.experiencia[i];
+    if (!b) return;
+    // El mismo trabajo en la respuesta nueva: coincide el puesto o la empresa (de antes o de ahora)
+    const r = exp.find(x => [a.puesto, b.puesto].some(p => p && igualCV(x.puesto, p)))
+           || exp.find(x => [a.empresa, b.empresa].some(e => e && igualCV(x.empresa, e)));
+    if (!r) return;
+    ["puesto", "empresa", "fechas"].forEach(k => { if (!igualCV(a[k], b[k])) r[k] = b[k]; });
+    if (!igualCV(a.funciones, b.funciones)) r.funciones = b.funciones.slice(0, 4);
+  });
+  const est = Array.isArray(resultado.estudios) ? resultado.estudios : [];
+  antes.estudios.forEach((a, i) => {
+    const b = ahora.estudios[i];
+    if (!b) return;
+    const r = est.find(x => [a.titulo, b.titulo].some(t => t && igualCV(x.titulo, t)));
+    if (!r) return;
+    if (!igualCV(a.titulo, b.titulo)) r.titulo = b.titulo;
+    // En la hoja centro y año van juntos («IES X · 2015»): se pone la línea tal cual
+    if (!igualCV(a.centro, b.centro)){ r.centro = b.centro; r.año = ""; r.anio = ""; }
+  });
+  return resultado;
 }
 
 function generarCV(){
@@ -3439,7 +3499,7 @@ function generarCV(){
     experiencia:     document.querySelector('[data-texto-paso="2"]').value.trim(),
     estudios:        document.querySelector('[data-texto-paso="3"]').value.trim(),
     otros:           document.querySelector('[data-texto-paso="4"]').value.trim(),
-    cvCorregido:     textoCVCorregido(),
+    cambiosAMano:    (registrarCorreccionesAMano(), [...new Set(correccionesSesion.flatMap(x => cambiosEntre(x.antes, x.ahora)))]),
   };
   const cargoAntes = cargoManual;
 
@@ -3460,9 +3520,13 @@ function generarCV(){
   llamarIA(PROMPT_SISTEMA, construirPromptUsuario(datos), 0.4)
     .then(resultado => revisarIdioma(resultado, datos))
     .then(resultado => {
+      correccionesSesion.forEach(x => aplicarCambiosAMano(resultado, x.antes, x.ahora));
       pintarCV(resultado);
+      // Lo que pintó la IA (ya con las correcciones): base para detectar las siguientes
+      cvSegunIA = leerCVBasico();
+      cvCorregidoAMano = false;
       // El subtítulo corregido a mano también se conserva al volver a grabar
-      if (datos.cvCorregido && cargoAntes !== null){ cargoManual = cargoAntes; versionDatosCV++; }
+      if (cargoAntes !== null){ cargoManual = cargoAntes; versionDatosCV++; }
     })
     .catch(error => {
       console.error(error);
