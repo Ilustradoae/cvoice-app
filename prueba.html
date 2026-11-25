@@ -3226,7 +3226,7 @@ function notasHabla(codigo){
 }
 
 function notasIdiomaCV(codigo){
-  return CONVENCIONES_CV[codigo] ? `\nConvenciones del CV en este idioma: ${CONVENCIONES_CV[codigo]} La categoría del carnet (B, C…) solo si se dijo.` : "";
+  return CONVENCIONES_CV[codigo] ? `\nConvenciones del CV en este idioma: ${CONVENCIONES_CV[codigo]} La categoría del carnet (B, C…) solo si se dijo, y entonces va detrás del Sí y entre paréntesis: "Sí (B)", traducido (nunca "B Sí" ni "B: Sí").` : "";
 }
 
 // Segunda pasada: un revisor nativo deja perfecto el idioma del CV ya redactado y comprueba los
@@ -3611,6 +3611,15 @@ function filtrarOtrosHTML(html){
     // Limpiar solo nodos hoja de texto (sin hijos elementos)
     if (el.children.length === 0){
       el.textContent = limpiarTextoIA(el.textContent);
+    }
+  });
+
+  // Carnet: la IA a veces escribe la categoría delante ("B Sí"): se deja como "Sí (B)"
+  div.querySelectorAll("li").forEach(li => {
+    const ultimo = li.lastChild;
+    if (ultimo && ultimo.nodeType === Node.TEXT_NODE){
+      ultimo.nodeValue = ultimo.nodeValue.replace(
+        /^(\s*)((?:AM|[A-D]1?E?)(?:\s*[,/+]\s*(?:AM|[A-D]1?E?))*)\s+([^\s\d(),.:;]+)\s*$/u, "$1$3 ($2)");
     }
   });
 
