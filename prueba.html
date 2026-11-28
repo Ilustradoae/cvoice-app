@@ -3222,19 +3222,24 @@ Quien habla en árabe tiene el árabe como lengua materna: "Árabe: nativo" siem
   zh: `"高中" = Bachillerato; "初中" = ESO; "大学/本科" = Grado universitario; "中专/职高" = Formación Profesional. Años como "二零一六" = 2016. Si dice "服务员" y el nombre es femenino, usa la forma femenina del puesto.`,
   fr: `"Lycée/Baccalauréat" = Bachillerato; "BEP/CAP/Bac pro" = Formación Profesional; "collège/brevet" = ESO.`,
   pt: `"Ensino médio/secundário" = Bachillerato; "ensino fundamental/básico" = ESO.`,
-  eu: `En los emails, "a bildua", "abildua" o "bildua" = @ (ane etxeberria a bildua gmail puntu com → ane.etxeberria@gmail.com); "puntu" = punto; "gidoi" = guion. "DBH" = ESO; "Batxilergoa" = Bachillerato; "erdi mailako zikloa" = Grado Medio; "goi mailako zikloa" = Grado Superior.`,
+  eu: `En los emails, "a bildua", "abildua" o "bildua" = @ (izena abizena a bildua gmail puntu com → izena.abizena@gmail.com: usa siempre el nombre que dictó la persona); "puntu" = punto; "gidoi" = guion. "DBH" = ESO; "Batxilergoa" = Bachillerato; "erdi mailako zikloa" = Grado Medio; "goi mailako zikloa" = Grado Superior. Números vascos (sistema vigesimal): hogei 20, hogeita hamar 30, berrogei 40, berrogeita hamar 50, hirurogei 60, hirurogeita hamar 70, laurogei 80, ehun 100; "bi mila eta hamaika" = 2011, "bi mila eta hamabost" = 2015. "C eta B gidabaimena" = gidabaimena C eta B (son categorías del carnet, nunca niveles de idioma). Cada trabajo con sus propias funciones: no repitas las de otro puesto. "Lantalde burua" = jefe de equipo (solo si lo dijo).`,
 };
 // Lo más habitual en CVoice es hablar en otro idioma y pedir el CV en español. Las pruebas del
 // 25-11-2026 (9 idiomas → español) mostraron trabajos llevados a otro país, empresas "corregidas"
 // a otra palabra, la lengua materna como "intermedio", estudios extranjeros convertidos en
 // títulos españoles o "en curso" cuando se dejaron, y puestos mal traducidos
-const REGLAS_OTRO_IDIOMA = `
-REGLAS PARA UN DICTADO EN OTRO IDIOMA (obligatorias):
+const REGLAS_CALIDAD = `
+REGLAS DE CALIDAD (obligatorias):
+- Ningún dato inventado: ni nombres de centros o empresas ("Centro de Formación Profesional", "Escuela X"), ni años, ni fechas como "verano 2025", ni categorías del carnet. Si no se dijo, se deja vacío o solo con lo que se sepa. Los ejemplos de estas instrucciones nunca son datos de la persona: no copies de ellos ningún nombre, email ni teléfono.
+- Nada coloquial en el CV: "lo que haga falta", "cuando sea" → "Total"; "tout de suite" / "right away" → "Inmediata"; "a temps plein" / "full time" → "Jornada completa".
+- Sin barras de género ("Limpiador/a", "Profesor/a"): el puesto en el género de la persona (por su nombre o por cómo habla). Si de verdad no se sabe, en masculino.
+- Títulos españoles antiguos con su nombre real, nunca cambiados a los actuales: "Graduado Escolar (EGB)", "BUP", "COU", "FP1", "FP2" (el Graduado Escolar NO es la ESO).
+- Carnet de conducir de otro país: "Sí (de Marruecos)" y, si la persona dijo que no vale aquí, "de Pakistán, pendiente de convalidar"; nunca inventes la categoría.
 - Cada trabajo, en el lugar donde la persona dijo que lo hizo: nunca lo pases a otra ciudad ni a otro país. Si no dijo dónde, pon solo la empresa o el tipo de empresa, sin ciudad: nunca le pongas la ciudad del trabajo anterior (ej. "trabajé de cajera en Cracovia y ahora trabajo en un hotel" → la empresa del segundo es solo "Hotel").
 - Empresas tal como se dijeron. Solo corrige una empresa conocida mal reconocida (Mercadona, Eroski, Lidl); nunca cambies un nombre por otra palabra parecida (ej. "Garbialdi" sigue siendo "Garbialdi").
-- Ciudades de España con su nombre oficial aunque se dijeran en otro idioma o alfabeto (بلباو → Bilbao, باراكالدو → Barakaldo, Більбао → Bilbao, Сан-Себастьян → San Sebastián). Ciudades extranjeras con su nombre habitual en el idioma del CV (Járkov, Cracovia, Tiflis, Tánger, Dakar).
-- Idiomas: el idioma en el que habla la persona es su lengua materna ("nativo", traducido) salvo que diga otro nivel para él. Un nivel dicho después de una lista se refiere solo al último idioma de la lista. A los demás idiomas sin nivel no les pongas ninguno. Ejemplos: dictado en ruso "говорю на грузинском русском и испанском средне" → "Georgiano, ruso nativo, español intermedio"; dictado en ucraniano "українською російською англійською на середньому рівні" → "Ucraniano nativo, ruso, inglés intermedio".
-- Estudios de otro país: equivalente en el sistema español + entre paréntesis la sigla o el nombre original si es conocido y el país. Si no lo terminó, no aprobó el examen final o no tiene el título: "sin finalizar" (nunca "en curso" si lo dejó). Nunca lo conviertas en un título español sin el país, ni subas de nivel (un año de universidad no es un Grado Medio). Ejemplos: "Bachillerato (Marruecos), sin finalizar"; "Educación secundaria (BFEM, Senegal)"; "Educación secundaria superior (WAEC, Nigeria)"; "Estudios universitarios de Informática (Nigeria), sin finalizar"; "Grado universitario en Contabilidad y Auditoría (Ucrania)"; "Bachillerato (Liceo, Rumanía), sin título de bacalaureat".
+- Ciudades de España con su nombre oficial (o el habitual en el idioma del CV, ej. "Bilbo" en euskera) aunque se dijeran en otro idioma o alfabeto (بلباو → Bilbao, باراكالدو → Barakaldo, Більбао → Bilbao, Сан-Себастьян → San Sebastián). Ciudades extranjeras con su nombre habitual en el idioma del CV (Járkov, Cracovia, Tiflis, Tánger, Dakar).
+- Idiomas: el idioma en el que habla la persona es su lengua materna ("nativo", traducido) salvo que diga otro nivel para él. Un nivel dicho después de una lista se refiere solo al último idioma de la lista. A los demás idiomas sin nivel no les pongas ninguno. Ejemplos: dictado en ruso "говорю на грузинском русском и испанском средне" → "Georgiano, ruso nativo, español intermedio"; dictado en ucraniano "українською російською англійською на середньому рівні" → "Ucraniano nativo, ruso, inglés intermedio"; dictado en francés "je parle arabe français et espagnol moyen" → "Árabe, francés nativo, español intermedio".
+- Estudios de otro país: equivalente en el sistema español + entre paréntesis la sigla o el nombre original si es conocido y el país. Si no lo terminó, no aprobó el examen final o no tiene el título: "sin finalizar" (nunca "en curso" si lo dejó). Nunca lo conviertas en un título español sin el país, ni subas de nivel (un año de universidad no es un Grado Medio). Ejemplos: "Bachillerato (Marruecos), sin finalizar"; "Educación secundaria (BFEM, Senegal)"; "Educación secundaria superior (WAEC, Nigeria)"; "Estudios universitarios de Informática (Nigeria), sin finalizar"; "Grado universitario en Contabilidad y Auditoría (Ucrania)"; "Bachillerato (Liceo, Rumanía), sin título de bacalaureat"; "Educación secundaria (Matric, Pakistán)"; "Bachillerato en Comercio (Intermediate, Pakistán)"; "Formación Profesional de Grado Medio en Albañilería (CAP, Francia)"; "Bachillerato (Bachiller, Colombia)"; "Técnico en Contabilidad (SENA, Colombia)". Nunca pongas a los estudios un año que no se dijo.
 - TODO estudio hecho fuera de España lleva el país entre paréntesis en el título, también el bachillerato y los cursos (ej. "Bachillerato (China)", "Curso técnico de Enfermería (Brasil), sin finalizar").
 - "Un poco", "a little", "un peu", "puțin", "трохи", "немного", "trochę", "一点点", "شوية" = nivel básico. "Con fluidez", "fluently", "couramment", "بطلاقة" = avanzado; "nativo" solo para la lengua materna.
 - Puestos y perfil en femenino si la persona es una mujer (nombre de mujer o formas femeninas al hablar: "pracowałam", "працювала", "cuidadora", "serveuse").
@@ -3243,7 +3248,7 @@ REGLAS PARA UN DICTADO EN OTRO IDIOMA (obligatorias):
 - Perfil: los años de experiencia de una profesión son solo los de los trabajos de esa profesión.`;
 // Nombres de puesto habituales en España para los oficios que más se dictan en otros idiomas
 const PUESTOS_EN_ESPANA = `
-- Puestos con el nombre habitual en España, nunca calcos: kitchen porter / plongeur → Friegaplatos; security guard / agent de sécurité / охранник → Vigilante de seguridad; housekeeper / femme de chambre / pokojówka / горничная / покоївка → Camarera de pisos; cleaner / agent de nettoyage / faxineira / sprzątaczka → Limpiador/a; caregiver / cuidadora de idosos / доглядальниця / aide à domicile → Cuidador/a de personas mayores; truck driver / șofer de camion / водитель → Conductor de camión; warehouse worker / magasinier → Mozo de almacén; labourer / разнорабочий / manœuvre → Peón; farm worker / ouvrier agricole / الفلاحة → Peón agrícola; trabajo en "los plásticos" (البلاستيك) de Almería = invernaderos; harvest / cules de struguri → Temporero/a de la vendimia; плиточник / carreleur → Alicatador; welder / soudeur / сварщик → Soldador; waiter / serveur / ober → Camarero/a; shop assistant / vendeur → Dependiente/a; cashier / kasjerka → Cajero/a; accountant / бухгалтер / comptable → Contable; sprzedawczyni / vendeuse → Dependienta. Español de España: nunca "Chofer", "Obrero", "Contador/a", "Brindar", "Puertera". No añadas tareas sanitarias ("Administrar medicación") si la persona no las dijo.`;
+- Puestos con el nombre habitual en España, nunca calcos: kitchen porter / plongeur → Friegaplatos; security guard / agent de sécurité / охранник → Vigilante de seguridad; housekeeper / femme de chambre / pokojówka / горничная / покоївка → Camarera de pisos; cleaner / agent de nettoyage / faxineira / sprzątaczka → Limpiador; caregiver / cuidadora de idosos / доглядальниця / aide à domicile → Cuidador de personas mayores; truck driver / șofer de camion / водитель → Conductor de camión; warehouse worker / magasinier → Mozo de almacén; labourer / разнорабочий / manœuvre → Peón; farm worker / ouvrier agricole / الفلاحة → Peón agrícola; trabajo en "los plásticos" (البلاستيك) de Almería = invernaderos; harvest / cules de struguri → Temporero de la vendimia; плиточник / carreleur → Alicatador; welder / soudeur / сварщик → Soldador; waiter / serveur / ober → Camarero; shop assistant / vendeur → Dependiente; cashier / kasjerka → Cajero; accountant / бухгалтер / comptable → Contable; sprzedawczyni / vendeuse → Dependienta. En femenino cuando la persona es una mujer (Limpiadora, Cuidadora, Camarera…). Español de España: nunca "Chofer", "Obrero", "Contador", "Brindar", "Puertera". No añadas tareas sanitarias ("Administrar medicación") si la persona no las dijo.`;
 
 function notasHabla(codigo){
   return NOTAS_HABLA[codigo] ? `\nPautas del idioma hablado: ${NOTAS_HABLA[codigo]}` : "";
@@ -3346,7 +3351,7 @@ La persona ha hablado en ${idiomaHablado}. Si es distinto de ${nombreIdioma}, tr
 El texto viene del reconocimiento de voz del móvil: no tiene puntuación y puede traer palabras mal reconocidas (sobre todo nombres de empresas, títulos y siglas: "la eso" = ESO, "grado medio de cocina", "Mercadona", "Eroski"), números dichos en letra, muletillas y frases repetidas. Corrige esos errores evidentes por el contexto, sin inventar nada; si no estás seguro de un nombre propio, déjalo tal como se dijo. La persona puede hablar con acento o en una variante dialectal (por ejemplo, árabe marroquí o argelino) y mezclar palabras de otros idiomas (castellano, francés, inglés): entiéndelo todo y redacta solo en ${nombreIdioma}.${notasIdiomaCV(idiomaCVDestino)}${notasHabla(idiomaActual)}
 - Años y números dichos con palabras: conviértelos con cuidado (decenas y unidades) y comprueba que la cronología tenga sentido.
 - Nombre de la persona, empresas y email en el alfabeto del CV; el email siempre solo con caracteres latinos (a-z, 0-9, punto, guion), transcribiendo cada parte.
-- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).${idiomaHablado !== nombreIdioma ? REGLAS_OTRO_IDIOMA : ""}${idiomaCVDestino === "es" && idiomaActual !== "es" ? PUESTOS_EN_ESPANA : ""}${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
+- Títulos de otros países: su equivalente aproximado en el sistema español, escrito en el idioma del CV, con el país entre paréntesis (ej. en un CV en español: "Bachillerato (Liceo, Rumanía)"); si no lo terminó, añade "sin finalizar" (traducido).${REGLAS_CALIDAD}${idiomaCVDestino === "es" ? PUESTOS_EN_ESPANA : ""}${idiomaCVDestino !== "es" ? notasTraduccion(nombreIdioma) : ""}${idiomaCVDestino === "eu" ? NOTAS_EUSKERA : ""}${idiomaCVDestino === "pt" ? NOTAS_PORTUGUES : ""}
 
 PASO 1 — Datos personales (nombre, teléfono, email, ciudad/ubicación), tal como se dijeron:
 """${datos.datosPersonales || "(no se ha dicho nada)"}"""
@@ -3566,6 +3571,68 @@ function anosArabesACifras(texto){
   return salida.join(" ");
 }
 
+// Lo mismo en euskera (sistema vigesimal): la IA convertía "hirurogei ordu" (60) en 32 y
+// "bi mila eta hamaikan" (2011) en 2015. Teléfonos cifra a cifra, años ("bi mila eta
+// hamabostetik" → "2015etik", conservando la declinación) y decenas (hogei, berrogei…)
+const EU_UNIDADES = { zero:0, bat:1, bi:2, hiru:3, lau:4, bost:5, sei:6, zazpi:7, zortzi:8, bederatzi:9 };
+const EU_10_19 = { hamar:10, hamaika:11, hamabi:12, hamahiru:13, hamalau:14, hamabost:15, hamasei:16, hamazazpi:17, hemezortzi:18, hemeretzi:19 };
+const EU_DECENAS = { hogei:20, berrogei:40, hirurogei:60, laurogei:80 };
+function numerosVascosACifras(texto){
+  if (!texto) return texto;
+  const ws = texto.trim().split(/\s+/);
+  const lower = w => w.toLowerCase();
+  // Número al principio de la palabra + resto (la declinación: "hamabostetik" → 15 + "etik")
+  const raiz = (w, tabla) => {
+    let mejor = null;
+    for (const k of Object.keys(tabla)) if (lower(w).startsWith(k) && (!mejor || k.length > mejor.length)) mejor = k;
+    if (!mejor) return null;
+    let resto = w.slice(mejor.length);
+    if (/r$/.test(mejor) && /^r/.test(resto)) resto = resto.slice(1);  // hamar-retik → 10etik
+    return { n: tabla[mejor], resto };
+  };
+  const exacta = w => lower(w) in EU_UNIDADES ? EU_UNIDADES[lower(w)] : undefined;
+  // Lee un número de 1 a 99 desde ws[i]; devuelve { n, usadas, resto } o null
+  const leer = i => {
+    const w = ws[i];
+    if (!w) return null;
+    const m = lower(w).match(/^(hogei|berrogei|hirurogei|laurogei)ta$/);
+    if (m){
+      const sig = ws[i + 1] && (raiz(ws[i + 1], EU_10_19) || raiz(ws[i + 1], EU_UNIDADES));
+      if (sig) return { n: EU_DECENAS[m[1]] + sig.n, usadas: 2, resto: sig.resto };
+      return null;
+    }
+    return raiz(w, EU_10_19) ? { ...raiz(w, EU_10_19), usadas: 1 }
+         : raiz(w, EU_DECENAS) ? { ...raiz(w, EU_DECENAS), usadas: 1 }
+         : raiz(w, EU_UNIDADES) ? { ...raiz(w, EU_UNIDADES), usadas: 1 } : null;
+  };
+  const salida = [];
+  for (let i = 0; i < ws.length; i++){
+    // Años: "bi mila [eta N]"
+    if (lower(ws[i]) === "bi" && ws[i + 1] && /^mila/.test(lower(ws[i + 1]))){
+      if (lower(ws[i + 1]) === "mila" && lower(ws[i + 2] || "") === "eta"){
+        const r = leer(i + 3);
+        if (r){ salida.push((2000 + r.n) + r.resto); i += 2 + r.usadas; continue; }
+      }
+      salida.push("2000" + ws[i + 1].slice(4)); i += 1; continue;
+    }
+    // Teléfonos: 7 o más cifras sueltas seguidas
+    let j = i; while (j < ws.length && exacta(ws[j]) !== undefined) j++;
+    if (j - i >= 7){ salida.push(ws.slice(i, j).map(exacta).join("")); i = j - 1; continue; }
+    // Decenas (hogei, hirurogei, berrogeita hamar…), que la IA confundía
+    if (/^(hogei|berrogei|hirurogei|laurogei)/.test(lower(ws[i]))){
+      const r = leer(i);
+      if (r && r.n >= 20){ salida.push(r.n + r.resto); i += r.usadas - 1; continue; }
+    }
+    salida.push(ws[i]);
+  }
+  return salida.join(" ");
+}
+
+// Se prepara el dictado antes de mandarlo a la IA, según el idioma en que se habló
+function prepararDictado(texto){
+  return idiomaActual === "ar" ? anosArabesACifras(texto) : idiomaActual === "eu" ? numerosVascosACifras(texto) : texto;
+}
+
 // Teléfonos españoles siempre agrupados igual: 612 345 678 (con +34 delante si se dijo)
 function formatearTelefono(t){
   const s = String(t || "").trim();
@@ -3586,7 +3653,7 @@ function generarCV(){
     otros:           document.querySelector('[data-texto-paso="4"]').value.trim(),
     cambiosAMano:    cambiosDeLaSesion(),
   };
-  if (idiomaActual === "ar") ["datosPersonales", "experiencia", "estudios", "otros"].forEach(k => { datos[k] = anosArabesACifras(datos[k]); });
+  ["datosPersonales", "experiencia", "estudios", "otros"].forEach(k => { datos[k] = prepararDictado(datos[k]); });
   const cargoAntes = cargoManual;
 
   const t = TEXTOS[idiomaActual];
@@ -3690,6 +3757,8 @@ function filtrarOtrosHTML(html){
   const PATRONES_NEGATIVOS = [
     /:\s*(no\b|ninguno|ninguna|n\/a|no\s+posee|no\s+tiene|no\s+aplica|no\s+disponible|sin\s+información|-)\s*$/i,
     /^(no\s+posee|no\s+tiene|no\s+aplica|n\/a|ninguno|ninguna|sin\s+datos)$/i,
+    // "Disponibilidad: Sí" no dice nada (la IA lo pone aunque se dijera "a jornada completa")
+    /^(disponib|availab|eskuragarri|dyspozycyj|verfügbar|التوفر|可工作|勤務可能|графік|удобный)[^:：]*[:：]\s*(sí|si|yes|bai|oui|ja|tak|da|نعم|有|あり|так|да)\s*[.。]?\s*$/i,
     // El mismo "No" en los demás idiomas del CV (en árabe salía «سيارة خاصة: لا»)
     /[:：]\s*(non|nein|não|nao|nu|nie|ні|нет|ez|否|无|没有|なし|いいえ|لا|لا يوجد|لا يملك|غير متوفر)\s*[.。]?\s*$/i,
   ];
